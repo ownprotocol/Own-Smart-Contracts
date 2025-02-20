@@ -8,12 +8,13 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import "./IStake.sol";
 import "./veOWN.sol";
+import "./IveOwn.sol";
 
 contract Stake is IStake, AccessControlEnumerable, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
     IERC20 public ownToken;
-    VeOWN public veOWN;
+    address public veOWN;
 
     // Constants
     uint256 public constant WEEK = 7 days;
@@ -27,6 +28,7 @@ contract Stake is IStake, AccessControlEnumerable, ReentrancyGuard {
 
     constructor(address _ownToken) {
         ownToken = IERC20(_ownToken);
+        veOWN = address(new VeOWN());
     }
 
     function stake(uint256 amount, uint256 _weeks) external nonReentrant {
@@ -40,13 +42,13 @@ contract Stake is IStake, AccessControlEnumerable, ReentrancyGuard {
         ownToken.safeTransferFrom(msg.sender, address(this), amount);
 
         // Calculate veOwn amount (1:1 per week locked)
-        uint256 veOwnAmount = amount * _weeks;
+        uint256 veOwnAmount = amount * _weeks * 10 ** 18; // veOWN has 18 decimals
 
         // Create new position
         uint256 positionId = userPositionCount[msg.sender];
 
         // mint the user their veOWN
-        veOWN.mint(msg.sender, veOwnAmount);
+        IveOWN(veOWN).mint(msg.sender, veOwnAmount);
 
         // record their position
         positions[msg.sender][positionId] = StakePosition({

@@ -1,7 +1,5 @@
-import { OWN$Type } from "../artifacts/contracts/OWN.sol/OWN";
-import { GetContractReturnType, PublicClient, WalletClient } from "viem";
+import { ownTestingAPI } from "../helpers/testing-api";
 
-export type OwnContract = GetContractReturnType<
-  OWN$Type["abi"],
-  PublicClient | WalletClient
->;
+export type OwnContract = Awaited<ReturnType<typeof ownTestingAPI>>["own"];
+export type StakeContract = Awaited<ReturnType<typeof ownTestingAPI>>["stake"];
+export type Signers = Awaited<ReturnType<typeof ownTestingAPI>>["signers"];

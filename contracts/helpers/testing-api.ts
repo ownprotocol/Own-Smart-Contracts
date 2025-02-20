@@ -1,5 +1,4 @@
 import hre, { ethers, upgrades } from "hardhat";
-import { parseEther } from "viem";
 
 export const ownTestingAPI = async () => {
   const signers = await hre.viem.getWalletClients();
