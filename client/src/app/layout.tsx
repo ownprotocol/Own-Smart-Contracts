@@ -6,6 +6,7 @@ import { type Metadata } from "next";
 export const metadata: Metadata = {
   title: "Fasset",
   description: "Fasset Presale & Staking",
+  // TODO get favicon from client
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
