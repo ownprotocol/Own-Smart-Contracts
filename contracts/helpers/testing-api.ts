@@ -1,7 +1,5 @@
 import hre, { ethers, upgrades } from "hardhat";
-import UUPSUpgradeable from "../artifacts/@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol/Initializable.json";
-import OWN from "../artifacts/contracts/OWN.sol/OWN.json";
-import { encodeFunctionData } from "viem";
+import { parseEther } from "viem";
 
 export const ownTestingAPI = async () => {
   const signers = await hre.viem.getWalletClients();
@@ -20,8 +18,11 @@ export const ownTestingAPI = async () => {
     (await OwnDeployment.getAddress()) as `0x${string}`,
   );
 
+  const stake = await hre.viem.deployContract("Stake", [own.address]);
+
   return {
     own,
     signers,
+    stake,
   };
 };
