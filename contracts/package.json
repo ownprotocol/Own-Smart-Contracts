@@ -1,10 +1,17 @@
 {
   "name": "contracts",
   "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^3.0.8",
     "@nomicfoundation/hardhat-toolbox-viem": "^3.0.0",
+    "@openzeppelin/contracts": "^5.2.0",
+    "@openzeppelin/contracts-upgradeable": "^5.2.0",
+    "@openzeppelin/hardhat-upgrades": "^3.9.0",
     "@types/bun": "latest",
+    "ethers": "^6.13.5",
     "hardhat": "^2.22.18",
-    "ts-node": "^10.9.2"
+    "solmate": "^6.8.0",
+    "ts-node": "^10.9.2",
+    "viem": "^2.23.3"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
