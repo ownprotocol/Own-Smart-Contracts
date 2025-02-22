@@ -13,21 +13,20 @@ import "./IveOwn.sol";
 contract Stake is IStake, AccessControlEnumerable, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
-    IERC20 public ownToken;
+    address public ownToken;
     address public veOWN;
 
-    // Constants
     uint256 public constant WEEK = 7 days;
     uint256 public constant MAX_LOCK_WEEKS = 208; // 4 years
     uint256 public constant MIN_LOCK_WEEKS = 1;
 
-    // User address => position ID => StakePosition
+    // User address => position ID => StakePosition (position ID starts at 0)
     mapping(address => mapping(uint256 => StakePosition)) public positions;
     // User address => number of positions
     mapping(address => uint256) public userPositionCount;
 
     constructor(address _ownToken) {
-        ownToken = IERC20(_ownToken);
+        ownToken = _ownToken;
         veOWN = address(new VeOWN());
     }
 
@@ -38,16 +37,14 @@ contract Stake is IStake, AccessControlEnumerable, ReentrancyGuard {
         );
         require(amount > 0, "Amount must be greater than 0");
 
-        // Transfer tokens to contract
-        ownToken.safeTransferFrom(msg.sender, address(this), amount);
+        IERC20(ownToken).safeTransferFrom(msg.sender, address(this), amount);
 
         // Calculate veOwn amount (1:1 per week locked)
-        uint256 veOwnAmount = amount * _weeks * 10 ** 18; // veOWN has 18 decimals
+        uint256 veOwnAmount = amount * _weeks; // amount parsed in has 18 decimals already
 
-        // Create new position
         uint256 positionId = userPositionCount[msg.sender];
 
-        // mint the user their veOWN
+        // mint the user their veOWN amount
         IveOWN(veOWN).mint(msg.sender, veOwnAmount);
 
         // record their position
@@ -57,11 +54,26 @@ contract Stake is IStake, AccessControlEnumerable, ReentrancyGuard {
             startTime: block.timestamp,
             endTime: block.timestamp + (_weeks * WEEK),
             lockWeeks: _weeks,
-            isActive: true
+            isActive: true,
+            lastClaimDay: 0
         });
 
         userPositionCount[msg.sender]++;
 
         emit Staked(msg.sender, positionId, amount, _weeks);
+    }
+
+    function getTotalStake(address _user) external view returns (uint256) {
+        uint256 _userPositionCount = userPositionCount[_user];
+
+        if (_userPositionCount == 0) return 0;
+
+        uint256 totalStaked;
+
+        for (uint256 i = 0; i < _userPositionCount; i++) {
+            totalStaked += positions[_user][i].ownAmount;
+        }
+
+        return totalStaked;
     }
 }

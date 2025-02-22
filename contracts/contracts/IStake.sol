@@ -15,6 +15,7 @@ interface IStake {
         uint256 startTime;
         uint256 endTime;
         uint256 lockWeeks;
+        uint256 lastClaimDay;
         bool isActive;
     }
 }

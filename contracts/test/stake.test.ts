@@ -2,15 +2,17 @@ import { expect } from "chai";
 import hre from "hardhat";
 import { parseEther } from "viem";
 import { ownTestingAPI } from "../helpers/testing-api";
-import { OwnContract, StakeContract, Signers } from "../types";
+import { OwnContract, StakeContract, Signers, VeOWN } from "../types";
+import { amounts, weeks } from "../constants/mock-data";
 
 describe("OWN staking testing", async () => {
   let own: OwnContract;
   let stake: StakeContract;
   let signers: Signers;
+  let veOWN: VeOWN;
 
   before(async () => {
-    ({ stake, own } = await ownTestingAPI());
+    ({ stake, own, veOWN } = await ownTestingAPI());
     signers = await hre.viem.getWalletClients();
 
     // Transfer 10,000 OWN tokens to the last 10 signers
@@ -40,35 +42,12 @@ describe("OWN staking testing", async () => {
   });
 
   it("should let me stake and return the correct amount of veOwn", async () => {
-    const amounts = [
-      "1234.567",
-      "42000.89",
-      "789.123",
-      "50000",
-      "3456.78",
-      "987654.321",
-      "2468.135",
-      "10000.99",
-      "75000.45",
-      "369.258",
-    ];
-
-    const weeks = [
-      "156",
-      "42",
-      "187",
-      "93",
-      "128",
-      "67",
-      "204",
-      "15",
-      "173",
-      "89",
-    ];
-
     for (let i = signers.length - 10; i < signers.length; i++) {
-      const ownBalanceBeforeStake = await own.read.balanceOf([
-        signers[i].account.address,
+      const currentAddress = signers[i].account.address;
+
+      const ownBalanceBeforeStake = await own.read.balanceOf([currentAddress]);
+      const veOwnBalanceBeforeStake = await veOWN.read.balanceOf([
+        currentAddress,
       ]);
 
       const stakeAsUser = await hre.viem.getContractAt("Stake", stake.address, {
@@ -77,15 +56,20 @@ describe("OWN staking testing", async () => {
 
       const weekAndAmountIndex = i - (signers.length - 10);
       const stakeAmount = parseEther(amounts[weekAndAmountIndex]);
-      await stakeAsUser.write.stake([
-        stakeAmount,
-        BigInt(weeks[weekAndAmountIndex]),
+      const weekAmount = BigInt(weeks[weekAndAmountIndex]);
+
+      const expectedVeOwnAmount = stakeAmount * BigInt(weekAmount);
+      await stakeAsUser.write.stake([stakeAmount, weekAmount]);
+
+      const ownBalanceAfterStake = await own.read.balanceOf([currentAddress]);
+
+      const veOwnBalanceAfterStake = await veOWN.read.balanceOf([
+        currentAddress,
       ]);
 
-      const ownBalanceAfterStake = await own.read.balanceOf([
-        signers[i].account.address,
-      ]);
-
+      expect(veOwnBalanceAfterStake).eq(
+        expectedVeOwnAmount + veOwnBalanceBeforeStake,
+      );
       expect(ownBalanceBeforeStake).equal(ownBalanceAfterStake + stakeAmount);
     }
   });

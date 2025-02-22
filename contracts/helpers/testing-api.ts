@@ -19,9 +19,14 @@ export const ownTestingAPI = async () => {
 
   const stake = await hre.viem.deployContract("Stake", [own.address]);
 
+  const veOWNAddress = await stake.read.veOWN();
+
+  const veOWN = await hre.viem.getContractAt("VeOWN", veOWNAddress);
+
   return {
     own,
     signers,
     stake,
+    veOWN,
   };
 };
