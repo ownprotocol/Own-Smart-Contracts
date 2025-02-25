@@ -1,7 +1,7 @@
 import Image from "next/image";
 function PriceIncreaseTimer() {
   return (
-    <div className="mt-4 flex justify-center">
+    <div className="mt-4 flex justify-center relative">
       <div className="flex flex-col gap-4">
         <h1 className="font-funnel px-4 py-2 text-center text-[14px] font-medium leading-[14px] md:text-[16px] md:leading-[16px] lg:text-[18px] lg:leading-[18px]">
           Price Increase Timer
@@ -45,7 +45,7 @@ function PriceIncreaseTimer() {
           </div>
         </div>
       </div>
-      {/* <div className="absolute bottom-12 left-1/3 z-[-1] -translate-x-1/2 md:-bottom-1">
+      <div className="absolute -z-10 bottom-[-30%] left-[26%] hidden md:block">
         <Image
           src="/home-page/hero/center-dots.png"
           alt="Decorative dots"
@@ -53,7 +53,7 @@ function PriceIncreaseTimer() {
           height={100}
           priority
         />
-      </div> */}
+      </div>
       <div className="absolute bottom-0 right-0 h-[580px] w-[200px] rotate-[24.3deg] rounded-full bg-[#E49048] opacity-10 blur-[200px]" />
     </div>
   );
