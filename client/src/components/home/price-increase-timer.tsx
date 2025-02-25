@@ -1,5 +1,12 @@
+"use client";
+
 import Image from "next/image";
+import { useTimer } from "react-timer-hook";
+
 function PriceIncreaseTimer() {
+  const { hours, minutes, seconds } = useTimer({
+    expiryTimestamp: new Date(Date.now() + 1000 * 60 * 60 * 24),
+  });
   return (
     <div className="relative mt-4 flex justify-center">
       <div className="flex flex-col gap-4">
@@ -7,41 +14,13 @@ function PriceIncreaseTimer() {
           Price Increase Timer
         </h1>
         <div className="flex flex-col justify-center gap-4 md:flex-row">
-          <div className="flex gap-4">
-            <div className="flex w-1/2 flex-col items-center rounded-md bg-black px-4 py-2 md:w-[100px] md:px-6 md:py-2">
-              <h1 className="font-funnel text-[14px] leading-[49.32px] tracking-[-2.5%] text-[#A78BFA] md:text-[20px] lg:text-[24px]">
-                Days
-              </h1>
-              <div className="font-funnel text-[20px] leading-[49.32px] tracking-[-2.5%] text-white md:text-[40px]">
-                00
-              </div>
-            </div>
-            <div className="flex w-1/2 flex-col items-center rounded-md bg-black px-6 py-2 md:w-[120px]">
-              <h1 className="font-funnel text-[14px] leading-[49.32px] tracking-[-2.5%] text-[#A78BFA] md:text-[20px] lg:text-[24px]">
-                Hours
-              </h1>
-              <div className="font-funnel text-[20px] leading-[49.32px] tracking-[-2.5%] text-white md:text-[40px]">
-                00
-              </div>
-            </div>
+        <div className="flex gap-4">
+            <TimerBox label="Days" value={hours} />
+            <TimerBox label="Hours" value={minutes} />
           </div>
           <div className="flex gap-4">
-            <div className="flex w-1/2 flex-col items-center rounded-md bg-black px-6 py-2 md:w-[120px]">
-              <h1 className="font-funnel text-[14px] leading-[49.32px] tracking-[-2.5%] text-[#A78BFA] md:text-[20px] lg:text-[24px]">
-                Minutes
-              </h1>
-              <div className="font-funnel text-[20px] leading-[49.32px] tracking-[-2.5%] text-white md:text-[40px]">
-                00
-              </div>
-            </div>
-            <div className="flex w-1/2 flex-col items-center rounded-md bg-black px-6 py-2 md:w-[120px]">
-              <h1 className="font-funnel text-[14px] leading-[49.32px] tracking-[-2.5%] text-[#A78BFA] md:text-[20px] lg:text-[24px]">
-                Seconds
-              </h1>
-              <div className="font-funnel text-[20px] leading-[49.32px] tracking-[-2.5%] text-white md:text-[40px]">
-                00
-              </div>
-            </div>
+            <TimerBox label="Minutes" value={seconds} />
+            <TimerBox label="Seconds" value={seconds} />
           </div>
         </div>
       </div>
@@ -64,6 +43,24 @@ function PriceIncreaseTimer() {
           height={75}
           priority
         />
+      </div>
+    </div>
+  );
+}
+
+type TimerBoxProps = {
+  label: string;
+  value: number;
+};
+
+function TimerBox({ label, value }: TimerBoxProps) {
+  return (
+    <div className="flex w-1/2 flex-col items-center rounded-md bg-black px-6 py-2 md:w-[120px]">
+      <h1 className="font-funnel text-[14px] leading-[49.32px] tracking-[-2.5%] text-[#A78BFA] md:text-[20px] lg:text-[24px]">
+        {label}
+      </h1>
+      <div className="font-funnel text-[20px] leading-[49.32px] tracking-[-2.5%] text-white md:text-[40px]">
+        {value}
       </div>
     </div>
   );
