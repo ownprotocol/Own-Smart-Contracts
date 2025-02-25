@@ -14,7 +14,7 @@ function MainNavigation() {
             <Link
               key={link.name}
               href={link.link}
-              className="font-dmMono text-[10px] leading-[10px] tracking-[0.08em] md:text-xs md:leading-3 md:tracking-[0.08em]"
+              className="cursor-pointer font-dmMono text-[10px] leading-[10px] tracking-[0.08em] md:text-xs md:leading-3 md:tracking-[0.08em]"
             >
               {link.name}
             </Link>
@@ -25,7 +25,7 @@ function MainNavigation() {
             <Link
               key={link.name}
               href={link.link}
-              className="font-dmMono text-[10px] leading-[10px] tracking-[0.08em] md:text-xs md:leading-3 md:tracking-[0.08em]"
+              className="cursor-pointer font-dmMono text-[10px] leading-[10px] tracking-[0.08em] md:text-xs md:leading-3 md:tracking-[0.08em]"
             >
               {link.name}
             </Link>
