@@ -1,0 +1,23 @@
+
+
+function PresaleBanner() {
+  return (
+    <div className="relative">
+      {/* Glow effect */}
+      <div className="absolute right-0 top-0 h-[580px] w-[200px] rotate-[24.3deg] rounded-full bg-[#E49048] opacity-10 blur-[200px]" />
+
+      <div className="flex flex-col items-center gap-4 md:flex-row md:items-end md:justify-between">
+        <h1 className="font-funnel flex max-w-[650px] items-center gap-3 text-[52px] font-[400] leading-[52px] tracking-[-5%] md:text-[72px] md:leading-[72px]">
+          Buy $Own Token in Presale Now
+        </h1>
+        <div className="flex w-full justify-start md:w-1/4 md:justify-end">
+          <span className="mt-2 rounded-full bg-[#C1691180] px-6 py-1.5 text-sm font-normal uppercase tracking-wider text-[#F1AF6E]">
+            Phase 1
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default PresaleBanner;

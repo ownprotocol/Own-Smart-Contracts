@@ -6,7 +6,9 @@ const Navigation = () => {
     <div className="mx-[10%] mt-2 flex flex-row justify-between">
       <Image src="/own-logo.svg" height={40} width={80} alt="logo" />
 
-      <Button variant="outline">Connect Wallet</Button>
+      <Button variant="outline" className="border-gray-500 font">
+        Connect Wallet
+      </Button>
     </div>
   );
 };

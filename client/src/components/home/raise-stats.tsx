@@ -1,11 +1,11 @@
-import { ProgressBar } from "./progress-bar";
+import { ProgressBar } from "@/components";
 
-const RaiseStats = () => {
+function RaiseStats() {
   // TODO make these real
   const amountRaised = "$1,030,000";
   const usdPrice = "$1.2";
   return (
-    <div className="mt-[10%] flex flex-col gap-4">
+    <div className="mt-[10%] flex flex-col gap-4 md:mt-[3%]">
       <div className="flex w-full flex-row">
         <div className="flex w-1/2 flex-col">
           <h5 className="font-dmMono mb-2 text-[14px] font-normal leading-[14px] text-[#808080]">
@@ -25,10 +25,11 @@ const RaiseStats = () => {
           </h6>
         </div>
       </div>
-
-      <ProgressBar sold={12000} cap={30000} />
+      <div className="pt-4">
+        <ProgressBar sold={12000} cap={30000} />
+      </div>
     </div>
   );
-};
+}
 
 export default RaiseStats;
