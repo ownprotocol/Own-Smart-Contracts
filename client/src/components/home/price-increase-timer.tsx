@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useTimer } from "react-timer-hook";
 
 function PriceIncreaseTimer() {
-  const { hours, minutes, seconds } = useTimer({
+  const { days, hours, minutes, seconds } = useTimer({
     expiryTimestamp: new Date(Date.now() + 1000 * 60 * 60 * 24),
   });
   return (
@@ -15,8 +15,8 @@ function PriceIncreaseTimer() {
         </h1>
         <div className="flex flex-col justify-center gap-4 md:flex-row">
         <div className="flex gap-4">
-            <TimerBox label="Days" value={hours} />
-            <TimerBox label="Hours" value={minutes} />
+            <TimerBox label="Days" value={days} />
+            <TimerBox label="Hours" value={hours} />
           </div>
           <div className="flex gap-4">
             <TimerBox label="Minutes" value={minutes} />
