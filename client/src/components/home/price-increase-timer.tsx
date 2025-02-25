@@ -19,7 +19,7 @@ function PriceIncreaseTimer() {
             <TimerBox label="Hours" value={minutes} />
           </div>
           <div className="flex gap-4">
-            <TimerBox label="Minutes" value={seconds} />
+            <TimerBox label="Minutes" value={minutes} />
             <TimerBox label="Seconds" value={seconds} />
           </div>
         </div>
