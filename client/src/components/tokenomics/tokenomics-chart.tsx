@@ -96,7 +96,7 @@ const TokenomicsChart = () => {
           Tokenomics
         </h2>
         <div
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform text-center"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform text-center text-gray-600"
           style={{
             fontFamily: "Funnel Sans",
             fontWeight: 400,

@@ -4,7 +4,7 @@ import Link from "next/link";
 
 function MainNavigation() {
   return (
-    <div className="mb-[10%] mt-[10%] flex w-full justify-between">
+    <div className="mb-[10%] mt-[30%] flex w-full justify-between md:mt-[10%]">
       <div className="w-1/3 md:w-1/2">
         <Image src="/own-logo.svg" alt="own logo" width={100} height={100} />
       </div>
@@ -14,7 +14,7 @@ function MainNavigation() {
             <Link
               key={link.name}
               href={link.link}
-              className="cursor-pointer font-dmMono text-[10px] leading-[10px] tracking-[0.08em] md:text-xs md:leading-3 md:tracking-[0.08em]"
+              className="font-dmMono cursor-pointer text-[10px] leading-[10px] tracking-[0.08em] md:text-xs md:leading-3 md:tracking-[0.08em]"
             >
               {link.name}
             </Link>
@@ -25,7 +25,7 @@ function MainNavigation() {
             <Link
               key={link.name}
               href={link.link}
-              className="cursor-pointer font-dmMono text-[10px] leading-[10px] tracking-[0.08em] md:text-xs md:leading-3 md:tracking-[0.08em]"
+              className="font-dmMono cursor-pointer text-[10px] leading-[10px] tracking-[0.08em] md:text-xs md:leading-3 md:tracking-[0.08em]"
             >
               {link.name}
             </Link>
