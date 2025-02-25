@@ -1,9 +1,9 @@
-import "@/styles/globals.css";
 import { DM_Mono, DM_Sans, Funnel_Sans } from "next/font/google";
-
 import { type Metadata } from "next";
-import { Footer, Navigation } from "@/components";
-import { Separator } from "@/components/ui/separator";
+
+import { Footer, HomeSeparator, Navigation } from "@/components";
+
+import "@/styles/globals.css";
 
 const fun = Funnel_Sans({
   subsets: ["latin"],
@@ -40,10 +40,7 @@ export default function RootLayout({
       <body className="flex flex-col bg-[linear-gradient(to_bottom,#141019_48%,#E49048_48%,#E49048_48%,#141019_48%)] text-white">
         <div className="container relative mx-auto flex flex-col border-x border-gray-500/30">
           <Navigation />
-          <Separator
-            orientation="vertical"
-            className="absolute left-[35%] h-full -translate-x-1/2 bg-gray-500/30 -z-10"
-          />
+          <HomeSeparator />
           {children}
         </div>
         <Footer />

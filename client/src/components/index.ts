@@ -8,3 +8,4 @@ export { default as ActionButtons } from "./home/action-buttons";
 export { default as TokenomicsChart } from "./tokenomics/tokenomics-chart";
 export { default as TokenomicsChartMobile } from "./tokenomics/tokenomics-chart-mobile";
 export { default as MainNavigation } from "./main-navigation";
+export { default as HomeSeparator } from "./home/home-separator";
