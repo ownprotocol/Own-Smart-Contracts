@@ -7,3 +7,4 @@ export { default as PresaleBanner } from "./home/presale-banner";
 export { default as ActionButtons } from "./home/action-buttons";
 export { default as TokenomicsChart } from "./tokenomics/tokenomics-chart";
 export { default as TokenomicsChartMobile } from "./tokenomics/tokenomics-chart-mobile";
+export { default as MainNavigation } from "./main-navigation";

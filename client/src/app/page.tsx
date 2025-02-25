@@ -1,5 +1,6 @@
 import {
   ActionButtons,
+  MainNavigation,
   PresaleBanner,
   PriceIncreaseTimer,
   RaiseStats,
@@ -17,6 +18,7 @@ export default function HomePage() {
         <ActionButtons />
         <TokenomicsChart />
         <TokenomicsChartMobile />
+        <MainNavigation />
       </div>
     </main>
   );

@@ -6,7 +6,7 @@ function ActionButtons() {
   return (
     <div className="flex flex-col gap-3 p-4 sm:flex-row md:justify-center md:gap-4 mt-4">
       <Button
-        className="bg-[#9333EA] px-8 py-6 text-lg text-white hover:bg-[#7E22CE]"
+        className="bg-[#9333EA] px-8 py-6 text-lg text-black hover:bg-[#7E22CE]"
         onClick={() => {
           // Handle credit card payment
           console.log("Credit card payment clicked");
