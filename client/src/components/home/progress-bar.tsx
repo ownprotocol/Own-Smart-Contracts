@@ -71,19 +71,19 @@ function ProgressBar({ sold, cap, className }: ProgressBarProps) {
 function ProgressDots() {
   return (
     <>
-      <div className="absolute left-[75%] top-[15%] flex -translate-y-1/2 gap-1">
+      <div className="absolute left-[85%] top-[15%] flex -translate-y-1/2 gap-1 md:left-[75%]">
         <div className="h-2 w-2 rounded-full bg-orange-300"></div>
       </div>
-      <div className="absolute left-[81%] top-[38%] flex -translate-y-1/2 gap-1">
+      <div className="absolute left-[91%] top-[38%] flex -translate-y-1/2 gap-1 md:left-[81%]">
         <div className="h-1 w-1 rounded-full bg-orange-300"></div>
       </div>
-      <div className="absolute left-[78%] top-[52%] flex -translate-y-1/2 gap-1">
+      <div className="absolute left-[88%] top-[52%] flex -translate-y-1/2 gap-1 md:left-[78%]">
         <div className="h-3 w-3 rounded-full bg-orange-300"></div>
       </div>
-      <div className="absolute left-[84%] top-[72%] flex -translate-y-1/2 gap-1">
+      <div className="absolute left-[94%] top-[72%] flex -translate-y-1/2 gap-1 md:left-[84%]">
         <div className="h-1.5 w-1.5 rounded-full bg-orange-300"></div>
       </div>
-      <div className="absolute left-[80%] top-[85%] flex -translate-y-1/2 gap-1">
+      <div className="absolute left-[90%] top-[85%] flex -translate-y-1/2 gap-1 md:left-[80%]">
         <div className="h-2 w-2 rounded-full bg-orange-300"></div>
       </div>
     </>
