@@ -6,17 +6,19 @@ import "@openzeppelin/contracts/access/extensions/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-import "./IStake.sol";
-import "./veOWN.sol";
-import "./IveOwn.sol";
+import "./interfaces/IStake.sol";
+import "./interfaces/veOWN.sol";
+import "./interfaces/IveOwn.sol";
 
 contract Stake is IStake, AccessControlEnumerable, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
-    address public ownToken;
-    address public veOWN;
+    IERC20 public ownToken;
+    IveOWN public veOWN;
 
     uint256 public constant WEEK = 7 days;
+
+    // NOTE: Do constants get inlined when optimized?
     uint256 public constant MAX_LOCK_WEEKS = 208; // 4 years
     uint256 public constant MIN_LOCK_WEEKS = 1;
 
@@ -25,9 +27,9 @@ contract Stake is IStake, AccessControlEnumerable, ReentrancyGuard {
     // User address => number of positions
     mapping(address => uint256) public userPositionCount;
 
-    constructor(address _ownToken) {
+    constructor(IERC20 _ownToken, IveOWN _veOWN) {
         ownToken = _ownToken;
-        veOWN = address(new VeOWN());
+        veOWN = _veOWN;
     }
 
     function stake(uint256 amount, uint256 _weeks) external nonReentrant {
@@ -37,7 +39,7 @@ contract Stake is IStake, AccessControlEnumerable, ReentrancyGuard {
         );
         require(amount > 0, "Amount must be greater than 0");
 
-        IERC20(ownToken).safeTransferFrom(msg.sender, address(this), amount);
+        ownToken.safeTransferFrom(msg.sender, address(this), amount);
 
         // Calculate veOwn amount (1:1 per week locked)
         uint256 veOwnAmount = amount * _weeks; // amount parsed in has 18 decimals already
@@ -45,7 +47,7 @@ contract Stake is IStake, AccessControlEnumerable, ReentrancyGuard {
         uint256 positionId = userPositionCount[msg.sender];
 
         // mint the user their veOWN amount
-        IveOWN(veOWN).mint(msg.sender, veOwnAmount);
+        veOWN.mint(msg.sender, veOwnAmount);
 
         // record their position
         positions[msg.sender][positionId] = StakePosition({
@@ -62,6 +64,8 @@ contract Stake is IStake, AccessControlEnumerable, ReentrancyGuard {
 
         emit Staked(msg.sender, positionId, amount, _weeks);
     }
+
+    function calculateDailyReward(address user) public view returns (uint256) {}
 
     function getTotalStake(address _user) external view returns (uint256) {
         uint256 _userPositionCount = userPositionCount[_user];

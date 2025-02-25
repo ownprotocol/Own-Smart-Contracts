@@ -4,7 +4,9 @@ pragma solidity ^0.8.26;
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract VeOWN is ERC20, AccessControl {
+import "../interfaces/IveOwn.sol";
+
+contract VeOWN is ERC20, AccessControl, IveOWN {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
     constructor() ERC20("veOWN", "veOWN") {
