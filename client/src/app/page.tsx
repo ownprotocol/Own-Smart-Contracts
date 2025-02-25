@@ -4,6 +4,7 @@ import {
   PriceIncreaseTimer,
   RaiseStats,
   TokenomicsChart,
+  TokenomicsChartMobile,
 } from "@/components";
 
 export default function HomePage() {
@@ -15,6 +16,7 @@ export default function HomePage() {
         <PriceIncreaseTimer />
         <ActionButtons />
         <TokenomicsChart />
+        <TokenomicsChartMobile />
       </div>
     </main>
   );

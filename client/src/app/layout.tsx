@@ -42,7 +42,7 @@ export default function RootLayout({
           <Navigation />
           <Separator
             orientation="vertical"
-            className="absolute left-[35%] h-full -translate-x-1/2 bg-gray-500/30"
+            className="absolute left-[35%] h-full -translate-x-1/2 bg-gray-500/30 -z-10"
           />
           {children}
         </div>
