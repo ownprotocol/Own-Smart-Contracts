@@ -12,16 +12,16 @@ const TokenomicsChartMobile = () => {
   }, []);
 
   const data = [
-    { name: "Team & Advisors", value: 24, color: "#E9A76F" },
+    { name: "Advisors", value: 24, color: "#E9A76F" },
     { name: "Pre-seed", value: 24, color: "#E28677" },
     { name: "Seed", value: 24, color: "#D06F9A" },
     { name: "Institutional", value: 24, color: "#AF6BBF" },
-    { name: "Public Presale", value: 24, color: "#8E68DE" },
+    { name: "Presale", value: 24, color: "#8E68DE" },
     { name: "Public", value: 24, color: "#5A2A91" },
     { name: "Airdrop", value: 24, color: "#7B3DB2" },
     { name: "Treasury", value: 24, color: "#4F2186" },
     { name: "Ecosystem", value: 24, color: "#3E197A" },
-    { name: "Mining Rewards", value: 24, color: "#2D126E" },
+    { name: "Rewards", value: 24, color: "#2D126E" },
   ];
 
   const handleLegendClick = (index: number) => {
@@ -35,7 +35,7 @@ const TokenomicsChartMobile = () => {
   const renderCustomizedLegend = () => {
     return (
       <div className="flex w-full flex-col items-center px-4">
-        <div className="grid grid-cols-1 gap-y-3">
+        <div className="grid grid-cols-2 gap-x-8 gap-y-3">
           {data.map((entry, index) => (
             <div
               key={`legend-${index}`}
@@ -50,8 +50,8 @@ const TokenomicsChartMobile = () => {
                 className="h-6 w-1.5"
                 style={{ backgroundColor: entry.color }}
               />
-              <span className="text-lg text-gray-200">{entry.name}</span>
-              <span className="text-lg text-gray-400">24%</span>
+              <span className="text-xs text-gray-200">{entry.name}</span>
+              <span className="text-xs text-gray-400">24%</span>
             </div>
           ))}
         </div>
@@ -60,7 +60,7 @@ const TokenomicsChartMobile = () => {
   };
 
   return (
-    <div className="flex w-full flex-col items-center rounded-lg mt-12 md:hidden">
+    <div className="mt-12 flex w-full flex-col items-center rounded-lg md:hidden">
       <h2 className="text-3xl font-semibold text-gray-200">Tokenomics</h2>
       <div className="relative">
         <div
