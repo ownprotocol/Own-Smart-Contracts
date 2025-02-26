@@ -9,13 +9,13 @@ function PriceIncreaseTimerSkeleton() {
         <div className="flex flex-col justify-center gap-4 md:flex-row">
           <div className="flex gap-4">
             {/* Days and Hours boxes */}
-            <div className="flex h-[120px] w-1/2 flex-col items-center rounded-md bg-gray-100/50 px-6 py-2 md:w-[120px]"></div>
-            <div className="flex h-[120px] w-1/2 flex-col items-center rounded-md bg-gray-100/50 px-6 py-2 md:w-[120px]"></div>
+            <div className="flex h-[60px] w-1/2 flex-col items-center rounded-md bg-gray-100/50 px-6 py-2 md:h-[120px] md:w-[120px]"></div>
+            <div className="flex h-[60px] w-1/2 flex-col items-center rounded-md bg-gray-100/50 px-6 py-2 md:h-[120px] md:w-[120px]"></div>
           </div>
           <div className="flex gap-4">
             {/* Minutes and Seconds boxes */}
-            <div className="flex h-[120px] w-1/2 flex-col items-center rounded-md bg-gray-100/50 px-6 py-2 md:w-[120px]"></div>
-            <div className="flex h-[120px] w-1/2 flex-col items-center rounded-md bg-gray-100/50 px-6 py-2 md:w-[120px]"></div>
+            <div className="flex h-[60px] w-1/2 flex-col items-center rounded-md bg-gray-100/50 px-6 py-2 md:h-[120px] md:w-[120px]"></div>
+            <div className="flex h-[60px] w-1/2 flex-col items-center rounded-md bg-gray-100/50 px-6 py-2 md:h-[120px] md:w-[120px]"></div>
           </div>
         </div>
       </div>

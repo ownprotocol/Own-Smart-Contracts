@@ -64,10 +64,10 @@ type TimerBoxProps = {
 function TimerBox({ label, value }: TimerBoxProps) {
   return (
     <div className="flex w-1/2 flex-col items-center rounded-md bg-black px-6 py-2 md:w-[120px]">
-      <h1 className="font-funnel text-[14px] leading-[49.32px] tracking-[-2.5%] text-[#A78BFA] md:text-[20px] lg:text-[24px]">
+      <h1 className="font-funnel text-[14px] tracking-[-2.5%] text-[#A78BFA] md:text-[20px] lg:text-[24px]">
         {label}
       </h1>
-      <div className="font-funnel text-[20px] leading-[49.32px] tracking-[-2.5%] text-white md:text-[40px]">
+      <div className="font-funnel text-[20px]  tracking-[-2.5%] text-white md:text-[40px]">
         {value}
       </div>
     </div>

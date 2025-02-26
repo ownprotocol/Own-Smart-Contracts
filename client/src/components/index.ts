@@ -17,3 +17,4 @@ export { default as RaiseStatsSkeleton } from "./ui/loading-skeletons/raise-stat
 export { default as PriceIncreaseTimerSkeleton } from "./ui/loading-skeletons/price-increase-timer-skeleton";
 export { default as ActionButtonsSkeleton } from "./ui/loading-skeletons/action-buttons-skeleton";
 export { default as TokenomicsChartSkeleton } from "./ui/loading-skeletons/tokenomics-chart-skeleton";
+export { default as TokenomicsChartMobileSkeleton } from "./ui/loading-skeletons/tokenomics-chart-mobile-skeleton";

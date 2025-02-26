@@ -93,10 +93,10 @@ const TokenomicsChart = ({ isLoading }: TokenomicsChartProps) => {
       </div>
     );
   };
-
-  return isLoading ? (
-    <TokenomicsChartSkeleton />
-  ) : (
+  if (isLoading) {
+    return <TokenomicsChartSkeleton />;
+  }
+  return (
     <div className="z-20 mt-[10%] hidden min-h-[500px] w-full rounded-lg md:flex">
       <div className="relative flex-1">
         <h2 className="font-funnel mb-8 text-[32px] leading-[32px] tracking-[-5%] text-gray-200 md:text-[72px] md:leading-[72px]">
