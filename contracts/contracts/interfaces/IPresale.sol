@@ -9,41 +9,87 @@ interface IPresale {
         uint256 sales;
     }
 
+    // *** Events ***
+
+    event PresaleRoundsAdded(PresaleRound[] rounds);
+
+    event PresaleRoundDurationUpdated(
+        uint256 roundId,
+        uint256 newDuration,
+        uint256 oldDuration
+    );
+
+    event PresaleRoundPriceUpdated(
+        uint256 roundId,
+        uint256 newPrice,
+        uint256 oldPrice
+    );
+
+    event PresaleAllocationUpdated(
+        uint256 roundId,
+        uint256 newAllocation,
+        uint256 oldAllocation
+    );
+
+    // *** Errors ***
+
+    error AllPresaleRoundsHaveEnded();
+
+    error CannotUpdatePresaleRoundThatHasEndedOrInProgress();
+
+    error CannotSetPresaleRoundDurationToZero();
+
+    error CannotSetPresaleRoundPriceToZero();
+
+    error CannotSetPresaleRoundAllocationToZero();
+
+    error InsufficientOwnBalanceForPresaleRounds(
+        uint256 currentBalance,
+        uint256 requiredBalance
+    );
+
+    error InsufficientBalanceInPresaleRoundForSale(
+        uint256 currentBalance,
+        uint256 requiredBalance
+    );
+
     // *** View methods ***
 
-    // function getCurrentPresaleRoundDetails()
-    //     external
-    //     returns (bool isPresaleFinished, PresaleRound memory, uint256 roundId);
+    function getCurrentPresaleRoundDetails()
+        external
+        returns (bool isPresaleFinished, PresaleRound memory, uint256 roundId);
 
     // *** Admin functions ***
 
-    // // Revert if trying to update a presale round that has concluded
-    // function updatePresaleRoundDuration(
-    //     uint256 roundId,
-    //     uint256 newDuration
-    // ) external;
-    //
-    // function updatePresaleRoundPrice(
-    //     uint256 roundId,
-    //     uint256 newPrice
-    // ) external;
-    //
-    // // Checks contract has enough OWN to handle the increased allocation
-    // function updatePresaleAllocation(
-    //     uint256 roundId,
-    //     uint256 allocation
-    // ) external;
-    //
-    // Appends presale rounds
-    // Checks contract has enough OWN for all presale rounds
+    // Revert if trying to update a presale round that has concluded
+    function updatePresaleRoundDuration(
+        uint256 roundId,
+        uint256 newDuration
+    ) external;
+
+    function updatePresaleRoundPrice(
+        uint256 roundId,
+        uint256 newPrice
+    ) external;
+
+    // Checks contract has enough OWN to handle the increased allocation
+    function updatePresaleAllocation(
+        uint256 roundId,
+        uint256 allocation
+    ) external;
+
     function addPresaleRounds(PresaleRound[] memory rounds) external;
+
+    function claimUSDT() external;
+
     //
-    // function claimUSDT() external;
-    //
-    // // *** User functions ***
-    //
-    // // Stores USDT, calculates the equivalent amount of pre sale tokens and increments presaleTokensPurchased for the receiver
-    // function purchaseTokens(uint256 usdtAmount, address receiver) external;
+    // *** User functions ***
+
+    // Stores USDT, calculates the equivalent amount of pre sale tokens and increments presaleTokensPurchased for the receiver
+    function purchasePresaleTokens(
+        uint256 usdtAmount,
+        address receiver
+    ) external;
     //
     // // Reverts if the last presale round hasn't ended
     // // Transfers the users presale tokens
