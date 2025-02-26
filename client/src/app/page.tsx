@@ -19,7 +19,7 @@ export default function HomePage() {
     setIsLoading(true);
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1000);
+    }, 5000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -37,7 +37,7 @@ export default function HomePage() {
         )}
         <TokenomicsChart isLoading={isLoading} />
         <TokenomicsChartMobile isLoading={isLoading} />
-        <MainNavigation />
+        <MainNavigation isLoading={isLoading} />
       </div>
     </main>
   );

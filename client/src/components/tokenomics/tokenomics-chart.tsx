@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { PieChart, Pie, Cell } from "recharts";
+import { TokenomicsChartSkeleton } from "..";
 
 interface TokenomicsChartProps {
   isLoading: boolean;
@@ -93,8 +94,10 @@ const TokenomicsChart = ({ isLoading }: TokenomicsChartProps) => {
     );
   };
 
-  return (
-    <div className="hidden w-full rounded-lg  md:flex z-20 mt-[10%]">
+  return isLoading ? (
+    <TokenomicsChartSkeleton />
+  ) : (
+    <div className="z-20 mt-[10%] hidden min-h-[500px] w-full rounded-lg md:flex">
       <div className="relative flex-1">
         <h2 className="font-funnel mb-8 text-[32px] leading-[32px] tracking-[-5%] text-gray-200 md:text-[72px] md:leading-[72px]">
           Tokenomics
@@ -113,7 +116,7 @@ const TokenomicsChart = ({ isLoading }: TokenomicsChartProps) => {
         >
           Allocation
         </div>
-        {isClient ? (
+        {isClient && (
           <PieChart width={500} height={500}>
             <Pie
               data={data}
@@ -142,10 +145,6 @@ const TokenomicsChart = ({ isLoading }: TokenomicsChartProps) => {
               ))}
             </Pie>
           </PieChart>
-        ) : (
-          <div className="flex h-[400px] w-[400px] items-center justify-center">
-            <span className="text-gray-400">Loading chart...</span>
-          </div>
         )}
       </div>
       <div className="flex w-full flex-1 items-center">

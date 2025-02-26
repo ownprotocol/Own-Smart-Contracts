@@ -16,3 +16,4 @@ export { default as PresaleBannerSkeleton } from "./ui/loading-skeletons/presale
 export { default as RaiseStatsSkeleton } from "./ui/loading-skeletons/raise-stats-skeleton";
 export { default as PriceIncreaseTimerSkeleton } from "./ui/loading-skeletons/price-increase-timer-skeleton";
 export { default as ActionButtonsSkeleton } from "./ui/loading-skeletons/action-buttons-skeleton";
+export { default as TokenomicsChartSkeleton } from "./ui/loading-skeletons/tokenomics-chart-skeleton";
