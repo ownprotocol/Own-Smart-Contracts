@@ -3,11 +3,13 @@
 import { usePathname } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 
+// This component is used to create a separator - design on the home page
 function HomeSeparator() {
   const pathname = usePathname();
   const isHomePage = pathname === "/";
+  const hasPresaleConcluded = false;
 
-  if (!isHomePage) return null;
+  if (!isHomePage || !hasPresaleConcluded) return null;
 
   return (
     <Separator

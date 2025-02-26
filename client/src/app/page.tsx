@@ -9,13 +9,19 @@ import {
 } from "@/components";
 
 export default function HomePage() {
+  const hasPresaleConcluded = true;
+
   return (
     <main className="mx-[10%] mt-[10%] min-h-screen md:mt-[3%]">
       <div className="relative flex flex-col">
-        <PresaleBanner />
-        <RaiseStats />
-        <PriceIncreaseTimer />
-        <ActionButtons />
+        {!hasPresaleConcluded && (
+          <>
+            <PresaleBanner />
+            <RaiseStats />
+            <PriceIncreaseTimer />
+            <ActionButtons />
+          </>
+        )}
         <TokenomicsChart />
         <TokenomicsChartMobile />
         <MainNavigation />

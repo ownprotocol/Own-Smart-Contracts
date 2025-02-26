@@ -1,7 +1,12 @@
 import { DM_Mono, DM_Sans, Funnel_Sans } from "next/font/google";
 import { type Metadata } from "next";
 
-import { Footer, HomeSeparator, Navigation } from "@/components";
+import {
+  Footer,
+  HasPresaleConcluded,
+  HomeSeparator,
+  Navigation,
+} from "@/components";
 
 import "@/styles/globals.css";
 
@@ -32,6 +37,7 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const hasPresaleConcluded = true;
   return (
     <html
       lang="en"
@@ -41,8 +47,10 @@ export default function RootLayout({
         <div className="container relative mx-auto flex flex-col border-x border-gray-500/30">
           <Navigation />
           <HomeSeparator />
+          {hasPresaleConcluded && <HasPresaleConcluded />}
           {children}
         </div>
+
         <Footer />
       </body>
     </html>
