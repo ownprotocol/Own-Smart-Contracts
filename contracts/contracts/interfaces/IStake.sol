@@ -10,12 +10,11 @@ interface IStake {
     );
 
     struct StakePosition {
+        address owner;
         uint256 ownAmount;
         uint256 veOwnAmount;
-        uint256 startTime;
-        uint256 endTime;
-        uint256 lockWeeks;
-        uint256 lastClaimDay;
-        bool isActive;
+        uint256 startWeek;
+        uint256 endWeek;
+        uint256 lastWeekOfRewardsClaimed;
     }
 }
