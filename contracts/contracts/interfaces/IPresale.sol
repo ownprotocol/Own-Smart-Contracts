@@ -25,7 +25,7 @@ interface IPresale {
         uint256 oldPrice
     );
 
-    event PresaleAllocationUpdated(
+    event PresaleRoundAllocationUpdated(
         uint256 roundId,
         uint256 newAllocation,
         uint256 oldAllocation
@@ -53,6 +53,8 @@ interface IPresale {
         uint256 requiredBalance
     );
 
+    error PresaleRoundIndexOutOfBounds();
+
     // *** View methods ***
 
     function getCurrentPresaleRoundDetails()
@@ -73,7 +75,7 @@ interface IPresale {
     ) external;
 
     // Checks contract has enough OWN to handle the increased allocation
-    function updatePresaleAllocation(
+    function updatePresaleRoundAllocation(
         uint256 roundId,
         uint256 allocation
     ) external;

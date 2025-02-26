@@ -96,6 +96,10 @@ contract Presale is Initializable, IPresale, OwnableUpgradeable {
             revert CannotUpdatePresaleRoundThatHasEndedOrInProgress();
         }
 
+        if (_roundId >= presaleRounds.length) {
+            revert PresaleRoundIndexOutOfBounds();
+        }
+
         _;
     }
 
@@ -127,7 +131,7 @@ contract Presale is Initializable, IPresale, OwnableUpgradeable {
         emit PresaleRoundPriceUpdated(roundId, newPrice, oldPrice);
     }
 
-    function updatePresaleAllocation(
+    function updatePresaleRoundAllocation(
         uint256 roundId,
         uint256 newAllocation
     ) external override onlyOwner updatePresaleRound(roundId) {
@@ -138,7 +142,11 @@ contract Presale is Initializable, IPresale, OwnableUpgradeable {
         uint256 oldAllocation = presaleRounds[roundId].allocation;
         presaleRounds[roundId].allocation = newAllocation;
 
-        emit PresaleAllocationUpdated(roundId, newAllocation, oldAllocation);
+        emit PresaleRoundAllocationUpdated(
+            roundId,
+            newAllocation,
+            oldAllocation
+        );
     }
 
     // *** Public functions ***

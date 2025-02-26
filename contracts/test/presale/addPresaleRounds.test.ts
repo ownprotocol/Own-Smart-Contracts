@@ -183,6 +183,8 @@ describe("Presale - addPresaleRounds", async () => {
     ).to.emit(presale, "PresaleRoundsAdded");
   });
 
+  // TODO: It should revert when calling from alice account
+
   // TODO:
   it("Should be able to handle calculating the correct balance for presale rounds after a sale then when adding new presale rounds", async () => {
     await own.write.transfer([presale.address, BigInt(10)]);
