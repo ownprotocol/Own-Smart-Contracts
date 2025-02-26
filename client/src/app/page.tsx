@@ -37,7 +37,7 @@ export default function HomePage() {
         )}
         <TokenomicsChart isLoading={isLoading} />
         <TokenomicsChartMobile isLoading={isLoading} />
-        <MainNavigation isLoading={isLoading} />
+        <MainNavigation  isLoading={isLoading}/>
       </div>
     </main>
   );
