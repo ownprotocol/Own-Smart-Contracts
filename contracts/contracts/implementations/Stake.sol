@@ -2,14 +2,18 @@
 pragma solidity ^0.8.28;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/access/extensions/AccessControlEnumerable.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts-upgradeable/access/extensions/AccessControlEnumerableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import "../interfaces/IStake.sol";
 import "../interfaces/IveOwn.sol";
 
-contract Stake is IStake, AccessControlEnumerable, ReentrancyGuard {
+contract Stake is
+    IStake,
+    AccessControlEnumerableUpgradeable,
+    ReentrancyGuardUpgradeable
+{
     using SafeERC20 for IERC20;
 
     IERC20 public ownToken;
@@ -43,7 +47,15 @@ contract Stake is IStake, AccessControlEnumerable, ReentrancyGuard {
         _;
     }
 
-    constructor(IERC20 _ownToken, IveOWN _veOWN) {
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
+    function initialize(IERC20 _ownToken, IveOWN _veOWN) public initializer {
+        __AccessControlEnumerable_init();
+        __ReentrancyGuard_init();
+
         ownToken = _ownToken;
         veOWN = _veOWN;
 
@@ -51,6 +63,9 @@ contract Stake is IStake, AccessControlEnumerable, ReentrancyGuard {
 
         lastCachedWeek = currentWeek;
         stakingStartWeek = currentWeek;
+
+        // MAX_LOCK_WEEKS = 52;
+        // MIN_LOCK_WEEKS = 1;
     }
 
     // TODO: add bool argument for whether to update the cache

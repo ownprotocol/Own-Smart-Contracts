@@ -17,6 +17,7 @@ contract Presale is Initializable, IPresale, OwnableUpgradeable {
 
     uint256 public totalSales;
 
+    /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
     }
