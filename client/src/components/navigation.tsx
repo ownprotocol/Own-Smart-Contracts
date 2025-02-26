@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Button } from "./ui/button";
-import { TOP_NAVIGATION_LINKS } from "@/constants/icons/top-navigation-links";
+import { TOP_NAVIGATION_LINKS } from "@/constants/top-navigation-links";
 import Link from "next/link";
 const Navigation = () => {
   return (
