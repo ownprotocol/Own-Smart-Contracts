@@ -19,3 +19,4 @@ export { default as ActionButtonsSkeleton } from "./ui/loading-skeletons/action-
 export { default as TokenomicsChartSkeleton } from "./ui/loading-skeletons/tokenomics-chart-skeleton";
 export { default as TokenomicsChartMobileSkeleton } from "./ui/loading-skeletons/tokenomics-chart-mobile-skeleton";
 export { default as MainNavigationSkeleton } from "./ui/loading-skeletons/main-navigation-skeleton";
+export { default as HasPresaleConcludedSkeleton } from "./ui/loading-skeletons/has-presale-concluded-skeleton";
