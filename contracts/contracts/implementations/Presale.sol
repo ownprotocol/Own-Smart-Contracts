@@ -7,6 +7,8 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "../interfaces/IPresale.sol";
 import "../interfaces/IveOwn.sol";
 
+import "hardhat/console.sol";
+
 contract Presale is Initializable, IPresale, OwnableUpgradeable {
     IveOWN public veOwn;
     IERC20 public usdt;
@@ -45,8 +47,21 @@ contract Presale is Initializable, IPresale, OwnableUpgradeable {
         }
 
         for (uint256 i = 0; i < rounds.length; i++) {
+            if (rounds[i].duration == 0) {
+                revert CannotSetPresaleRoundDurationToZero();
+            }
+
+            if (rounds[i].price == 0) {
+                revert CannotSetPresaleRoundPriceToZero();
+            }
+
+            if (rounds[i].allocation == 0) {
+                revert CannotSetPresaleRoundAllocationToZero();
+            }
+
             allowableAllocation += rounds[i].allocation;
             rounds[i].sales = 0;
+
             presaleRounds.push(rounds[i]);
         }
 
@@ -158,6 +173,14 @@ contract Presale is Initializable, IPresale, OwnableUpgradeable {
         veOwn.transfer(_receiver, amount);
         presaleRounds[currentRoundId].sales += amount;
         totalSales += amount;
+    }
+
+    function getAllPresaleRounds()
+        external
+        view
+        returns (PresaleRound[] memory)
+    {
+        return presaleRounds;
     }
 
     // *** View methods ***

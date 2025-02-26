@@ -31,7 +31,7 @@ contract OWN is
         __AccessControl_init();
         __UUPSUpgradeable_init();
 
-        _mint(recipient, 450_000_000 * 10 ** decimals());
+        _mint(recipient, 2_250_000_000 * 10 ** decimals());
         _grantRole(DEFAULT_ADMIN_ROLE, defaultAdmin);
     }
 

@@ -10,7 +10,7 @@ describe("OWN token testing", async () => {
     ({ own } = await ownTestingAPI());
   });
 
-  it("should have 450 million minted on creation", async () => {
+  it("should have the correct max supply minted on deployment", async () => {
     const totalSupply = await own.read.totalSupply();
 
     expect(totalSupply).equal(OWN_MAX_SUPPLY_WITH_DECIMALS);

@@ -17,16 +17,28 @@ export const ownTestingAPI = async () => {
     (await OwnDeployment.getAddress()) as `0x${string}`,
   );
 
-  const stake = await hre.viem.deployContract("Stake", [own.address]);
+  const Presale = await ethers.getContractFactory("Presale");
+  const PresaleDeployment = await upgrades.deployProxy(Presale, [
+    own.address,
+    // TODO: Deploy mock USDT
+    own.address,
+  ]);
 
-  const veOWNAddress = await stake.read.veOWN();
+  // we use ethers to deploy the contract, but viem to interact with it
+  const presale = await hre.viem.getContractAt(
+    "Presale",
+    (await PresaleDeployment.getAddress()) as `0x${string}`,
+  );
 
-  const veOWN = await hre.viem.getContractAt("VeOWN", veOWNAddress);
+  // const stake = await hre.viem.deployContract("Stake", [own.address]);
+  //
+  // const veOWNAddress = await stake.read.veOWN();
+  //
+  // const veOWN = await hre.viem.getContractAt("VeOWN", veOWNAddress);
 
   return {
     own,
     signers,
-    stake,
-    veOWN,
+    presale,
   };
 };
