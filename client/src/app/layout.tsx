@@ -37,7 +37,7 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const hasPresaleConcluded = true;
+  const hasPresaleConcluded = false;
   return (
     <html
       lang="en"
