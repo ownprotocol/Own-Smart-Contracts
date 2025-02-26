@@ -12,3 +12,7 @@ export { default as HomeSeparator } from "./home/home-separator";
 export { default as HasPresaleConcluded } from "./home/has-presale-concluded";
 export { default as SquareDots } from "./square-dots";
 export { default as PillarBackgrounds } from "./pillar-backgrounds";
+export { default as PresaleBannerSkeleton } from "./ui/loading-skeletons/presale-banner-skeleton";
+export { default as RaiseStatsSkeleton } from "./ui/loading-skeletons/raise-stats-skeleton";
+export { default as PriceIncreaseTimerSkeleton } from "./ui/loading-skeletons/price-increase-timer-skeleton";
+export { default as ActionButtonsSkeleton } from "./ui/loading-skeletons/action-buttons-skeleton";

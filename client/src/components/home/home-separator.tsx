@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 function HomeSeparator() {
   const pathname = usePathname();
   const isHomePage = pathname === "/";
-  const hasPresaleConcluded = false;
+  const hasPresaleConcluded = true;
 
   if (!isHomePage || !hasPresaleConcluded) return null;
 

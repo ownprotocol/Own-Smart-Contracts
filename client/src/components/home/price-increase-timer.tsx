@@ -2,19 +2,27 @@
 
 import Image from "next/image";
 import { useTimer } from "react-timer-hook";
+import { PriceIncreaseTimerSkeleton } from "@/components";
 
-function PriceIncreaseTimer() {
+interface PriceIncreaseTimerProps {
+  isLoading: boolean;
+}
+
+function PriceIncreaseTimer({ isLoading }: PriceIncreaseTimerProps) {
   const { days, hours, minutes, seconds } = useTimer({
     expiryTimestamp: new Date(Date.now() + 1000 * 60 * 60 * 24),
   });
+  if (isLoading) {
+    return <PriceIncreaseTimerSkeleton />;
+  }
   return (
-    <div className="relative mt-4 flex justify-center">
+    <div className="relative mt-4 md:mt-0 flex min-h-[100px] justify-center">
       <div className="flex flex-col gap-4">
         <h1 className="font-funnel px-4 py-2 text-center text-[14px] font-medium leading-[14px] md:text-[16px] md:leading-[16px] lg:text-[18px] lg:leading-[18px]">
           Price Increase Timer
         </h1>
         <div className="flex flex-col justify-center gap-4 md:flex-row">
-        <div className="flex gap-4">
+          <div className="flex gap-4">
             <TimerBox label="Days" value={days} />
             <TimerBox label="Hours" value={hours} />
           </div>

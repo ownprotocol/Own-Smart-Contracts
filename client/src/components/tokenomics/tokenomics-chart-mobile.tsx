@@ -3,7 +3,11 @@
 import { PieChart, Pie, Cell } from "recharts";
 import { useEffect, useState } from "react";
 
-const TokenomicsChartMobile = () => {
+interface TokenomicsChartMobileProps {
+  isLoading: boolean;
+}
+
+const TokenomicsChartMobile = ({ isLoading }: TokenomicsChartMobileProps) => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isClient, setIsClient] = useState(false);
 

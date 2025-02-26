@@ -3,7 +3,11 @@
 import React, { useState, useEffect } from "react";
 import { PieChart, Pie, Cell } from "recharts";
 
-const TokenomicsChart = () => {
+interface TokenomicsChartProps {
+  isLoading: boolean;
+}
+
+const TokenomicsChart = ({ isLoading }: TokenomicsChartProps) => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isClient, setIsClient] = useState(false);
 
