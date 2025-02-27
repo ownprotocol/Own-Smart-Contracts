@@ -33,8 +33,6 @@ contract Stake is
 
     uint256 public dailyRewardAmount;
 
-    uint256 public totalPositions;
-
     uint256 public stakingStartDay;
 
     struct RewardValuesWeeklyCache {
@@ -46,6 +44,7 @@ contract Stake is
         uint256 dailyRewardAmountAtEndOfWeek;
     }
 
+    uint256 public totalPositions;
     mapping(uint256 => StakePosition) public positions;
     mapping(address => uint256[]) public usersPositions;
     mapping(uint256 => uint256) public validVeOwnAdditionsInDay;
@@ -202,6 +201,8 @@ contract Stake is
 
         ownToken.safeTransfer(msg.sender, reward);
 
+        // TODO: If the stake is complete, transfer them their Own tokens
+
         // TODO: Emit
     }
 
@@ -258,8 +259,10 @@ contract Stake is
         return reward;
     }
 
+    // Because in this contract weeks start from Saturday 00:00:00 UTC
+    // We need to ensure that getCurrentDay starts from the first Saturday 1970
     function getCurrentDay() public view returns (uint256) {
-        return block.timestamp / 1 days;
+        return (block.timestamp + 2 days) / 1 days;
     }
 
     function getUsersPositions(
@@ -287,6 +290,7 @@ contract Stake is
     }
 
     function startStaking() external onlyDefaultAdmin {
+        // TODO: Revert if staking already started
         uint256 currentDay = getCurrentDay();
 
         stakingStartDay = currentDay;
@@ -334,6 +338,8 @@ contract Stake is
 
     function _updateWeeklyRewardValuesCache() internal {
         uint256 currentWeek = block.timestamp / 7 days;
+        console.log(block.timestamp);
+        console.log("Current week: %s", currentWeek);
 
         // Run through all weeks from the last cached week to the current week
         for (uint256 week = lastCachedWeek + 1; week < currentWeek; ++week) {

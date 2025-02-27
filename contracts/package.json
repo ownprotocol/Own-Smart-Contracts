@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@sablier/lockup": "^2.0.1",
+    "date-fns": "^4.1.0",
     "hardhat-chai-matchers-viem": "^2.0.8"
   }
 }
