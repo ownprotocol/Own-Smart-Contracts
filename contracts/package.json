@@ -17,6 +17,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "@sablier/lockup": "^2.0.1",
     "hardhat-chai-matchers-viem": "^2.0.8"
   }
 }

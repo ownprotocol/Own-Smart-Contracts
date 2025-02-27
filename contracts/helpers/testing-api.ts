@@ -47,6 +47,19 @@ export const ownTestingAPI = async () => {
     (await PresaleDeployment.getAddress()) as `0x${string}`,
   );
 
+  const Stake = await ethers.getContractFactory("Stake");
+  const StakeDeployment = await upgrades.deployProxy(Stake, [
+    own.address,
+    veOwn.address,
+    // TODO: Add sablier lockup address
+    veOwn.address,
+  ]);
+
+  const stake = await hre.viem.getContractAt(
+    "Stake",
+    (await StakeDeployment.getAddress()) as `0x${string}`,
+  );
+
   // const stake = await hre.viem.deployContract("Stake", [own.address]);
   //
   // const veOWNAddress = await stake.read.veOWN();
@@ -59,5 +72,6 @@ export const ownTestingAPI = async () => {
     signers,
     presale,
     mockUSDT,
+    stake,
   };
 };

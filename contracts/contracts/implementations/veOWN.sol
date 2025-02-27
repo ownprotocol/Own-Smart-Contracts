@@ -7,7 +7,7 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import "../interfaces/IveOwn.sol";
 
 contract VeOWN is ERC20Upgradeable, AccessControlUpgradeable, IveOWN {
-    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    bytes32 public MINTER_ROLE;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -18,6 +18,8 @@ contract VeOWN is ERC20Upgradeable, AccessControlUpgradeable, IveOWN {
         __ERC20_init("veOWN", "veOWN");
         __AccessControl_init();
 
+        MINTER_ROLE = keccak256("MINTER_ROLE");
+
         // the Stake contract deploys this contract and it needs to be able to mint
         _grantRole(MINTER_ROLE, _msgSender());
     }
@@ -26,13 +28,27 @@ contract VeOWN is ERC20Upgradeable, AccessControlUpgradeable, IveOWN {
         _mint(to, amount);
     }
 
+    function transfer(
+        address,
+        uint256
+    ) public pure override(IERC20, ERC20Upgradeable) returns (bool) {
+        revert TransferDisabled();
+    }
+
+    function transferFrom(
+        address,
+        address,
+        uint256
+    ) public pure override(IERC20, ERC20Upgradeable) returns (bool) {
+        revert TransferFromDisabled();
+    }
+
     // The following functions are overrides required by Solidity.
     function _update(
         address from,
         address to,
         uint256 value
     ) internal override(ERC20Upgradeable) {
-        require(hasRole(MINTER_ROLE, msg.sender), "Only minter can update");
         super._update(from, to, value);
     }
 }

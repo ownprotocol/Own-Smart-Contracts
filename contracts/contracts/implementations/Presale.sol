@@ -25,7 +25,6 @@ contract Presale is Initializable, IPresale, OwnableUpgradeable {
     }
 
     function initialize(IERC20 _own, IERC20 _usdt) public initializer {
-        // TODO: Can you use msg.sender here?
         __Ownable_init(_msgSender());
 
         own = _own;

@@ -183,6 +183,8 @@ describe("Presale - addPresaleRounds", async () => {
     ).to.emit(presale, "PresaleRoundsAdded");
   });
 
+  // TODO: It should let you add a presale round, even if all the presale rounds have finished
+
   // TODO: It should revert when calling from alice account
 
   // TODO:
