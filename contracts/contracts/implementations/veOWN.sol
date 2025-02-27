@@ -21,7 +21,7 @@ contract VeOWN is ERC20Upgradeable, AccessControlUpgradeable, IveOWN {
         MINTER_ROLE = keccak256("MINTER_ROLE");
 
         // the Stake contract deploys this contract and it needs to be able to mint
-        _grantRole(MINTER_ROLE, _msgSender());
+        _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
 
     function mint(address to, uint256 amount) public onlyRole(MINTER_ROLE) {

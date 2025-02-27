@@ -28,14 +28,14 @@ contract Stake is
     uint256 public constant WEEK = 7 days;
 
     // NOTE: Do constants get inlined when optimized?
-    uint256 public maximumLockWeeks;
-    uint256 public minimumLockWeeks;
+    uint256 public maximumLockDays;
+    uint256 public minimumLockDays;
 
     uint256 public dailyRewardAmount;
 
     uint256 public totalPositions;
 
-    uint256 public stakingStartWeek;
+    uint256 public stakingStartDay;
 
     struct RewardValuesWeeklyCache {
         // This value is used to calculate the reward per token for the week when claiming rewards
@@ -55,61 +55,13 @@ contract Stake is
     mapping(uint256 => uint256) public boostMultiplierHistory;
     mapping(uint256 => RewardValuesWeeklyCache) public rewardValuesWeeklyCache;
 
-    // TODO: Ordered array
-    struct BoostDetails {
-        uint256 durationInDays;
-        uint256 startDay;
-        uint256 multiplier;
-    }
-    BoostDetails[] public boostDetails;
-
-    function addBoostDetails(
-        uint256 _startTime,
-        uint256 _durationInDays,
-        uint256 _multiplier
-    ) external onlyOwner {
-        uint256 startDay = _startTime / 1 days;
-        uint256 currentDay = getCurrentDay();
-
-        if (startDay <= currentDay) {
-            revert("Cannot add boost for past or current day");
-        }
-
-        for (uint256 i = 0; i < boostDetails.length; i++) {
-            if (boostDetails[i].startDay == startDay) {
-                revert("Boost already exists for this day");
-            }
-
-            // Inclusive of the last day
-            uint256 currentBoostEndDay = boostDetails[i].startDay +
-                boostDetails[i].durationInDays;
-
-            if (
-                boostDetails[1].startDay <= startDay &&
-                currentBoostEndDay >= startDay
-            ) {
-                revert("Boost overlaps with existing boost");
-            }
-        }
-
-        boostDetails.push(
-            BoostDetails({
-                durationInDays: _durationInDays,
-                multiplier: _multiplier,
-                startDay: startDay
-            })
-        );
-
-        // TODO: ENsure this is updated if we create a method to change the start day of a boost period
-        dailyRewardValueHistory[startDay] = _multiplier;
-    }
-
     uint256 public lastCachedWeek;
 
-    modifier onlyOwner() {
+    modifier onlyDefaultAdmin() {
+        // TODO: Add custom error
         require(
             hasRole(DEFAULT_ADMIN_ROLE, msg.sender),
-            "Caller is not the owner"
+            "Caller is not the default admin"
         );
         _;
     }
@@ -127,23 +79,21 @@ contract Stake is
         __AccessControlEnumerable_init();
         __ReentrancyGuard_init();
 
+        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+
         ownToken = _ownToken;
         veOWN = _veOWN;
         sablierLockup = _sablierLockup;
 
-        uint256 currentWeek = getCurrentDay();
-
-        lastCachedWeek = currentWeek;
-
-        maximumLockWeeks = 52;
-        minimumLockWeeks = 1;
+        maximumLockDays = 364;
+        minimumLockDays = 7;
 
         // MAX_LOCK_WEEKS = 52;
         // MIN_LOCK_WEEKS = 1;
     }
 
     function stake(uint256 _amount, uint256 _days) external nonReentrant {
-        if (_days < minimumLockWeeks || _days > maximumLockWeeks) {
+        if (_days < minimumLockDays || _days > maximumLockDays) {
             revert InvalidLockPeriod();
         }
         if (_amount == 0) {
@@ -154,10 +104,10 @@ contract Stake is
             revert StakingNotStarted();
         }
 
-        _updateVeOwnPerWeekCache();
+        _updateWeeklyRewardValuesCache();
 
         // NOTE: There is no maximum multiplier here
-        uint256 veOwnAmount = _amount * _days;
+        uint256 veOwnAmount = _amount * (_days / 7);
 
         uint256 currentDay = getCurrentDay();
         // They will start earning rewards from the next day
@@ -178,8 +128,6 @@ contract Stake is
         });
         usersPositions[msg.sender].push(positionId);
 
-        uint256 positionExpiryWeek = finalDay / 7 days;
-
         validVeOwnAdditionsInDay[startDay] += veOwnAmount;
         validVeOwnSubtractionsInDay[finalDay + 1] += veOwnAmount;
 
@@ -191,96 +139,33 @@ contract Stake is
         emit Staked(msg.sender, startDay, finalDay, positionId, _amount, _days);
     }
 
-    // function positionsWithClaimableRewards(
-    //     address _user
-    // )
-    //     external
-    //     view
-    //     returns (
-    //         uint256[] memory allUserPositions,
-    //         uint256[] memory claimableRewards,
-    //         uint256 totalRewards
-    //     )
-    // {
-    //     allUserPositions = usersPositions[_user];
-    //
-    //     (claimableRewards, totalRewards) = _calculateClaimableRewards(
-    //         allUserPositions,
-    //         false
-    //     );
-    // }
+    function positionsWithClaimableRewards(
+        address _user
+    )
+        external
+        view
+        returns (
+            uint256[] memory allUserPositions,
+            uint256[] memory claimableRewards,
+            uint256 totalRewards
+        )
+    {
+        allUserPositions = usersPositions[_user];
 
-    // function _calculateClaimableRewards(
-    //     uint256[] memory positionIds,
-    //     bool _revertOnNoRewards
-    // )
-    //     internal
-    //     view
-    //     returns (uint256[] memory rewardsPerPosition, uint256 totalRewards)
-    // {
-    //     uint256 currentWeek = getCurrentDay();
-    //
-    //     rewardsPerPosition = new uint256[](positionIds.length);
-    //
-    //     for (uint256 i = 0; i < positionIds.length; i++) {
-    //         StakePosition storage position = positions[i];
-    //
-    //         if (msg.sender != position.owner) {
-    //             revert("Not the owner of the position");
-    //         }
-    //
-    //         if (position.lastDayRewardsClaimed == currentWeek - 1) {
-    //             if (_revertOnNoRewards) {
-    //                 revert("No rewards to claim");
-    //             } else {
-    //                 continue;
-    //             }
-    //         }
-    //
-    //         for (uint256 week = position.startDay; week < currentWeek; ++week) {
-    //             rewardsPerPosition[i] +=
-    //                 (position.veOwnAmount * weeklyRewardPerTokenCached[week]) /
-    //                 1e18;
-    //         }
-    //
-    //         totalRewards += rewardsPerPosition[i];
-    //     }
-    //
-    //     return (rewardsPerPosition, totalRewards);
-    // }
-
-    function _rewardPerTokenForDayRange(
-        uint256 _startDay,
-        uint256 _endDay
-    ) internal view returns (uint256 rewardPerToken) {
-        uint256 previousWeek = _startDay / 7 - 1;
-        // Start with the previous week value
-        uint256 validVeOwn = rewardValuesWeeklyCache[previousWeek]
-            .validVeOwnAtEndOfWeek;
-        uint256 dailyRewardAmountCurrent = rewardValuesWeeklyCache[previousWeek]
-            .dailyRewardAmountAtEndOfWeek;
-        uint256 boostMultiplier = rewardValuesWeeklyCache[previousWeek]
-            .boostMultiplierAtEndOfWeek;
-
-        for (
-            // This starts off with the first day of the week
-            uint256 currentDay = _startDay - (_startDay % 7);
-            currentDay < _endDay;
-            ++currentDay
-        ) {
-            validVeOwn += validVeOwnAdditionsInDay[currentDay];
-            validVeOwn -= validVeOwnSubtractionsInDay[currentDay];
-
-            rewardPerToken +=
-                (dailyRewardAmountCurrent * boostMultiplier) /
-                validVeOwn;
+        for (uint256 i = 0; i < allUserPositions.length; i++) {
+            // TODO: Assumes weeks have been processed
+            claimableRewards[i] = _calculateRewardsForPosition(
+                allUserPositions[i],
+                getCurrentDay()
+            );
+            totalRewards += claimableRewards[i];
         }
     }
 
     function claimRewards(
         uint256[] calldata positionIds
     ) external nonReentrant {
-        _updateVeOwnPerWeekCache();
+        _updateWeeklyRewardValuesCache();
 
         uint256 currentDay = getCurrentDay();
         uint256 reward;
@@ -296,61 +181,7 @@ contract Stake is
                 revert("No rewards to claim");
             }
 
-            uint256 startWeek = position.startDay / 7;
-            uint256 claimRewardsUpToDay = position.finalDay > currentDay
-                ? currentDay - 1
-                : position.finalDay;
-
-            uint256 endWeek = claimRewardsUpToDay / 7;
-
-            // Add rewards for the first week they stake for
-            uint256 firstDayOfSecondWeek = startWeek * 7 + 1;
-            if (position.lastDayRewardsClaimed < firstDayOfSecondWeek) {
-                uint256 finalDayOfRewardsForWeek = claimRewardsUpToDay <
-                    firstDayOfSecondWeek
-                    ? claimRewardsUpToDay
-                    : firstDayOfSecondWeek - 1;
-
-                uint256 firstWeekRewardPerToken = _rewardPerTokenForDayRange(
-                    position.lastDayRewardsClaimed + 1,
-                    finalDayOfRewardsForWeek
-                );
-
-                reward +=
-                    (position.veOwnAmount * firstWeekRewardPerToken) /
-                    1e18;
-            }
-
-            // Iterate over every week, using the cached value for efficiency
-            for (
-                uint256 week = startWeek + 1;
-                week < claimRewardsUpToDay / 7;
-                ++week
-            ) {
-                reward +=
-                    (position.veOwnAmount *
-                        rewardValuesWeeklyCache[week]
-                            .weeklyRewardPerTokenCached) /
-                    1e18;
-            }
-
-            // Add rewards for the last week they stake for
-            uint256 firstDayOfFinalWeek = endWeek * 7;
-            if (claimRewardsUpToDay >= firstDayOfFinalWeek) {
-                uint256 firstDayOfRewardsForWeek = position
-                    .lastDayRewardsClaimed > firstDayOfFinalWeek
-                    ? position.lastDayRewardsClaimed + 1
-                    : firstDayOfFinalWeek;
-
-                uint256 lastWeekRewardPerToken = _rewardPerTokenForDayRange(
-                    firstDayOfRewardsForWeek,
-                    claimRewardsUpToDay
-                );
-
-                reward +=
-                    (position.veOwnAmount * lastWeekRewardPerToken) /
-                    1e18;
-            }
+            reward += _calculateRewardsForPosition(positionIds[i], currentDay);
 
             position.lastDayRewardsClaimed = currentDay - 1;
         }
@@ -389,7 +220,7 @@ contract Stake is
     }
 
     function getBoostMultiplier(uint256 week) public view returns (uint256) {
-        uint256 weeksSinceStart = week - stakingStartWeek;
+        uint256 weeksSinceStart = week - stakingStartDay;
 
         if (weeksSinceStart == 1) return 10;
         if (weeksSinceStart <= 4) return 5;
@@ -431,27 +262,58 @@ contract Stake is
         return block.timestamp / 1 days;
     }
 
+    function getUsersPositions(
+        address _user
+    ) external view returns (StakePosition[] memory userPositions) {
+        uint256[] memory userPositionIds = usersPositions[_user];
+
+        userPositions = new StakePosition[](userPositionIds.length);
+
+        for (uint256 i = 0; i < userPositionIds.length; i++) {
+            userPositions[i] = positions[userPositionIds[i]];
+        }
+    }
+
     function hasStakingStarted() internal view returns (bool) {
-        return stakingStartWeek != 0;
+        return stakingStartDay != 0;
     }
 
     // **** Admin functions ****
 
-    function setSablierStreamId(uint256 _streamId) external onlyOwner {
+    function setSablierStreamId(uint256 _streamId) external onlyDefaultAdmin {
         sablierStreamId = _streamId;
 
         // TODO: EVENT
     }
 
-    function startStaking() external onlyOwner {
-        stakingStartWeek = getCurrentDay();
+    function startStaking() external onlyDefaultAdmin {
+        uint256 currentDay = getCurrentDay();
+
+        stakingStartDay = currentDay;
+
+        uint256 previousWeek = currentDay / 7 - 1;
+        lastCachedWeek = previousWeek;
+
+        uint256 dailyRewardAmountCached = dailyRewardAmount;
+        uint256 weeklyRewardPerToken = _calculateRewardPerToken(
+            dailyRewardAmountCached,
+            getBoostMultiplier(currentDay),
+            1 ether
+        );
+
+        rewardValuesWeeklyCache[previousWeek] = RewardValuesWeeklyCache({
+            weeklyRewardPerTokenCached: weeklyRewardPerToken,
+            validVeOwnAtEndOfWeek: 0,
+            boostMultiplierAtEndOfWeek: getBoostMultiplier(currentDay),
+            dailyRewardAmountAtEndOfWeek: dailyRewardAmountCached
+        });
 
         // TODO: Save to cache
     }
 
-    function setWeeklyRewardAmount(uint256 _amount) external onlyOwner {
+    function setWeeklyRewardAmount(uint256 _amount) external onlyDefaultAdmin {
         // Re-sync the cache, as we need to ensure that the previous weeklyRewardAmount is carried into the cache
-        _updateVeOwnPerWeekCache();
+        _updateWeeklyRewardValuesCache();
 
         // TODO: Need to validate the amount value here
         dailyRewardValueHistory[getCurrentDay()] = _amount;
@@ -459,10 +321,18 @@ contract Stake is
         // TODO: Emit event
     }
 
+    function _calculateRewardPerToken(
+        uint256 _dailyRewardAmount,
+        uint256 _boostMultiplier,
+        uint256 _validVeOwn
+    ) internal pure returns (uint256) {
+        // TODO: This needs to handle 1e18
+        return (_dailyRewardAmount * _boostMultiplier) / _validVeOwn;
+    }
+
     // **** Internal functions ****
 
-    // TODO: add bool argument for whether to update the cache
-    function _updateVeOwnPerWeekCache() internal {
+    function _updateWeeklyRewardValuesCache() internal {
         uint256 currentWeek = block.timestamp / 7 days;
 
         // Run through all weeks from the last cached week to the current week
@@ -501,9 +371,11 @@ contract Stake is
                     dailyRewardAmountCurrent = dailyRewardAmountUpdate;
                 }
 
-                rewardPerTokenInWeek +=
-                    (dailyRewardAmount * getBoostMultiplier(currentDay)) /
-                    currentVeOwnTotal;
+                rewardPerTokenInWeek += _calculateRewardPerToken(
+                    dailyRewardAmountCurrent,
+                    boostMultiplier,
+                    currentVeOwnTotal
+                );
             }
 
             rewardValuesWeeklyCache[week] = RewardValuesWeeklyCache({
@@ -516,5 +388,164 @@ contract Stake is
 
         lastCachedWeek = currentWeek - 1;
         // TODO: Update event
+    }
+
+    // claimRewards
+
+    function _rewardPerTokenForDayRange(
+        uint256 _startDay,
+        uint256 _endDay
+    ) internal view returns (uint256 rewardPerToken) {
+        uint256 previousWeek = _startDay / 7 - 1;
+        // Start with the previous week value
+        uint256 validVeOwn = rewardValuesWeeklyCache[previousWeek]
+            .validVeOwnAtEndOfWeek;
+        uint256 dailyRewardAmountCurrent = rewardValuesWeeklyCache[previousWeek]
+            .dailyRewardAmountAtEndOfWeek;
+        uint256 boostMultiplierCurrent = rewardValuesWeeklyCache[previousWeek]
+            .boostMultiplierAtEndOfWeek;
+
+        for (
+            // This starts off with the first day of the week
+            uint256 currentDay = _startDay - (_startDay % 7);
+            currentDay < _endDay;
+            ++currentDay
+        ) {
+            validVeOwn += validVeOwnAdditionsInDay[currentDay];
+            validVeOwn -= validVeOwnSubtractionsInDay[currentDay];
+
+            uint256 boostMultiplierUpdate = boostMultiplierHistory[currentDay];
+            if (boostMultiplierUpdate != 0) {
+                boostMultiplierCurrent = boostMultiplierUpdate;
+            }
+
+            uint256 dailyRewardAmountUpdate = dailyRewardValueHistory[
+                currentDay
+            ];
+            if (dailyRewardAmountUpdate != 0) {
+                dailyRewardAmountCurrent = dailyRewardAmountUpdate;
+            }
+
+            rewardPerToken = _calculateRewardPerToken(
+                dailyRewardAmountCurrent,
+                boostMultiplierCurrent,
+                validVeOwn
+            );
+        }
+    }
+
+    // TODO: Pass through the weeklyRewardPerTokenCached
+    // The validVeOwnAtEndOfWeek and boostMultiplierAtEndOfWeek are used to calculate the reward per token for the week
+    // Unfortunately this assumes that the previous week has been processed. WHICH is a same assumption in the claimRewards function because we always process beforehand
+    // BUT the view methods won't work then, so we need to support them ......
+    function _calculateRewardsForPosition(
+        uint256 _positionId,
+        uint256 _currentDay
+    ) internal view returns (uint256 reward) {
+        StakePosition storage position = positions[_positionId];
+
+        if (position.lastDayRewardsClaimed == _currentDay - 1) {
+            return 0;
+        }
+
+        uint256 startWeek = position.startDay / 7;
+        uint256 claimRewardsUpToDay = position.finalDay > _currentDay
+            ? _currentDay - 1
+            : position.finalDay;
+
+        uint256 endWeek = claimRewardsUpToDay / 7;
+
+        // Add rewards for the first week they stake for
+        uint256 firstDayOfSecondWeek = startWeek * 7 + 1;
+        if (position.lastDayRewardsClaimed < firstDayOfSecondWeek) {
+            uint256 finalDayOfRewardsForWeek = claimRewardsUpToDay <
+                firstDayOfSecondWeek
+                ? claimRewardsUpToDay
+                : firstDayOfSecondWeek - 1;
+
+            uint256 firstWeekRewardPerToken = _rewardPerTokenForDayRange(
+                position.lastDayRewardsClaimed + 1,
+                finalDayOfRewardsForWeek
+            );
+
+            reward += (position.veOwnAmount * firstWeekRewardPerToken) / 1e18;
+        }
+
+        // Iterate over every week, using the cached value for efficiency
+        for (
+            uint256 week = startWeek + 1;
+            week < claimRewardsUpToDay / 7;
+            ++week
+        ) {
+            reward +=
+                (position.veOwnAmount *
+                    rewardValuesWeeklyCache[week].weeklyRewardPerTokenCached) /
+                1e18;
+        }
+
+        // Add rewards for the last week they stake for
+        uint256 firstDayOfFinalWeek = endWeek * 7;
+        if (claimRewardsUpToDay >= firstDayOfFinalWeek) {
+            uint256 firstDayOfRewardsForWeek = position.lastDayRewardsClaimed >
+                firstDayOfFinalWeek
+                ? position.lastDayRewardsClaimed + 1
+                : firstDayOfFinalWeek;
+
+            uint256 lastWeekRewardPerToken = _rewardPerTokenForDayRange(
+                firstDayOfRewardsForWeek,
+                claimRewardsUpToDay
+            );
+
+            reward += (position.veOwnAmount * lastWeekRewardPerToken) / 1e18;
+        }
+    }
+
+    // TODO: Ordered array
+    struct BoostDetails {
+        uint256 durationInDays;
+        uint256 startDay;
+        uint256 multiplier;
+    }
+    BoostDetails[] public boostDetails;
+
+    function addBoostDetails(
+        uint256 _startTime,
+        uint256 _durationInDays,
+        uint256 _multiplier
+    ) external onlyDefaultAdmin {
+        uint256 startDay = _startTime / 1 days;
+        uint256 currentDay = getCurrentDay();
+
+        if (startDay <= currentDay) {
+            revert("Cannot add boost for past or current day");
+        }
+
+        for (uint256 i = 0; i < boostDetails.length; i++) {
+            if (boostDetails[i].startDay == startDay) {
+                revert("Boost already exists for this day");
+            }
+
+            // Inclusive of the last day
+            uint256 currentBoostEndDay = boostDetails[i].startDay +
+                boostDetails[i].durationInDays;
+
+            if (
+                boostDetails[1].startDay <= startDay &&
+                currentBoostEndDay >= startDay
+            ) {
+                revert("Boost overlaps with existing boost");
+            }
+        }
+
+        boostDetails.push(
+            BoostDetails({
+                durationInDays: _durationInDays,
+                multiplier: _multiplier,
+                startDay: startDay
+            })
+        );
+
+        // TODO: ENsure this is updated if we create a method to change the start day of a boost period
+        dailyRewardValueHistory[startDay] = _multiplier;
     }
 }

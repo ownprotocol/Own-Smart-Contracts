@@ -1,4 +1,5 @@
 import hre, { ethers, upgrades } from "hardhat";
+import { MINTER_ROLE } from "../constants/roles";
 
 export const ownTestingAPI = async () => {
   const signers = await hre.viem.getWalletClients();
@@ -60,11 +61,7 @@ export const ownTestingAPI = async () => {
     (await StakeDeployment.getAddress()) as `0x${string}`,
   );
 
-  // const stake = await hre.viem.deployContract("Stake", [own.address]);
-  //
-  // const veOWNAddress = await stake.read.veOWN();
-  //
-  // const veOWN = await hre.viem.getContractAt("VeOWN", veOWNAddress);
+  await veOwn.write.grantRole([MINTER_ROLE, stake.address]);
 
   return {
     own,
