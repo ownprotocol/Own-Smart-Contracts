@@ -38,6 +38,8 @@ interface IPresale {
         uint256 price
     );
 
+    event USDTClaimed(address indexed receiver, uint256 amount);
+
     // *** Errors ***
 
     error AllPresaleRoundsHaveEnded();

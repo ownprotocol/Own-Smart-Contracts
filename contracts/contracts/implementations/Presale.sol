@@ -80,7 +80,7 @@ contract Presale is Initializable, IPresale, OwnableUpgradeable {
         uint256 usdtBalance = usdt.balanceOf(address(this));
         usdt.transfer(owner(), usdtBalance);
 
-        // TODO: Emit event
+        emit USDTClaimed(owner(), usdtBalance);
     }
 
     // Updator methods

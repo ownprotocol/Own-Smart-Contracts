@@ -39,14 +39,14 @@ describe("Presale - update presale round", async () => {
   let own: OwnContract;
   let signers: Signers;
 
-  let presale_alice: PresaleContract;
+  let presaleNonOwner: PresaleContract;
 
   const ALLOCATION = BigInt(1000);
 
   beforeEach(async () => {
     ({ presale, own, signers } = await ownTestingAPI());
 
-    presale_alice = await hre.viem.getContractAt("Presale", presale.address, {
+    presaleNonOwner = await hre.viem.getContractAt("Presale", presale.address, {
       client: { wallet: signers[1] },
     });
 
@@ -75,7 +75,10 @@ describe("Presale - update presale round", async () => {
       describe(methodName, async () => {
         it("Should revert if the caller is not the owner", async () => {
           await expect(
-            presale_alice.write.updatePresaleRoundPrice([BigInt(1), BigInt(1)]),
+            presaleNonOwner.write.updatePresaleRoundPrice([
+              BigInt(1),
+              BigInt(1),
+            ]),
           ).to.be.revertedWithCustomError(
             presale,
             "OwnableUnauthorizedAccount",
