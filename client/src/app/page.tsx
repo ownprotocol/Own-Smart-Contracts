@@ -19,7 +19,7 @@ export default function HomePage() {
     setIsLoading(true);
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 5000);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -29,9 +29,9 @@ export default function HomePage() {
       <div className="relative flex flex-col">
         {!hasPresaleConcluded && (
           <>
-            {/* <PresaleBanner isLoading={isLoading} /> */}
+            <PresaleBanner isLoading={isLoading} />
             <RaiseStats isLoading={isLoading} />
-            {/* <PriceIncreaseTimer isLoading={isLoading} /> */}
+            <PriceIncreaseTimer isLoading={isLoading} />
             <ActionButtons isLoading={isLoading} />
           </>
         )}

@@ -59,8 +59,8 @@ const TokenomicsChart = ({ isLoading }: TokenomicsChartProps) => {
                   className="h-6 w-1.5"
                   style={{ backgroundColor: entry.color }}
                 />
-                <span className="text-lg text-gray-200">{entry.name}</span>
-                <span className="text-lg text-gray-400">24%</span>
+                <span className="text-sm md:text-xs text-gray-200">{entry.name}</span>
+                <span className="text-sm md:text-xs text-gray-400">24%</span>
               </div>
             ))}
           </div>
@@ -83,8 +83,8 @@ const TokenomicsChart = ({ isLoading }: TokenomicsChartProps) => {
                     className="h-6 w-1.5"
                     style={{ backgroundColor: entry.color }}
                   />
-                  <span className="text-lg text-gray-200">{entry.name}</span>
-                  <span className="text-lg text-gray-400">24%</span>
+                  <span className="text-sm md:text-xs text-gray-200">{entry.name}</span>
+                  <span className="text-sm md:text-xs text-gray-400">24%</span>
                 </div>
               );
             })}

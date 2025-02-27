@@ -41,7 +41,7 @@ function PriceIncreaseTimer({ isLoading }: PriceIncreaseTimerProps) {
           priority
         />
       </div>
-      <div className="absolute bottom-0 right-0 h-[580px] w-[200px] rotate-[24.3deg] rounded-full bg-[#E49048] opacity-10 blur-[200px]" />
+      <div className="absolute inset-0 h-[580px] w-[100px] rotate-[24.3deg] rounded-full bg-[#E49048] opacity-10 blur-[200px]" />
 
       <div className="absolute right-[-15%] top-[-15%] -z-10 hidden md:block">
         <Image
