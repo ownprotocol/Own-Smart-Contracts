@@ -3,14 +3,14 @@ pragma solidity ^0.8.28;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "../interfaces/IPresale.sol";
-import "../interfaces/IveOwn.sol";
 
 import "hardhat/console.sol";
 
 contract Presale is Initializable, IPresale, OwnableUpgradeable {
-    IveOWN public veOwn;
+    IERC20 public own;
     IERC20 public usdt;
 
     PresaleRound[] public presaleRounds;
@@ -24,11 +24,11 @@ contract Presale is Initializable, IPresale, OwnableUpgradeable {
         _disableInitializers();
     }
 
-    function initialize(IveOWN _veOwn, IERC20 _usdt) public initializer {
+    function initialize(IERC20 _own, IERC20 _usdt) public initializer {
         // TODO: Can you use msg.sender here?
         __Ownable_init(_msgSender());
 
-        veOwn = _veOwn;
+        own = _own;
         usdt = _usdt;
         startPresaleTime = block.timestamp;
     }
@@ -65,7 +65,7 @@ contract Presale is Initializable, IPresale, OwnableUpgradeable {
             presaleRounds.push(rounds[i]);
         }
 
-        uint256 veOwnBalance = veOwn.balanceOf(address(this));
+        uint256 veOwnBalance = own.balanceOf(address(this));
         if (allowableAllocation > veOwnBalance) {
             revert InsufficientOwnBalanceForPresaleRounds(
                 veOwnBalance,
@@ -86,7 +86,7 @@ contract Presale is Initializable, IPresale, OwnableUpgradeable {
     // Updator methods
 
     modifier updatePresaleRound(uint256 _roundId) {
-        (bool success, uint256 currentRoundId) = getCurrentPresaleRoundId();
+        (bool success, uint256 currentRoundId) = _getCurrentPresaleRoundId();
 
         if (!success) {
             revert AllPresaleRoundsHaveEnded();
@@ -150,11 +150,12 @@ contract Presale is Initializable, IPresale, OwnableUpgradeable {
     }
 
     // *** Public functions ***
+
     function purchasePresaleTokens(
         uint256 _usdtAmount,
         address _receiver
     ) external override {
-        (bool success, uint256 currentRoundId) = getCurrentPresaleRoundId();
+        (bool success, uint256 currentRoundId) = _getCurrentPresaleRoundId();
 
         if (!success) {
             revert AllPresaleRoundsHaveEnded();
@@ -165,22 +166,29 @@ contract Presale is Initializable, IPresale, OwnableUpgradeable {
             .allocation;
         uint256 currentRoundSales = presaleRounds[currentRoundId].sales;
 
-        // TODO: Need PRB math for this
         uint256 amount = (_usdtAmount * 1e18) / currentRoundPrice;
-
         uint256 remainingAllocation = currentRoundAllocation -
             currentRoundSales;
 
         if (amount > remainingAllocation) {
             revert InsufficientBalanceInPresaleRoundForSale(
                 remainingAllocation,
-                remainingAllocation + amount
+                amount
             );
         }
 
-        veOwn.transfer(_receiver, amount);
         presaleRounds[currentRoundId].sales += amount;
         totalSales += amount;
+
+        usdt.transferFrom(msg.sender, address(this), _usdtAmount);
+        own.transfer(_receiver, amount);
+
+        emit PresaleTokensPurchased(
+            _receiver,
+            currentRoundId,
+            amount,
+            currentRoundPrice
+        );
     }
 
     function getAllPresaleRounds()
@@ -192,6 +200,7 @@ contract Presale is Initializable, IPresale, OwnableUpgradeable {
     }
 
     // *** View methods ***
+
     function getCurrentPresaleRoundDetails()
         external
         view
@@ -201,7 +210,7 @@ contract Presale is Initializable, IPresale, OwnableUpgradeable {
         (
             bool successCurrentPresaleRoundId,
             uint256 currentPresaleRoundId
-        ) = getCurrentPresaleRoundId();
+        ) = _getCurrentPresaleRoundId();
 
         if (!successCurrentPresaleRoundId) {
             return (false, PresaleRound(0, 0, 0, 0), 0);
@@ -215,7 +224,7 @@ contract Presale is Initializable, IPresale, OwnableUpgradeable {
     }
 
     // *** Internal view methods ***
-    function getCurrentPresaleRoundId()
+    function _getCurrentPresaleRoundId()
         internal
         view
         returns (bool success, uint256 roundId)

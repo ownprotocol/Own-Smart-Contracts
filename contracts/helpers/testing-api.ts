@@ -18,17 +18,27 @@ export const ownTestingAPI = async () => {
     (await OwnDeployment.getAddress()) as `0x${string}`,
   );
 
-  const own_alice = await hre.viem.getContractAt(
-    "OWN",
-    own.address as `0x${string}`,
-    { client: { wallet: signers[1] } },
+  const VeOwn = await ethers.getContractFactory("VeOWN");
+  const VeOwnDeployment = await upgrades.deployProxy(VeOwn);
+
+  // we use ethers to deploy the contract, but viem to interact with it
+  const veOwn = await hre.viem.getContractAt(
+    "VeOWN",
+    (await VeOwnDeployment.getAddress()) as `0x${string}`,
+  );
+
+  const MockUSDT = await ethers.getContractFactory("MockERC20");
+  const MockUSDTDeployment = await MockUSDT.deploy();
+
+  const mockUSDT = await hre.viem.getContractAt(
+    "MockERC20",
+    (await MockUSDTDeployment.getAddress()) as `0x${string}`,
   );
 
   const Presale = await ethers.getContractFactory("Presale");
   const PresaleDeployment = await upgrades.deployProxy(Presale, [
     own.address,
-    // TODO: Deploy mock USDT
-    own.address,
+    mockUSDT.address,
   ]);
 
   // we use ethers to deploy the contract, but viem to interact with it
@@ -45,7 +55,9 @@ export const ownTestingAPI = async () => {
 
   return {
     own,
+    veOwn,
     signers,
     presale,
+    mockUSDT,
   };
 };

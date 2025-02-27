@@ -31,6 +31,13 @@ interface IPresale {
         uint256 oldAllocation
     );
 
+    event PresaleTokensPurchased(
+        address indexed buyer,
+        uint256 indexed roundId,
+        uint256 indexed amount,
+        uint256 price
+    );
+
     // *** Errors ***
 
     error AllPresaleRoundsHaveEnded();

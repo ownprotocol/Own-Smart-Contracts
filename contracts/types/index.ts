@@ -7,3 +7,6 @@ export type VeOWN = Awaited<ReturnType<typeof ownTestingAPI>>["veOWN"];
 export type PresaleContract = Awaited<
   ReturnType<typeof ownTestingAPI>
 >["presale"];
+export type MockUSDTContract = Awaited<
+  ReturnType<typeof ownTestingAPI>
+>["mockUSDT"];
