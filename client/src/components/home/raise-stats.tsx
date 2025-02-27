@@ -36,7 +36,7 @@ function RaiseStats({ isLoading }: RaiseStatsProps) {
       <div className="">
         <ProgressBar sold={12000} cap={30000} />
       </div>
-      <div className="absolute left-[-15%] top-[-15%] -z-10 hidden md:block">
+      <div className="absolute left-[-15%] top-[-15%] -z-10 hidden lg:block">
         <Image
           src="/home-page/hero/designed-dots.png"
           alt="Decorative dots"

@@ -29,9 +29,9 @@ export default function HomePage() {
       <div className="relative flex flex-col">
         {!hasPresaleConcluded && (
           <>
-            <PresaleBanner isLoading={isLoading} />
+            {/* <PresaleBanner isLoading={isLoading} /> */}
             <RaiseStats isLoading={isLoading} />
-            <PriceIncreaseTimer isLoading={isLoading} />
+            {/* <PriceIncreaseTimer isLoading={isLoading} /> */}
             <ActionButtons isLoading={isLoading} />
           </>
         )}

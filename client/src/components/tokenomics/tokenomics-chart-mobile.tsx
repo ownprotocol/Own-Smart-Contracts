@@ -67,7 +67,7 @@ const TokenomicsChartMobile = ({ isLoading }: TokenomicsChartMobileProps) => {
     return <TokenomicsChartMobileSkeleton />;
   }
   return (
-    <div className="mt-12 flex w-full flex-col items-center rounded-lg md:hidden">
+    <div className="mt-12 flex w-full flex-col items-center rounded-lg lg:hidden">
       <h2 className="text-3xl font-semibold text-gray-200">Tokenomics</h2>
       <div className="relative">
         <div

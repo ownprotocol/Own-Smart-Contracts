@@ -2,7 +2,7 @@ function PresaleBannerSkeleton() {
   return (
     <div className="relative min-h-[200px]">
       {/* Glow effect */}
-      <div className="absolute right-0 top-0 h-[580px] w-[200px] rotate-[24.3deg] rounded-full bg-[#E49048] opacity-10 blur-[200px]" />
+      <div className="absolute right-0 top-0 h-[580px] w-[50px] md:w-[200px] rotate-[24.3deg] rounded-full bg-[#E49048] opacity-10 blur-[200px]" />
 
       <div className="flex animate-pulse flex-col items-center gap-4 md:flex-row md:items-end md:justify-between">
         {/* Skeleton for the heading - now in two lines */}

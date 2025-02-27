@@ -9,7 +9,7 @@ function MainNavigationSkeleton() {
           {[1, 2, 3, 4].map((_, i) => (
             <div
               key={i}
-              className="h-[10px] w-[80px] animate-pulse rounded bg-gray-100/50 md:h-3"
+              className="h-[10px] w-[40px] lg:w-[80px] animate-pulse rounded bg-gray-100/50 md:h-3"
             />
           ))}
         </div>
@@ -17,7 +17,7 @@ function MainNavigationSkeleton() {
           {[1, 2, 3, 4].map((_, i) => (
             <div
               key={i}
-              className="h-[10px] w-[80px] animate-pulse rounded bg-gray-100/50 md:h-3"
+              className="h-[10px] w-[40px] lg:w-[80px] animate-pulse rounded bg-gray-100/50 md:h-3"
             />
           ))}
         </div>

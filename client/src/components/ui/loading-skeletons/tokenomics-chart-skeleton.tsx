@@ -1,6 +1,6 @@
 function TokenomicsChartSkeleton() {
   return (
-    <div className="z-20 mt-[10%] hidden w-full rounded-lg md:flex min-h-[500px]">
+    <div className="z-20 mt-[10%] hidden w-full rounded-lg lg:flex min-h-[500px]">
       <div className="relative flex-1">
         <div className="mb-8 h-[72px] w-[400px] animate-pulse rounded bg-gray-100/50" />
         <div className="relative h-[500px] w-[500px]">
