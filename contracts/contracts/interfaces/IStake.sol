@@ -6,9 +6,9 @@ interface IStake {
         address owner;
         uint256 ownAmount;
         uint256 veOwnAmount;
-        uint256 startWeek;
-        uint256 endWeek;
-        uint256 lastWeekOfRewardsClaimed;
+        uint256 startDay;
+        uint256 finalDay;
+        uint256 lastDayRewardsClaimed;
     }
 
     // *** Errors ***
