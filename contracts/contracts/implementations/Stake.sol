@@ -282,6 +282,7 @@ contract Stake is
     ) external nonReentrant {
         _updateVeOwnPerWeekCache();
 
+        uint256 currentDay = getCurrentDay();
         uint256 reward;
 
         for (uint256 i = 0; i < positionIds.length; i++) {
@@ -291,7 +292,6 @@ contract Stake is
                 revert("Not the owner of the position");
             }
 
-            uint256 currentDay = getCurrentDay();
             if (position.lastDayRewardsClaimed == currentDay - 1) {
                 revert("No rewards to claim");
             }
@@ -303,6 +303,25 @@ contract Stake is
 
             uint256 endWeek = claimRewardsUpToDay / 7;
 
+            // Add rewards for the first week they stake for
+            uint256 firstDayOfSecondWeek = startWeek * 7 + 1;
+            if (position.lastDayRewardsClaimed < firstDayOfSecondWeek) {
+                uint256 finalDayOfRewardsForWeek = claimRewardsUpToDay <
+                    firstDayOfSecondWeek
+                    ? claimRewardsUpToDay
+                    : firstDayOfSecondWeek - 1;
+
+                uint256 firstWeekRewardPerToken = _rewardPerTokenForDayRange(
+                    position.lastDayRewardsClaimed + 1,
+                    finalDayOfRewardsForWeek
+                );
+
+                reward +=
+                    (position.veOwnAmount * firstWeekRewardPerToken) /
+                    1e18;
+            }
+
+            // Iterate over every week, using the cached value for efficiency
             for (
                 uint256 week = startWeek + 1;
                 week < claimRewardsUpToDay / 7;
@@ -314,18 +333,24 @@ contract Stake is
                             .weeklyRewardPerTokenCached) /
                     1e18;
             }
-            // TODO: This gets more complex when you consider that the user may have already claimed rewards for the first and last week
-            uint256 firstWeekRewardPerToken = _rewardPerTokenForDayRange(
-                position.startDay,
-                startWeek * 7
-            );
-            uint256 lastWeekRewardPerToken = _rewardPerTokenForDayRange(
-                position.finalDay,
-                position.finalDay - (position.finalDay % 7)
-            );
 
-            reward += (position.veOwnAmount * firstWeekRewardPerToken) / 1e18;
-            reward += (position.veOwnAmount * lastWeekRewardPerToken) / 1e18;
+            // Add rewards for the last week they stake for
+            uint256 firstDayOfFinalWeek = endWeek * 7;
+            if (claimRewardsUpToDay >= firstDayOfFinalWeek) {
+                uint256 firstDayOfRewardsForWeek = position
+                    .lastDayRewardsClaimed > firstDayOfFinalWeek
+                    ? position.lastDayRewardsClaimed + 1
+                    : firstDayOfFinalWeek;
+
+                uint256 lastWeekRewardPerToken = _rewardPerTokenForDayRange(
+                    firstDayOfRewardsForWeek,
+                    claimRewardsUpToDay
+                );
+
+                reward +=
+                    (position.veOwnAmount * lastWeekRewardPerToken) /
+                    1e18;
+            }
 
             position.lastDayRewardsClaimed = currentDay - 1;
         }
