@@ -183,6 +183,8 @@ contract Stake is
 
             reward += _calculateRewardsForPosition(positionIds[i], currentDay);
 
+            // TODO: This needs to be set to the first day of the previous week
+            // Because they can only claim full weeks at a time
             position.lastDayRewardsClaimed = currentDay - 1;
         }
 
@@ -465,20 +467,30 @@ contract Stake is
             return 0;
         }
 
+        // TODO: THis needs to account for the fact that users can claim at any point after a week.
+
         console.log("Calculating rewards for position %s", _positionId);
         uint256 startWeek = position.startDay / 7;
         uint256 claimRewardsUpToDay = position.finalDay > _currentDay
             ? _currentDay - 1
             : position.finalDay;
         console.log("Claim rewards up to day: %s", claimRewardsUpToDay);
+        console.log("Current day: %s", _currentDay);
 
-        // Add rewards for the first week they stake for
-        uint256 firstDayOfSecondWeek = startWeek * 7 + 1;
-        if (position.lastDayRewardsClaimed < firstDayOfSecondWeek) {
+        console.log("Position start day: %s", position.startDay);
+        uint256 lastDayOfFirstWeek = startWeek * 7 + 6;
+        console.log("Last day of first week: %s", lastDayOfFirstWeek);
+
+        // Can only claim the first week of rewards once the week finishes AND
+        // they have not claimed rewards for the first week
+        if (
+            _currentDay > lastDayOfFirstWeek &&
+            position.lastDayRewardsClaimed < lastDayOfFirstWeek
+        ) {
             uint256 finalDayOfRewardsForWeek = claimRewardsUpToDay <
-                firstDayOfSecondWeek
+                lastDayOfFirstWeek
                 ? claimRewardsUpToDay
-                : firstDayOfSecondWeek - 1;
+                : lastDayOfFirstWeek;
 
             console.log("1");
             uint256 firstWeekRewardPerToken = _rewardPerTokenForDayRange(
@@ -490,10 +502,16 @@ contract Stake is
             reward += (position.veOwnAmount * firstWeekRewardPerToken) / 1e18;
         }
 
+        uint256 lastWeekClaimed = position.lastDayRewardsClaimed / 7;
+
         uint256 finalWeek = position.finalDay / 7;
 
         // Iterate over every week, using the cached value for efficiency
-        for (uint256 week = currentWeek + 1; week < finalWeek; ++finalWeek) {
+        for (
+            uint256 week = lastWeekClaimed + 1;
+            week < currentWeek - 1;
+            ++week
+        ) {
             console.log("3");
             reward +=
                 (position.veOwnAmount *
