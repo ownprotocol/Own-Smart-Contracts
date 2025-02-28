@@ -1,8 +1,12 @@
+import { StakeOwnTokenBanner } from "@/components";
+
 function StakingPage() {
   return (
-    <div>
-      <h1>Staking</h1>
-    </div>
+    <main className="mx-[10%] mt-[10%] min-h-screen md:mt-[3%]">
+      <div className="relative flex flex-col">
+        <StakeOwnTokenBanner />
+      </div>
+    </main>
   );
 }
 

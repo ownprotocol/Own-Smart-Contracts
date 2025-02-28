@@ -25,7 +25,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <main className="mx-[10%] mt-[10%] min-h-screen md:mt-[3%]">
+    <main className="px-[5%] md:px-[10%] pt-[10%] min-h-screen md:pt-[3%]">
       <div className="relative flex flex-col">
         {!hasPresaleConcluded && (
           <>

@@ -20,3 +20,4 @@ export { default as TokenomicsChartSkeleton } from "./ui/loading-skeletons/token
 export { default as TokenomicsChartMobileSkeleton } from "./ui/loading-skeletons/tokenomics-chart-mobile-skeleton";
 export { default as MainNavigationSkeleton } from "./ui/loading-skeletons/main-navigation-skeleton";
 export { default as HasPresaleConcludedSkeleton } from "./ui/loading-skeletons/has-presale-concluded-skeleton";
+export { default as StakeOwnTokenBanner } from "./staking/stake-own-token-banner";

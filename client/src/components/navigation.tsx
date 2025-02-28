@@ -24,10 +24,10 @@ const Navigation = () => {
   );
 
   return (
-    <div className="mx-[10%] mt-2 flex flex-row justify-between">
+    <div className="px-[5%] md:px-[10%] mt-2 flex flex-row justify-between">
       <Button
         variant="ghost"
-        className="pl-0 lg:hidden"
+        className="lg:hidden"
         onClick={() => setSidebarOpen(true)}
       >
         <span className="sr-only">Open sidebar</span>
