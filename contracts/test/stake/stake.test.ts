@@ -6,7 +6,7 @@ import { OwnContract, StakeContract, Signers, VeOWN } from "../../types";
 import { getCurrentBlockTimestamp, getCurrentDay } from "../../helpers/evm";
 import { SECONDS_IN_A_DAY } from "../../constants/duration";
 
-describe.only("Stake - stake", async () => {
+describe("Stake - stake", async () => {
   let own: OwnContract;
   let stake: StakeContract;
   let signers: Signers;

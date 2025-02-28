@@ -179,6 +179,7 @@ contract Stake is
             if (position.lastDayRewardsClaimed == currentDay - 1) {
                 revert("No rewards to claim");
             }
+            console.log("Claiming rewards for position %s", positionIds[i]);
 
             reward += _calculateRewardsForPosition(positionIds[i], currentDay);
 
@@ -290,6 +291,9 @@ contract Stake is
     }
 
     function startStaking() external onlyDefaultAdmin {
+        if (dailyRewardAmount == 0) {
+            revert("Daily reward amount not set");
+        }
         // TODO: Revert if staking already started
         uint256 currentDay = getCurrentDay();
 
@@ -304,6 +308,7 @@ contract Stake is
             getBoostMultiplier(currentDay),
             1 ether
         );
+        console.log("Weekly reward per token: %s", weeklyRewardPerToken);
 
         rewardValuesWeeklyCache[previousWeek] = RewardValuesWeeklyCache({
             weeklyRewardPerTokenCached: weeklyRewardPerToken,
@@ -315,12 +320,15 @@ contract Stake is
         // TODO: Save to cache
     }
 
-    function setWeeklyRewardAmount(uint256 _amount) external onlyDefaultAdmin {
-        // Re-sync the cache, as we need to ensure that the previous weeklyRewardAmount is carried into the cache
-        _updateWeeklyRewardValuesCache();
+    function setDailyRewardAmount(uint256 _amount) external onlyDefaultAdmin {
+        if (hasStakingStarted()) {
+            // Re-sync the cache, as we need to ensure that the previous weeklyRewardAmount is carried into the cache
+            _updateWeeklyRewardValuesCache();
+        }
 
         // TODO: Need to validate the amount value here
         dailyRewardValueHistory[getCurrentDay()] = _amount;
+        dailyRewardAmount = _amount;
 
         // TODO: Emit event
     }
@@ -337,6 +345,7 @@ contract Stake is
     // **** Internal functions ****
 
     function _updateWeeklyRewardValuesCache() internal {
+        // TODO: Have this fetch the current week
         uint256 currentWeek = block.timestamp / 7 days;
         console.log(block.timestamp);
         console.log("Current week: %s", currentWeek);
@@ -450,16 +459,18 @@ contract Stake is
     ) internal view returns (uint256 reward) {
         StakePosition storage position = positions[_positionId];
 
+        uint256 currentWeek = _currentDay / 7;
+
         if (position.lastDayRewardsClaimed == _currentDay - 1) {
             return 0;
         }
 
+        console.log("Calculating rewards for position %s", _positionId);
         uint256 startWeek = position.startDay / 7;
         uint256 claimRewardsUpToDay = position.finalDay > _currentDay
             ? _currentDay - 1
             : position.finalDay;
-
-        uint256 endWeek = claimRewardsUpToDay / 7;
+        console.log("Claim rewards up to day: %s", claimRewardsUpToDay);
 
         // Add rewards for the first week they stake for
         uint256 firstDayOfSecondWeek = startWeek * 7 + 1;
@@ -469,28 +480,30 @@ contract Stake is
                 ? claimRewardsUpToDay
                 : firstDayOfSecondWeek - 1;
 
+            console.log("1");
             uint256 firstWeekRewardPerToken = _rewardPerTokenForDayRange(
                 position.lastDayRewardsClaimed + 1,
                 finalDayOfRewardsForWeek
             );
+            console.log("2");
 
             reward += (position.veOwnAmount * firstWeekRewardPerToken) / 1e18;
         }
 
+        uint256 finalWeek = position.finalDay / 7;
+
         // Iterate over every week, using the cached value for efficiency
-        for (
-            uint256 week = startWeek + 1;
-            week < claimRewardsUpToDay / 7;
-            ++week
-        ) {
+        for (uint256 week = currentWeek + 1; week < finalWeek; ++finalWeek) {
+            console.log("3");
             reward +=
                 (position.veOwnAmount *
                     rewardValuesWeeklyCache[week].weeklyRewardPerTokenCached) /
                 1e18;
+            console.log("4");
         }
 
         // Add rewards for the last week they stake for
-        uint256 firstDayOfFinalWeek = endWeek * 7;
+        uint256 firstDayOfFinalWeek = finalWeek * 7;
         if (claimRewardsUpToDay >= firstDayOfFinalWeek) {
             uint256 firstDayOfRewardsForWeek = position.lastDayRewardsClaimed >
                 firstDayOfFinalWeek

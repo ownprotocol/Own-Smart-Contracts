@@ -3,18 +3,18 @@ import { ownTestingAPI } from "../../helpers/testing-api";
 import { OwnContract, StakeContract, Signers, VeOWN } from "../../types";
 import { expect } from "chai";
 
-import { differenceInDays } from "date-fns";
+import { differenceInDays, subDays } from "date-fns";
 import { getCurrentBlockTimestamp } from "../../helpers/evm";
 
-function getDaysSinceFirstSaturday(blockTimestamp: number) {
-  const firstSaturday = new Date(Date.UTC(1970, 0, 3, 0, 0, 0)); // Ensure UTC
-  console.log(firstSaturday);
-  const now = new Date(blockTimestamp * 1000); // Convert to milliseconds
+async function getDaysSinceFirstSaturday() {
+  const blockTimestamp = await getCurrentBlockTimestamp();
+  const firstSaturday = subDays(new Date(Date.UTC(1970, 0, 1, 0, 0, 0)), 2);
+  const now = new Date(blockTimestamp * 1000);
 
-  return differenceInDays(now, firstSaturday); // Ensure only full days count
+  return differenceInDays(now, firstSaturday);
 }
 
-describe.only("Stake - read methods", async () => {
+describe("Stake - read methods", async () => {
   let own: OwnContract;
   let stake: StakeContract;
   let signers: Signers;
@@ -28,8 +28,7 @@ describe.only("Stake - read methods", async () => {
   });
 
   it("Should return the current day correctly", async () => {
-    const currentTime = await getCurrentBlockTimestamp();
     const currentDay = await stake.read.getCurrentDay();
-    expect(currentDay).to.equal(getDaysSinceFirstSaturday(currentTime));
+    expect(currentDay).to.equal(await getDaysSinceFirstSaturday());
   });
 });
