@@ -104,6 +104,7 @@ contract Stake is
         }
 
         _updateWeeklyRewardValuesCache();
+        console.log("Staking");
 
         // NOTE: There is no maximum multiplier here
         uint256 veOwnAmount = _amount * (_days / 7);
@@ -165,12 +166,14 @@ contract Stake is
         uint256[] calldata positionIds
     ) external nonReentrant {
         _updateWeeklyRewardValuesCache();
+        console.log("Claiming rewards");
 
         uint256 currentDay = getCurrentDay();
         uint256 reward;
 
         for (uint256 i = 0; i < positionIds.length; i++) {
             StakePosition storage position = positions[i];
+            console.log("Start day: %s", position.startDay);
 
             if (msg.sender != position.owner) {
                 revert("Not the owner of the position");
@@ -335,6 +338,8 @@ contract Stake is
         // TODO: Emit event
     }
 
+    // **** Internal functions ****
+
     function _calculateRewardPerToken(
         uint256 _dailyRewardAmount,
         uint256 _boostMultiplier,
@@ -344,13 +349,14 @@ contract Stake is
         return (_dailyRewardAmount * _boostMultiplier) / _validVeOwn;
     }
 
-    // **** Internal functions ****
-
     function _updateWeeklyRewardValuesCache() internal {
         // TODO: Have this fetch the current week
-        uint256 currentWeek = block.timestamp / 7 days;
+        uint256 currentWeek = getCurrentDay() / 7;
+        if (lastCachedWeek == currentWeek - 1) {
+            return;
+        }
+
         console.log(block.timestamp);
-        console.log("Current week: %s", currentWeek);
 
         // Run through all weeks from the last cached week to the current week
         for (uint256 week = lastCachedWeek + 1; week < currentWeek; ++week) {
@@ -384,8 +390,12 @@ contract Stake is
                 if (boostMultiplierUpdate != 0) {
                     boostMultiplier = boostMultiplierUpdate;
                 }
-                if (dailyRewardAmount != 0) {
+                if (dailyRewardAmountUpdate != 0) {
                     dailyRewardAmountCurrent = dailyRewardAmountUpdate;
+                }
+
+                if (currentVeOwnTotal == 0) {
+                    continue;
                 }
 
                 rewardPerTokenInWeek += _calculateRewardPerToken(
@@ -394,13 +404,20 @@ contract Stake is
                     currentVeOwnTotal
                 );
             }
+            console.log("Reward per token in week: %s", rewardPerTokenInWeek);
+            console.log("Current veOwn total: %s", currentVeOwnTotal);
+            console.log("Boost multiplier: %s", boostMultiplier);
 
             rewardValuesWeeklyCache[week] = RewardValuesWeeklyCache({
                 weeklyRewardPerTokenCached: rewardPerTokenInWeek,
                 validVeOwnAtEndOfWeek: currentVeOwnTotal,
-                boostMultiplierAtEndOfWeek: getBoostMultiplier(week),
-                dailyRewardAmountAtEndOfWeek: dailyRewardAmount
+                boostMultiplierAtEndOfWeek: boostMultiplier,
+                dailyRewardAmountAtEndOfWeek: dailyRewardAmountCurrent
             });
+            console.log(
+                "Weekly reward per token cached: %s",
+                rewardPerTokenInWeek
+            );
         }
 
         lastCachedWeek = currentWeek - 1;
@@ -478,6 +495,7 @@ contract Stake is
         console.log("Current day: %s", _currentDay);
 
         console.log("Position start day: %s", position.startDay);
+        console.log("First day of first week: %s", startWeek * 7);
         uint256 lastDayOfFirstWeek = startWeek * 7 + 6;
         console.log("Last day of first week: %s", lastDayOfFirstWeek);
 

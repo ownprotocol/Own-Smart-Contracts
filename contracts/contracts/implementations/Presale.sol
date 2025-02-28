@@ -190,6 +190,9 @@ contract Presale is Initializable, IPresale, OwnableUpgradeable {
         );
     }
 
+    // TODO:
+    function claimPresaleRoundTokens() external {}
+
     function getAllPresaleRounds()
         external
         view

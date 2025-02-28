@@ -8,7 +8,7 @@ import {
 import { expect } from "chai";
 import { getDay } from "date-fns";
 
-describe.only("Helpers", async () => {
+describe("Helpers", async () => {
   let stake: StakeContract;
 
   before(async () => {
