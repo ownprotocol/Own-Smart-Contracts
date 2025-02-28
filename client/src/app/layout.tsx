@@ -7,7 +7,6 @@ import {
   HomeSeparator,
   Navigation,
 } from "@/components";
-
 import "@/styles/globals.css";
 
 const fun = Funnel_Sans({

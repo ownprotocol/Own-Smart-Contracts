@@ -21,7 +21,7 @@ function PresaleBanner({ isLoading }: PresaleBannerProps) {
           Buy $Own Token in Presale Now
         </h1>
         <div className="flex w-full justify-start md:w-1/4 md:justify-end">
-          <span className="pt-2 rounded-full bg-[#C1691180] px-2 py-1.5 text-sm md:text-xs font-normal uppercase tracking-wider text-[#F1AF6E]">
+          <span className="pt-2 rounded-full bg-[#C1691180] px-4 py-1.5 text-sm md:text-xs font-normal uppercase tracking-wider text-[#F1AF6E]">
             Phase 1
           </span>
         </div>

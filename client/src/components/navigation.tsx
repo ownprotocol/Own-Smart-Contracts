@@ -10,11 +10,11 @@ import {
   DialogPanel,
   TransitionChild,
 } from "@headlessui/react";
+import { usePathname } from "next/navigation";
 
 import { TOP_NAVIGATION_LINKS } from "@/constants/top-navigation-links";
 import { icons } from "@/constants/icons";
 import { cn } from "@/lib/utils";
-import { usePathname } from "next/navigation";
 
 const Navigation = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -92,6 +92,7 @@ const Navigation = () => {
                       {TOP_NAVIGATION_LINKS.map((item) => (
                         <li key={item.name}>
                           <Link
+                            onClick={() => setSidebarOpen(false)}
                             href={item.link}
                             className={cn(
                               activeNavigationLink?.name === item.name
