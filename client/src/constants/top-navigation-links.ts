@@ -1,0 +1,6 @@
+import { icons } from "@/constants/icons";
+
+export const TOP_NAVIGATION_LINKS = [
+  { name: "Home", link: "/", icon: icons.RiHomeLine },
+  { name: "Staking", link: "/staking", icon: icons.GiReceiveMoney },
+];
