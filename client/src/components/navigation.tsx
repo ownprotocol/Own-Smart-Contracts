@@ -19,12 +19,9 @@ import { cn } from "@/lib/utils";
 const Navigation = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
-  const activeNavigationLink = TOP_NAVIGATION_LINKS.find((link) =>
-    pathname.includes(link.link),
-  );
 
   return (
-    <div className="px-[5%] md:px-[10%] mt-2 flex flex-row justify-between">
+    <div className="mt-2 flex flex-row justify-between px-[5%] md:px-[10%]">
       <Button
         variant="ghost"
         className="lg:hidden"
@@ -36,7 +33,16 @@ const Navigation = () => {
       <Image src="/own-logo.svg" height={40} width={80} alt="logo" />
       <div className="hidden items-center gap-4 border-gray-500 font-dm_mono md:flex-row lg:flex">
         {TOP_NAVIGATION_LINKS.map((link) => (
-          <Link key={link.name} href={link.link}>
+          <Link
+            key={link.name}
+            href={link.link}
+            className={cn(
+              "transition-colors hover:text-gray-300",
+              pathname === link.link
+                ? "font-semibold underline underline-offset-4"
+                : "",
+            )}
+          >
             {link.name}
           </Link>
         ))}
@@ -95,7 +101,7 @@ const Navigation = () => {
                             onClick={() => setSidebarOpen(false)}
                             href={item.link}
                             className={cn(
-                              activeNavigationLink?.name === item.name
+                              pathname === item.link
                                 ? "bg-gray-800 text-white"
                                 : "text-gray-400 hover:bg-gray-800 hover:text-white",
                               "group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold",
