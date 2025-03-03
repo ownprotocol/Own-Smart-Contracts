@@ -5,7 +5,7 @@ import { DayOfWeek, setDayOfWeekInHardhatNode } from "../../helpers/evm";
 import { expect } from "chai";
 import hre from "hardhat";
 
-describe.only("Stake - claimRewards", async () => {
+describe("Stake - claimRewards", async () => {
   let own: OwnContract;
   let stake: StakeContract;
   let signers: Signers;
