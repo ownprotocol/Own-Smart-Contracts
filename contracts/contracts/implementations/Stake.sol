@@ -219,6 +219,13 @@ contract Stake is
         return totalStaked;
     }
 
+    function getCurrentBoostMultiplier() public view returns (uint256) {
+        uint256 currentWeek = getCurrentWeek();
+        // TODO: Needs to be updated to use the history, fetch the initial value from previous week. Move forward through week til now, what is the value?
+
+        return getBoostMultiplier(currentWeek);
+    }
+
     function getBoostMultiplier(uint256 week) public view returns (uint256) {
         uint256 weeksSinceStart = week - (stakingStartDay / 7);
 
@@ -410,7 +417,7 @@ contract Stake is
             rewardValuesWeeklyCache[week] = RewardValuesWeeklyCache({
                 weeklyRewardPerTokenCached: rewardPerTokenInWeek,
                 validVeOwnAtEndOfWeek: currentVeOwnTotal,
-                boostMultiplierAtEndOfWeek: boostMultiplier,
+                boostMultiplierAtEndOfWeek: getBoostMultiplier(week + 1),
                 dailyRewardAmountAtEndOfWeek: dailyRewardAmountCurrent
             });
             // console.log(
@@ -427,7 +434,7 @@ contract Stake is
 
     function _rewardPerTokenForDayRange(
         uint256 _startDay,
-        uint256 _endDay
+        uint256 _finalDay
     ) internal view returns (uint256 rewardPerToken) {
         uint256 previousWeek = _startDay / 7 - 1;
         // Start with the previous week value
@@ -445,7 +452,7 @@ contract Stake is
         for (
             // This starts off with the first day of the week
             uint256 currentDay = _startDay - (_startDay % 7);
-            currentDay < _endDay;
+            currentDay <= _finalDay;
             ++currentDay
         ) {
             validVeOwn += validVeOwnAdditionsInDay[currentDay];
@@ -511,12 +518,15 @@ contract Stake is
         uint256 lastDayOfFirstWeek = startWeek * 7 + 6;
         console.log("Last day of first week: %s", lastDayOfFirstWeek);
         console.log("Current day: %s", _currentDay);
+        console.log("Pos in week last day: %s", position.startDay % 7);
 
         // Can only claim the first week of rewards once the week finishes AND
         // they have not claimed rewards for the first week
         if (
             _currentDay > lastDayOfFirstWeek &&
-            position.lastDayRewardsClaimed < lastDayOfFirstWeek
+            position.lastDayRewardsClaimed < lastDayOfFirstWeek &&
+            // If they staked on the first day of the week, we can skip this and use the next for loop for less iterations
+            position.startDay % 7 != 0
         ) {
             uint256 firstWeekRewardPerToken = _rewardPerTokenForDayRange(
                 position.lastDayRewardsClaimed + 1,
@@ -528,23 +538,29 @@ contract Stake is
             reward += (position.veOwnAmount * firstWeekRewardPerToken) / 1e18;
         }
 
+        console.log("Reward after first week: %s", reward);
+
         uint256 lastWeekClaimed = position.lastDayRewardsClaimed / 7;
 
+        console.log("Last week claimed: %s", lastWeekClaimed);
+
         uint256 finalWeek = position.finalDay / 7;
+
+        console.log("Current week", currentWeek);
 
         // Iterate over every week, using the cached value for efficiency
         for (
             uint256 week = lastWeekClaimed + 1;
-            week < currentWeek - 1;
+            week <= currentWeek - 1;
             ++week
         ) {
-            console.log("3");
             reward +=
                 (position.veOwnAmount *
                     rewardValuesWeeklyCache[week].weeklyRewardPerTokenCached) /
                 1e18;
-            console.log("4");
         }
+
+        console.log("Reward after grouped weeks: %s", reward);
 
         // Add rewards for the last week they stake for
         uint256 firstDayOfFinalWeek = finalWeek * 7;
