@@ -22,7 +22,7 @@ describe.only("Stake - claimRewards", async () => {
     await stake.write.setDailyRewardAmount([dailyRewardAmount]);
 
     await stake.write.startStakingNextWeek();
-    await setDayOfWeekInHardhatNode(DayOfWeek.Friday);
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
 
     const ownBalance = await own.read.balanceOf([signers[0].account.address]);
 
@@ -132,19 +132,14 @@ describe.only("Stake - claimRewards", async () => {
         BigInt(1e18)) *
       BigInt(5);
 
-    const tx = await stake.write.claimRewards([[BigInt(0)]]);
-
-    const result = await hre.ethers.provider.getTransactionReceipt(tx);
-    console.log(result);
-
-    // await expect(
-    //   stake.write.claimRewards([[BigInt(0)]]),
-    // ).to.changeTokenBalances(
-    //   own,
-    //   [signers[0].account],
-    //   // Staked for 7 days
-    //   [firstWeekRewards + secondWeekRewards],
-    // );
+    await expect(
+      stake.write.claimRewards([[BigInt(0)]]),
+    ).to.changeTokenBalances(
+      own,
+      [signers[0].account],
+      // Staked for 7 days
+      [firstWeekRewards + secondWeekRewards],
+    );
   });
 
   it("Should claim rewards for the 5 weeks the stake is active", async () => {
@@ -199,31 +194,32 @@ describe.only("Stake - claimRewards", async () => {
     it("Should receive half of the rewards for the second half of the first week, when a new user joins", async () => {
       const amount = parseEther("50");
 
-      const totalRewardsInWeek =
-        ((dailyRewardAmount * (await stake.read.getCurrentBoostMultiplier())) /
-          BigInt(1e18)) *
-        BigInt(7);
+      const rewardsPerDay =
+        (dailyRewardAmount * (await stake.read.getCurrentBoostMultiplier())) /
+        BigInt(1e18);
 
       await stake.write.stake([amount, duration]);
 
-      // await setDayOfWeekInHardhatNode(DayOfWeek.Tuesday);
+      await setDayOfWeekInHardhatNode(DayOfWeek.Tuesday);
 
-      // await stake_alice.write.stake([amount, duration]);
+      await stake_alice.write.stake([amount, duration]);
 
       await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
 
+      const rewardsForFirstHalfOfWeek = rewardsPerDay * BigInt(3);
+
+      const rewardsForDeployer =
+        rewardsForFirstHalfOfWeek + rewardsForFirstHalfOfWeek / BigInt(2);
+
       await expect(
         stake.write.claimRewards([[BigInt(0)]]),
-      ).to.changeTokenBalances(own, [signers[0].account], [totalRewardsInWeek]);
+      ).to.changeTokenBalances(own, [signers[0].account], [rewardsForDeployer]);
 
-      // await expect(
-      //   stake_alice.write.claimRewards([[BigInt(0)]]),
-      // ).to.changeTokenBalances(
-      //   own,
-      //   [signers[1].account],
-      //   // Staked for 7 days
-      //   [firstWeekRewards / BigInt(2)],
-      // );
+      const rewardsForAlice = rewardsForFirstHalfOfWeek / BigInt(2);
+
+      await expect(
+        stake_alice.write.claimRewards([[BigInt(1)]]),
+      ).to.changeTokenBalances(own, [alice.account], [rewardsForAlice]);
     });
   });
 });

@@ -104,11 +104,15 @@ contract Stake is
         uint256 veOwnAmount = _amount * (_days / 7);
 
         uint256 currentDay = getCurrentDay();
+
         // They will start earning rewards from the next day
         uint256 startDay = currentDay + 1;
+
         // Inclusive of the final day so subtract 1
         uint256 finalDay = startDay + _days - 1;
         uint256 positionId = totalPositions;
+
+        console.log("Creating stake with: ", msg.sender, positionId);
 
         // record their position
         positions[positionId] = StakePosition({
@@ -167,9 +171,11 @@ contract Stake is
         uint256 reward;
 
         for (uint256 i = 0; i < positionIds.length; i++) {
-            StakePosition storage position = positions[i];
+            StakePosition storage position = positions[positionIds[i]];
 
             if (msg.sender != position.owner) {
+                console.log("Position owner: %s", position.owner);
+                console.log("Sender: %s", msg.sender);
                 revert("Not the owner of the position");
             }
 
