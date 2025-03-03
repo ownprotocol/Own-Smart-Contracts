@@ -103,6 +103,38 @@ describe.only("Stake - claimRewards", async () => {
     );
   });
 
+  it("Should claim rewards for the first half of the first week and up to final day in the last week", async () => {
+    await setDayOfWeekInHardhatNode(DayOfWeek.Wednesday);
+
+    const amount = parseEther("50");
+
+    await stake.write.stake([amount, BigInt(7)]);
+
+    const firstWeekRewards =
+      ((dailyRewardAmount * (await stake.read.getCurrentBoostMultiplier())) /
+        BigInt(1e18)) *
+      BigInt(2);
+
+    // Need to skip to following Saturday so rewards are processed
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
+    const secondWeekRewards =
+      ((dailyRewardAmount * (await stake.read.getCurrentBoostMultiplier())) /
+        BigInt(1e18)) *
+      BigInt(5);
+
+    await expect(
+      stake.write.claimRewards([[BigInt(0)]]),
+    ).to.changeTokenBalances(
+      own,
+      [signers[0].account],
+      // Staked for 7 days
+      [firstWeekRewards + secondWeekRewards],
+    );
+  });
+
   // It should claim rewards only whilst the stake is active
   // It should claim rewards for the final week
+  // It should claim rewards only for the duration of the stake (5 weeks) - fast forward 50 weeks
 });
