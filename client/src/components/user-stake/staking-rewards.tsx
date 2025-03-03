@@ -56,7 +56,7 @@ function RewardBox({ label, value, isClaimable, onClaim, showLogo }: RewardBoxPr
         showLogo
         onClaim={() => {
           console.log("Claiming rewards");
-          // Implement claim logic here
+          //TODO: Implement claim logic here
         }}
       />
     </div>

@@ -107,6 +107,10 @@ function StakeTable() {
                             <Button
                               variant="ghost"
                               className="text-[#B37FE8] hover:text-[#B37FE8]"
+                              //TODO: Implement withdraw logic here
+                              onClick={() => {
+                                console.log("Withdraw");
+                              }}
                             >
                               Withdraw
                               <span className="sr-only">
