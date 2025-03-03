@@ -25,8 +25,6 @@ contract Stake is
 
     uint256 sablierStreamId;
 
-    uint256 public constant WEEK = 7 days;
-
     // NOTE: Do constants get inlined when optimized?
     uint256 public maximumLockDays;
     uint256 public minimumLockDays;
@@ -86,9 +84,6 @@ contract Stake is
 
         maximumLockDays = 364;
         minimumLockDays = 7;
-
-        // MAX_LOCK_WEEKS = 52;
-        // MIN_LOCK_WEEKS = 1;
     }
 
     function stake(uint256 _amount, uint256 _days) external nonReentrant {
@@ -103,8 +98,9 @@ contract Stake is
             revert StakingNotStarted();
         }
 
+        uint256 value = uint256(1) / 7;
+
         _updateWeeklyRewardValuesCache();
-        console.log("Staking");
 
         // NOTE: There is no maximum multiplier here
         uint256 veOwnAmount = _amount * (_days / 7);
@@ -166,14 +162,12 @@ contract Stake is
         uint256[] calldata positionIds
     ) external nonReentrant {
         _updateWeeklyRewardValuesCache();
-        console.log("Claiming rewards");
 
         uint256 currentDay = getCurrentDay();
         uint256 reward;
 
         for (uint256 i = 0; i < positionIds.length; i++) {
             StakePosition storage position = positions[i];
-            console.log("Start day: %s", position.startDay);
 
             if (msg.sender != position.owner) {
                 revert("Not the owner of the position");
@@ -182,7 +176,6 @@ contract Stake is
             if (position.lastDayRewardsClaimed == currentDay - 1) {
                 revert("No rewards to claim");
             }
-            console.log("Claiming rewards for position %s", positionIds[i]);
 
             reward += _calculateRewardsForPosition(positionIds[i], currentDay);
 
@@ -268,7 +261,11 @@ contract Stake is
     // Because in this contract weeks start from Saturday 00:00:00 UTC
     // We need to ensure that getCurrentDay starts from the first Saturday 1970
     function getCurrentDay() public view returns (uint256) {
-        return (block.timestamp + 2 days) / 1 days;
+        return block.timestamp / 1 days - 2;
+    }
+
+    function getCurrentWeek() public view returns (uint256) {
+        return getCurrentDay() / 7;
     }
 
     function getUsersPositions(
@@ -313,7 +310,6 @@ contract Stake is
             getBoostMultiplier(currentDay),
             1 ether
         );
-        console.log("Weekly reward per token: %s", weeklyRewardPerToken);
 
         rewardValuesWeeklyCache[previousWeek] = RewardValuesWeeklyCache({
             weeklyRewardPerTokenCached: weeklyRewardPerToken,
@@ -355,8 +351,6 @@ contract Stake is
         if (lastCachedWeek == currentWeek - 1) {
             return;
         }
-
-        console.log(block.timestamp);
 
         // Run through all weeks from the last cached week to the current week
         for (uint256 week = lastCachedWeek + 1; week < currentWeek; ++week) {
@@ -470,7 +464,7 @@ contract Stake is
 
     // TODO: Pass through the weeklyRewardPerTokenCached
     // The validVeOwnAtEndOfWeek and boostMultiplierAtEndOfWeek are used to calculate the reward per token for the week
-    // Unfortunately this assumes that the previous week has been processed. WHICH is a same assumption in the claimRewards function because we always process beforehand
+    // Unfortunately this assumes that the previous week has been processed. WHICH is a safe assumption in the claimRewards function because we always process beforehand
     // BUT the view methods won't work then, so we need to support them ......
     function _calculateRewardsForPosition(
         uint256 _positionId,
@@ -492,12 +486,12 @@ contract Stake is
             ? _currentDay - 1
             : position.finalDay;
         console.log("Claim rewards up to day: %s", claimRewardsUpToDay);
-        console.log("Current day: %s", _currentDay);
 
         console.log("Position start day: %s", position.startDay);
         console.log("First day of first week: %s", startWeek * 7);
         uint256 lastDayOfFirstWeek = startWeek * 7 + 6;
         console.log("Last day of first week: %s", lastDayOfFirstWeek);
+        console.log("Current day: %s", _currentDay);
 
         // Can only claim the first week of rewards once the week finishes AND
         // they have not claimed rewards for the first week

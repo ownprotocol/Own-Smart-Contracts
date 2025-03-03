@@ -1,6 +1,6 @@
 import hre from "hardhat";
 import { convertTimestampToRoundedDownDay } from "../constants/duration";
-import { addDays, set } from "date-fns";
+import { addDays } from "date-fns";
 
 export const increaseTime = async (seconds: number) => {
   await hre.ethers.provider.send("evm_increaseTime", [seconds]);
@@ -20,14 +20,27 @@ export const getCurrentDay = async () => {
 };
 
 export enum DayOfWeek {
+  Saturday = 0,
   Sunday = 1,
   Monday = 2,
   Tuesday = 3,
   Wednesday = 4,
   Thursday = 5,
   Friday = 6,
-  Saturday = 7,
 }
+
+export const getDayStakingCorrected = (date: Date) => {
+  let day = date.getUTCDay();
+  // let day = getDay(date);
+
+  day += 1;
+
+  if (day === 7) {
+    return 0;
+  }
+
+  return day;
+};
 
 export const setDayOfWeekInHardhatNode = async (dayOfWeek: DayOfWeek) => {
   const currentTime = await getCurrentBlockTimestamp();
@@ -41,22 +54,29 @@ export const setDayOfWeekInHardhatNode = async (dayOfWeek: DayOfWeek) => {
   await hre.network.provider.send("evm_mine", []);
 };
 
-const setNextDayOfWeekAtMidnightUTC = (date: Date, targetDay: number): Date => {
-  const currentDay = date.getUTCDay();
+export const setNextDayOfWeekAtMidnightUTC = (
+  date: Date,
+  targetDay: number,
+): Date => {
+  let currentDay = getDayStakingCorrected(date);
 
   let daysToAdd = targetDay - currentDay;
 
-  // If the target day is earlier in the week, move to next week
   if (daysToAdd <= 0) {
-    daysToAdd += 7; // Move to next week
+    daysToAdd += 7;
   }
 
   const nextTargetDate = addDays(date, daysToAdd);
 
-  return set(nextTargetDate, {
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-    milliseconds: 0,
-  });
+  return new Date(
+    Date.UTC(
+      nextTargetDate.getUTCFullYear(),
+      nextTargetDate.getUTCMonth(),
+      nextTargetDate.getUTCDate(),
+      0,
+      0,
+      0,
+      0,
+    ),
+  );
 };

@@ -2,8 +2,9 @@ import { parseEther } from "viem";
 import { ownTestingAPI } from "../../helpers/testing-api";
 import { OwnContract, StakeContract, Signers, VeOWN } from "../../types";
 import { DayOfWeek, setDayOfWeekInHardhatNode } from "../../helpers/evm";
+import { SECONDS_IN_A_DAY } from "../../constants/duration";
 
-describe.only("Stake - claimRewards", async () => {
+describe("Stake - claimRewards", async () => {
   let own: OwnContract;
   let stake: StakeContract;
   let signers: Signers;
@@ -26,7 +27,14 @@ describe.only("Stake - claimRewards", async () => {
   });
 
   it("Should claim rewards for the last half of the first week of staking", async () => {
+    // const currentDay = Number(await stake.read.getCurrentDay());
+    // const currentDate = new Date(currentDay * SECONDS_IN_A_DAY * 1000);
+    const currentDay = await stake.read.getCurrentDay();
     await setDayOfWeekInHardhatNode(DayOfWeek.Wednesday);
+    const afterDay = await stake.read.getCurrentDay();
+
+    console.log("currentDay", currentDay.toString());
+    console.log("afterDay", afterDay.toString());
 
     const amount = parseEther("1000");
 
