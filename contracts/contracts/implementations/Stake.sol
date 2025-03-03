@@ -219,23 +219,6 @@ contract Stake is
         return totalStaked;
     }
 
-    function getCurrentBoostMultiplier() public view returns (uint256) {
-        uint256 currentWeek = getCurrentWeek();
-        // TODO: Needs to be updated to use the history, fetch the initial value from previous week. Move forward through week til now, what is the value?
-
-        return getBoostMultiplier(currentWeek);
-    }
-
-    function getBoostMultiplier(uint256 week) public view returns (uint256) {
-        uint256 weeksSinceStart = week - (stakingStartDay / 7);
-
-        if (weeksSinceStart == 0) return 10 ether;
-        if (weeksSinceStart <= 3) return 5 ether;
-        if (weeksSinceStart <= 11) return 3 ether;
-
-        return 1 ether;
-    }
-
     function getPreviousWeekReturns() external returns (uint256) {
         // ISSUE: We need a view function that runs the _updateVeOwnPerWeekCache function in case there are missing weeks in the calculation
         uint256 currentWeek = getCurrentDay();
@@ -288,7 +271,7 @@ contract Stake is
     }
 
     function hasStakingStarted() internal view returns (bool) {
-        return stakingStartDay != 0 && stakingStartDay < getCurrentDay();
+        return stakingStartDay != 0 && stakingStartDay <= getCurrentDay();
     }
 
     // **** Admin functions ****
@@ -308,6 +291,7 @@ contract Stake is
         uint256 currentWeek = getCurrentWeek();
 
         stakingStartDay = currentWeek * 7 + 7;
+        console.log("Staking starts on day: %s", stakingStartDay);
 
         lastCachedWeek = currentWeek;
 
@@ -330,6 +314,7 @@ contract Stake is
     }
 
     function setDailyRewardAmount(uint256 _amount) external onlyDefaultAdmin {
+        // TODO: How the heck would we check that this is within bounds
         if (hasStakingStarted()) {
             // Re-sync the cache, as we need to ensure that the previous weeklyRewardAmount is carried into the cache
             _updateWeeklyRewardValuesCache();
@@ -582,52 +567,135 @@ contract Stake is
         }
     }
 
-    // TODO: Ordered array
     struct BoostDetails {
-        uint256 durationInDays;
-        uint256 startDay;
+        uint256 durationInWeeks;
+        uint256 startWeek;
         uint256 multiplier;
     }
+
     BoostDetails[] public boostDetails;
 
-    function addBoostDetails(
-        uint256 _startTime,
-        uint256 _durationInDays,
-        uint256 _multiplier
-    ) external onlyDefaultAdmin {
-        uint256 startDay = _startTime / 1 days;
-        uint256 currentDay = getCurrentDay();
+    uint256 finalBoostWeek;
 
-        if (startDay <= currentDay) {
-            revert("Cannot add boost for past or current day");
-        }
+    function getCurrentBoostMultiplier() public view returns (uint256) {
+        uint256 currentWeek = getCurrentWeek();
 
-        for (uint256 i = 0; i < boostDetails.length; i++) {
-            if (boostDetails[i].startDay == startDay) {
-                revert("Boost already exists for this day");
-            }
-
-            // Inclusive of the last day
-            uint256 currentBoostEndDay = boostDetails[i].startDay +
-                boostDetails[i].durationInDays;
-
-            if (
-                boostDetails[1].startDay <= startDay &&
-                currentBoostEndDay >= startDay
-            ) {
-                revert("Boost overlaps with existing boost");
-            }
-        }
-
-        boostDetails.push(
-            BoostDetails({
-                durationInDays: _durationInDays,
-                multiplier: _multiplier,
-                startDay: startDay
-            })
-        );
-
-        // TODO: ENsure this is updated if we create a method to change the start day of a boost period
-        dailyRewardValueHistory[startDay] = _multiplier;
+        return getBoostMultiplier(currentWeek);
     }
+
+    function getBoostMultiplier(uint256 week) public view returns (uint256) {
+        if (boostDetails.length == 0 || week > finalBoostWeek) {
+            return 1 ether;
+        }
+
+        for (uint256 i = boostDetails.length - 1; i >= 0; --i) {
+            uint256 endWeek = boostDetails[i].startWeek +
+                boostDetails[i].durationInWeeks;
+
+            if (boostDetails[i].startWeek >= week && week <= endWeek) {
+                return boostDetails[i].multiplier;
+            }
+        }
+
+        return 1 ether;
+    }
+
+    function addBoostDetails(
+        BoostDetails[] calldata _boostDetails
+    ) external onlyDefaultAdmin {
+        uint256 newFinalBoostWeek;
+        for (uint256 i; i < _boostDetails.length; ++i) {
+            boostDetails.push(_boostDetails[i]);
+
+            uint256 finalWeek = _boostDetails[i].startWeek +
+                _boostDetails[i].durationInWeeks;
+
+            if (finalWeek > newFinalBoostWeek) {
+                newFinalBoostWeek = finalWeek;
+            }
+        }
+
+        if (newFinalBoostWeek > finalBoostWeek) {
+            finalBoostWeek = newFinalBoostWeek;
+        }
+    }
+
+    //     uint256 stakingStartWeek = stakingStartDay / 7;
+    //
+    //     for (uint256 i = 0; i < _boostDetails.length; i++) {
+    //         BoostDetails memory newBoost = _boostDetails[i];
+    //
+    //         if (
+    //             newBoost.startWeek < stakingStartWeek && stakingStartWeek != 0
+    //         ) {
+    //             revert("Cannot add boost for past week");
+    //         }
+    //
+    //         uint256 newEndWeek = newBoost.startWeek + newBoost.durationInWeeks;
+    //
+    //         // First, remove any completely overlapped boosts
+    //         for (uint256 j = 0; j < boostDetails.length; j++) {
+    //             uint256 existingEndWeek = boostDetails[j].startWeek +
+    //                 boostDetails[j].durationInWeeks;
+    //
+    //             // If existing boost is completely overlapped by new boost, remove it
+    //             if (
+    //                 boostDetails[j].startWeek >= newBoost.startWeek &&
+    //                 existingEndWeek <= newEndWeek
+    //             ) {
+    //                 // Remove by swapping with the last element and then popping
+    //                 boostDetails[j] = boostDetails[boostDetails.length - 1];
+    //                 boostDetails.pop();
+    //                 j--; // Adjust index since we removed an element
+    //             }
+    //         }
+    //
+    //         // Then, modify any partially overlapped boosts
+    //         for (uint256 j = 0; j < boostDetails.length; j++) {
+    //             uint256 existingEndWeek = boostDetails[j].startWeek +
+    //                 boostDetails[j].durationInWeeks;
+    //
+    //             // Case 1: Existing boost starts before new boost and overlaps with it
+    //             if (
+    //                 boostDetails[j].startWeek < newBoost.startWeek &&
+    //                 existingEndWeek > newBoost.startWeek
+    //             ) {
+    //                 // Shorten existing boost to end where new boost starts
+    //                 boostDetails[j].durationInWeeks =
+    //                     newBoost.startWeek -
+    //                     boostDetails[j].startWeek;
+    //             }
+    //             // Case 2: Existing boost starts during new boost but extends beyond it
+    //             else if (
+    //                 boostDetails[j].startWeek < newEndWeek &&
+    //                 existingEndWeek > newEndWeek
+    //             ) {
+    //                 // Adjust existing boost to start where new boost ends
+    //                 uint256 newDuration = existingEndWeek - newEndWeek;
+    //                 boostDetails[j].startWeek = newEndWeek;
+    //                 boostDetails[j].durationInWeeks = newDuration;
+    //             }
+    //         }
+    //
+    //         // Finally, insert the new boost in the correct position
+    //         bool inserted = false;
+    //         for (uint256 j = 0; j < boostDetails.length; j++) {
+    //             if (newBoost.startWeek < boostDetails[j].startWeek) {
+    //                 // Insert before this element
+    //                 boostDetails.push(boostDetails[boostDetails.length - 1]); // Make space
+    //                 for (uint256 k = boostDetails.length - 2; k > j; k--) {
+    //                     boostDetails[k] = boostDetails[k - 1];
+    //                 }
+    //                 boostDetails[j] = newBoost;
+    //                 inserted = true;
+    //                 break;
+    //             }
+    //         }
+    //
+    //         // If we didn't insert it in the middle, add it at the end
+    //         if (!inserted) {
+    //             boostDetails.push(newBoost);
+    //         }
+    //     }
+    // }
 }

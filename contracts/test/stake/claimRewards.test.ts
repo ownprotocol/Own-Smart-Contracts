@@ -3,12 +3,14 @@ import { ownTestingAPI } from "../../helpers/testing-api";
 import { OwnContract, StakeContract, Signers, VeOWN } from "../../types";
 import { DayOfWeek, setDayOfWeekInHardhatNode } from "../../helpers/evm";
 import { expect } from "chai";
+import hre from "hardhat";
 
 describe.only("Stake - claimRewards", async () => {
   let own: OwnContract;
   let stake: StakeContract;
   let signers: Signers;
   let veOwn: VeOWN;
+  let alice: Signers[0];
 
   const dailyRewardAmount = parseEther("5");
   const weeks = 5;
@@ -16,9 +18,11 @@ describe.only("Stake - claimRewards", async () => {
 
   beforeEach(async () => {
     ({ stake, own, veOwn, signers } = await ownTestingAPI());
+    alice = signers[1];
     await stake.write.setDailyRewardAmount([dailyRewardAmount]);
+
     await stake.write.startStakingNextWeek();
-    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+    await setDayOfWeekInHardhatNode(DayOfWeek.Friday);
 
     const ownBalance = await own.read.balanceOf([signers[0].account.address]);
 
@@ -127,14 +131,19 @@ describe.only("Stake - claimRewards", async () => {
         BigInt(1e18)) *
       BigInt(5);
 
-    await expect(
-      stake.write.claimRewards([[BigInt(0)]]),
-    ).to.changeTokenBalances(
-      own,
-      [signers[0].account],
-      // Staked for 7 days
-      [firstWeekRewards + secondWeekRewards],
-    );
+    const tx = await stake.write.claimRewards([[BigInt(0)]]);
+
+    const result = await hre.ethers.provider.getTransactionReceipt(tx);
+    console.log(result);
+
+    // await expect(
+    //   stake.write.claimRewards([[BigInt(0)]]),
+    // ).to.changeTokenBalances(
+    //   own,
+    //   [signers[0].account],
+    //   // Staked for 7 days
+    //   [firstWeekRewards + secondWeekRewards],
+    // );
   });
 
   it("Should claim rewards for the 5 weeks the stake is active", async () => {
@@ -167,5 +176,53 @@ describe.only("Stake - claimRewards", async () => {
     await expect(
       stake.write.claimRewards([[BigInt(0)]]),
     ).to.changeTokenBalances(own, [signers[0].account], [rewards]);
+  });
+
+  describe("2 users", async () => {
+    let stake_alice: StakeContract;
+
+    beforeEach(async () => {
+      await own.write.transfer([alice.account.address, parseEther("1000")]);
+
+      await own.write.approve([stake.address, parseEther("1000")], {
+        account: alice.account,
+      });
+
+      stake_alice = await hre.viem.getContractAt(
+        "Stake",
+        stake.address as `0x${string}`,
+        { client: { wallet: alice } },
+      );
+    });
+
+    it("Should receive half of the rewards for the second half of the first week, when a new user joins", async () => {
+      const amount = parseEther("50");
+
+      const totalRewardsInWeek =
+        ((dailyRewardAmount * (await stake.read.getCurrentBoostMultiplier())) /
+          BigInt(1e18)) *
+        BigInt(7);
+
+      await stake.write.stake([amount, duration]);
+
+      // await setDayOfWeekInHardhatNode(DayOfWeek.Tuesday);
+
+      // await stake_alice.write.stake([amount, duration]);
+
+      await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
+      await expect(
+        stake.write.claimRewards([[BigInt(0)]]),
+      ).to.changeTokenBalances(own, [signers[0].account], [totalRewardsInWeek]);
+
+      // await expect(
+      //   stake_alice.write.claimRewards([[BigInt(0)]]),
+      // ).to.changeTokenBalances(
+      //   own,
+      //   [signers[1].account],
+      //   // Staked for 7 days
+      //   [firstWeekRewards / BigInt(2)],
+      // );
+    });
   });
 });

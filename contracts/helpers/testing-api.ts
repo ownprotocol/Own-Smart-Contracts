@@ -1,5 +1,6 @@
 import hre, { ethers, upgrades } from "hardhat";
 import { MINTER_ROLE } from "../constants/roles";
+import { parseEther } from "viem";
 
 export const ownTestingAPI = async () => {
   const signers = await hre.viem.getWalletClients();
@@ -60,6 +61,26 @@ export const ownTestingAPI = async () => {
     "Stake",
     (await StakeDeployment.getAddress()) as `0x${string}`,
   );
+
+  await stake.write.addBoostDetails([
+    [
+      {
+        startWeek: BigInt(0),
+        durationInWeeks: BigInt(1),
+        multiplier: parseEther("10"),
+      },
+      {
+        startWeek: BigInt(1),
+        durationInWeeks: BigInt(3),
+        multiplier: parseEther("5"),
+      },
+      {
+        startWeek: BigInt(4),
+        durationInWeeks: BigInt(8),
+        multiplier: parseEther("3"),
+      },
+    ],
+  ]);
 
   await veOwn.write.grantRole([MINTER_ROLE, stake.address]);
 
