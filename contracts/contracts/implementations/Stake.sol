@@ -98,8 +98,6 @@ contract Stake is
             revert StakingNotStarted();
         }
 
-        uint256 value = uint256(1) / 7;
-
         _updateWeeklyRewardValuesCache();
 
         // NOTE: There is no maximum multiplier here
@@ -108,8 +106,8 @@ contract Stake is
         uint256 currentDay = getCurrentDay();
         // They will start earning rewards from the next day
         uint256 startDay = currentDay + 1;
-        // Inclusive of the last day
-        uint256 finalDay = startDay + _days;
+        // Inclusive of the final day so subtract 1
+        uint256 finalDay = startDay + _days - 1;
         uint256 positionId = totalPositions;
 
         // record their position
@@ -122,6 +120,8 @@ contract Stake is
             finalDay: finalDay,
             lastDayRewardsClaimed: currentDay
         });
+        console.log("Start Day: %s", startDay);
+        console.log("Final Day: %s", finalDay);
         usersPositions[msg.sender].push(positionId);
 
         validVeOwnAdditionsInDay[startDay] += veOwnAmount;
@@ -440,10 +440,6 @@ contract Stake is
             .dailyRewardAmountAtEndOfWeek;
         uint256 boostMultiplierCurrent = rewardValuesWeeklyCache[previousWeek]
             .boostMultiplierAtEndOfWeek;
-        console.log("Previous week: %s", previousWeek);
-        console.log("Valid veOwn: %s", validVeOwn);
-        console.log("Daily reward amount: %s", dailyRewardAmountCurrent);
-        console.log("Boost multiplier: %s", boostMultiplierCurrent);
 
         for (
             // This starts off with the first day of the week
@@ -467,7 +463,6 @@ contract Stake is
             }
 
             if (validVeOwn == 0) {
-                console.log("Skipping day: %s", currentDay);
                 continue;
             }
             console.log("Calculating rewards for day: %s", currentDay);
@@ -475,10 +470,9 @@ contract Stake is
             console.log("Daily reward amount: %s", dailyRewardAmountCurrent);
             console.log("Boost multiplier: %s", boostMultiplierCurrent);
 
-            // TODO: add this
-            // if (_startDay < currentDay) {
-            //     continue;
-            // }
+            if (currentDay < _startDay) {
+                continue;
+            }
 
             rewardPerToken += _calculateRewardPerToken(
                 dailyRewardAmountCurrent,
@@ -514,12 +508,7 @@ contract Stake is
         uint256 startWeek = position.startDay / 7;
         uint256 lastWeekClaimed = position.lastDayRewardsClaimed / 7;
 
-        console.log("Position start day: %s", position.startDay);
-        console.log("First day of first week: %s", startWeek * 7);
         uint256 lastDayOfFirstWeek = startWeek * 7 + 6;
-        console.log("Last day of first week: %s", lastDayOfFirstWeek);
-        console.log("Current day: %s", _currentDay);
-        console.log("Pos in week last day: %s", position.startDay % 7);
 
         bool enteredAtStartOfWeek = position.startDay % 7 == 0;
         bool finalDayEndOfWeek = position.finalDay % 7 == 6;
@@ -536,8 +525,6 @@ contract Stake is
                 position.lastDayRewardsClaimed + 1,
                 lastDayOfFirstWeek
             );
-
-            console.log("Position veOwn total", position.veOwnAmount);
 
             reward += (position.veOwnAmount * firstWeekRewardPerToken) / 1e18;
         }
@@ -579,21 +566,17 @@ contract Stake is
             }
         }
 
-        uint256 claimRewardsUpToDay = position.finalDay > _currentDay
-            ? _currentDay - 1
-            : position.finalDay;
-        console.log("Claim rewards up to day: %s", claimRewardsUpToDay);
-
         console.log("Reward after grouped weeks: %s", reward);
 
+        console.log("Final week: %s", finalWeek);
+
         // Add rewards for the last week they stake for
-        uint256 firstDayOfFinalWeek = finalWeek * 7;
         if (
             finalWeek > lastWeekClaimed &&
-            finalWeek > currentWeek &&
+            currentWeek > finalWeek &&
             !finalDayEndOfWeek
         ) {
-            console.log("Adding rewards from here");
+            uint256 firstDayOfFinalWeek = finalWeek * 7;
             uint256 lastWeekRewardPerToken = _rewardPerTokenForDayRange(
                 firstDayOfFinalWeek,
                 position.finalDay
