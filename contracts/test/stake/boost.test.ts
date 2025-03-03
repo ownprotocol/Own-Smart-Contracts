@@ -1,11 +1,9 @@
 import { parseEther } from "viem";
 import { ownTestingAPI } from "../../helpers/testing-api";
 import { OwnContract, StakeContract, Signers, VeOWN } from "../../types";
-import { DayOfWeek, setDayOfWeekInHardhatNode } from "../../helpers/evm";
 import { expect } from "chai";
-import hre from "hardhat";
 
-describe.only("Stake - boost", async () => {
+describe("Stake - boost", async () => {
   let own: OwnContract;
   let stake: StakeContract;
   let signers: Signers;

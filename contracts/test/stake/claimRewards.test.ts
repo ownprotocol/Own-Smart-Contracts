@@ -5,7 +5,7 @@ import { DayOfWeek, setDayOfWeekInHardhatNode } from "../../helpers/evm";
 import { expect } from "chai";
 import hre from "hardhat";
 
-describe("Stake - claimRewards", async () => {
+describe.only("Stake - claimRewards", async () => {
   let own: OwnContract;
   let stake: StakeContract;
   let signers: Signers;
@@ -65,6 +65,7 @@ describe("Stake - claimRewards", async () => {
     // Skip to following saturday, so run this twice
     await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
     const boostMultiplier = await stake.read.getCurrentBoostMultiplier();
+    console.log("boostMultiplier", boostMultiplier);
     await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
 
     const rewardsPerDay = (dailyRewardAmount * boostMultiplier) / BigInt(1e18);

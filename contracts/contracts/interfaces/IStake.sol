@@ -11,6 +11,12 @@ interface IStake {
         uint256 lastDayRewardsClaimed;
     }
 
+    struct BoostDetails {
+        uint256 durationInWeeks;
+        uint256 startWeek;
+        uint256 multiplier;
+    }
+
     // *** Errors ***
     error CannotStakeZeroAmount();
 

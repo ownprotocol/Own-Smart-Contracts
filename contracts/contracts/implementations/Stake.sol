@@ -398,7 +398,9 @@ contract Stake is
             rewardValuesWeeklyCache[week] = RewardValuesWeeklyCache({
                 weeklyRewardPerTokenCached: rewardPerTokenInWeek,
                 validVeOwnAtEndOfWeek: currentVeOwnTotal,
-                boostMultiplierAtEndOfWeek: getBoostMultiplier(week + 1),
+                boostMultiplierAtEndOfWeek: getBoostMultiplierForAbsoluteWeek(
+                    week + 1
+                ),
                 dailyRewardAmountAtEndOfWeek: dailyRewardAmountCurrent
             });
             // console.log(
@@ -567,11 +569,7 @@ contract Stake is
         }
     }
 
-    struct BoostDetails {
-        uint256 durationInWeeks;
-        uint256 startWeek;
-        uint256 multiplier;
-    }
+    // **** Boost functions ****
 
     BoostDetails[] public boostDetails;
 
@@ -582,24 +580,37 @@ contract Stake is
     uint256 finalBoostWeek;
 
     function getCurrentBoostMultiplier() public view returns (uint256) {
-        uint256 currentWeek = getCurrentWeek();
-
-        return getBoostMultiplier(currentWeek);
+        return getBoostMultiplierForAbsoluteWeek(getCurrentWeek());
     }
 
-    function getBoostMultiplier(uint256 week) public view returns (uint256) {
-        if (boostDetails.length == 0 || week > finalBoostWeek) {
+    function getBoostMultiplierForAbsoluteWeek(
+        uint256 week
+    ) public view returns (uint256) {
+        uint256 weeksSinceStart = week - stakingStartDay / 7;
+
+        return getBoostMultiplier(weeksSinceStart);
+    }
+
+    function getBoostMultiplier(
+        uint256 _weekSinceStart
+    ) public view returns (uint256) {
+        if (boostDetails.length == 0 || _weekSinceStart > finalBoostWeek) {
             return 1 ether;
         }
 
-        for (uint256 i = boostDetails.length - 1; i >= 0; --i) {
+        uint256 i = boostDetails.length;
+
+        while (i > 0) {
+            --i;
+
             uint256 boostStartWeek = boostDetails[i].startWeek;
             uint256 endWeek = boostStartWeek + boostDetails[i].durationInWeeks;
 
-            if (week >= boostStartWeek && week < endWeek) {
+            if (
+                _weekSinceStart >= boostStartWeek && _weekSinceStart < endWeek
+            ) {
                 return boostDetails[i].multiplier;
             }
-            console.log("Loop", i);
         }
 
         return 1 ether;
