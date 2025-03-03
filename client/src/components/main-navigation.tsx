@@ -12,7 +12,7 @@ function MainNavigation({ isLoading }: MainNavigationProps) {
     return <MainNavigationSkeleton />;
   }
   return (
-    <div className="mb-[10%] mt-[30%] flex min-h-[100px] w-full justify-between md:mt-[10%]">
+    <div className="mb-[10%] mt-[30%] flex min-h-[100px] w-full justify-between md:mt-16">
       <div className="w-1/3 md:w-1/2">
         <Image src="/own-logo.svg" alt="own logo" width={100} height={100} />
       </div>

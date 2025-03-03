@@ -1,5 +1,4 @@
-"use client";
-
+// "use client";
 import {
   ActionButtons,
   MainNavigation,
@@ -9,35 +8,53 @@ import {
   TokenomicsChart,
   TokenomicsChartMobile,
 } from "@/components";
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
+// import Loading from "./loading";
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export default function HomePage() {
+export default async function HomePage() {
   const hasPresaleConcluded = false;
-  const [isLoading, setIsLoading] = useState(false);
+  await wait(2000);
 
-  useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+  // const [isLoading, setIsLoading] = useState(false);
 
-    return () => clearTimeout(timer);
-  }, []);
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   const timer = setTimeout(() => {
+  //     setIsLoading(false);
+  //   }, 1000);
+
+  //   return () => clearTimeout(timer);
+  // }, []);
+  // useEffect(() => {
+  //   const loadData = async () => {
+  //     setIsLoading(true);
+  //     // Simulate API call or data loading
+  //     await wait(2000);
+  //     setIsLoading(false);
+  //   };
+
+  //   loadData().catch(console.error);
+  // }, []);
+
+  // if (isLoading) {
+  //   return <Loading />;
+  // }
 
   return (
-    <main className="px-[5%] md:px-[10%] pt-[10%] min-h-screen md:pt-[3%]">
+    <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
       <div className="relative flex flex-col">
         {!hasPresaleConcluded && (
           <>
-            <PresaleBanner isLoading={isLoading} />
-            <RaiseStats isLoading={isLoading} />
-            <PriceIncreaseTimer isLoading={isLoading} />
-            <ActionButtons isLoading={isLoading} />
+            <PresaleBanner isLoading={false} />
+            <RaiseStats isLoading={false} />
+            <PriceIncreaseTimer isLoading={false} />
+            <ActionButtons isLoading={false} />
           </>
         )}
-        <TokenomicsChart isLoading={isLoading} />
-        <TokenomicsChartMobile isLoading={isLoading} />
-        <MainNavigation  isLoading={isLoading}/>
+        <TokenomicsChart isLoading={false} />
+        <TokenomicsChartMobile isLoading={false} />
+        <MainNavigation isLoading={false} />
       </div>
     </main>
   );

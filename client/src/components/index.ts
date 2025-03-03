@@ -21,3 +21,4 @@ export { default as TokenomicsChartMobileSkeleton } from "./ui/loading-skeletons
 export { default as MainNavigationSkeleton } from "./ui/loading-skeletons/main-navigation-skeleton";
 export { default as HasPresaleConcludedSkeleton } from "./ui/loading-skeletons/has-presale-concluded-skeleton";
 export { default as StakeOwnTokenBanner } from "./staking/stake-own-token-banner";
+export { default as EarnAPYTimer } from "./staking/earn-apy-timer";
