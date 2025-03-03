@@ -9,7 +9,7 @@ import {
 import { expect } from "chai";
 import { setDay } from "date-fns";
 
-describe.only("Helpers", async () => {
+describe("Helpers", async () => {
   let stake: StakeContract;
 
   before(async () => {
@@ -64,7 +64,7 @@ describe.only("Helpers", async () => {
   //   expect(dayOfWeek).to.equal(desiredDay);
   // });
 
-  it.only("Should have the correct days since staking started", async () => {
+  it("Should have the correct days since staking started", async () => {
     const desiredDay = DayOfWeek.Wednesday;
 
     const beforeDay = Number(await stake.read.getCurrentDay());
@@ -82,7 +82,7 @@ describe.only("Helpers", async () => {
     expect(updatedDay - firstDayOfStartWeek).to.equal(DayOfWeek.Wednesday);
   });
 
-  it.only("Should go to the next staking week", async () => {
+  it("Should go to the next staking week", async () => {
     const desiredDay = DayOfWeek.Saturday;
 
     const beforeWeek = Number(await stake.read.getCurrentWeek());
@@ -94,8 +94,6 @@ describe.only("Helpers", async () => {
     const updatedDay = Number(await stake.read.getCurrentDay());
 
     expect(updatedWeek - beforeWeek).to.equal(1);
-
-    const result = updatedDay / 7;
 
     expect(updatedDay % 7).to.equal(0);
   });

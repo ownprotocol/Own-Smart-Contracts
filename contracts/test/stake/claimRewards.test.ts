@@ -2,18 +2,16 @@ import { parseEther } from "viem";
 import { ownTestingAPI } from "../../helpers/testing-api";
 import { OwnContract, StakeContract, Signers, VeOWN } from "../../types";
 import { DayOfWeek, setDayOfWeekInHardhatNode } from "../../helpers/evm";
-import { SECONDS_IN_A_DAY } from "../../constants/duration";
+import { expect } from "chai";
 
-describe("Stake - claimRewards", async () => {
+describe.only("Stake - claimRewards", async () => {
   let own: OwnContract;
   let stake: StakeContract;
   let signers: Signers;
   let veOwn: VeOWN;
 
   const dailyRewardAmount = parseEther("5");
-  const duration = BigInt(7 * 5);
-
-  // await helpers.time.increase(3600);
+  const duration = BigInt(7 * 1);
 
   beforeEach(async () => {
     ({ stake, own, veOwn, signers } = await ownTestingAPI());
@@ -21,44 +19,34 @@ describe("Stake - claimRewards", async () => {
     await stake.write.startStaking();
     const ownBalance = await own.read.balanceOf([signers[0].account.address]);
 
-    await own.write.transfer([stake.address, dailyRewardAmount * duration]);
+    await own.write.transfer([stake.address, parseEther("1000")]);
 
     await own.write.approve([stake.address, ownBalance]);
   });
 
-  it("Should claim rewards for the last half of the first week of staking", async () => {
-    // const currentDay = Number(await stake.read.getCurrentDay());
-    // const currentDate = new Date(currentDay * SECONDS_IN_A_DAY * 1000);
-    const currentDay = await stake.read.getCurrentDay();
+  it("Should claim rewards in the first week of staking", async () => {
+    const currentWeek = Number(await stake.read.getCurrentWeek());
+
+    const boostMultiplier = await stake.read.getBoostMultiplier([
+      BigInt(currentWeek),
+    ]);
+
     await setDayOfWeekInHardhatNode(DayOfWeek.Wednesday);
-    const afterDay = await stake.read.getCurrentDay();
 
-    console.log("currentDay", currentDay.toString());
-    console.log("afterDay", afterDay.toString());
+    const dailyRewardAmount = await stake.read.dailyRewardAmount();
 
-    const amount = parseEther("1000");
+    const amount = parseEther("50");
 
     await stake.write.stake([amount, duration]);
 
     await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
 
-    const beforeBalance = await own.read.balanceOf([
-      signers[0].account.address,
-    ]);
-
-    await stake.write.claimRewards([[BigInt(0)]]);
-    const afterBalance = await own.read.balanceOf([signers[0].account.address]);
-
-    console.log("beforeBalance", beforeBalance.toString());
-    console.log("afterBalance", afterBalance.toString());
-    // TODO: Having a hard time figuring out how to either fast forward the chain to the next wednesday
-    // Or pin the chain to a specific date
-    // const blockTimestamp = await stake.read.getCurrentDay();
-    // const timeUntilNextWednesday =
-    // const amount = parseEther("1000");
-    // const duration = BigInt(7 * 5);
-    // await stake.write.stake([amount, BigInt(duration)]);
-    //
-    // await stake.write.claimRewards([[BigInt(0)]]);
+    await expect(
+      stake.write.claimRewards([[BigInt(0)]]),
+    ).to.changeTokenBalances(
+      own,
+      [signers[0].account],
+      [(dailyRewardAmount * boostMultiplier) / BigInt(1e18)],
+    );
   });
 });

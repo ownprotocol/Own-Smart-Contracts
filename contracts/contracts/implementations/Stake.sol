@@ -220,13 +220,13 @@ contract Stake is
     }
 
     function getBoostMultiplier(uint256 week) public view returns (uint256) {
-        uint256 weeksSinceStart = week - stakingStartDay;
+        uint256 weeksSinceStart = week - (stakingStartDay / 7);
 
-        if (weeksSinceStart == 1) return 10;
-        if (weeksSinceStart <= 4) return 5;
-        if (weeksSinceStart <= 12) return 3;
+        if (weeksSinceStart == 0) return 10 ether;
+        if (weeksSinceStart <= 3) return 5 ether;
+        if (weeksSinceStart <= 11) return 3 ether;
 
-        return 1;
+        return 1 ether;
     }
 
     function getPreviousWeekReturns() external returns (uint256) {
@@ -298,23 +298,24 @@ contract Stake is
         }
         // TODO: Revert if staking already started
         uint256 currentDay = getCurrentDay();
+        uint256 currentWeek = currentDay / 7;
 
         stakingStartDay = currentDay;
 
-        uint256 previousWeek = currentDay / 7 - 1;
+        uint256 previousWeek = currentWeek - 1;
         lastCachedWeek = previousWeek;
 
         uint256 dailyRewardAmountCached = dailyRewardAmount;
         uint256 weeklyRewardPerToken = _calculateRewardPerToken(
             dailyRewardAmountCached,
-            getBoostMultiplier(currentDay),
+            getBoostMultiplier(currentWeek),
             1 ether
         );
 
         rewardValuesWeeklyCache[previousWeek] = RewardValuesWeeklyCache({
             weeklyRewardPerTokenCached: weeklyRewardPerToken,
             validVeOwnAtEndOfWeek: 0,
-            boostMultiplierAtEndOfWeek: getBoostMultiplier(currentDay),
+            boostMultiplierAtEndOfWeek: getBoostMultiplier(currentWeek),
             dailyRewardAmountAtEndOfWeek: dailyRewardAmountCached
         });
 
@@ -341,7 +342,7 @@ contract Stake is
         uint256 _boostMultiplier,
         uint256 _validVeOwn
     ) internal pure returns (uint256) {
-        // TODO: This needs to handle 1e18
+        // Everything is scaled by 1e18 so we don't need to divide by 1e18 at the end
         return (_dailyRewardAmount * _boostMultiplier) / _validVeOwn;
     }
 
@@ -382,6 +383,10 @@ contract Stake is
                     currentDay
                 ];
                 if (boostMultiplierUpdate != 0) {
+                    console.log(
+                        ">Updated boost multiplier: %s",
+                        boostMultiplierUpdate
+                    );
                     boostMultiplier = boostMultiplierUpdate;
                 }
                 if (dailyRewardAmountUpdate != 0) {
@@ -398,9 +403,9 @@ contract Stake is
                     currentVeOwnTotal
                 );
             }
-            console.log("Reward per token in week: %s", rewardPerTokenInWeek);
-            console.log("Current veOwn total: %s", currentVeOwnTotal);
-            console.log("Boost multiplier: %s", boostMultiplier);
+            // console.log("Reward per token in week: %s", rewardPerTokenInWeek);
+            // console.log("Current veOwn total: %s", currentVeOwnTotal);
+            // console.log("Boost multiplier: %s", boostMultiplier);
 
             rewardValuesWeeklyCache[week] = RewardValuesWeeklyCache({
                 weeklyRewardPerTokenCached: rewardPerTokenInWeek,
@@ -408,10 +413,10 @@ contract Stake is
                 boostMultiplierAtEndOfWeek: boostMultiplier,
                 dailyRewardAmountAtEndOfWeek: dailyRewardAmountCurrent
             });
-            console.log(
-                "Weekly reward per token cached: %s",
-                rewardPerTokenInWeek
-            );
+            // console.log(
+            //     "Weekly reward per token cached: %s",
+            //     rewardPerTokenInWeek
+            // );
         }
 
         lastCachedWeek = currentWeek - 1;
@@ -432,6 +437,10 @@ contract Stake is
             .dailyRewardAmountAtEndOfWeek;
         uint256 boostMultiplierCurrent = rewardValuesWeeklyCache[previousWeek]
             .boostMultiplierAtEndOfWeek;
+        console.log("Previous week: %s", previousWeek);
+        console.log("Valid veOwn: %s", validVeOwn);
+        console.log("Daily reward amount: %s", dailyRewardAmountCurrent);
+        console.log("Boost multiplier: %s", boostMultiplierCurrent);
 
         for (
             // This starts off with the first day of the week
@@ -454,11 +463,22 @@ contract Stake is
                 dailyRewardAmountCurrent = dailyRewardAmountUpdate;
             }
 
-            rewardPerToken = _calculateRewardPerToken(
+            if (validVeOwn == 0) {
+                console.log("Skipping day: %s", currentDay);
+                continue;
+            }
+            console.log("Calculating rewards for day: %s", currentDay);
+            console.log("Valid veOwn: %s", validVeOwn);
+            console.log("Daily reward amount: %s", dailyRewardAmountCurrent);
+            console.log("Boost multiplier: %s", boostMultiplierCurrent);
+
+            rewardPerToken += _calculateRewardPerToken(
                 dailyRewardAmountCurrent,
                 boostMultiplierCurrent,
                 validVeOwn
             );
+
+            console.log("Reward per token: %s", rewardPerToken);
         }
     }
 
@@ -480,7 +500,6 @@ contract Stake is
 
         // TODO: THis needs to account for the fact that users can claim at any point after a week.
 
-        console.log("Calculating rewards for position %s", _positionId);
         uint256 startWeek = position.startDay / 7;
         uint256 claimRewardsUpToDay = position.finalDay > _currentDay
             ? _currentDay - 1
@@ -499,17 +518,12 @@ contract Stake is
             _currentDay > lastDayOfFirstWeek &&
             position.lastDayRewardsClaimed < lastDayOfFirstWeek
         ) {
-            uint256 finalDayOfRewardsForWeek = claimRewardsUpToDay <
-                lastDayOfFirstWeek
-                ? claimRewardsUpToDay
-                : lastDayOfFirstWeek;
-
-            console.log("1");
             uint256 firstWeekRewardPerToken = _rewardPerTokenForDayRange(
                 position.lastDayRewardsClaimed + 1,
-                finalDayOfRewardsForWeek
+                lastDayOfFirstWeek
             );
-            console.log("2");
+
+            console.log("Position veOwn total", position.veOwnAmount);
 
             reward += (position.veOwnAmount * firstWeekRewardPerToken) / 1e18;
         }
@@ -547,6 +561,8 @@ contract Stake is
 
             reward += (position.veOwnAmount * lastWeekRewardPerToken) / 1e18;
         }
+
+        console.log("Reward: %s", reward);
     }
 
     // TODO: Ordered array
