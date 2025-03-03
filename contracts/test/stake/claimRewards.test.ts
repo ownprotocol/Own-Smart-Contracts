@@ -11,12 +11,15 @@ describe.only("Stake - claimRewards", async () => {
   let veOwn: VeOWN;
 
   const dailyRewardAmount = parseEther("5");
-  const duration = BigInt(7 * 5);
+  const weeks = 5;
+  const duration = BigInt(7 * weeks);
 
   beforeEach(async () => {
     ({ stake, own, veOwn, signers } = await ownTestingAPI());
     await stake.write.setDailyRewardAmount([dailyRewardAmount]);
-    await stake.write.startStaking();
+    await stake.write.startStakingNextWeek();
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
     const ownBalance = await own.read.balanceOf([signers[0].account.address]);
 
     await own.write.transfer([stake.address, parseEther("1000")]);
@@ -134,7 +137,35 @@ describe.only("Stake - claimRewards", async () => {
     );
   });
 
-  // It should claim rewards only whilst the stake is active
-  // It should claim rewards for the final week
-  // It should claim rewards only for the duration of the stake (5 weeks) - fast forward 50 weeks
+  it("Should claim rewards for the 5 weeks the stake is active", async () => {
+    await setDayOfWeekInHardhatNode(DayOfWeek.Friday);
+
+    await stake.write.stake([parseEther("50"), duration]);
+
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
+    let rewards = BigInt(0);
+
+    const skipWeekAndAddToRewards = async () => {
+      rewards +=
+        ((dailyRewardAmount * (await stake.read.getCurrentBoostMultiplier())) /
+          BigInt(1e18)) *
+        BigInt(7);
+
+      await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+    };
+
+    for (let i = 0; i < weeks - 1; i++) {
+      await skipWeekAndAddToRewards();
+    }
+
+    // Skip an additional 5 weeks to ensure we only receive rewards whilst our stake is active
+    for (let i = 0; i < 5; i++) {
+      await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+    }
+
+    await expect(
+      stake.write.claimRewards([[BigInt(0)]]),
+    ).to.changeTokenBalances(own, [signers[0].account], [rewards]);
+  });
 });

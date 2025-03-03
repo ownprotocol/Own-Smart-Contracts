@@ -288,7 +288,7 @@ contract Stake is
     }
 
     function hasStakingStarted() internal view returns (bool) {
-        return stakingStartDay != 0;
+        return stakingStartDay != 0 && stakingStartDay < getCurrentDay();
     }
 
     // **** Admin functions ****
@@ -299,30 +299,30 @@ contract Stake is
         // TODO: EVENT
     }
 
-    function startStaking() external onlyDefaultAdmin {
+    function startStakingNextWeek() external onlyDefaultAdmin {
         if (dailyRewardAmount == 0) {
             revert("Daily reward amount not set");
         }
         // TODO: Revert if staking already started
-        uint256 currentDay = getCurrentDay();
-        uint256 currentWeek = currentDay / 7;
+        // uint256 currentDay = getCurrentDay();
+        uint256 currentWeek = getCurrentWeek();
 
-        stakingStartDay = currentDay;
+        stakingStartDay = currentWeek * 7 + 7;
 
-        uint256 previousWeek = currentWeek - 1;
-        lastCachedWeek = previousWeek;
+        lastCachedWeek = currentWeek;
 
         uint256 dailyRewardAmountCached = dailyRewardAmount;
-        uint256 weeklyRewardPerToken = _calculateRewardPerToken(
-            dailyRewardAmountCached,
-            getBoostMultiplier(currentWeek),
-            1 ether
-        );
+        // uint256 weeklyRewardPerToken = _calculateRewardPerToken(
+        //     dailyRewardAmountCached,
+        //     getBoostMultiplier(currentWeek),
+        //     1 ether
+        // );
 
-        rewardValuesWeeklyCache[previousWeek] = RewardValuesWeeklyCache({
-            weeklyRewardPerTokenCached: weeklyRewardPerToken,
+        rewardValuesWeeklyCache[currentWeek] = RewardValuesWeeklyCache({
+            weeklyRewardPerTokenCached: 0,
             validVeOwnAtEndOfWeek: 0,
-            boostMultiplierAtEndOfWeek: getBoostMultiplier(currentWeek),
+            // TODO: TO be fixed with the correct value
+            boostMultiplierAtEndOfWeek: 10 ether,
             dailyRewardAmountAtEndOfWeek: dailyRewardAmountCached
         });
 
@@ -566,10 +566,6 @@ contract Stake is
             }
         }
 
-        console.log("Reward after grouped weeks: %s", reward);
-
-        console.log("Final week: %s", finalWeek);
-
         // Add rewards for the last week they stake for
         if (
             finalWeek > lastWeekClaimed &&
@@ -584,8 +580,6 @@ contract Stake is
 
             reward += (position.veOwnAmount * lastWeekRewardPerToken) / 1e18;
         }
-
-        console.log("Reward: %s", reward);
     }
 
     // TODO: Ordered array
