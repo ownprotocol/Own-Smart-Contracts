@@ -22,5 +22,6 @@ export { default as MainNavigationSkeleton } from "./ui/loading-skeletons/main-n
 export { default as HasPresaleConcludedSkeleton } from "./ui/loading-skeletons/has-presale-concluded-skeleton";
 export { default as StakeOwnTokenBanner } from "./staking/stake-own-token-banner";
 export { default as EarnAPYTimer } from "./staking/earn-apy-timer";
-export { default as StakeTable } from "./user-stake/stake-table";
+export { default as StakeRewardsTable } from "./user-stake/rewards/stake-rewards-table";
 export { default as StakingRewards } from "./user-stake/staking-rewards";
+export { default as StakePositionsTable } from "./user-stake/positions/stake-positions-table";

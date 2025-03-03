@@ -1,4 +1,4 @@
-import { MainNavigation, StakingRewards, StakeTable } from "@/components";
+import { MainNavigation, StakingRewards, StakePositionsTable } from "@/components";
 
 function UserStakePage() {
   return (
@@ -8,7 +8,7 @@ function UserStakePage() {
             Your Staking
           </h1>
           <StakingRewards />
-          <StakeTable />
+          <StakePositionsTable />
         </div>
       <MainNavigation isLoading={false} />
     </main>

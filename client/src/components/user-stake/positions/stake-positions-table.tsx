@@ -1,35 +1,33 @@
 "use client";
-import { Button } from "../ui/button";
+
+import { Button } from "@/components/ui/button";
 
 const stakePositions = [
   {
-    id: 1,
+    id: 1,    
+    date: "2024-01-01",
     own_locked: "1000",
-    start_date: "2024-01-01",
-    end_date: "2024-01-01",
     rewards: "100",
-    own_in_dollars: "1000",
+    apr: "10",
   },
   {
     id: 2,
+    date: "2024-01-01",
     own_locked: "1000",
-    start_date: "2024-01-01",
-    end_date: "2024-01-01",
     rewards: "100",
-    own_in_dollars: "1000",
+    apr: "10",
   },
 
   {
     id: 3,
+    date: "2024-01-01",
     own_locked: "1000",
-    start_date: "2024-01-01",
-    end_date: "2024-01-01",
     rewards: "100",
-    own_in_dollars: "1000",
+    apr: "10",
   },
 ];
 
-function StakeTable() {
+function StakePositionsTable() {
   return (
     <div className="mt-4">
       <div className="mx-auto max-w-7xl">
@@ -43,7 +41,7 @@ function StakeTable() {
               </div>
               <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
                 <h1 className="font-dm_mono text-[14px] font-[400] text-gray-400 md:text-[16px]">
-                  View Reward History
+                  View Staking Positions
                 </h1>
               </div>
             </div>
@@ -55,22 +53,17 @@ function StakeTable() {
                       <tr>
                         <th
                           scope="col"
+                          className="px-3 py-3.5 text-left font-dm_mono text-sm font-semibold text-gray-400 sm:pl-0"
+                        >
+                          DATE
+                        </th>
+                        <th
+                          scope="col"
                           className="py-3.5 pl-4 pr-3 text-left font-dm_mono text-sm font-semibold text-gray-400 sm:pl-0"
                         >
                           OWN LOCKED
                         </th>
-                        <th
-                          scope="col"
-                          className="px-3 py-3.5 text-left font-dm_mono text-sm font-semibold text-gray-400 sm:pl-0"
-                        >
-                          START DATE
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-3 py-3.5 text-left font-dm_mono text-sm font-semibold text-gray-400 sm:pl-0"
-                        >
-                          END DATE
-                        </th>
+
                         <th
                           scope="col"
                           className="px-3 py-3.5 text-left font-dm_mono text-sm font-semibold text-gray-400 sm:pl-0"
@@ -79,45 +72,26 @@ function StakeTable() {
                         </th>
                         <th
                           scope="col"
-                          className="relative py-3.5 pl-3 pr-4 sm:pr-0"
+                          className="px-3 py-3.5 text-left font-dm_mono text-sm font-semibold text-gray-400 sm:pl-0"
                         >
-                          <span className="sr-only">Withdraw</span>
+                          APR
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-800">
+                    <tbody className="divide-y divide-gray-800 font-dm_mono">
                       {stakePositions.map((stakePosition) => (
                         <tr key={stakePosition.id}>
                           <td className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left font-dm_sans text-sm font-semibold text-white sm:pl-0">
+                            {stakePosition.date}
+                          </td>
+                          <td className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left font-dm_sans text-sm font-semibold text-white sm:pl-0">
                             {stakePosition.own_locked} Own
-                            <p className="font-dm_sans text-[8px] font-[400] leading-[14px] tracking-[-3%] text-gray-400 md:text-[12px] md:leading-[16px]">
-                              ={stakePosition.own_in_dollars}
-                            </p>
                           </td>
                           <td className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left font-dm_sans text-sm font-semibold text-white sm:pl-0">
-                            {stakePosition.start_date}
-                          </td>
-                          <td className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left font-dm_sans text-sm font-semibold text-white sm:pl-0">
-                            {stakePosition.end_date}
+                            {stakePosition.rewards} Own
                           </td>
                           <td className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left font-dm_sans text-sm font-semibold text-[#F5841F] sm:pl-0">
                             {stakePosition.rewards}
-                          </td>
-                          <td className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left font-dm_sans text-sm font-semibold text-white sm:pl-0">
-                            <Button
-                              variant="ghost"
-                              className="text-[#B37FE8] hover:text-[#B37FE8]"
-                              //TODO: Implement withdraw logic here
-                              onClick={() => {
-                                console.log("Withdraw");
-                              }}
-                            >
-                              Withdraw
-                              <span className="sr-only">
-                                {" "}
-                                {stakePosition.own_locked}
-                              </span>
-                            </Button>
                           </td>
                         </tr>
                       ))}
@@ -133,4 +107,4 @@ function StakeTable() {
   );
 }
 
-export default StakeTable;
+export default StakePositionsTable;
