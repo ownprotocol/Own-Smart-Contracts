@@ -6,10 +6,10 @@ import { Separator } from "@/components/ui/separator";
 // This component is used to create a separator - design on the home page
 function HomeSeparator() {
   const pathname = usePathname();
-  const isHomePage = pathname === "/" || pathname === "/staking";
+  const showSeparator = pathname === "/" || pathname === "/staking";
   const hasPresaleConcluded = true;
 
-  if (!isHomePage || !hasPresaleConcluded) return null;
+  if (!showSeparator || !hasPresaleConcluded) return null;
 
   return (
     <Separator

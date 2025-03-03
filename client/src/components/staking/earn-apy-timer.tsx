@@ -46,6 +46,15 @@ function EarnAPYTimer() {
           priority
         />
       </div>
+      <div className="absolute left-[-15%] top-[-15%] -z-10 hidden md:block">
+        <Image
+          src="/home-page/hero/designed-dots.png"
+          alt="Decorative dots"
+          width={75}
+          height={75}
+          priority
+        />
+      </div>
     </div>
   );
 }
