@@ -18,7 +18,10 @@ import { z } from "zod";
 const stakingSchema = z.object({
   tokenAmount: z
     .string()
-    .min(1, { message: "Token amount must be more than 0 to stake." }),
+    .min(1, { message: "Token amount must be more than 0 to stake." })
+    .regex(/^\d+(\.\d+)?$/, {
+      message: "Token amount must contain only numbers.",
+    }),
   lockupDuration: z
     .string()
     .min(1, { message: "Lockup duration must be at least 1 week." }),
@@ -137,7 +140,6 @@ const StakingDrawerContent = () => {
                 <div className="flex items-center border-2 border-gray-500/50 bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
                   <input
                     type="text"
-                    disabled={true}
                     value={durationWeeks || ""}
                     onChange={(e) => setDurationWeeks(e.target.value)}
                     placeholder="0"
