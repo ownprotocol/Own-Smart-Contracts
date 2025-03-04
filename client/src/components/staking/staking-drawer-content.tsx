@@ -94,19 +94,35 @@ const StakingDrawerContent = () => {
           <div className="w-full text-end font-dm_sans text-[10px] font-medium leading-[20px] text-orange-500 md:text-[16px] md:leading-[24px]">
             MAX REWARD
           </div>
-          <div></div>
-          <div></div>
-          <div></div>
+          <div className="flex flex-col gap-2 md:flex-row md:gap-4">
+            <div className="flex w-full flex-col gap-2">
+              <div className="w-full rounded-lg px-0 md:px-4">
+                <h2 className="font-dm_sans text-[16px] font-medium leading-[24px] text-black md:text-[18px] md:leading-[28px]">
+                  Summary
+                </h2>
+                <div className="flex flex-col">
+                  <SummaryRow label="Token to be locked" value="1000" />
+                  <SummaryRow label="Factor" value="0.99x" />
+                  <SummaryRow label="Lock-up Duration" value="208 weeks" />
+                  <SummaryRow label="Unlock Date" value="Dec 14 2028 08:00" />
+                </div>
+              </div>
+              <div className="w-full"></div>
+            </div>
+            <div className="w-full">
+              <RewardCard />
+            </div>
+          </div>
+          <DrawerFooter className="flex justify-start">
+            <Button className="w-full rounded-lg bg-purple-700 px-4 py-2 font-dm_sans text-[14px] font-medium leading-[20px] text-white transition-colors hover:bg-purple-800 md:max-w-fit md:px-8 md:text-[18px] md:leading-[28px]">
+              Stake
+            </Button>
+            {/* <DrawerClose asChild>
+              <Button>Cancel</Button>
+            </DrawerClose> */}
+          </DrawerFooter>
         </div>
-        {/* Add your staking form content here */}
-        <p>Staking form will go here</p>
       </div>
-      <DrawerFooter>
-        <Button>Confirm Stake</Button>
-        <DrawerClose asChild>
-          <Button variant="outline">Cancel</Button>
-        </DrawerClose>
-      </DrawerFooter>
     </div>
   );
 };
@@ -145,7 +161,6 @@ interface DurationButtonProps {
 const DurationButton = ({
   duration,
   isSelected = false,
-
   onClick,
 }: DurationButtonProps) => {
   return (
@@ -159,6 +174,53 @@ const DurationButton = ({
     >
       <span>{duration}</span>
     </button>
+  );
+};
+
+interface SummaryRowProps {
+  label: string;
+  value: string | number;
+}
+
+const SummaryRow = ({ label, value }: SummaryRowProps) => (
+  <div className="flex justify-between py-1 md:py-2">
+    <span className="font-dm_sans text-[14px] leading-[20px] text-gray-500 md:text-[16px] md:leading-[24px]">
+      {label}
+    </span>
+    <span className="font-dm_sans text-[14px] leading-[20px] text-black md:text-[16px] md:leading-[24px]">
+      {value}
+    </span>
+  </div>
+);
+
+const RewardCard = () => {
+  return (
+    <div className="w-full">
+      <h2 className="px-0 font-dm_sans text-[16px] font-medium leading-[24px] text-black md:px-0 md:text-[18px] md:leading-[28px]">
+        My veOwn
+      </h2>
+      <div className="mt-2 rounded-lg bg-purple-100 px-4 py-4 md:py-8">
+        <div className="flex items-center gap-4">
+          <div className="rounded-full bg-white/80 px-2 py-4">
+            <Image
+              src="/own-logo.svg"
+              alt="Own token"
+              width={30}
+              height={30}
+              className="text-primary invert"
+            />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-dm_sans text-[32px] font-normal leading-[32px] tracking-[0.005] text-black md:text-[48px] md:leading-[48px]">
+              2,000
+            </span>
+          </div>
+        </div>
+        <span className="font-dm_mono text-[12px] font-normal leading-[12px] tracking-[0.08em] text-gray-600 md:text-[14px] md:leading-[14px]">
+          $VEOWN EARNED
+        </span>
+      </div>
+    </div>
   );
 };
 
