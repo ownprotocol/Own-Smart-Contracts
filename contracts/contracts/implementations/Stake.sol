@@ -38,7 +38,6 @@ contract Stake is
         uint256 weeklyRewardPerTokenCached;
         // All these values are used in recalculation of subsequent weeks
         uint256 validVeOwnAtEndOfWeek;
-        uint256 boostMultiplierAtEndOfWeek;
         uint256 dailyRewardAmountAtEndOfWeek;
     }
 
@@ -104,6 +103,7 @@ contract Stake is
         uint256 veOwnAmount = _amount * (_days / 7);
 
         uint256 currentDay = getCurrentDay();
+        uint256 currentWeek = getCurrentWeek();
 
         // They will start earning rewards from the next day
         uint256 startDay = currentDay + 1;
@@ -111,8 +111,6 @@ contract Stake is
         // Inclusive of the final day so subtract 1
         uint256 finalDay = startDay + _days - 1;
         uint256 positionId = totalPositions;
-
-        console.log("Creating stake with: ", msg.sender, positionId);
 
         // record their position
         positions[positionId] = StakePosition({
@@ -122,7 +120,7 @@ contract Stake is
             startDay: startDay,
             // Rewards are inclusive of the last day
             finalDay: finalDay,
-            lastDayRewardsClaimed: currentDay
+            lastWeekRewardsClaimed: currentWeek
         });
         console.log("Start Day: %s", startDay);
         console.log("Final Day: %s", finalDay);
@@ -167,8 +165,15 @@ contract Stake is
     ) external nonReentrant {
         _updateWeeklyRewardValuesCache();
 
+        if (!hasStakingStarted()) {
+            revert StakingNotStarted();
+        }
+
         uint256 currentDay = getCurrentDay();
-        uint256 reward;
+        uint256 currentWeek = getCurrentWeek();
+
+        uint256[] memory rewardPerPosition = new uint256[](positionIds.length);
+        uint256 totalReward;
 
         for (uint256 i = 0; i < positionIds.length; i++) {
             StakePosition storage position = positions[positionIds[i]];
@@ -176,39 +181,49 @@ contract Stake is
             if (msg.sender != position.owner) {
                 console.log("Position owner: %s", position.owner);
                 console.log("Sender: %s", msg.sender);
-                revert("Not the owner of the position");
+                revert CallerDoesNotOwnPosition();
             }
 
-            if (position.lastDayRewardsClaimed == currentDay - 1) {
-                revert("No rewards to claim");
-            }
+            // if (position.lastWeekRewardsClaimed == currentWeek) {
+            //     continue;
+            // }
 
-            reward += _calculateRewardsForPosition(positionIds[i], currentDay);
+            uint256 reward = _calculateRewardsForPosition(
+                positionIds[i],
+                currentDay
+            );
+            totalReward += reward;
+            rewardPerPosition[i] = reward;
 
-            // TODO: This needs to be set to the first day of the previous week
-            // Because they can only claim full weeks at a time
-            position.lastDayRewardsClaimed = currentDay - 1;
+            position.lastWeekRewardsClaimed = currentWeek;
+        }
+
+        if (totalReward == 0) {
+            revert NoRewardsToClaim();
         }
 
         uint256 balance = ownToken.balanceOf(address(this));
 
-        if (balance < reward) {
+        if (balance < totalReward) {
             uint256 withdrawableAmount = sablierLockup.withdrawableAmountOf(
                 sablierStreamId
             );
 
-            if (balance + withdrawableAmount < reward) {
+            if (balance + withdrawableAmount < totalReward) {
                 revert("Unrecoverable error");
             }
 
             sablierLockup.withdrawMax(sablierStreamId, address(this));
         }
 
-        ownToken.safeTransfer(msg.sender, reward);
+        ownToken.safeTransfer(msg.sender, totalReward);
 
-        // TODO: If the stake is complete, transfer them their Own tokens
-
-        // TODO: Emit
+        emit RewardsClaimed(
+            msg.sender,
+            positionIds,
+            rewardPerPosition,
+            totalReward
+        );
     }
 
     // **** Read functions ****
@@ -227,6 +242,7 @@ contract Stake is
 
     function getPreviousWeekReturns() external returns (uint256) {
         // ISSUE: We need a view function that runs the _updateVeOwnPerWeekCache function in case there are missing weeks in the calculation
+
         uint256 currentWeek = getCurrentDay();
 
         uint256 reward;
@@ -292,31 +308,22 @@ contract Stake is
         if (dailyRewardAmount == 0) {
             revert("Daily reward amount not set");
         }
-        // TODO: Revert if staking already started
-        // uint256 currentDay = getCurrentDay();
+
+        if (stakingStartDay != 0) {
+            revert("Staking has already started");
+        }
+
         uint256 currentWeek = getCurrentWeek();
 
         stakingStartDay = currentWeek * 7 + 7;
-        console.log("Staking starts on day: %s", stakingStartDay);
 
         lastCachedWeek = currentWeek;
-
-        uint256 dailyRewardAmountCached = dailyRewardAmount;
-        // uint256 weeklyRewardPerToken = _calculateRewardPerToken(
-        //     dailyRewardAmountCached,
-        //     getBoostMultiplier(currentWeek),
-        //     1 ether
-        // );
 
         rewardValuesWeeklyCache[currentWeek] = RewardValuesWeeklyCache({
             weeklyRewardPerTokenCached: 0,
             validVeOwnAtEndOfWeek: 0,
-            // TODO: TO be fixed with the correct value
-            boostMultiplierAtEndOfWeek: 10 ether,
-            dailyRewardAmountAtEndOfWeek: dailyRewardAmountCached
+            dailyRewardAmountAtEndOfWeek: dailyRewardAmount
         });
-
-        // TODO: Save to cache
     }
 
     function setDailyRewardAmount(uint256 _amount) external onlyDefaultAdmin {
@@ -362,8 +369,7 @@ contract Stake is
             uint256 dailyRewardAmountCurrent = rewardValuesWeeklyCache[week - 1]
                 .dailyRewardAmountAtEndOfWeek;
 
-            uint256 boostMultiplier = rewardValuesWeeklyCache[week - 1]
-                .boostMultiplierAtEndOfWeek;
+            uint256 boostMultiplier = getBoostMultiplierForAbsoluteWeek(week);
 
             // Iterate over each day and calculate the reward per token for that day
             // Add it to the cumulative reward per token for the week
@@ -377,12 +383,7 @@ contract Stake is
                 uint256 dailyRewardAmountUpdate = dailyRewardValueHistory[
                     currentDay
                 ];
-                uint256 boostMultiplierUpdate = boostMultiplierHistory[
-                    currentDay
-                ];
-                if (boostMultiplierUpdate != 0) {
-                    boostMultiplier = boostMultiplierUpdate;
-                }
+
                 if (dailyRewardAmountUpdate != 0) {
                     dailyRewardAmountCurrent = dailyRewardAmountUpdate;
                 }
@@ -404,9 +405,6 @@ contract Stake is
             rewardValuesWeeklyCache[week] = RewardValuesWeeklyCache({
                 weeklyRewardPerTokenCached: rewardPerTokenInWeek,
                 validVeOwnAtEndOfWeek: currentVeOwnTotal,
-                boostMultiplierAtEndOfWeek: getBoostMultiplierForAbsoluteWeek(
-                    week + 1
-                ),
                 dailyRewardAmountAtEndOfWeek: dailyRewardAmountCurrent
             });
             // console.log(
@@ -431,8 +429,10 @@ contract Stake is
             .validVeOwnAtEndOfWeek;
         uint256 dailyRewardAmountCurrent = rewardValuesWeeklyCache[previousWeek]
             .dailyRewardAmountAtEndOfWeek;
-        uint256 boostMultiplierCurrent = rewardValuesWeeklyCache[previousWeek]
-            .boostMultiplierAtEndOfWeek;
+
+        uint256 boostMultiplier = getBoostMultiplierForAbsoluteWeek(
+            previousWeek + 1
+        );
 
         for (
             // This starts off with the first day of the week
@@ -442,11 +442,6 @@ contract Stake is
         ) {
             validVeOwn += validVeOwnAdditionsInDay[currentDay];
             validVeOwn -= validVeOwnSubtractionsInDay[currentDay];
-
-            uint256 boostMultiplierUpdate = boostMultiplierHistory[currentDay];
-            if (boostMultiplierUpdate != 0) {
-                boostMultiplierCurrent = boostMultiplierUpdate;
-            }
 
             uint256 dailyRewardAmountUpdate = dailyRewardValueHistory[
                 currentDay
@@ -461,15 +456,16 @@ contract Stake is
             console.log("Calculating rewards for day: %s", currentDay);
             console.log("Valid veOwn: %s", validVeOwn);
             console.log("Daily reward amount: %s", dailyRewardAmountCurrent);
-            console.log("Boost multiplier: %s", boostMultiplierCurrent);
+            console.log("Boost multiplier: %s", boostMultiplier);
 
+            // ISSUE: I'm a bit unsure about this condition, requires testing
             if (currentDay < _startDay) {
                 continue;
             }
 
             rewardPerToken += _calculateRewardPerToken(
                 dailyRewardAmountCurrent,
-                boostMultiplierCurrent,
+                boostMultiplier,
                 validVeOwn
             );
 
@@ -487,11 +483,13 @@ contract Stake is
     ) internal view returns (uint256 reward) {
         StakePosition storage position = positions[_positionId];
 
-        uint256 currentWeek = _currentDay / 7;
+        uint256 currentWeek = getCurrentWeek();
+
+        uint256 finalWeek = position.finalDay / 7;
 
         if (
-            position.lastDayRewardsClaimed == _currentDay - 1 ||
-            position.finalDay == position.lastDayRewardsClaimed
+            position.lastWeekRewardsClaimed == currentWeek ||
+            position.lastWeekRewardsClaimed == finalWeek
         ) {
             return 0;
         }
@@ -499,7 +497,6 @@ contract Stake is
         // TODO: THis needs to account for the fact that users can claim at any point after a week.
 
         uint256 startWeek = position.startDay / 7;
-        uint256 lastWeekClaimed = position.lastDayRewardsClaimed / 7;
 
         uint256 lastDayOfFirstWeek = startWeek * 7 + 6;
 
@@ -510,34 +507,27 @@ contract Stake is
         // they have not claimed rewards for the first week
         if (
             currentWeek > startWeek &&
-            currentWeek > lastWeekClaimed &&
+            startWeek == position.lastWeekRewardsClaimed &&
             // If they staked on the first day of the week, we can skip this and use the next for loop for less iterations
             !enteredAtStartOfWeek
         ) {
             uint256 firstWeekRewardPerToken = _rewardPerTokenForDayRange(
-                position.lastDayRewardsClaimed + 1,
+                position.startDay,
                 lastDayOfFirstWeek
             );
 
             reward += (position.veOwnAmount * firstWeekRewardPerToken) / 1e18;
         }
 
-        console.log("Reward after first week: %s", reward);
-
-        console.log("Last week claimed: %s", lastWeekClaimed);
-
-        uint256 finalWeek = position.finalDay / 7;
-
-        console.log("Current week", currentWeek);
-
         {
-            uint256 startWeekToIterateFrom = lastWeekClaimed + 1;
-            if (enteredAtStartOfWeek) {
-                startWeekToIterateFrom = lastWeekClaimed;
+            uint256 startWeekToIterateFrom = position.lastWeekRewardsClaimed;
+            // If they didn't enter at the start of the week, we need to start from the next week because the above logic will issue rewards for the first week
+            if (!enteredAtStartOfWeek) {
+                ++startWeekToIterateFrom;
             }
 
             uint256 finalWeekToIterateTo = currentWeek;
-            if (finalWeek < currentWeek) {
+            if (currentWeek > finalWeek) {
                 if (finalDayEndOfWeek) {
                     finalWeekToIterateTo = finalWeek;
                 } else {
@@ -561,8 +551,9 @@ contract Stake is
 
         // Add rewards for the last week they stake for
         if (
-            finalWeek > lastWeekClaimed &&
+            finalWeek > position.lastWeekRewardsClaimed &&
             currentWeek > finalWeek &&
+            // This condition ensures that we use the more efficient weekly calculation above instead of the daily calculation here
             !finalDayEndOfWeek
         ) {
             uint256 firstDayOfFinalWeek = finalWeek * 7;
@@ -627,6 +618,7 @@ contract Stake is
     ) external onlyDefaultAdmin {
         uint256 newFinalBoostWeek;
         for (uint256 i; i < _boostDetails.length; ++i) {
+            // TODO: Revert if adding a boost start week that is in the past
             boostDetails.push(_boostDetails[i]);
 
             uint256 finalWeek = _boostDetails[i].startWeek +

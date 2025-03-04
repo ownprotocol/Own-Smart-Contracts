@@ -8,7 +8,7 @@ interface IStake {
         uint256 veOwnAmount;
         uint256 startDay;
         uint256 finalDay;
-        uint256 lastDayRewardsClaimed;
+        uint256 lastWeekRewardsClaimed;
     }
 
     struct BoostDetails {
@@ -24,6 +24,10 @@ interface IStake {
 
     error StakingNotStarted();
 
+    error CallerDoesNotOwnPosition();
+
+    error NoRewardsToClaim();
+
     // *** Events ***
     event Staked(
         address indexed user,
@@ -32,5 +36,12 @@ interface IStake {
         uint256 positionId,
         uint256 amount,
         uint256 _weeks
+    );
+
+    event RewardsClaimed(
+        address indexed user,
+        uint256[] positionIds,
+        uint256[] rewardPerPosition,
+        uint256 totalReward
     );
 }

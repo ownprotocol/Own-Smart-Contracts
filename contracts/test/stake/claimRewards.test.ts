@@ -22,7 +22,6 @@ describe.only("Stake - claimRewards", async () => {
     await stake.write.setDailyRewardAmount([dailyRewardAmount]);
 
     await stake.write.startStakingNextWeek();
-    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
 
     const ownBalance = await own.read.balanceOf([signers[0].account.address]);
 
@@ -31,7 +30,40 @@ describe.only("Stake - claimRewards", async () => {
     await own.write.approve([stake.address, ownBalance]);
   });
 
+  it("Should revert if calling from an account that doesn't own the stake", async () => {
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
+    await expect(
+      stake.write.claimRewards([[BigInt(0)]], { account: alice.account }),
+    ).to.be.revertedWithCustomError(stake, "CallerDoesNotOwnPosition");
+  });
+
+  it("Should revert if calling before staking starts", async () => {
+    await expect(
+      stake.write.claimRewards([[BigInt(0)]]),
+    ).to.be.revertedWithCustomError(stake, "StakingNotStarted");
+  });
+
+  it("Should revert if there are no rewards to be claimed", async () => {
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
+    await stake.write.stake([parseEther("50"), duration]);
+
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
+    await stake.write.claimRewards([[BigInt(0)]]);
+
+    await expect(
+      stake.write.claimRewards([[BigInt(0)]]),
+    ).to.be.revertedWithCustomError(stake, "NoRewardsToClaim");
+  });
+
+  it("Should pull funds over from the Sablier contract if there isn't enough funds in the contract for rewards", async () => {});
+
   it("Should claim rewards in the first week of staking", async () => {
+    // Skip to start of staking
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
     await setDayOfWeekInHardhatNode(DayOfWeek.Wednesday);
 
     const boostMultiplier = await stake.read.getCurrentBoostMultiplier();
@@ -53,9 +85,16 @@ describe.only("Stake - claimRewards", async () => {
       // Staked for 2 days
       [rewardsPerDay * BigInt(2)],
     );
+
+    // TODO: Expect that the lastDayRewardsClaimed is updated
+
+    // TODO: Emit event
   });
 
   it("Should claim rewards for an entire week", async () => {
+    // Skip to start of staking
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
     await setDayOfWeekInHardhatNode(DayOfWeek.Friday);
 
     const amount = parseEther("50");
@@ -65,7 +104,7 @@ describe.only("Stake - claimRewards", async () => {
     // Skip to following saturday, so run this twice
     await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
     const boostMultiplier = await stake.read.getCurrentBoostMultiplier();
-    console.log("boostMultiplier", boostMultiplier);
+
     await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
 
     const rewardsPerDay = (dailyRewardAmount * boostMultiplier) / BigInt(1e18);
@@ -81,6 +120,9 @@ describe.only("Stake - claimRewards", async () => {
   });
 
   it("Should claim rewards for the first half of the first week and the entire second week", async () => {
+    // Skip to start of staking
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
     await setDayOfWeekInHardhatNode(DayOfWeek.Wednesday);
 
     const amount = parseEther("50");
@@ -112,6 +154,9 @@ describe.only("Stake - claimRewards", async () => {
   });
 
   it("Should claim rewards for the first half of the first week and up to final day in the last week", async () => {
+    // Skip to start of staking
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
     await setDayOfWeekInHardhatNode(DayOfWeek.Wednesday);
 
     const amount = parseEther("50");
@@ -142,7 +187,12 @@ describe.only("Stake - claimRewards", async () => {
     );
   });
 
+  it("Should increase the rewards for the user when the daily reward amount is increased", async () => {});
+
   it("Should claim rewards for the 5 weeks the stake is active", async () => {
+    // Skip to start of staking
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
     await setDayOfWeekInHardhatNode(DayOfWeek.Friday);
 
     await stake.write.stake([parseEther("50"), duration]);
@@ -192,6 +242,9 @@ describe.only("Stake - claimRewards", async () => {
     });
 
     it("Should receive half of the rewards for the second half of the first week, when a new user joins", async () => {
+      // Skip to start of staking
+      await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
       const amount = parseEther("50");
 
       const rewardsPerDay =
@@ -221,5 +274,12 @@ describe.only("Stake - claimRewards", async () => {
         stake_alice.write.claimRewards([[BigInt(1)]]),
       ).to.changeTokenBalances(own, [alice.account], [rewardsForAlice]);
     });
+
+    it("Should increase the rewards for a user, when a another users stake ends", async () => {});
+  });
+
+  describe("Multiple users", async () => {
+    // 5 users or something, different durations
+    it("Should distribute rewards to users based on their stake", async () => {});
   });
 });
