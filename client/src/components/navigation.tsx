@@ -18,6 +18,7 @@ import { generatePayload, isLoggedIn, login, logout } from "@/actions/login";
 import { TOP_NAVIGATION_LINKS } from "@/constants/top-navigation-links";
 import { icons } from "@/constants/icons";
 import { cn } from "@/lib/utils";
+import { colors } from "@/constants/thirdweb-styling/theming";
 
 const Navigation = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -135,6 +136,14 @@ const Navigation = () => {
       <ConnectButton
         client={client}
         wallets={wallets}
+        theme={{
+          colors: {
+            ...colors,
+            connectedButtonBg: "rgb(31 41 100)", // bg-gray-800
+          },
+          fontFamily: "Funnel Sans, system-ui, sans-serif",
+          type: "dark",
+        }}
         connectModal={{
           size: "wide",
           title: "Login/Sign up",
