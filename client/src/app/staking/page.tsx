@@ -30,7 +30,7 @@ function StakingPage() {
                 Stake $Own
               </Button>
             </DrawerTrigger>
-            <DrawerContent className="h-[95vh] max-h-[95vh] px-[5%] pt-[10%] md:h-[90vh] md:max-h-[90vh] md:px-[10%] md:pt-[3%]">
+            <DrawerContent className="h-[95vh] max-h-[95vh] px-[5%] md:h-[90vh] md:max-h-[90vh] md:px-[10%]">
               <StakingDrawerContent />
             </DrawerContent>
           </Drawer>
