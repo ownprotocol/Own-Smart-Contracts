@@ -1,6 +1,7 @@
 import { DM_Mono, DM_Sans, Funnel_Sans } from "next/font/google";
 import { type Metadata } from "next";
 import { ToastContainer } from "react-toastify";
+import { ThirdwebProvider } from "thirdweb/react";
 
 import {
   Footer,
@@ -49,7 +50,9 @@ export default function RootLayout({
           <HomeSeparator />
           {hasPresaleConcluded && <HasPresaleConcluded />}
           <ToastContainer />
-          {children}
+          <ThirdwebProvider>
+            {children}
+          </ThirdwebProvider>
         </div>
 
         <Footer />
