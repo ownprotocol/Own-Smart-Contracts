@@ -28,6 +28,10 @@ interface IStake {
 
     error NoRewardsToClaim();
 
+    error CannotSetBoostForWeekInPast();
+
+    error CannotSetDurationInWeeksForBoostToZero();
+
     // *** Events ***
     event Staked(
         address indexed user,

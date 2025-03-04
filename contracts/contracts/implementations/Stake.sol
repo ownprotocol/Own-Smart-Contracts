@@ -30,7 +30,7 @@ contract Stake is
 
     uint256 public dailyRewardAmount;
 
-    uint256 public stakingStartDay;
+    uint256 public stakingStartWeek;
 
     uint256 public totalStaked;
 
@@ -294,6 +294,20 @@ contract Stake is
         return getCurrentDay() / 7;
     }
 
+    function getWeekSinceStakingStarted() public view returns (uint256) {
+        if (stakingStartWeek == 0) {
+            return 0;
+        }
+
+        uint256 currentWeek = getCurrentWeek();
+
+        if (currentWeek < stakingStartWeek) {
+            return 0;
+        }
+
+        return (currentWeek + 1) - stakingStartWeek;
+    }
+
     function getUsersPositions(
         address _user
     ) external view returns (StakePosition[] memory userPositions) {
@@ -307,7 +321,7 @@ contract Stake is
     }
 
     function hasStakingStarted() internal view returns (bool) {
-        return stakingStartDay != 0 && stakingStartDay <= getCurrentDay();
+        return stakingStartWeek != 0 && stakingStartWeek <= getCurrentWeek();
     }
 
     // **** Admin functions ****
@@ -323,13 +337,13 @@ contract Stake is
             revert("Daily reward amount not set");
         }
 
-        if (stakingStartDay != 0) {
+        if (stakingStartWeek != 0) {
             revert("Staking has already started");
         }
 
         uint256 currentWeek = getCurrentWeek();
 
-        stakingStartDay = currentWeek * 7 + 7;
+        stakingStartWeek = currentWeek + 1;
 
         lastCachedWeek = currentWeek;
 
@@ -359,7 +373,6 @@ contract Stake is
                 .dailyRewardAmountAtEndOfWeek = _amount;
         }
 
-        console.log("Today", getCurrentDay());
         // TODO: Need to validate the amount value here
         dailyRewardValueHistory[getCurrentDay()] = _amount;
         dailyRewardAmount = _amount;
@@ -597,7 +610,7 @@ contract Stake is
         return boostDetails;
     }
 
-    uint256 finalBoostWeek;
+    uint256 public finalBoostWeek;
 
     function getCurrentBoostMultiplier() public view returns (uint256) {
         return getBoostMultiplierForWeek(getCurrentWeek());
@@ -606,7 +619,7 @@ contract Stake is
     function getBoostMultiplierForWeek(
         uint256 week
     ) public view returns (uint256) {
-        uint256 weeksSinceStart = week - stakingStartDay / 7;
+        uint256 weeksSinceStart = week - stakingStartWeek;
 
         return getBoostMultiplierForWeekSinceStart(weeksSinceStart);
     }
@@ -624,10 +637,14 @@ contract Stake is
             --i;
 
             uint256 boostStartWeek = boostDetails[i].startWeek;
-            uint256 endWeek = boostStartWeek + boostDetails[i].durationInWeeks;
+            // Inclusive of the final week, so subtract 1
+            uint256 boostFinalWeek = boostStartWeek +
+                boostDetails[i].durationInWeeks -
+                1;
 
             if (
-                _weekSinceStart >= boostStartWeek && _weekSinceStart < endWeek
+                _weekSinceStart >= boostStartWeek &&
+                _weekSinceStart <= boostFinalWeek
             ) {
                 return boostDetails[i].multiplier;
             }
@@ -640,12 +657,33 @@ contract Stake is
         BoostDetails[] calldata _boostDetails
     ) external onlyDefaultAdmin {
         uint256 newFinalBoostWeek;
+        uint256 currentWeek = getCurrentWeek();
+        uint256 weeksSinceStakingStarted;
+        if (currentWeek < stakingStartWeek || stakingStartWeek == 0) {
+            weeksSinceStakingStarted = 0;
+        } else {
+            weeksSinceStakingStarted = currentWeek - stakingStartWeek;
+        }
+
         for (uint256 i; i < _boostDetails.length; ++i) {
+            // If staking has started and trying to update a boost that has already started, revert
+            if (
+                currentWeek >= stakingStartWeek &&
+                _boostDetails[i].startWeek < weeksSinceStakingStarted
+            ) {
+                revert CannotSetBoostForWeekInPast();
+            }
+
+            if (_boostDetails[i].durationInWeeks == 0) {
+                revert CannotSetDurationInWeeksForBoostToZero();
+            }
             // TODO: Revert if adding a boost start week that is in the past
             boostDetails.push(_boostDetails[i]);
 
+            // Subtract 1 because its inclusive of the startWeek
             uint256 finalWeek = _boostDetails[i].startWeek +
-                _boostDetails[i].durationInWeeks;
+                _boostDetails[i].durationInWeeks -
+                1;
 
             if (finalWeek > newFinalBoostWeek) {
                 newFinalBoostWeek = finalWeek;

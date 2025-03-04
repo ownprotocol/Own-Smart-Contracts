@@ -2,12 +2,50 @@ import { parseEther } from "viem";
 import { ownTestingAPI } from "../../helpers/testing-api";
 import { OwnContract, StakeContract, Signers, VeOWN } from "../../types";
 import { expect } from "chai";
+import { DayOfWeek, setDayOfWeekInHardhatNode } from "../../helpers/evm";
 
-describe("Stake - boost", async () => {
+describe.only("Stake - boost", async () => {
   let stake: StakeContract;
 
   beforeEach(async () => {
     ({ stake } = await ownTestingAPI());
+
+    await stake.write.setDailyRewardAmount([parseEther("5")]);
+    await stake.write.startStakingNextWeek();
+  });
+
+  it("Should revert when passing a startWeek that is in the past", async () => {
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
+    await expect(
+      stake.write.addBoostDetails([
+        [
+          {
+            startWeek: BigInt(0),
+            durationInWeeks: BigInt(1),
+            multiplier: parseEther("20"),
+          },
+        ],
+      ]),
+    ).to.be.revertedWithCustomError(stake, "CannotSetBoostForWeekInPast");
+  });
+
+  it("Should revert when passing a _durationInWeeks that is 0", async () => {
+    await expect(
+      stake.write.addBoostDetails([
+        [
+          {
+            startWeek: BigInt(1),
+            durationInWeeks: BigInt(0),
+            multiplier: parseEther("20"),
+          },
+        ],
+      ]),
+    ).to.be.revertedWithCustomError(
+      stake,
+      "CannotSetDurationInWeeksForBoostToZero",
+    );
   });
 
   it("Should have the initial boost configuration", async () => {
@@ -97,5 +135,19 @@ describe("Stake - boost", async () => {
       await stake.read.getBoostMultiplierForWeekSinceStart([BigInt(12)]);
 
     expect(boostMultiplier).to.equal(parseEther("1"));
+  });
+
+  it("Should update the final boost week", async () => {
+    await stake.write.addBoostDetails([
+      [
+        {
+          startWeek: BigInt(15),
+          durationInWeeks: BigInt(1),
+          multiplier: parseEther("20"),
+        },
+      ],
+    ]);
+
+    expect(await stake.read.finalBoostWeek()).to.equal(15);
   });
 });
