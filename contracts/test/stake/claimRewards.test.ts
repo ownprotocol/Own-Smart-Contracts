@@ -160,6 +160,9 @@ describe("Stake - claimRewards", async () => {
 
     const totalRewards = rewardsPerDay * BigInt(7);
 
+    const [details, claimableRewards] =
+      await stake.read.getUsersPositionDetails([signers[0].account.address]);
+
     await expect(
       stake.write.claimRewards([[BigInt(0)]]),
     ).to.changeTokenBalances(
@@ -168,6 +171,7 @@ describe("Stake - claimRewards", async () => {
       // Staked for 7 days
       [totalRewards],
     );
+    expect(claimableRewards[0]).to.equal(totalRewards);
 
     const [, , , , , , rewardsClaimed] = await stake.read.positions([
       BigInt(0),
@@ -306,6 +310,9 @@ describe("Stake - claimRewards", async () => {
       await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
     }
 
+    const [details, claimableRewards] =
+      await stake.read.getUsersPositionDetails([signers[0].account.address]);
+
     await expect(
       stake.write.claimRewards([[BigInt(0)]]),
     ).to.changeTokenBalances(
@@ -313,6 +320,8 @@ describe("Stake - claimRewards", async () => {
       [signers[0].account],
       [rewards + depositAmount],
     );
+
+    expect(claimableRewards[0]).to.equal(rewards + depositAmount);
 
     const [, , , , finalDay, lastWeekRewardsClaimed] =
       await stake.read.positions([BigInt(0)]);

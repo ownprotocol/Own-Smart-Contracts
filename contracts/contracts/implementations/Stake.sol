@@ -243,7 +243,32 @@ contract Stake is
         userPositions = new StakePosition[](usersTotalPositions);
         claimableRewardsPerPosition = new uint256[](usersTotalPositions);
 
-        for (uint256 i = 0; i < usersTotalPositions; ++i) {}
+        uint256 currentVeOwnTotal = rewardValuesWeeklyCache[lastCachedWeek]
+            .validVeOwnAtEndOfWeek;
+
+        uint256 dailyRewardAmountCurrent = rewardValuesWeeklyCache[
+            lastCachedWeek
+        ].dailyRewardAmountAtEndOfWeek;
+
+        (
+            RewardValuesWeeklyCache[] memory updatedCacheValues,
+
+        ) = _updateWeeklyRewardValuesCache(
+                currentVeOwnTotal,
+                dailyRewardAmountCurrent
+            );
+
+        for (uint256 i = 0; i < usersTotalPositions; ++i) {
+            uint256 positionId = usersPositions[_user][i];
+            StakePosition memory position = positions[positionId];
+
+            userPositions[i] = position;
+
+            claimableRewardsPerPosition[i] = _calculateRewardsForPosition(
+                positionId,
+                updatedCacheValues
+            );
+        }
     }
 
     // function getTotalStake(
@@ -569,8 +594,12 @@ contract Stake is
         }
 
         uint256 weekDiff = _week - lastCachedWeek;
+        console.log("Week diff: %s", weekDiff);
 
-        return _tempCache[weekDiff];
+        RewardValuesWeeklyCache memory value = _tempCache[weekDiff];
+        console.log("Value: %s", value.weeklyRewardPerTokenCached);
+
+        return value;
     }
 
     // TODO: Pass through the weeklyRewardPerTokenCached
@@ -642,10 +671,13 @@ contract Stake is
                 week < finalWeekToIterateTo;
                 ++week
             ) {
+                RewardValuesWeeklyCache
+                    memory cache = _getRewardValuesCacheForWeek(
+                        week,
+                        _tempCache
+                    );
                 reward +=
-                    (position.veOwnAmount *
-                        rewardValuesWeeklyCache[week]
-                            .weeklyRewardPerTokenCached) /
+                    (position.veOwnAmount * cache.weeklyRewardPerTokenCached) /
                     1e18;
             }
         }
