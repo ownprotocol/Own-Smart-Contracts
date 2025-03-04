@@ -25,3 +25,4 @@ export { default as EarnAPYTimer } from "./staking/earn-apy-timer";
 export { default as StakeRewardsTable } from "./user-stake/rewards/stake-rewards-table";
 export { default as StakingRewards } from "./user-stake/staking-rewards";
 export { default as StakePositionsTable } from "./user-stake/positions/stake-positions-table";
+export { default as StakingDrawerContent } from "./staking/staking-drawer-content";

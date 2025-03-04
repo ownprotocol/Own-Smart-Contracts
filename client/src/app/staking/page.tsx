@@ -5,17 +5,9 @@ import {
   EarnAPYTimer,
   MainNavigation,
 } from "@/components";
+import StakingDrawerContent from "@/components/staking/staking-drawer-content";
 import { Button } from "@/components/ui/button";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { useState } from "react";
 
 function StakingPage() {
@@ -39,29 +31,7 @@ function StakingPage() {
               </Button>
             </DrawerTrigger>
             <DrawerContent className="h-[90vh] max-h-[90vh] px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
-              <div className="mx-auto w-full">
-                <DrawerHeader className="relative">
-                  <DrawerClose className="absolute right-0 top-0">
-                    <span className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
-                      Close
-                    </span>
-                  </DrawerClose>
-                  <DrawerTitle>Stake $Own</DrawerTitle>
-                  <DrawerDescription>
-                    Enter the amount you want to stake
-                  </DrawerDescription>
-                </DrawerHeader>
-                <div className="p-4">
-                  {/* Add your staking form content here */}
-                  <p>Staking form will go here</p>
-                </div>
-                <DrawerFooter>
-                  <Button>Confirm Stake</Button>
-                  <DrawerClose asChild>
-                    <Button variant="outline">Cancel</Button>
-                  </DrawerClose>
-                </DrawerFooter>
-              </div>
+              <StakingDrawerContent />
             </DrawerContent>
           </Drawer>
         </div>
