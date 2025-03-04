@@ -11,7 +11,10 @@ import {
   TransitionChild,
 } from "@headlessui/react";
 import { usePathname } from "next/navigation";
+import { ConnectButton } from "thirdweb/react";
+import { client, wallets } from "@/lib/client";
 
+import { generatePayload, isLoggedIn, login, logout } from "@/actions/login";
 import { TOP_NAVIGATION_LINKS } from "@/constants/top-navigation-links";
 import { icons } from "@/constants/icons";
 import { cn } from "@/lib/utils";
@@ -129,10 +132,29 @@ const Navigation = () => {
         </div>
       </Dialog>
 
-      <Button variant="outline" className="border-gray-500 font-dm_mono">
-        <span className="hidden sm:inline">Connect Wallet</span>
-        <span className="sm:hidden">Connect</span>
-      </Button>
+      <ConnectButton
+        client={client}
+        wallets={wallets}
+        connectModal={{
+          size: "wide",
+          title: "Login/Sign up",
+        }}
+        auth={{
+          isLoggedIn: async (address) => {
+            console.log("checking if logged in!", { address });
+            return await isLoggedIn();
+          },
+          doLogin: async (params) => {
+            console.log("logging in!");
+            await login(params);
+          },
+          getLoginPayload: async ({ address }) => generatePayload({ address }),
+          doLogout: async () => {
+            console.log("logging out!");
+            await logout();
+          },
+        }}
+      />
     </div>
   );
 };

@@ -46,11 +46,11 @@ export default function RootLayout({
     >
       <body className="flex flex-col bg-[linear-gradient(to_bottom,#141019_48%,#E49048_48%,#E49048_48%,#141019_48%)] text-white">
         <div className="container relative mx-auto flex flex-col border-x border-gray-500/30">
-          <Navigation />
-          <HomeSeparator />
-          {hasPresaleConcluded && <HasPresaleConcluded />}
-          <ToastContainer />
           <ThirdwebProvider>
+            <Navigation />
+            <HomeSeparator />
+            {hasPresaleConcluded && <HasPresaleConcluded />}
+            <ToastContainer />
             {children}
           </ThirdwebProvider>
         </div>

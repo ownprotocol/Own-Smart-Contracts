@@ -26,6 +26,9 @@ export async function login(payload: VerifyLoginPayloadParams) {
   if (verifiedPayload.valid) {
     const jwt = await thirdwebAuth.generateJWT({
       payload: verifiedPayload.payload,
+      context: {
+        user: true,
+      },
     });
     (await cookies()).set("jwt", jwt);
   }
