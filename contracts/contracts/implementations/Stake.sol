@@ -175,7 +175,10 @@ contract Stake is
                 continue;
             }
 
-            uint256 reward = _calculateRewardsForPosition(positionIds[i]);
+            uint256 reward = _calculateRewardsForPosition(
+                positionIds[i],
+                new RewardValuesWeeklyCache[](0)
+            );
 
             totalReward += reward;
             rewardPerPosition[i] = reward;
@@ -468,7 +471,7 @@ contract Stake is
                 _currentVeOwnTotal += validVeOwnAdditionsInDay[currentDay];
                 _currentVeOwnTotal -= validVeOwnSubtractionsInDay[currentDay];
 
-                // If the admin changed the daily reward amount or boost multiplier for the day, we need to update the cache
+                // If the admin changed the daily reward amount we need to update the cache
                 uint256 dailyRewardAmountUpdate = dailyRewardValueHistory[
                     currentDay
                 ];
@@ -500,14 +503,21 @@ contract Stake is
 
     function _rewardPerTokenForDayRange(
         uint256 _startDay,
-        uint256 _finalDay
+        uint256 _finalDay,
+        RewardValuesWeeklyCache[] memory _tempCache
     ) internal view returns (uint256 rewardPerToken) {
         uint256 previousWeek = _startDay / 7 - 1;
-        // Start with the previous week value
-        uint256 validVeOwn = rewardValuesWeeklyCache[previousWeek]
-            .validVeOwnAtEndOfWeek;
-        uint256 dailyRewardAmountCurrent = rewardValuesWeeklyCache[previousWeek]
-            .dailyRewardAmountAtEndOfWeek;
+        RewardValuesWeeklyCache memory cache = _getRewardValuesCacheForWeek(
+            previousWeek,
+            _tempCache
+        );
+        uint256 validVeOwn = cache.validVeOwnAtEndOfWeek;
+        uint256 dailyRewardAmountCurrent = cache.dailyRewardAmountAtEndOfWeek;
+        // // Start with the previous week value
+        // uint256 validVeOwn = rewardValuesWeeklyCache[previousWeek]
+        //     .validVeOwnAtEndOfWeek;
+        // uint256 dailyRewardAmountCurrent = rewardValuesWeeklyCache[previousWeek]
+        //     .dailyRewardAmountAtEndOfWeek;
 
         uint256 boostMultiplier = getBoostMultiplierForWeek(previousWeek + 1);
 
@@ -550,12 +560,26 @@ contract Stake is
         }
     }
 
+    function _getRewardValuesCacheForWeek(
+        uint256 _week,
+        RewardValuesWeeklyCache[] memory _tempCache
+    ) internal view returns (RewardValuesWeeklyCache memory) {
+        if (_week <= lastCachedWeek) {
+            return rewardValuesWeeklyCache[_week];
+        }
+
+        uint256 weekDiff = _week - lastCachedWeek;
+
+        return _tempCache[weekDiff];
+    }
+
     // TODO: Pass through the weeklyRewardPerTokenCached
     // The validVeOwnAtEndOfWeek and boostMultiplierAtEndOfWeek are used to calculate the reward per token for the week
     // Unfortunately this assumes that the previous week has been processed. WHICH is a safe assumption in the claimRewards function because we always process beforehand
     // BUT the view methods won't work then, so we need to support them ......
     function _calculateRewardsForPosition(
-        uint256 _positionId
+        uint256 _positionId,
+        RewardValuesWeeklyCache[] memory _tempCache
     ) internal view returns (uint256 reward) {
         StakePosition storage position = positions[_positionId];
 
@@ -589,7 +613,8 @@ contract Stake is
         ) {
             uint256 firstWeekRewardPerToken = _rewardPerTokenForDayRange(
                 position.startDay,
-                lastDayOfFirstWeek
+                lastDayOfFirstWeek,
+                _tempCache
             );
 
             reward += (position.veOwnAmount * firstWeekRewardPerToken) / 1e18;
@@ -635,7 +660,8 @@ contract Stake is
             uint256 firstDayOfFinalWeek = finalWeek * 7;
             uint256 lastWeekRewardPerToken = _rewardPerTokenForDayRange(
                 firstDayOfFinalWeek,
-                position.finalDay
+                position.finalDay,
+                _tempCache
             );
 
             reward += (position.veOwnAmount * lastWeekRewardPerToken) / 1e18;
