@@ -1,17 +1,8 @@
 import { expect } from "chai";
 import { OwnContract, PresaleContract, Signers } from "../../types";
 import { ownTestingAPI } from "../../helpers/testing-api";
-import { Signer } from "ethers";
-import { WalletClient } from "viem";
 import hre from "hardhat";
-
-interface UpdateMethod {
-  eventName: string;
-  methodName:
-    | "updatePresaleRoundDuration"
-    | "updatePresaleRoundPrice"
-    | "updatePresaleRoundAllocation";
-}
+import { getCurrentBlockTimestamp } from "../../helpers/evm";
 
 const updateMethods = [
   {
@@ -49,6 +40,10 @@ describe("Presale - update presale round", async () => {
     presaleNonOwner = await hre.viem.getContractAt("Presale", presale.address, {
       client: { wallet: signers[1] },
     });
+
+    const currentTime = await getCurrentBlockTimestamp();
+
+    await presale.write.setPresaleStartTime([BigInt(currentTime + 5)]);
 
     await own.write.transfer([presale.address, ALLOCATION]);
 

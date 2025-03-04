@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { OwnContract, PresaleContract, Signers } from "../../types";
 import { ownTestingAPI } from "../../helpers/testing-api";
 import hre from "hardhat";
-import { increaseTime } from "../../helpers/evm";
+import { getCurrentBlockTimestamp, increaseTime } from "../../helpers/evm";
 
 describe("Presale - getCurrentPresaleRoundDetails", async () => {
   let presale: PresaleContract;
@@ -16,6 +16,9 @@ describe("Presale - getCurrentPresaleRoundDetails", async () => {
     ({ presale, own, signers } = await ownTestingAPI());
 
     await own.write.transfer([presale.address, BigInt(10000)]);
+
+    const currentTime = await getCurrentBlockTimestamp();
+    await presale.write.setPresaleStartTime([BigInt(currentTime + 5)]);
 
     await presale.write.addPresaleRounds([
       [
@@ -48,7 +51,7 @@ describe("Presale - getCurrentPresaleRoundDetails", async () => {
   });
 
   it("Should return the correct presale round details for the second presale round", async () => {
-    await increaseTime(50);
+    await increaseTime(Number(firstPresaleRoundDuration) + 10);
 
     const [success, presaleRoundDetails, roundId] =
       await presale.read.getCurrentPresaleRoundDetails();
@@ -62,7 +65,9 @@ describe("Presale - getCurrentPresaleRoundDetails", async () => {
   });
 
   it("Should return empty values if there are no presale rounds", async () => {
-    await increaseTime(150);
+    await increaseTime(
+      Number(firstPresaleRoundDuration + secondPresaleRoundDuration) + 10,
+    );
 
     const [success, presaleRoundDetails, roundId] =
       await presale.read.getCurrentPresaleRoundDetails();

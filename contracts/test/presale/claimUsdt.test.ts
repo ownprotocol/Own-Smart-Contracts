@@ -7,7 +7,7 @@ import {
   Signers,
 } from "../../types";
 import { ownTestingAPI } from "../../helpers/testing-api";
-import { getAddress, parseEther } from "viem";
+import { parseEther } from "viem";
 
 describe("Presale - claimUsdt", async () => {
   let presale: PresaleContract;

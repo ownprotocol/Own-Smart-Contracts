@@ -23,6 +23,7 @@ export enum DayOfWeek {
 }
 
 export const getDayStakingCorrected = (date: Date) => {
+  // This function returns Sunday as 0, so we need to add 1 to the result
   let day = date.getUTCDay();
 
   day += 1;
@@ -54,6 +55,7 @@ export const setNextDayOfWeekAtMidnightUTC = (
 
   let daysToAdd = targetDay - currentDay;
 
+  // This ensures we move to the next week if the target day is before the current day
   if (daysToAdd <= 0) {
     daysToAdd += 7;
   }

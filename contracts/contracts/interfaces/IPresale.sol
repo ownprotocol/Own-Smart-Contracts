@@ -9,6 +9,15 @@ interface IPresale {
         uint256 sales;
     }
 
+    struct PresalePurchase {
+        uint256 roundId;
+        uint256 ownAmount;
+        uint256 usdtAmount;
+        address buyer;
+        uint256 purchasedOn;
+        bool claimed;
+    }
+
     // *** Events ***
 
     event PresaleRoundsAdded(PresaleRound[] rounds);
@@ -38,7 +47,13 @@ interface IPresale {
         uint256 price
     );
 
+    event PresaleTokensClaimed(address indexed receiver, uint256 amount);
+
     event USDTClaimed(address indexed receiver, uint256 amount);
+
+    event PresaleStartTimeSet(uint256 startTime);
+
+    event PresaleTokensClaimedBack(address indexed receiver, uint256 amount);
 
     // *** Errors ***
 
@@ -63,6 +78,16 @@ interface IPresale {
     );
 
     error PresaleRoundIndexOutOfBounds();
+
+    error CannotSetPresaleStartTimeToPastTime();
+
+    error CannotSetPresaleStartTimeOncePresaleHasStarted();
+
+    error PresaleHasNotStarted();
+
+    error NoPresaleTokensToClaim();
+
+    error CannotClaimBackPresaleTokensWhilePresaleIsInProgress();
 
     // *** View methods ***
 

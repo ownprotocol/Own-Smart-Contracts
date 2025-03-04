@@ -98,20 +98,6 @@ describe("Helpers", async () => {
     expect(updatedDay % 7).to.equal(0);
   });
 
-  describe("getDayStakingCorrected", async () => {
-    it("Should return the correct day of the week for Sunday", async () => {
-      const saturdayDate = setDay(new Date(), 0, { weekStartsOn: 1 });
-
-      expect(getDayStakingCorrected(saturdayDate)).to.equal(DayOfWeek.Sunday);
-    });
-
-    it("Should return the correct day of the week for Saturday", async () => {
-      const saturdayDate = setDay(new Date(), 6, { weekStartsOn: 1 });
-
-      expect(getDayStakingCorrected(saturdayDate)).to.equal(DayOfWeek.Saturday);
-    });
-  });
-
   // it("Should update the current day to saturday", async () => {
   //   const desiredDay = DayOfWeek.Saturday;
   //

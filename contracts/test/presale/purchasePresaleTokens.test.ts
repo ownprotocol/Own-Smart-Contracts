@@ -1,4 +1,3 @@
-import hre from "hardhat";
 import { expect } from "chai";
 import {
   MockUSDTContract,
@@ -8,6 +7,7 @@ import {
 } from "../../types";
 import { ownTestingAPI } from "../../helpers/testing-api";
 import { getAddress, parseEther } from "viem";
+import { getCurrentBlockTimestamp, increaseTime } from "../../helpers/evm";
 
 describe("Presale - purchasePresaleTokens", async () => {
   let presale: PresaleContract;
@@ -34,60 +34,85 @@ describe("Presale - purchasePresaleTokens", async () => {
     ]);
   });
 
-  it("Should revert if all presale rounds have ended", async () => {
-    await hre.network.provider.request({
-      method: "evm_increaseTime",
-      params: [51],
+  it("Should revert when the presale hasn't started", async () => {
+    await expect(
+      presale.write.purchasePresaleTokens([
+        BigInt(1000),
+        signers[0].account.address,
+      ]),
+    ).to.be.revertedWithCustomError(presale, "PresaleHasNotStarted");
+  });
+
+  describe("starting presale round", async () => {
+    beforeEach(async () => {
+      const currentTime = await getCurrentBlockTimestamp();
+      await presale.write.setPresaleStartTime([BigInt(currentTime + 10)]);
+      await increaseTime(10);
     });
 
-    await expect(
-      presale.write.purchasePresaleTokens([
-        BigInt(1),
-        signers[0].account.address,
-      ]),
-    ).to.be.revertedWithCustomError(presale, "AllPresaleRoundsHaveEnded");
-  });
+    it("Should revert if all presale rounds have ended", async () => {
+      await increaseTime(60);
 
-  it("Should revert if the amount of tokens requested is larger than the allocation", async () => {
-    await expect(
-      presale.write.purchasePresaleTokens([
-        BigInt(1001),
-        signers[0].account.address,
-      ]),
-    )
-      .to.be.revertedWithCustomError(
-        presale,
-        "InsufficientBalanceInPresaleRoundForSale",
+      await expect(
+        presale.write.purchasePresaleTokens([
+          BigInt(1),
+          signers[0].account.address,
+        ]),
+      ).to.be.revertedWithCustomError(presale, "AllPresaleRoundsHaveEnded");
+    });
+
+    it("Should revert if the amount of tokens requested is larger than the allocation", async () => {
+      await expect(
+        presale.write.purchasePresaleTokens([
+          BigInt(1001),
+          signers[0].account.address,
+        ]),
       )
-      .withArgs(BigInt(1000), BigInt(1001));
-  });
+        .to.be.revertedWithCustomError(
+          presale,
+          "InsufficientBalanceInPresaleRoundForSale",
+        )
+        .withArgs(BigInt(1000), BigInt(1001));
+    });
 
-  it("Should purchase the tokens correctly", async () => {
-    const purchaseAmount = BigInt(1000);
-    const checksumAddress = getAddress(signers[0].account.address);
+    it("Should purchase the tokens correctly", async () => {
+      const purchaseAmount = BigInt(1000);
+      const checksumAddress = getAddress(signers[0].account.address);
 
-    const tx = presale.write.purchasePresaleTokens([
-      purchaseAmount,
-      signers[0].account.address,
-    ]);
-    await expect(tx)
-      .to.emit(presale, "PresaleTokensPurchased")
-      .withArgs(checksumAddress, 0, purchaseAmount, parseEther("1"));
+      const tx = presale.write.purchasePresaleTokens([
+        purchaseAmount,
+        signers[0].account.address,
+      ]);
+      await expect(tx)
+        .to.emit(presale, "PresaleTokensPurchased")
+        .withArgs(checksumAddress, 0, purchaseAmount, parseEther("1"));
 
-    await expect(tx).to.changeTokenBalance(
-      own,
-      signers[0].account.address,
-      purchaseAmount,
-    );
-    await expect(tx).to.changeTokenBalance(
-      mockUSDT,
-      presale.address,
-      purchaseAmount,
-    );
+      await expect(tx).to.changeTokenBalance(
+        mockUSDT,
+        presale.address,
+        purchaseAmount,
+      );
 
-    const [, presaleRound] = await presale.read.getCurrentPresaleRoundDetails();
+      const [, presaleRound] =
+        await presale.read.getCurrentPresaleRoundDetails();
 
-    expect(presaleRound.sales).to.equal(purchaseAmount);
-    expect(await presale.read.totalSales()).to.equal(purchaseAmount);
+      expect(presaleRound.sales).to.equal(purchaseAmount);
+      expect(await presale.read.totalSales()).to.equal(purchaseAmount);
+
+      const usersPresalePurchases = await presale.read.getUsersPresalePurchases(
+        [signers[0].account.address],
+      );
+
+      expect(usersPresalePurchases.length).to.equal(1);
+      const { roundId, ownAmount, usdtAmount, buyer } =
+        usersPresalePurchases[0];
+
+      expect({ roundId, ownAmount, usdtAmount, buyer }).to.deep.equal({
+        roundId: BigInt(0),
+        ownAmount: purchaseAmount,
+        usdtAmount: purchaseAmount,
+        buyer: checksumAddress,
+      });
+    });
   });
 });
