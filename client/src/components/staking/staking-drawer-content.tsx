@@ -2,7 +2,6 @@ import Image from "next/image";
 import { Button } from "../ui/button";
 import {
   DrawerHeader,
-  DrawerDescription,
   DrawerTitle,
   DrawerClose,
   DrawerFooter,
@@ -10,7 +9,7 @@ import {
 
 const StakingDrawerContent = () => {
   return (
-    <div className="mx-auto w-full px-[5%] pt-4 md:px-[5%] md:pt-8">
+    <div className="mx-auto w-full px-[0%] pt-0 md:px-[5%] md:pt-8">
       <DrawerHeader className="relative">
         <DrawerClose className="absolute right-0 top-0">
           <span className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
@@ -18,19 +17,19 @@ const StakingDrawerContent = () => {
           </span>
         </DrawerClose>
         <DrawerTitle className="text-black">
-          <div className="flex w-full justify-center gap-4">
+          <div className="flex w-full flex-col justify-center gap-1 md:flex-row md:gap-4">
             <div className="font-funnel w-full text-[42px] leading-[48px] tracking-[-5%] text-black md:text-[64px] md:leading-[72px]">
               Stake tokens
             </div>
-            <div className="flex w-full items-end justify-start gap-2">
+            <div className="flex w-full items-end justify-center gap-2 md:justify-start">
               <h1 className="font-dm_mono text-[12px] font-[400] leading-[14px] tracking-[8%] text-gray-500 md:text-[14px] md:leading-[16px]">
                 BALANCE
               </h1>
               <Image
                 src="/home-page/hero/subtract.png"
                 alt="Subtract icon"
-                width={20}
-                height={20}
+                width={15}
+                height={15}
               />
               <p className="font-dm_mono text-[12px] font-[400] leading-[14px] tracking-[8%] text-black md:text-[14px] md:leading-[16px]">
                 30,000
@@ -39,28 +38,11 @@ const StakingDrawerContent = () => {
           </div>
         </DrawerTitle>
       </DrawerHeader>
-      <div className="p-4">
-        <div className="flex flex-col gap-4">
-          <div className="flex gap-2">
+      <div className="px-4 py-2">
+        <div className="flex flex-col gap-0 md:gap-4">
+          <div className="flex flex-col gap-4 md:flex-row">
             <div className="flex w-full flex-col gap-2">
-              {/* <h1 className="font-dm_mono text-[12px] font-[400] leading-[14px] tracking-[8%] text-gray-500 md:text-[14px] md:leading-[16px]">
-                Enter TOKENS TO STAKE
-              </h1>
-              <div className="relative">
-                <input
-                  type="number"
-                  placeholder="0"
-                  className="w-full rounded border-2 border-gray-500/50 p-2 pl-14 text-primary"
-                />
-                <Image
-                  src="/own-log0.svg"
-                  alt="Own token"
-                  width={20}
-                  height={20}
-                  className="absolute left-4 top-1/2 -translate-y-1/2"
-                />
-              </div> */}
-              <h1 className="font-dm_mono text-[12px] font-[400] leading-[14px] tracking-[8%] text-gray-500 md:text-[14px] md:leading-[16px]">
+              <h1 className="font-dm_mono text-[10px] font-[400] leading-[14px] tracking-[8%] text-gray-500 md:text-[14px] md:leading-[16px]">
                 Enter TOKENS TO STAKE
               </h1>
               <div className="flex items-center border-2 border-gray-500/50 bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
@@ -83,9 +65,15 @@ const StakingDrawerContent = () => {
                   className="block w-full min-w-0 grow py-6 pl-4 pr-3 font-dm_sans text-[16px] leading-[20px] tracking-[0.5%] text-gray-900 text-primary placeholder:text-gray-400 focus:outline-none md:text-[20px] md:leading-[24px]"
                 />
               </div>
+              <div className="flex justify-around gap-2">
+                <StakingButton label="25%" />
+                <StakingButton label="50%" isSelected={true} />
+                <StakingButton label="75%" />
+                <StakingButton label="Max" />
+              </div>
             </div>
             <div className="flex w-full flex-col gap-2">
-              <h1 className="font-dm_mono text-[12px] font-[400] leading-[14px] tracking-[8%] text-gray-500 md:text-[14px] md:leading-[16px]">
+              <h1 className="font-dm_mono text-[10px] font-[400] leading-[14px] tracking-[8%] text-gray-500 md:text-[14px] md:leading-[16px]">
                 Enter TOKENS TO STAKE
               </h1>
               <div className="flex items-center border-2 border-gray-500/50 bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
@@ -95,7 +83,16 @@ const StakingDrawerContent = () => {
                   className="block w-full min-w-0 grow py-6 pl-4 pr-3 font-dm_sans text-[16px] leading-[20px] tracking-[0.5%] text-gray-900 text-primary placeholder:text-gray-400 focus:outline-none md:text-[20px] md:leading-[24px]"
                 />
               </div>
+              <div className="flex flex-wrap justify-around gap-2">
+                <DurationButton duration="1 Week" />
+                <DurationButton duration="1 Month" />
+                <DurationButton duration="1 Year" />
+                <DurationButton duration="4 Year" />
+              </div>
             </div>
+          </div>
+          <div className="w-full text-end font-dm_sans text-[10px] font-medium leading-[20px] text-orange-500 md:text-[16px] md:leading-[24px]">
+            MAX REWARD
           </div>
           <div></div>
           <div></div>
@@ -111,6 +108,57 @@ const StakingDrawerContent = () => {
         </DrawerClose>
       </DrawerFooter>
     </div>
+  );
+};
+
+interface StakingButtonProps {
+  label: string;
+  isSelected?: boolean;
+  onClick?: () => void;
+}
+
+const StakingButton = ({
+  label,
+  isSelected = false,
+  onClick,
+}: StakingButtonProps) => {
+  return (
+    <button
+      onClick={onClick}
+      className={`rounded-full px-4 py-2 font-dm_sans text-[12px] font-medium leading-[24px] transition-colors md:px-8 md:text-[18px] md:leading-[28px] ${
+        isSelected
+          ? "bg-purple-700 text-white hover:bg-purple-800"
+          : "bg-purple-100 text-purple-900 hover:bg-purple-200"
+      }`}
+    >
+      {label}
+    </button>
+  );
+};
+
+interface DurationButtonProps {
+  duration: string;
+  isSelected?: boolean;
+  onClick?: () => void;
+}
+
+const DurationButton = ({
+  duration,
+  isSelected = false,
+
+  onClick,
+}: DurationButtonProps) => {
+  return (
+    <button
+      onClick={onClick}
+      className={`relative rounded-full px-4 py-2 font-dm_sans text-[12px] font-medium leading-[24px] transition-colors md:text-[18px] md:leading-[28px] ${
+        isSelected
+          ? "bg-purple-700 text-white hover:bg-purple-800"
+          : "bg-purple-100 text-purple-900 hover:bg-purple-200"
+      }`}
+    >
+      <span>{duration}</span>
+    </button>
   );
 };
 
