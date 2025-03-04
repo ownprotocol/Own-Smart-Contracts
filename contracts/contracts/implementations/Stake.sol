@@ -99,8 +99,10 @@ contract Stake is
 
         _updateWeeklyRewardValuesCache();
 
+        uint256 totalWeeks = _days / 7;
+
         // NOTE: There is no maximum multiplier here
-        uint256 veOwnAmount = _amount * (_days / 7);
+        uint256 veOwnAmount = _amount * totalWeeks;
 
         uint256 currentDay = getCurrentDay();
         uint256 currentWeek = getCurrentWeek();
@@ -122,8 +124,6 @@ contract Stake is
             finalDay: finalDay,
             lastWeekRewardsClaimed: currentWeek
         });
-        console.log("Start Day: %s", startDay);
-        console.log("Final Day: %s", finalDay);
         usersPositions[msg.sender].push(positionId);
 
         validVeOwnAdditionsInDay[startDay] += veOwnAmount;
@@ -179,23 +179,27 @@ contract Stake is
             StakePosition storage position = positions[positionIds[i]];
 
             if (msg.sender != position.owner) {
-                console.log("Position owner: %s", position.owner);
-                console.log("Sender: %s", msg.sender);
                 revert CallerDoesNotOwnPosition();
             }
 
-            // if (position.lastWeekRewardsClaimed == currentWeek) {
-            //     continue;
-            // }
+            if (currentWeek == position.lastWeekRewardsClaimed) {
+                continue;
+            }
 
             uint256 reward = _calculateRewardsForPosition(
                 positionIds[i],
                 currentDay
             );
+
             totalReward += reward;
             rewardPerPosition[i] = reward;
 
-            position.lastWeekRewardsClaimed = currentWeek;
+            uint256 finalWeek = position.finalDay / 7;
+            if (currentWeek > finalWeek) {
+                position.lastWeekRewardsClaimed = finalWeek;
+            } else {
+                position.lastWeekRewardsClaimed = currentWeek;
+            }
         }
 
         if (totalReward == 0) {

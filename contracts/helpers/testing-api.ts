@@ -84,6 +84,14 @@ export const ownTestingAPI = async () => {
 
   await veOwn.write.grantRole([MINTER_ROLE, stake.address]);
 
+  // TODO: Deploy
+  // const sablierLockup = await ethers.getContractFactory("SablierLockup");
+  // const sablierLockupDeployment = await upgrades.deployProxy(sablierLockup, [
+  //   own.address,
+  //   veOwn.address,
+  //   stake.address,
+  // ]);
+
   return {
     own,
     veOwn,

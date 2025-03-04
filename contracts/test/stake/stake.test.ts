@@ -1,10 +1,12 @@
 import { expect } from "chai";
-import hre from "hardhat";
 import { parseEther } from "viem";
 import { ownTestingAPI } from "../../helpers/testing-api";
 import { OwnContract, StakeContract, Signers, VeOWN } from "../../types";
-import { getCurrentBlockTimestamp, getCurrentDay } from "../../helpers/evm";
-import { SECONDS_IN_A_DAY } from "../../constants/duration";
+import {
+  DayOfWeek,
+  getCurrentDay,
+  setDayOfWeekInHardhatNode,
+} from "../../helpers/evm";
 
 describe("Stake - stake", async () => {
   let own: OwnContract;
@@ -49,7 +51,8 @@ describe("Stake - stake", async () => {
 
   describe("When staking has started", async () => {
     beforeEach(async () => {
-      await stake.write.startStaking();
+      await stake.write.startStakingNextWeek();
+      await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
     });
 
     it("Should move own tokens from the caller to the contract and mint veOwn tokens", async () => {

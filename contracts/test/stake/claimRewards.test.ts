@@ -1,4 +1,4 @@
-import { parseEther } from "viem";
+import { getAddress, parseEther } from "viem";
 import { ownTestingAPI } from "../../helpers/testing-api";
 import { OwnContract, StakeContract, Signers, VeOWN } from "../../types";
 import { DayOfWeek, setDayOfWeekInHardhatNode } from "../../helpers/evm";
@@ -22,6 +22,8 @@ describe.only("Stake - claimRewards", async () => {
     await stake.write.setDailyRewardAmount([dailyRewardAmount]);
 
     await stake.write.startStakingNextWeek();
+
+    await setDayOfWeekInHardhatNode(DayOfWeek.Friday);
 
     const ownBalance = await own.read.balanceOf([signers[0].account.address]);
 
@@ -75,20 +77,26 @@ describe.only("Stake - claimRewards", async () => {
 
     await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
 
-    const rewardsPerDay = (dailyRewardAmount * boostMultiplier) / BigInt(1e18);
+    const totalRewards =
+      ((dailyRewardAmount * boostMultiplier) / BigInt(1e18)) * BigInt(2);
 
-    await expect(
-      stake.write.claimRewards([[BigInt(0)]]),
-    ).to.changeTokenBalances(
+    const claimRewardsTx = stake.write.claimRewards([[BigInt(0)]]);
+
+    await expect(claimRewardsTx).to.changeTokenBalances(
       own,
       [signers[0].account],
-      // Staked for 2 days
-      [rewardsPerDay * BigInt(2)],
+      [totalRewards],
     );
 
-    // TODO: Expect that the lastDayRewardsClaimed is updated
+    await expect(claimRewardsTx).to.emit(stake, "RewardsClaimed");
 
-    // TODO: Emit event
+    const [, , , , , lastWeekRewardsClaimed] = await stake.read.positions([
+      BigInt(0),
+    ]);
+
+    const currentWeek = await stake.read.getCurrentWeek();
+
+    expect(lastWeekRewardsClaimed).to.equal(currentWeek);
   });
 
   it("Should claim rewards for an entire week", async () => {
@@ -187,7 +195,35 @@ describe.only("Stake - claimRewards", async () => {
     );
   });
 
-  it("Should increase the rewards for the user when the daily reward amount is increased", async () => {});
+  it("Should increase the rewards for the user when the daily reward amount is increased", async () => {
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
+    const boostMultiplier = await stake.read.getCurrentBoostMultiplier();
+
+    await stake.write.stake([parseEther("50"), duration]);
+
+    await setDayOfWeekInHardhatNode(DayOfWeek.Tuesday);
+
+    const newDailyRewardAmount = parseEther("10");
+
+    await stake.write.setDailyRewardAmount([newDailyRewardAmount]);
+
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
+    const rewardsForFirstHalf = dailyRewardAmount * BigInt(2);
+    const rewardsForSecondHalf = newDailyRewardAmount * BigInt(4);
+
+    await expect(
+      stake.write.claimRewards([[BigInt(0)]]),
+    ).to.changeTokenBalances(
+      own,
+      [signers[0].account],
+      [
+        ((rewardsForFirstHalf + rewardsForSecondHalf) * boostMultiplier) /
+          BigInt(1e18),
+      ],
+    );
+  });
 
   it("Should claim rewards for the 5 weeks the stake is active", async () => {
     // Skip to start of staking
@@ -222,6 +258,13 @@ describe.only("Stake - claimRewards", async () => {
     await expect(
       stake.write.claimRewards([[BigInt(0)]]),
     ).to.changeTokenBalances(own, [signers[0].account], [rewards]);
+
+    const [, , , , finalDay, lastWeekRewardsClaimed] =
+      await stake.read.positions([BigInt(0)]);
+
+    const finalWeek = Math.floor(Number(finalDay) / 7);
+
+    expect(lastWeekRewardsClaimed).to.equal(finalWeek);
   });
 
   describe("2 users", async () => {
@@ -275,7 +318,71 @@ describe.only("Stake - claimRewards", async () => {
       ).to.changeTokenBalances(own, [alice.account], [rewardsForAlice]);
     });
 
-    it("Should increase the rewards for a user, when a another users stake ends", async () => {});
+    it("Should increase the rewards for a user, when another users stake ends", async () => {
+      await setDayOfWeekInHardhatNode(DayOfWeek.Wednesday);
+
+      const firstWeekBoostMultiplier =
+        await stake.read.getCurrentBoostMultiplier();
+
+      const amount = parseEther("50");
+
+      await stake.write.stake([amount, duration]);
+
+      await stake_alice.write.stake([amount, BigInt(7)]);
+
+      await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
+      const secondWeekBoostMultiplier =
+        await stake.read.getCurrentBoostMultiplier();
+
+      // Skip to following Saturday so rewards are processed
+      await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
+      const deployersVeOwn = amount * BigInt(weeks);
+      // amount here is alice's veOwn amount
+      const totalValidVeOwn = deployersVeOwn + amount;
+
+      // Divide by 2 as we have 2 users for each day here
+      const totalRewardsInFirstWeek =
+        ((dailyRewardAmount * firstWeekBoostMultiplier) / BigInt(1e18)) *
+        BigInt(2);
+
+      const rewardsPerDayInSecondWeek =
+        (dailyRewardAmount * secondWeekBoostMultiplier) / BigInt(1e18);
+
+      const aliceShare = (amount * BigInt(1e18)) / totalValidVeOwn;
+
+      const aliceRewardsInFirstWeek =
+        (totalRewardsInFirstWeek * aliceShare) / BigInt(1e18);
+      const aliceRewardsInSecondWeek =
+        (rewardsPerDayInSecondWeek * BigInt(5) * aliceShare) / BigInt(1e18);
+
+      await expect(
+        stake_alice.write.claimRewards([[BigInt(1)]]),
+      ).to.changeTokenBalances(
+        own,
+        [alice.account],
+        [aliceRewardsInFirstWeek + aliceRewardsInSecondWeek],
+      );
+
+      // TODO: Fix this is off by a sliver
+      const deployerShare = (deployersVeOwn * BigInt(1e18)) / totalValidVeOwn;
+
+      const deployersRewardsInFirstWeek =
+        (totalRewardsInFirstWeek * deployerShare) / BigInt(1e18);
+
+      const deployersRewardsInSecondWeek =
+        (rewardsPerDayInSecondWeek * BigInt(5) * deployerShare) / BigInt(1e18) +
+        rewardsPerDayInSecondWeek * BigInt(2);
+
+      await expect(
+        stake.write.claimRewards([[BigInt(0)]]),
+      ).to.changeTokenBalances(
+        own,
+        [signers[0].account],
+        [deployersRewardsInFirstWeek + deployersRewardsInSecondWeek],
+      );
+    });
   });
 
   describe("Multiple users", async () => {
