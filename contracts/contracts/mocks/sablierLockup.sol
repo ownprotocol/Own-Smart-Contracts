@@ -2,23 +2,25 @@
 pragma solidity ^0.8.26;
 
 import "../interfaces/ISablierLockup.sol";
-import "../interfaces/IveOwn.sol";
+import "../interfaces/IOwn.sol";
 
 contract MockSablierLockup is ISablierLockup {
-    IveOWN private _own;
+    IOwn private _own;
 
     uint128 public withdrawableAmount;
 
-    constructor(IveOWN own) {
+    constructor(IOwn own) {
         _own = own;
     }
 
-    function withdraw(
+    function withdrawMax(
         uint256,
-        address to,
-        uint128 amount
-    ) external payable override {
-        _own.transfer(to, amount);
+        address to
+    ) external payable override returns (uint128) {
+        uint256 balance = _own.balanceOf(address(this));
+        _own.transfer(to, balance);
+
+        return uint128(balance);
     }
 
     function withdrawableAmountOf(

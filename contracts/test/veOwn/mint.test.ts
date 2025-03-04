@@ -4,6 +4,7 @@ import { parseEther } from "viem";
 import { ownTestingAPI } from "../../helpers/testing-api";
 import { Signers, VeOWN } from "../../types";
 import { ZeroAddress } from "ethers";
+import { MINTER_ROLE } from "../../constants/roles";
 
 describe("veOwn", async () => {
   let veOwn: VeOWN;
@@ -14,6 +15,8 @@ describe("veOwn", async () => {
   });
 
   it("Should allow someone with the minter role to mint tokens", async () => {
+    await veOwn.write.grantRole([MINTER_ROLE, signers[0].account.address]);
+
     const receiverAddress = signers[0].account.address;
     const amount = parseEther("1000");
     await veOwn.write.mint([receiverAddress, amount]);

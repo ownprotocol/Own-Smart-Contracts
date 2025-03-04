@@ -6,11 +6,12 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "../interfaces/IPresale.sol";
+import "../interfaces/IOwn.sol";
 
 import "hardhat/console.sol";
 
 contract Presale is Initializable, IPresale, OwnableUpgradeable {
-    IERC20 public own;
+    IOwn public own;
     IERC20 public usdt;
 
     PresaleRound[] public presaleRounds;
@@ -24,7 +25,7 @@ contract Presale is Initializable, IPresale, OwnableUpgradeable {
         _disableInitializers();
     }
 
-    function initialize(IERC20 _own, IERC20 _usdt) public initializer {
+    function initialize(IOwn _own, IERC20 _usdt) public initializer {
         __Ownable_init(_msgSender());
 
         own = _own;

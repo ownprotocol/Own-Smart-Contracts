@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.28;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts-upgradeable/access/extensions/AccessControlEnumerableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {ISablierLockup} from "@sablier/lockup/src/interfaces/ISablierLockup.sol";
 
 import "../interfaces/IStake.sol";
 import "../interfaces/IveOwn.sol";
+import "../interfaces/IOwn.sol";
+import "../interfaces/ISablierLockup.sol";
 
 import "hardhat/console.sol";
 
@@ -17,21 +17,22 @@ contract Stake is
     AccessControlEnumerableUpgradeable,
     ReentrancyGuardUpgradeable
 {
-    using SafeERC20 for IERC20;
+    using SafeERC20 for IOwn;
 
-    IERC20 public ownToken;
+    IOwn public ownToken;
     IveOWN public veOWN;
     ISablierLockup public sablierLockup;
 
     uint256 sablierStreamId;
 
-    // NOTE: Do constants get inlined when optimized?
     uint256 public maximumLockDays;
     uint256 public minimumLockDays;
 
     uint256 public dailyRewardAmount;
 
     uint256 public stakingStartDay;
+
+    uint256 public totalStaked;
 
     struct RewardValuesWeeklyCache {
         // This value is used to calculate the reward per token for the week when claiming rewards
@@ -68,7 +69,7 @@ contract Stake is
     }
 
     function initialize(
-        IERC20 _ownToken,
+        IOwn _ownToken,
         IveOWN _veOWN,
         ISablierLockup _sablierLockup
     ) public initializer {
@@ -129,6 +130,8 @@ contract Stake is
         validVeOwnAdditionsInDay[startDay] += veOwnAmount;
         validVeOwnSubtractionsInDay[finalDay + 1] += veOwnAmount;
 
+        totalStaked += _amount;
+
         totalPositions = positionId + 1;
 
         ownToken.safeTransferFrom(msg.sender, address(this), _amount);
@@ -153,8 +156,7 @@ contract Stake is
         for (uint256 i = 0; i < allUserPositions.length; i++) {
             // TODO: Assumes weeks have been processed
             claimableRewards[i] = _calculateRewardsForPosition(
-                allUserPositions[i],
-                getCurrentDay()
+                allUserPositions[i]
             );
             totalRewards += claimableRewards[i];
         }
@@ -169,7 +171,6 @@ contract Stake is
             revert StakingNotStarted();
         }
 
-        uint256 currentDay = getCurrentDay();
         uint256 currentWeek = getCurrentWeek();
 
         uint256[] memory rewardPerPosition = new uint256[](positionIds.length);
@@ -186,10 +187,7 @@ contract Stake is
                 continue;
             }
 
-            uint256 reward = _calculateRewardsForPosition(
-                positionIds[i],
-                currentDay
-            );
+            uint256 reward = _calculateRewardsForPosition(positionIds[i]);
 
             totalReward += reward;
             rewardPerPosition[i] = reward;
@@ -197,6 +195,9 @@ contract Stake is
             uint256 finalWeek = position.finalDay / 7;
             if (currentWeek > finalWeek) {
                 position.lastWeekRewardsClaimed = finalWeek;
+
+                totalReward += position.ownAmount;
+                totalStaked -= position.ownAmount;
             } else {
                 position.lastWeekRewardsClaimed = currentWeek;
             }
@@ -207,11 +208,14 @@ contract Stake is
         }
 
         uint256 balance = ownToken.balanceOf(address(this));
+        console.log("Balance: %s", balance);
+        console.log("Total reward: %s", totalReward);
 
-        if (balance < totalReward) {
+        if (totalReward > balance + totalStaked) {
             uint256 withdrawableAmount = sablierLockup.withdrawableAmountOf(
                 sablierStreamId
             );
+            console.log("Withdrawable amount: %s", withdrawableAmount);
 
             if (balance + withdrawableAmount < totalReward) {
                 revert("Unrecoverable error");
@@ -232,16 +236,22 @@ contract Stake is
 
     // **** Read functions ****
 
-    function getTotalStake(address _user) external view returns (uint256) {
+    function getTotalStake(
+        address _user
+    ) external view returns (uint256 usersTotalStaked) {
         uint256[] memory userPositionCount = usersPositions[_user];
 
-        uint256 totalStaked;
-
         for (uint256 i = 0; i < userPositionCount.length; i++) {
-            totalStaked += positions[userPositionCount[i]].ownAmount;
-        }
+            uint256 finalWeekOfStaking = positions[userPositionCount[i]]
+                .finalDay / 7;
 
-        return totalStaked;
+            if (
+                finalWeekOfStaking !=
+                positions[userPositionCount[i]].lastWeekRewardsClaimed
+            ) {
+                usersTotalStaked += positions[userPositionCount[i]].ownAmount;
+            }
+        }
     }
 
     function getPreviousWeekReturns() external returns (uint256) {
@@ -337,6 +347,19 @@ contract Stake is
             _updateWeeklyRewardValuesCache();
         }
 
+        uint256 currentWeek = getCurrentWeek();
+
+        // This side steps a pretty inconsenquential issue where the admin:
+        // Sets the daily reward amount, calls startStakingNextWeek(), then sets the daily reward amount again BEFORE staking starts
+        if (
+            rewardValuesWeeklyCache[currentWeek].dailyRewardAmountAtEndOfWeek !=
+            0
+        ) {
+            rewardValuesWeeklyCache[currentWeek]
+                .dailyRewardAmountAtEndOfWeek = _amount;
+        }
+
+        console.log("Today", getCurrentDay());
         // TODO: Need to validate the amount value here
         dailyRewardValueHistory[getCurrentDay()] = _amount;
         dailyRewardAmount = _amount;
@@ -356,8 +379,7 @@ contract Stake is
     }
 
     function _updateWeeklyRewardValuesCache() internal {
-        // TODO: Have this fetch the current week
-        uint256 currentWeek = getCurrentDay() / 7;
+        uint256 currentWeek = getCurrentWeek();
         if (lastCachedWeek == currentWeek - 1) {
             return;
         }
@@ -368,12 +390,12 @@ contract Stake is
             uint256 currentVeOwnTotal = rewardValuesWeeklyCache[week - 1]
                 .validVeOwnAtEndOfWeek;
 
-            uint256 rewardPerTokenInWeek;
-
             uint256 dailyRewardAmountCurrent = rewardValuesWeeklyCache[week - 1]
                 .dailyRewardAmountAtEndOfWeek;
 
-            uint256 boostMultiplier = getBoostMultiplierForAbsoluteWeek(week);
+            uint256 boostMultiplier = getBoostMultiplierForWeek(week);
+
+            uint256 rewardPerTokenInWeek;
 
             // Iterate over each day and calculate the reward per token for that day
             // Add it to the cumulative reward per token for the week
@@ -387,8 +409,13 @@ contract Stake is
                 uint256 dailyRewardAmountUpdate = dailyRewardValueHistory[
                     currentDay
                 ];
+                console.log("Iterating over day: %s", currentDay);
 
                 if (dailyRewardAmountUpdate != 0) {
+                    console.log(
+                        ">>>>Updating daily reward amount for day: %s",
+                        currentDay
+                    );
                     dailyRewardAmountCurrent = dailyRewardAmountUpdate;
                 }
 
@@ -411,14 +438,9 @@ contract Stake is
                 validVeOwnAtEndOfWeek: currentVeOwnTotal,
                 dailyRewardAmountAtEndOfWeek: dailyRewardAmountCurrent
             });
-            // console.log(
-            //     "Weekly reward per token cached: %s",
-            //     rewardPerTokenInWeek
-            // );
         }
 
         lastCachedWeek = currentWeek - 1;
-        // TODO: Update event
     }
 
     // claimRewards
@@ -434,9 +456,7 @@ contract Stake is
         uint256 dailyRewardAmountCurrent = rewardValuesWeeklyCache[previousWeek]
             .dailyRewardAmountAtEndOfWeek;
 
-        uint256 boostMultiplier = getBoostMultiplierForAbsoluteWeek(
-            previousWeek + 1
-        );
+        uint256 boostMultiplier = getBoostMultiplierForWeek(previousWeek + 1);
 
         for (
             // This starts off with the first day of the week
@@ -482,8 +502,7 @@ contract Stake is
     // Unfortunately this assumes that the previous week has been processed. WHICH is a safe assumption in the claimRewards function because we always process beforehand
     // BUT the view methods won't work then, so we need to support them ......
     function _calculateRewardsForPosition(
-        uint256 _positionId,
-        uint256 _currentDay
+        uint256 _positionId
     ) internal view returns (uint256 reward) {
         StakePosition storage position = positions[_positionId];
 
@@ -581,18 +600,18 @@ contract Stake is
     uint256 finalBoostWeek;
 
     function getCurrentBoostMultiplier() public view returns (uint256) {
-        return getBoostMultiplierForAbsoluteWeek(getCurrentWeek());
+        return getBoostMultiplierForWeek(getCurrentWeek());
     }
 
-    function getBoostMultiplierForAbsoluteWeek(
+    function getBoostMultiplierForWeek(
         uint256 week
     ) public view returns (uint256) {
         uint256 weeksSinceStart = week - stakingStartDay / 7;
 
-        return getBoostMultiplier(weeksSinceStart);
+        return getBoostMultiplierForWeekSinceStart(weeksSinceStart);
     }
 
-    function getBoostMultiplier(
+    function getBoostMultiplierForWeekSinceStart(
         uint256 _weekSinceStart
     ) public view returns (uint256) {
         if (boostDetails.length == 0 || _weekSinceStart > finalBoostWeek) {

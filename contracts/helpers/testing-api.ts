@@ -49,12 +49,19 @@ export const ownTestingAPI = async () => {
     (await PresaleDeployment.getAddress()) as `0x${string}`,
   );
 
+  const SablierLockup = await ethers.getContractFactory("MockSablierLockup");
+  const SablierDeployment = await SablierLockup.deploy(own.address);
+
+  const mockSablierLockup = await hre.viem.getContractAt(
+    "MockSablierLockup",
+    (await SablierDeployment.getAddress()) as `0x${string}`,
+  );
+
   const Stake = await ethers.getContractFactory("Stake");
   const StakeDeployment = await upgrades.deployProxy(Stake, [
     own.address,
     veOwn.address,
-    // TODO: Add sablier lockup address
-    veOwn.address,
+    mockSablierLockup.address,
   ]);
 
   const stake = await hre.viem.getContractAt(
@@ -84,14 +91,6 @@ export const ownTestingAPI = async () => {
 
   await veOwn.write.grantRole([MINTER_ROLE, stake.address]);
 
-  // TODO: Deploy
-  // const sablierLockup = await ethers.getContractFactory("SablierLockup");
-  // const sablierLockupDeployment = await upgrades.deployProxy(sablierLockup, [
-  //   own.address,
-  //   veOwn.address,
-  //   stake.address,
-  // ]);
-
   return {
     own,
     veOwn,
@@ -99,5 +98,6 @@ export const ownTestingAPI = async () => {
     presale,
     mockUSDT,
     stake,
+    mockSablierLockup,
   };
 };

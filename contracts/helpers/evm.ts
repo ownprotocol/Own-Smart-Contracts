@@ -1,5 +1,4 @@
 import hre from "hardhat";
-import { convertTimestampToRoundedDownDay } from "../constants/duration";
 import { addDays } from "date-fns";
 
 export const increaseTime = async (seconds: number) => {
@@ -11,12 +10,6 @@ export const increaseTime = async (seconds: number) => {
 
 export const getCurrentBlockTimestamp = async () => {
   return (await hre.ethers.provider.getBlock("latest"))!.timestamp;
-};
-
-export const getCurrentDay = async () => {
-  const currentTimestamp = await getCurrentBlockTimestamp();
-
-  return convertTimestampToRoundedDownDay(currentTimestamp);
 };
 
 export enum DayOfWeek {
@@ -31,7 +24,6 @@ export enum DayOfWeek {
 
 export const getDayStakingCorrected = (date: Date) => {
   let day = date.getUTCDay();
-  // let day = getDay(date);
 
   day += 1;
 

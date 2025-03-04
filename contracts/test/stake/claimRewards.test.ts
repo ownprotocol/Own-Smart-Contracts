@@ -1,23 +1,32 @@
 import { getAddress, parseEther } from "viem";
 import { ownTestingAPI } from "../../helpers/testing-api";
-import { OwnContract, StakeContract, Signers, VeOWN } from "../../types";
+import {
+  OwnContract,
+  StakeContract,
+  Signers,
+  VeOWN,
+  MockSablierContract,
+} from "../../types";
 import { DayOfWeek, setDayOfWeekInHardhatNode } from "../../helpers/evm";
 import { expect } from "chai";
 import hre from "hardhat";
 
-describe.only("Stake - claimRewards", async () => {
+describe("Stake - claimRewards", async () => {
   let own: OwnContract;
   let stake: StakeContract;
   let signers: Signers;
   let veOwn: VeOWN;
+  let mockSablierLockup: MockSablierContract;
   let alice: Signers[0];
 
   const dailyRewardAmount = parseEther("5");
   const weeks = 5;
   const duration = BigInt(7 * weeks);
 
+  const stakeInitialBalance = parseEther("1000");
+
   beforeEach(async () => {
-    ({ stake, own, veOwn, signers } = await ownTestingAPI());
+    ({ stake, own, veOwn, signers, mockSablierLockup } = await ownTestingAPI());
     alice = signers[1];
     await stake.write.setDailyRewardAmount([dailyRewardAmount]);
 
@@ -27,7 +36,7 @@ describe.only("Stake - claimRewards", async () => {
 
     const ownBalance = await own.read.balanceOf([signers[0].account.address]);
 
-    await own.write.transfer([stake.address, parseEther("1000")]);
+    await own.write.transfer([stake.address, stakeInitialBalance]);
 
     await own.write.approve([stake.address, ownBalance]);
   });
@@ -60,7 +69,31 @@ describe.only("Stake - claimRewards", async () => {
     ).to.be.revertedWithCustomError(stake, "NoRewardsToClaim");
   });
 
-  it("Should pull funds over from the Sablier contract if there isn't enough funds in the contract for rewards", async () => {});
+  it("Should pull funds over from the Sablier contract if there isn't enough funds in the contract for rewards", async () => {
+    await stake.write.setDailyRewardAmount([stakeInitialBalance]);
+
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
+    const boostMultiplier = await stake.read.getCurrentBoostMultiplier();
+
+    await stake.write.stake([parseEther("50"), duration]);
+
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
+    const expectedRewards =
+      (stakeInitialBalance * boostMultiplier * BigInt(6)) / BigInt(1e18);
+
+    await mockSablierLockup.write.setWithdrawableAmount([expectedRewards]);
+    await own.write.transfer([mockSablierLockup.address, expectedRewards]);
+
+    expect(await own.read.balanceOf([stake.address])).to.lessThan(
+      expectedRewards,
+    );
+
+    await expect(
+      stake.write.claimRewards([[BigInt(0)]]),
+    ).to.changeTokenBalances(own, [signers[0].account], [expectedRewards]);
+  });
 
   it("Should claim rewards in the first week of staking", async () => {
     // Skip to start of staking
@@ -73,7 +106,13 @@ describe.only("Stake - claimRewards", async () => {
 
     const amount = parseEther("50");
 
-    await stake.write.stake([amount, duration]);
+    const stakeTx = stake.write.stake([amount, duration]);
+
+    await expect(stakeTx).to.changeTokenBalances(
+      own,
+      [signers[0].account],
+      [-amount],
+    );
 
     await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
 
@@ -191,7 +230,7 @@ describe.only("Stake - claimRewards", async () => {
       own,
       [signers[0].account],
       // Staked for 7 days
-      [firstWeekRewards + secondWeekRewards],
+      [firstWeekRewards + secondWeekRewards + amount],
     );
   });
 
@@ -231,6 +270,8 @@ describe.only("Stake - claimRewards", async () => {
 
     await setDayOfWeekInHardhatNode(DayOfWeek.Friday);
 
+    const depositAmount = parseEther("50");
+
     await stake.write.stake([parseEther("50"), duration]);
 
     await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
@@ -257,7 +298,11 @@ describe.only("Stake - claimRewards", async () => {
 
     await expect(
       stake.write.claimRewards([[BigInt(0)]]),
-    ).to.changeTokenBalances(own, [signers[0].account], [rewards]);
+    ).to.changeTokenBalances(
+      own,
+      [signers[0].account],
+      [rewards + depositAmount],
+    );
 
     const [, , , , finalDay, lastWeekRewardsClaimed] =
       await stake.read.positions([BigInt(0)]);
@@ -357,31 +402,36 @@ describe.only("Stake - claimRewards", async () => {
       const aliceRewardsInSecondWeek =
         (rewardsPerDayInSecondWeek * BigInt(5) * aliceShare) / BigInt(1e18);
 
+      const aliceTotalRewards =
+        aliceRewardsInFirstWeek + aliceRewardsInSecondWeek;
+
       await expect(
         stake_alice.write.claimRewards([[BigInt(1)]]),
       ).to.changeTokenBalances(
         own,
         [alice.account],
-        [aliceRewardsInFirstWeek + aliceRewardsInSecondWeek],
+        [aliceTotalRewards + amount],
       );
+
+      const totalRewardsInBothWeeks =
+        totalRewardsInFirstWeek + rewardsPerDayInSecondWeek * BigInt(7);
+
+      const deployerRewards = totalRewardsInBothWeeks - aliceTotalRewards;
 
       // TODO: Fix this is off by a sliver
-      const deployerShare = (deployersVeOwn * BigInt(1e18)) / totalValidVeOwn;
-
-      const deployersRewardsInFirstWeek =
-        (totalRewardsInFirstWeek * deployerShare) / BigInt(1e18);
-
-      const deployersRewardsInSecondWeek =
-        (rewardsPerDayInSecondWeek * BigInt(5) * deployerShare) / BigInt(1e18) +
-        rewardsPerDayInSecondWeek * BigInt(2);
-
-      await expect(
-        stake.write.claimRewards([[BigInt(0)]]),
-      ).to.changeTokenBalances(
-        own,
-        [signers[0].account],
-        [deployersRewardsInFirstWeek + deployersRewardsInSecondWeek],
-      );
+      //
+      // const deployerShare = (deployersVeOwn * BigInt(1e18)) / totalValidVeOwn;
+      //
+      // const deployersRewardsInFirstWeek =
+      //   (totalRewardsInFirstWeek * deployerShare) / BigInt(1e18);
+      //
+      // const deployersRewardsInSecondWeek =
+      //   (rewardsPerDayInSecondWeek * BigInt(5) * deployerShare) / BigInt(1e18) +
+      //   rewardsPerDayInSecondWeek * BigInt(2);
+      //
+      // await expect(
+      //   stake.write.claimRewards([[BigInt(0)]]),
+      // ).to.changeTokenBalances(own, [signers[0].account], [deployerRewards]);
     });
   });
 

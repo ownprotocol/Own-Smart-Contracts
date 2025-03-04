@@ -51,6 +51,7 @@ describe("Stake - stake", async () => {
 
   describe("When staking has started", async () => {
     beforeEach(async () => {
+      await stake.write.setDailyRewardAmount([parseEther("5")]);
       await stake.write.startStakingNextWeek();
       await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
     });
@@ -79,9 +80,10 @@ describe("Stake - stake", async () => {
       await own.write.approve([stake.address, amount]);
       await stake.write.stake([amount, BigInt(7)]);
 
-      const currentDay = await getCurrentDay();
+      const currentDay = Number(await stake.read.getCurrentDay());
+      const currentWeek = await stake.read.getCurrentWeek();
       const stakeStartDay = currentDay + 1;
-      const stakeFinalDay = stakeStartDay + 7;
+      const stakeFinalDay = stakeStartDay + 7 - 1;
 
       const address = signers[0].account.address;
 
@@ -94,9 +96,11 @@ describe("Stake - stake", async () => {
           veOwnAmount: amount,
           startDay: stakeStartDay,
           finalDay: stakeFinalDay,
-          lastDayRewardsClaimed: stakeStartDay - 1,
+          lastWeekRewardsClaimed: currentWeek,
         },
       ]);
+
+      expect(await stake.read.totalStaked()).to.equal(amount);
 
       expect(await stake.read.totalPositions()).to.equal(1);
       expect(

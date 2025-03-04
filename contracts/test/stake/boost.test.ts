@@ -4,29 +4,10 @@ import { OwnContract, StakeContract, Signers, VeOWN } from "../../types";
 import { expect } from "chai";
 
 describe("Stake - boost", async () => {
-  let own: OwnContract;
   let stake: StakeContract;
-  let signers: Signers;
-  let veOwn: VeOWN;
-  let alice: Signers[0];
-
-  const dailyRewardAmount = parseEther("5");
-  const weeks = 5;
-  const duration = BigInt(7 * weeks);
 
   beforeEach(async () => {
-    ({ stake, own, veOwn, signers } = await ownTestingAPI());
-    // alice = signers[1];
-    // await stake.write.setDailyRewardAmount([dailyRewardAmount]);
-    //
-    // await stake.write.startStakingNextWeek();
-    // await setDayOfWeekInHardhatNode(DayOfWeek.Friday);
-    //
-    // const ownBalance = await own.read.balanceOf([signers[0].account.address]);
-    //
-    // await own.write.transfer([stake.address, parseEther("1000")]);
-    //
-    // await own.write.approve([stake.address, ownBalance]);
+    ({ stake } = await ownTestingAPI());
   });
 
   it("Should have the initial boost configuration", async () => {
@@ -52,19 +33,22 @@ describe("Stake - boost", async () => {
   });
 
   it("Should return 10x for the first week", async () => {
-    const boostMultiplier = await stake.read.getBoostMultiplier([BigInt(0)]);
+    const boostMultiplier =
+      await stake.read.getBoostMultiplierForWeekSinceStart([BigInt(0)]);
 
     expect(boostMultiplier).to.equal(parseEther("10"));
   });
 
   it("Should return 5x for the second week", async () => {
-    const boostMultiplier = await stake.read.getBoostMultiplier([BigInt(1)]);
+    const boostMultiplier =
+      await stake.read.getBoostMultiplierForWeekSinceStart([BigInt(1)]);
 
     expect(boostMultiplier).to.equal(parseEther("5"));
   });
 
   it("Should return 3x for the fifth week", async () => {
-    const boostMultiplier = await stake.read.getBoostMultiplier([BigInt(4)]);
+    const boostMultiplier =
+      await stake.read.getBoostMultiplierForWeekSinceStart([BigInt(4)]);
 
     expect(boostMultiplier).to.equal(parseEther("3"));
   });
@@ -80,7 +64,8 @@ describe("Stake - boost", async () => {
       ],
     ]);
 
-    const boostMultiplier = await stake.read.getBoostMultiplier([BigInt(0)]);
+    const boostMultiplier =
+      await stake.read.getBoostMultiplierForWeekSinceStart([BigInt(0)]);
 
     expect(boostMultiplier).to.equal(parseEther("20"));
   });
@@ -96,17 +81,20 @@ describe("Stake - boost", async () => {
       ],
     ]);
 
-    const boostMultiplier = await stake.read.getBoostMultiplier([BigInt(2)]);
+    const boostMultiplier =
+      await stake.read.getBoostMultiplierForWeekSinceStart([BigInt(2)]);
 
     expect(boostMultiplier).to.equal(parseEther("20"));
 
-    const boostMultiplier2 = await stake.read.getBoostMultiplier([BigInt(3)]);
+    const boostMultiplier2 =
+      await stake.read.getBoostMultiplierForWeekSinceStart([BigInt(3)]);
 
     expect(boostMultiplier2).to.equal(parseEther("5"));
   });
 
   it("Should return no boost after the 12th week", async () => {
-    const boostMultiplier = await stake.read.getBoostMultiplier([BigInt(12)]);
+    const boostMultiplier =
+      await stake.read.getBoostMultiplierForWeekSinceStart([BigInt(12)]);
 
     expect(boostMultiplier).to.equal(parseEther("1"));
   });
