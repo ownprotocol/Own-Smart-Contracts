@@ -93,7 +93,6 @@ interface IPresale {
 
     function claimUSDT() external;
 
-    //
     // *** User functions ***
 
     // Stores USDT, calculates the equivalent amount of pre sale tokens and increments presaleTokensPurchased for the receiver

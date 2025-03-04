@@ -9,6 +9,7 @@ interface IStake {
         uint256 startDay;
         uint256 finalDay;
         uint256 lastWeekRewardsClaimed;
+        uint256 rewardsClaimed;
     }
 
     struct BoostDetails {

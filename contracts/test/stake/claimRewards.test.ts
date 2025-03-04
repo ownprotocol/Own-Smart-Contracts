@@ -136,6 +136,8 @@ describe("Stake - claimRewards", async () => {
     const currentWeek = await stake.read.getCurrentWeek();
 
     expect(lastWeekRewardsClaimed).to.equal(currentWeek);
+
+    expect(await stake.read.totalRewardsIssued()).to.equal(totalRewards);
   });
 
   it("Should claim rewards for an entire week", async () => {
@@ -156,14 +158,22 @@ describe("Stake - claimRewards", async () => {
 
     const rewardsPerDay = (dailyRewardAmount * boostMultiplier) / BigInt(1e18);
 
+    const totalRewards = rewardsPerDay * BigInt(7);
+
     await expect(
       stake.write.claimRewards([[BigInt(0)]]),
     ).to.changeTokenBalances(
       own,
       [signers[0].account],
       // Staked for 7 days
-      [rewardsPerDay * BigInt(7)],
+      [totalRewards],
     );
+
+    const [, , , , , , rewardsClaimed] = await stake.read.positions([
+      BigInt(0),
+    ]);
+
+    expect(rewardsClaimed).to.equal(totalRewards);
   });
 
   it("Should claim rewards for the first half of the first week and the entire second week", async () => {

@@ -97,6 +97,7 @@ describe("Stake - stake", async () => {
           startDay: stakeStartDay,
           finalDay: stakeFinalDay,
           lastWeekRewardsClaimed: currentWeek,
+          rewardsClaimed: 0,
         },
       ]);
 
@@ -111,6 +112,7 @@ describe("Stake - stake", async () => {
           BigInt(stakeFinalDay + 1),
         ]),
       ).to.equal(amount);
+      expect(await stake.read.totalUsers()).to.equal(1);
     });
 
     it("Should mint veOwn tokens at 52x multiplier when staking for 1 year", async () => {

@@ -34,6 +34,11 @@ contract Stake is
 
     uint256 public totalStaked;
 
+    uint256 public totalRewardsIssued;
+
+    // Tracks all users who have staked at some point
+    uint256 public totalUsers;
+
     struct RewardValuesWeeklyCache {
         // This value is used to calculate the reward per token for the week when claiming rewards
         uint256 weeklyRewardPerTokenCached;
@@ -115,6 +120,10 @@ contract Stake is
         uint256 finalDay = startDay + _days - 1;
         uint256 positionId = totalPositions;
 
+        if (usersPositions[msg.sender].length == 0) {
+            ++totalUsers;
+        }
+
         // record their position
         positions[positionId] = StakePosition({
             owner: msg.sender,
@@ -123,7 +132,8 @@ contract Stake is
             startDay: startDay,
             // Rewards are inclusive of the last day
             finalDay: finalDay,
-            lastWeekRewardsClaimed: currentWeek
+            lastWeekRewardsClaimed: currentWeek,
+            rewardsClaimed: 0
         });
         usersPositions[msg.sender].push(positionId);
 
@@ -191,6 +201,7 @@ contract Stake is
 
             totalReward += reward;
             rewardPerPosition[i] = reward;
+            position.rewardsClaimed += reward;
 
             uint256 finalWeek = position.finalDay / 7;
             if (currentWeek > finalWeek) {
@@ -207,17 +218,16 @@ contract Stake is
             revert NoRewardsToClaim();
         }
 
-        uint256 balance = ownToken.balanceOf(address(this));
-        console.log("Balance: %s", balance);
-        console.log("Total reward: %s", totalReward);
+        // Should be safe to deduct the total reward from the total staked amount because we never issue more than what is held by the contract
+        uint256 remainingBalanceForRewards = ownToken.balanceOf(address(this)) -
+            totalStaked;
 
-        if (totalReward > balance + totalStaked) {
+        if (totalReward > remainingBalanceForRewards) {
             uint256 withdrawableAmount = sablierLockup.withdrawableAmountOf(
                 sablierStreamId
             );
-            console.log("Withdrawable amount: %s", withdrawableAmount);
 
-            if (balance + withdrawableAmount < totalReward) {
+            if (remainingBalanceForRewards + withdrawableAmount < totalReward) {
                 revert("Unrecoverable error");
             }
 
@@ -225,6 +235,8 @@ contract Stake is
         }
 
         ownToken.safeTransfer(msg.sender, totalReward);
+
+        totalRewardsIssued += totalReward;
 
         emit RewardsClaimed(
             msg.sender,

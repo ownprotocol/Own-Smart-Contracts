@@ -1,10 +1,10 @@
 import { parseEther } from "viem";
 import { ownTestingAPI } from "../../helpers/testing-api";
-import { OwnContract, StakeContract, Signers, VeOWN } from "../../types";
+import { StakeContract } from "../../types";
 import { expect } from "chai";
 import { DayOfWeek, setDayOfWeekInHardhatNode } from "../../helpers/evm";
 
-describe.only("Stake - boost", async () => {
+describe("Stake - boost", async () => {
   let stake: StakeContract;
 
   beforeEach(async () => {
