@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import {
@@ -6,8 +7,17 @@ import {
   DrawerClose,
   DrawerFooter,
 } from "../ui/drawer";
+import { useState } from "react";
 
 const StakingDrawerContent = () => {
+  const [durationWeeks, setDurationWeeks] = useState<number>(0);
+  const [selectedDuration, setSelectedDuration] = useState<string>("");
+
+  const handleDurationClick = (duration: string, weeks: number) => {
+    setSelectedDuration(duration);
+    setDurationWeeks(weeks);
+  };
+
   return (
     <div className="mx-auto w-full px-[0%] pt-0 md:px-[5%] md:pt-8">
       <DrawerHeader className="relative">
@@ -74,20 +84,38 @@ const StakingDrawerContent = () => {
             </div>
             <div className="flex w-full flex-col gap-2">
               <h1 className="font-dm_mono text-[10px] font-[400] leading-[14px] tracking-[8%] text-gray-500 md:text-[14px] md:leading-[16px]">
-                Enter TOKENS TO STAKE
+                LOCK UP PERIOD
               </h1>
               <div className="flex items-center border-2 border-gray-500/50 bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
                 <input
                   type="number"
+                  value={durationWeeks || ""}
+                  onChange={(e) => setDurationWeeks(Number(e.target.value))}
                   placeholder="0"
                   className="block w-full min-w-0 grow py-4 pl-4 pr-3 font-dm_sans text-[16px] leading-[20px] tracking-[0.5%] text-gray-900 text-primary placeholder:text-gray-400 focus:outline-none md:text-[20px] md:leading-[24px]"
                 />
               </div>
               <div className="flex flex-wrap justify-around gap-2">
-                <DurationButton duration="1 Week" />
-                <DurationButton duration="1 Month" />
-                <DurationButton duration="1 Year" />
-                <DurationButton duration="4 Year" />
+                <DurationButton
+                  duration="1 Week"
+                  isSelected={selectedDuration === "1 Week"}
+                  onClick={() => handleDurationClick("1 Week", 1)}
+                />
+                <DurationButton
+                  duration="1 Month"
+                  isSelected={selectedDuration === "1 Month"}
+                  onClick={() => handleDurationClick("1 Month", 4)}
+                />
+                <DurationButton
+                  duration="1 Year"
+                  isSelected={selectedDuration === "1 Year"}
+                  onClick={() => handleDurationClick("1 Year", 52)}
+                />
+                <DurationButton
+                  duration="4 Year"
+                  isSelected={selectedDuration === "4 Year"}
+                  onClick={() => handleDurationClick("4 Year", 208)}
+                />
               </div>
             </div>
           </div>
