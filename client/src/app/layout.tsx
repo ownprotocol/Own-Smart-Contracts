@@ -1,5 +1,6 @@
 import { DM_Mono, DM_Sans, Funnel_Sans } from "next/font/google";
 import { type Metadata } from "next";
+import { ToastContainer } from "react-toastify";
 
 import {
   Footer,
@@ -47,6 +48,7 @@ export default function RootLayout({
           <Navigation />
           <HomeSeparator />
           {hasPresaleConcluded && <HasPresaleConcluded />}
+          <ToastContainer />
           {children}
         </div>
 
