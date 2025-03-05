@@ -14,6 +14,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useGetAuthUser } from "@/query";
 
 const stakingSchema = z.object({
   tokenAmount: z
@@ -46,11 +47,14 @@ const StakingDrawerContent = () => {
     },
   });
 
+  const { isValid } = useGetAuthUser();
+  console.log(isValid);
+
   const [durationWeeks, setDurationWeeks] = useState<string>("");
   const [selectedDuration, setSelectedDuration] = useState<string>("");
   const [tokenAmount, setTokenAmount] = useState<string>("");
 
-  const handleDurationClick = (duration: string, weeks: string) => {
+  const handleLockUpDuration = (duration: string, weeks: string) => {
     setSelectedDuration(duration);
     setDurationWeeks(weeks);
     setValue("lockupDuration", weeks);
@@ -61,11 +65,9 @@ const StakingDrawerContent = () => {
   };
 
   const onSubmit = (data: StakingFormData) => {
+    console.log(tokenAmount);
     console.log(data);
   };
-
-  console.log(durationWeeks);
-  console.log(tokenAmount);
 
   return (
     <div className="mx-auto w-full px-[0%] pt-0 md:px-[5%] md:pt-8">
@@ -144,7 +146,9 @@ const StakingDrawerContent = () => {
                   <input
                     type="text"
                     value={durationWeeks || ""}
-                    onChange={(e) => setDurationWeeks(e.target.value)}
+                    onChange={(e) =>
+                      handleLockUpDuration(e.target.value, e.target.value)
+                    }
                     placeholder="0"
                     className="block w-full min-w-0 grow py-4 pl-4 pr-3 font-dm_sans text-[16px] leading-[20px] tracking-[0.5%] text-gray-900 text-primary placeholder:text-gray-400 focus:outline-none md:text-[20px] md:leading-[24px]"
                   />
@@ -156,22 +160,22 @@ const StakingDrawerContent = () => {
                   <DurationButton
                     duration="1 Week"
                     isSelected={selectedDuration === "1 Week"}
-                    onClick={() => handleDurationClick("1 Week", "1")}
+                    onClick={() => handleLockUpDuration("1 Week", "1")}
                   />
                   <DurationButton
                     duration="1 Month"
                     isSelected={selectedDuration === "1 Month"}
-                    onClick={() => handleDurationClick("1 Month", "4")}
+                    onClick={() => handleLockUpDuration("1 Month", "4")}
                   />
                   <DurationButton
                     duration="1 Year"
                     isSelected={selectedDuration === "1 Year"}
-                    onClick={() => handleDurationClick("1 Year", "52")}
+                    onClick={() => handleLockUpDuration("1 Year", "52")}
                   />
                   <DurationButton
                     duration="4 Year"
                     isSelected={selectedDuration === "4 Year"}
-                    onClick={() => handleDurationClick("4 Year", "208")}
+                    onClick={() => handleLockUpDuration("4 Year", "208")}
                   />
                 </div>
               </div>
@@ -199,9 +203,12 @@ const StakingDrawerContent = () => {
               </div>
             </div>
             <DrawerFooter className="flex justify-start">
+              {isValid &&
+              
               <Button className="w-full rounded-lg bg-purple-700 px-4 py-2 font-dm_sans text-[14px] font-medium leading-[20px] text-white transition-colors hover:bg-purple-800 md:max-w-fit md:px-8 md:text-[18px] md:leading-[28px]">
                 Stake
               </Button>
+              }
               {/* <DrawerClose asChild>
               <Button>Cancel</Button>
             </DrawerClose> */}
