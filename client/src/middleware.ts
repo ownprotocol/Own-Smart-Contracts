@@ -6,14 +6,10 @@ const protectedRoute = ["/user-stake/"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  console.log("pathname", pathname);
 
   const isProtectedRoute = protectedRoute.some((route) => {
-    console.log("route", route);
-    console.log("pathname", pathname);
     return pathname.startsWith(route);
   });
-  console.log("isProtectedRoute", isProtectedRoute);
   // Get the JWT from cookies
 
   if (isProtectedRoute) {

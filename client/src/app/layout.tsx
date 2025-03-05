@@ -11,6 +11,7 @@ import {
 import "@/styles/globals.css";
 import ThirdwebClientProvider from "@/providers/ThirdwebClientprovider";
 import QueryProvider from "@/providers/queryClientprovider";
+import { isLoggedIn } from "@/actions/login";
 
 const fun = Funnel_Sans({
   subsets: ["latin"],
@@ -36,10 +37,12 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const hasPresaleConcluded = false;
+  const authUser = await isLoggedIn();
+  console.log(authUser);
   return (
     <html
       lang="en"
@@ -49,7 +52,7 @@ export default function RootLayout({
         <div className="container relative mx-auto flex flex-col border-x border-gray-500/30">
           <QueryProvider>
             <ThirdwebClientProvider>
-              <Navigation />
+              <Navigation authUser={authUser} />
               <HomeSeparator />
               {hasPresaleConcluded && <HasPresaleConcluded />}
               <ToastContainer />

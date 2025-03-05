@@ -20,9 +20,24 @@ import { icons } from "@/constants/icons";
 import { cn } from "@/lib/utils";
 import { colors } from "@/constants/thirdweb-styling/theming";
 
-const Navigation = () => {
+interface NavigationProps {
+  authUser:
+    | {
+        address: null;
+        accessToken: null;
+        isValid: boolean;
+      }
+    | {
+        address: string;
+        accessToken: string;
+        isValid: boolean;
+      };
+}
+
+const Navigation = ({ authUser }: NavigationProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
+  const { isValid, address } = authUser;
 
   return (
     <div className="mt-2 flex flex-row justify-between px-[5%] md:px-[10%]">
@@ -34,7 +49,9 @@ const Navigation = () => {
         <span className="sr-only">Open sidebar</span>
         <icons.RxHamburgerMenu className="size-6" aria-hidden="true" />
       </Button>
-      <Image src="/own-logo.svg" height={40} width={80} alt="logo" />
+      <Link href="/">
+        <Image src="/own-logo.svg" height={40} width={80} alt="logo" />
+      </Link>
       <div className="hidden items-center gap-4 border-gray-500 font-dm_mono md:flex-row lg:flex">
         {TOP_NAVIGATION_LINKS.map((link) => (
           <Link
@@ -50,6 +67,32 @@ const Navigation = () => {
             {link.name}
           </Link>
         ))}
+        {isValid && (
+          <>
+            <Link
+              href={`/user-stake/${address}/rewards`}
+              className={cn(
+                "transition-colors hover:text-gray-300",
+                pathname === `/user-stake/${address}/rewards`
+                  ? "font-semibold underline underline-offset-4"
+                  : "",
+              )}
+            >
+              Rewards
+            </Link>
+            <Link
+              href={`/user-stake/${address}/positions`}
+              className={cn(
+                "transition-colors hover:text-gray-300",
+                pathname === `/user-stake/${address}/positions`
+                  ? "font-semibold underline underline-offset-4"
+                  : "",
+              )}
+            >
+              Positions
+            </Link>
+          </>
+        )}
       </div>
 
       {/* mobile side navbar */}

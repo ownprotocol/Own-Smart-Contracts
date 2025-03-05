@@ -2,7 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import axios, { type AxiosResponse } from "axios";
 
-export const GetUserQueryKey = "user";
+export const GetUserQueryKey = "get-auth-user";
 
 interface UserAuthState {
   address: string | null;
@@ -17,6 +17,11 @@ export const useGetAuthUser = () => {
     queryKey: [GetUserQueryKey],
     queryFn: () => getAuthUser(),
   });
-  const userAuthState = data;
-  return { userAuthState, ...queryResponse };
+  const userAuthState = data?.data;
+  return {
+    isValid: userAuthState?.isValid,
+    address: userAuthState?.address,
+    accessToken: userAuthState?.accessToken,
+    ...queryResponse,
+  };
 };
