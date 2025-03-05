@@ -42,7 +42,9 @@ describe("Stake - startStakingNextWeek", async () => {
     expect(await stake.read.lastRewardValuesWeeklyCachedWeek()).to.equal(
       currentWeek,
     );
-    expect(await stake.read.stakingStartWeek()).to.equal(currentWeek);
+    expect(await stake.read.stakingStartWeek()).to.equal(
+      Number(currentWeek) + 1,
+    );
 
     const [rewardPerToken, validVeOwn, dailyRewardAmount] =
       await stake.read.rewardValuesWeeklyCache([currentWeek]);

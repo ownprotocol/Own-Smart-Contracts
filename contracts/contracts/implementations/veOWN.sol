@@ -25,6 +25,7 @@ contract VeOWN is
     function initialize() public initializer {
         __ERC20_init("veOWN", "veOWN");
         __AccessControl_init();
+        __UUPSUpgradeable_init();
 
         MINTER_ROLE = keccak256("MINTER_ROLE");
 
@@ -57,10 +58,10 @@ contract VeOWN is
 
     // The following functions are overrides required by Solidity.
     function _update(
-        address from,
-        address to,
-        uint256 value
+        address _from,
+        address _to,
+        uint256 _value
     ) internal override(ERC20Upgradeable) {
-        super._update(from, to, value);
+        super._update(_from, _to, _value);
     }
 }

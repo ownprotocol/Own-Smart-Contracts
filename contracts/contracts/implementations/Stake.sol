@@ -71,6 +71,7 @@ contract Stake is
     ) public initializer {
         __AccessControlEnumerable_init();
         __ReentrancyGuard_init();
+        __UUPSUpgradeable_init();
 
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
 
@@ -146,7 +147,7 @@ contract Stake is
     }
 
     function claimRewards(
-        uint256[] calldata positionIds
+        uint256[] calldata _positionIds
     ) external nonReentrant {
         if (!hasStakingStarted()) {
             revert StakingNotStarted();
@@ -156,11 +157,11 @@ contract Stake is
 
         uint256 currentWeek = getCurrentWeek();
 
-        uint256[] memory rewardPerPosition = new uint256[](positionIds.length);
+        uint256[] memory rewardPerPosition = new uint256[](_positionIds.length);
         uint256 totalReward;
 
-        for (uint256 i = 0; i < positionIds.length; i++) {
-            StakePosition storage position = positions[positionIds[i]];
+        for (uint256 i = 0; i < _positionIds.length; i++) {
+            StakePosition storage position = positions[_positionIds[i]];
 
             if (msg.sender != position.owner) {
                 revert CallerDoesNotOwnPosition();
@@ -171,7 +172,7 @@ contract Stake is
             }
 
             uint256 reward = _calculateRewardsForPosition(
-                positionIds[i],
+                _positionIds[i],
                 new RewardValuesWeeklyCache[](0)
             );
 
@@ -220,7 +221,7 @@ contract Stake is
 
         emit RewardsClaimed(
             msg.sender,
-            positionIds,
+            _positionIds,
             rewardPerPosition,
             totalReward
         );
@@ -648,9 +649,9 @@ contract Stake is
     }
 
     function getBoostMultiplierForWeek(
-        uint256 week
+        uint256 _week
     ) public view returns (uint256) {
-        uint256 weeksSinceStart = week - stakingStartWeek;
+        uint256 weeksSinceStart = _week - stakingStartWeek;
 
         return getBoostMultiplierForWeekSinceStart(weeksSinceStart);
     }

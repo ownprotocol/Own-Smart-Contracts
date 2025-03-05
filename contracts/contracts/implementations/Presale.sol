@@ -33,6 +33,7 @@ contract Presale is
 
     function initialize(IOwn _own, IERC20 _usdt) public initializer {
         __Ownable_init(_msgSender());
+        __UUPSUpgradeable_init();
 
         own = _own;
         usdt = _usdt;
@@ -45,7 +46,7 @@ contract Presale is
     // *** Admin functions ***
 
     function addPresaleRounds(
-        PresaleRound[] memory rounds
+        PresaleRound[] memory _rounds
     ) external override onlyOwner {
         uint256 allowableAllocation;
 
@@ -55,23 +56,23 @@ contract Presale is
                 presaleRounds[i].sales;
         }
 
-        for (uint256 i = 0; i < rounds.length; i++) {
-            if (rounds[i].duration == 0) {
+        for (uint256 i = 0; i < _rounds.length; i++) {
+            if (_rounds[i].duration == 0) {
                 revert CannotSetPresaleRoundDurationToZero();
             }
 
-            if (rounds[i].price == 0) {
+            if (_rounds[i].price == 0) {
                 revert CannotSetPresaleRoundPriceToZero();
             }
 
-            if (rounds[i].allocation == 0) {
+            if (_rounds[i].allocation == 0) {
                 revert CannotSetPresaleRoundAllocationToZero();
             }
 
-            allowableAllocation += rounds[i].allocation;
-            rounds[i].sales = 0;
+            allowableAllocation += _rounds[i].allocation;
+            _rounds[i].sales = 0;
 
-            presaleRounds.push(rounds[i]);
+            presaleRounds.push(_rounds[i]);
         }
 
         uint256 veOwnBalance = own.balanceOf(address(this));
@@ -82,7 +83,7 @@ contract Presale is
             );
         }
 
-        emit PresaleRoundsAdded(rounds);
+        emit PresaleRoundsAdded(_rounds);
     }
 
     function claimUSDT() external override onlyOwner {
@@ -143,47 +144,47 @@ contract Presale is
     }
 
     function updatePresaleRoundDuration(
-        uint256 roundId,
-        uint256 newDuration
-    ) external override onlyOwner updatePresaleRound(roundId) {
-        if (newDuration == 0) {
+        uint256 _roundId,
+        uint256 _newDuration
+    ) external override onlyOwner updatePresaleRound(_roundId) {
+        if (_newDuration == 0) {
             revert CannotSetPresaleRoundDurationToZero();
         }
 
-        uint256 oldDuration = presaleRounds[roundId].duration;
-        presaleRounds[roundId].duration = newDuration;
+        uint256 oldDuration = presaleRounds[_roundId].duration;
+        presaleRounds[_roundId].duration = _newDuration;
 
-        emit PresaleRoundDurationUpdated(roundId, newDuration, oldDuration);
+        emit PresaleRoundDurationUpdated(_roundId, _newDuration, oldDuration);
     }
 
     function updatePresaleRoundPrice(
-        uint256 roundId,
-        uint256 newPrice
-    ) external override onlyOwner updatePresaleRound(roundId) {
-        if (newPrice == 0) {
+        uint256 _roundId,
+        uint256 _newPrice
+    ) external override onlyOwner updatePresaleRound(_roundId) {
+        if (_newPrice == 0) {
             revert CannotSetPresaleRoundPriceToZero();
         }
 
-        uint256 oldPrice = presaleRounds[roundId].price;
-        presaleRounds[roundId].price = newPrice;
+        uint256 oldPrice = presaleRounds[_roundId].price;
+        presaleRounds[_roundId].price = _newPrice;
 
-        emit PresaleRoundPriceUpdated(roundId, newPrice, oldPrice);
+        emit PresaleRoundPriceUpdated(_roundId, _newPrice, oldPrice);
     }
 
     function updatePresaleRoundAllocation(
-        uint256 roundId,
-        uint256 newAllocation
-    ) external override onlyOwner updatePresaleRound(roundId) {
-        if (newAllocation == 0) {
+        uint256 _roundId,
+        uint256 _newAllocation
+    ) external override onlyOwner updatePresaleRound(_roundId) {
+        if (_newAllocation == 0) {
             revert CannotSetPresaleRoundAllocationToZero();
         }
 
-        uint256 oldAllocation = presaleRounds[roundId].allocation;
-        presaleRounds[roundId].allocation = newAllocation;
+        uint256 oldAllocation = presaleRounds[_roundId].allocation;
+        presaleRounds[_roundId].allocation = _newAllocation;
 
         emit PresaleRoundAllocationUpdated(
-            roundId,
-            newAllocation,
+            _roundId,
+            _newAllocation,
             oldAllocation
         );
     }
