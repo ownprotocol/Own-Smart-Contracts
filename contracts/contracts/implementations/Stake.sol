@@ -10,8 +10,6 @@ import "../interfaces/IveOwn.sol";
 import "../interfaces/IOwn.sol";
 import "../interfaces/ISablierLockup.sol";
 
-import "hardhat/console.sol";
-
 contract Stake is
     IStake,
     AccessControlEnumerableUpgradeable,
@@ -23,12 +21,14 @@ contract Stake is
     IveOWN public veOWN;
     ISablierLockup public sablierLockup;
 
-    uint256 sablierStreamId;
+    uint256 public sablierStreamId;
 
     uint256 public maximumLockDays;
     uint256 public minimumLockDays;
 
     uint256 public dailyRewardAmount;
+
+    uint256 public lastRewardValuesWeeklyCachedWeek;
 
     uint256 public stakingStartWeek;
 
@@ -46,10 +46,7 @@ contract Stake is
     mapping(uint256 => uint256) public validVeOwnSubtractionsInDay;
 
     mapping(uint256 => uint256) public dailyRewardValueHistory;
-    mapping(uint256 => uint256) public boostMultiplierHistory;
     mapping(uint256 => RewardValuesWeeklyCache) public rewardValuesWeeklyCache;
-
-    uint256 public lastCachedWeek;
 
     modifier onlyDefaultAdmin() {
         if (!hasRole(DEFAULT_ADMIN_ROLE, msg.sender)) {
@@ -132,7 +129,7 @@ contract Stake is
 
         totalStaked += _amount;
 
-        totalPositions = positionId + 1;
+        ++totalPositions;
 
         ownToken.safeTransferFrom(msg.sender, address(this), _amount);
         veOWN.mint(msg.sender, veOwnAmount);
@@ -271,8 +268,7 @@ contract Stake is
         return cache.weeklyRewardPerTokenCached;
     }
 
-    // Because in this contract weeks start from Saturday 00:00:00 UTC
-    // We need to ensure that getCurrentDay starts from the first Saturday 1970
+    // Because in this contract weeks start from Saturday 00:00:00 UTC and UTC starts from Thursday we deduct 2 so that a Saturday is considered the start of a week
     function getCurrentDay() public view returns (uint256) {
         return block.timestamp / 1 days - 2;
     }
@@ -316,29 +312,31 @@ contract Stake is
     function setSablierStreamId(uint256 _streamId) external onlyDefaultAdmin {
         sablierStreamId = _streamId;
 
-        // TODO: EVENT
+        emit SablierStreamIdSet(_streamId);
     }
 
     function startStakingNextWeek() external onlyDefaultAdmin {
         if (dailyRewardAmount == 0) {
-            revert("Daily reward amount not set");
+            revert CannotStartStakingWithoutDailyRewardSet();
         }
 
         if (stakingStartWeek != 0) {
-            revert("Staking has already started");
+            revert StakingAlreadyStarted();
         }
 
         uint256 currentWeek = getCurrentWeek();
 
         stakingStartWeek = currentWeek + 1;
 
-        lastCachedWeek = currentWeek;
+        lastRewardValuesWeeklyCachedWeek = currentWeek;
 
         rewardValuesWeeklyCache[currentWeek] = RewardValuesWeeklyCache({
             weeklyRewardPerTokenCached: 0,
             validVeOwnAtEndOfWeek: 0,
             dailyRewardAmountAtEndOfWeek: dailyRewardAmount
         });
+
+        emit StartStakingNextWeek(stakingStartWeek);
     }
 
     function setDailyRewardAmount(uint256 _amount) external onlyDefaultAdmin {
@@ -396,7 +394,7 @@ contract Stake is
             rewardValuesWeeklyCache[fromWeek + i] = updatedCacheValues[i];
         }
 
-        lastCachedWeek = getCurrentWeek() - 1;
+        lastRewardValuesWeeklyCachedWeek = getCurrentWeek() - 1;
     }
 
     function _getValuesToUpdateWeeklyRewardValuesCache()
@@ -407,15 +405,17 @@ contract Stake is
             uint256 fromWeek
         )
     {
-        uint256 _currentVeOwnTotal = rewardValuesWeeklyCache[lastCachedWeek]
-            .validVeOwnAtEndOfWeek;
+        uint256 _currentVeOwnTotal = rewardValuesWeeklyCache[
+            lastRewardValuesWeeklyCachedWeek
+        ].validVeOwnAtEndOfWeek;
 
-        uint256 _dailyRewardCurrent = rewardValuesWeeklyCache[lastCachedWeek]
-            .dailyRewardAmountAtEndOfWeek;
+        uint256 _dailyRewardCurrent = rewardValuesWeeklyCache[
+            lastRewardValuesWeeklyCachedWeek
+        ].dailyRewardAmountAtEndOfWeek;
 
         uint256 currentWeek = getCurrentWeek();
 
-        fromWeek = lastCachedWeek + 1;
+        fromWeek = lastRewardValuesWeeklyCachedWeek + 1;
 
         if (fromWeek == currentWeek) {
             return (updatedCacheValues, fromWeek);
@@ -521,11 +521,11 @@ contract Stake is
         uint256 _week,
         RewardValuesWeeklyCache[] memory _tempCache
     ) internal view returns (RewardValuesWeeklyCache memory) {
-        if (_week <= lastCachedWeek) {
+        if (_week <= lastRewardValuesWeeklyCachedWeek) {
             return rewardValuesWeeklyCache[_week];
         }
 
-        uint256 weekDiff = _week - lastCachedWeek;
+        uint256 weekDiff = _week - lastRewardValuesWeeklyCachedWeek;
 
         // Arrays start from 0, so subtract 1
         RewardValuesWeeklyCache memory value = _tempCache[weekDiff - 1];

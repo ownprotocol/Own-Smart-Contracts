@@ -477,31 +477,6 @@ describe("Stake - claimRewards", async () => {
         [alice.account],
         [aliceTotalRewards + amount],
       );
-
-      const totalRewardsInBothWeeks =
-        totalRewardsInFirstWeek + rewardsPerDayInSecondWeek * BigInt(7);
-
-      const deployerRewards = totalRewardsInBothWeeks - aliceTotalRewards;
-
-      // TODO: Fix this is off by a sliver
-      //
-      // const deployerShare = (deployersVeOwn * BigInt(1e18)) / totalValidVeOwn;
-      //
-      // const deployersRewardsInFirstWeek =
-      //   (totalRewardsInFirstWeek * deployerShare) / BigInt(1e18);
-      //
-      // const deployersRewardsInSecondWeek =
-      //   (rewardsPerDayInSecondWeek * BigInt(5) * deployerShare) / BigInt(1e18) +
-      //   rewardsPerDayInSecondWeek * BigInt(2);
-      //
-      // await expect(
-      //   stake.write.claimRewards([[BigInt(0)]]),
-      // ).to.changeTokenBalances(own, [signers[0].account], [deployerRewards]);
     });
-  });
-
-  describe("Multiple users", async () => {
-    // 5 users or something, different durations
-    it("Should distribute rewards to users based on their stake", async () => {});
   });
 });

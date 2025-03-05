@@ -7,7 +7,6 @@ import {
   setDayOfWeekInHardhatNode,
 } from "../helpers/evm";
 import { expect } from "chai";
-import { setDay } from "date-fns";
 
 describe("Helpers", async () => {
   let stake: StakeContract;
@@ -42,35 +41,8 @@ describe("Helpers", async () => {
     expect(newDayOfWeek).to.equal(desiredDay);
   });
 
-  // it.only("Should have the correct days since staking started - claude", async () => {
-  //   const desiredDay = DayOfWeek.Wednesday;
-  //
-  //   // Set blockchain to Wednesday
-  //   await setDayOfWeekInHardhatNode(desiredDay);
-  //
-  //   // Get current day and week from contract
-  //   const currentDay = Number(await stake.read.getCurrentDay());
-  //   const currentWeek = Number(await stake.read.getCurrentWeek());
-  //
-  //   // Calculate day of week - this should be the remainder when dividing by 7
-  //   const dayOfWeek = currentDay % 7;
-  //
-  //   console.log("Current day:", currentDay);
-  //   console.log("Current week:", currentWeek);
-  //   console.log("Day of week (calculated):", dayOfWeek);
-  //   console.log("Expected day of week:", desiredDay);
-  //
-  //   // Test day of week directly
-  //   expect(dayOfWeek).to.equal(desiredDay);
-  // });
-
   it("Should have the correct days since staking started", async () => {
     const desiredDay = DayOfWeek.Wednesday;
-
-    const beforeDay = Number(await stake.read.getCurrentDay());
-
-    const beforeWeek = Number(await stake.read.getCurrentWeek());
-    const firstDayOfBeforeWeek = beforeWeek * 7;
 
     await setDayOfWeekInHardhatNode(desiredDay);
 
@@ -97,17 +69,4 @@ describe("Helpers", async () => {
 
     expect(updatedDay % 7).to.equal(0);
   });
-
-  // it("Should update the current day to saturday", async () => {
-  //   const desiredDay = DayOfWeek.Saturday;
-  //
-  //   await setDayOfWeekInHardhatNode(desiredDay);
-  //
-  //   const newTime = await getCurrentBlockTimestamp();
-  //
-  //   const newDate = new Date(newTime * 1000);
-  //   const newDayOfWeek = getDay(newDate);
-  //
-  //   expect(newDayOfWeek).to.equal(desiredDay);
-  // });
 });

@@ -54,6 +54,10 @@ interface IStake {
         uint256 contractBalanceAllocatedForRewards
     );
 
+    error CannotStartStakingWithoutDailyRewardSet();
+
+    error StakingAlreadyStarted();
+
     // *** Events ***
 
     event Staked(
@@ -75,4 +79,8 @@ interface IStake {
     event DailyRewardAmountSet(uint256 day, uint256 amount);
 
     event BoostDetailsAdded(BoostDetails[] _boostDetails);
+
+    event StartStakingNextWeek(uint256 weekStarting);
+
+    event SablierStreamIdSet(uint256 streamId);
 }

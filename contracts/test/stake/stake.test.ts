@@ -2,11 +2,8 @@ import { expect } from "chai";
 import { parseEther } from "viem";
 import { ownTestingAPI } from "../../helpers/testing-api";
 import { OwnContract, StakeContract, Signers, VeOWN } from "../../types";
-import {
-  DayOfWeek,
-  getCurrentDay,
-  setDayOfWeekInHardhatNode,
-} from "../../helpers/evm";
+import { DayOfWeek, setDayOfWeekInHardhatNode } from "../../helpers/evm";
+import { getAddress } from "ethers";
 
 describe("Stake - stake", async () => {
   let own: OwnContract;
@@ -127,10 +124,21 @@ describe("Stake - stake", async () => {
         [signers[0].account.address],
         [BigInt(numWeeks) * amount],
       );
+
+      const currentDay = Number(await stake.read.getCurrentDay());
+
+      const checksumAddress = getAddress(signers[0].account.address);
+
+      await expect(stakeTx)
+        .to.emit(stake, "Staked")
+        .withArgs(
+          checksumAddress,
+          currentDay + 1,
+          currentDay + Number(stakeFor1Year),
+          0,
+          amount,
+          stakeFor1Year,
+        );
     });
-
-    it("Should update the weekly rewards values cache", async () => {});
-
-    it("Should emit the Staked event", async () => {});
   });
 });
