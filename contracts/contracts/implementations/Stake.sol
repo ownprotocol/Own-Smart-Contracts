@@ -22,7 +22,7 @@ contract Stake is
     using SafeERC20 for IOwn;
 
     IOwn public ownToken;
-    IveOWN public veOWN;
+    IveOwn public veOwn;
     ISablierLockup public sablierLockup;
 
     uint256 public sablierStreamId;
@@ -66,7 +66,7 @@ contract Stake is
 
     function initialize(
         IOwn _ownToken,
-        IveOWN _veOWN,
+        IveOwn _veOWN,
         ISablierLockup _sablierLockup
     ) public initializer {
         __AccessControlEnumerable_init();
@@ -76,9 +76,10 @@ contract Stake is
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
 
         ownToken = _ownToken;
-        veOWN = _veOWN;
+        veOwn = _veOWN;
         sablierLockup = _sablierLockup;
 
+        // 52 weeks
         maximumLockDays = 364;
         minimumLockDays = 7;
     }
@@ -141,7 +142,7 @@ contract Stake is
         ++totalPositions;
 
         ownToken.safeTransferFrom(msg.sender, address(this), _amount);
-        veOWN.mint(msg.sender, veOwnAmount);
+        veOwn.mint(msg.sender, veOwnAmount);
 
         emit Staked(msg.sender, startDay, finalDay, positionId, _amount, _days);
     }
@@ -160,14 +161,17 @@ contract Stake is
         uint256[] memory rewardPerPosition = new uint256[](_positionIds.length);
         uint256 totalReward;
 
-        for (uint256 i = 0; i < _positionIds.length; i++) {
-            StakePosition storage position = positions[_positionIds[i]];
+        for (uint256 i = 0; i < _positionIds.length; ++i) {
+            uint256 positionId = _positionIds[i];
 
-            if (msg.sender != position.owner) {
+            if (msg.sender != positions[positionId].owner) {
                 revert CallerDoesNotOwnPosition();
             }
 
-            if (currentWeek == position.lastWeekRewardsClaimed) {
+            uint256 positionLastWeekRewardsClaimed = positions[positionId]
+                .lastWeekRewardsClaimed;
+
+            if (currentWeek == positionLastWeekRewardsClaimed) {
                 continue;
             }
 
@@ -178,16 +182,18 @@ contract Stake is
 
             totalReward += reward;
             rewardPerPosition[i] = reward;
-            position.rewardsClaimed += reward;
+            positions[positionId].rewardsClaimed += reward;
 
-            uint256 finalWeek = position.finalDay / 7;
+            uint256 finalWeek = positions[positionId].finalDay / 7;
             if (currentWeek > finalWeek) {
-                position.lastWeekRewardsClaimed = finalWeek;
+                positions[positionId].lastWeekRewardsClaimed = finalWeek;
 
-                totalReward += position.ownAmount;
-                totalStaked -= position.ownAmount;
+                uint256 ownAmount = positions[positionId].ownAmount;
+
+                totalReward += ownAmount;
+                totalStaked -= ownAmount;
             } else {
-                position.lastWeekRewardsClaimed = currentWeek;
+                positions[positionId].lastWeekRewardsClaimed = currentWeek;
             }
         }
 
@@ -215,9 +221,9 @@ contract Stake is
             sablierLockup.withdrawMax(sablierStreamId, address(this));
         }
 
-        ownToken.safeTransfer(msg.sender, totalReward);
-
         totalRewardsIssued += totalReward;
+
+        ownToken.safeTransfer(msg.sender, totalReward);
 
         emit RewardsClaimed(
             msg.sender,
@@ -250,9 +256,8 @@ contract Stake is
 
         for (uint256 i = 0; i < usersTotalPositions; ++i) {
             uint256 positionId = usersPositions[_user][i];
-            StakePosition memory position = positions[positionId];
 
-            userPositions[i] = position;
+            userPositions[i] = positions[positionId];
 
             claimableRewardsPerPosition[i] = _calculateRewardsForPosition(
                 positionId,
@@ -307,7 +312,7 @@ contract Stake is
 
         userPositions = new StakePosition[](userPositionIds.length);
 
-        for (uint256 i = 0; i < userPositionIds.length; i++) {
+        for (uint256 i = 0; i < userPositionIds.length; ++i) {
             userPositions[i] = positions[userPositionIds[i]];
         }
     }
@@ -399,7 +404,7 @@ contract Stake is
             return;
         }
 
-        for (uint256 i = 0; i < updatedCacheValues.length; i++) {
+        for (uint256 i = 0; i < updatedCacheValues.length; ++i) {
             rewardValuesWeeklyCache[fromWeek + i] = updatedCacheValues[i];
         }
 
@@ -546,45 +551,50 @@ contract Stake is
         uint256 _positionId,
         RewardValuesWeeklyCache[] memory _tempCache
     ) internal view returns (uint256 reward) {
-        StakePosition storage position = positions[_positionId];
-
         uint256 currentWeek = getCurrentWeek();
 
-        uint256 finalWeek = position.finalDay / 7;
+        uint256 finalWeek = positions[_positionId].finalDay / 7;
+
+        uint256 positionLastWeekRewardsClaimed = positions[_positionId]
+            .lastWeekRewardsClaimed;
 
         if (
-            position.lastWeekRewardsClaimed == currentWeek ||
-            position.lastWeekRewardsClaimed == finalWeek
+            positionLastWeekRewardsClaimed == currentWeek ||
+            positionLastWeekRewardsClaimed == finalWeek
         ) {
             return 0;
         }
 
-        uint256 startWeek = position.startDay / 7;
+        uint256 positionStartDay = positions[_positionId].startDay;
+        uint256 positionFinalDay = positions[_positionId].finalDay;
+        uint256 positionVeOwnAmount = positions[_positionId].veOwnAmount;
+
+        uint256 startWeek = positionStartDay / 7;
 
         uint256 lastDayOfFirstWeek = startWeek * 7 + 6;
 
-        bool enteredAtStartOfWeek = position.startDay % 7 == 0;
-        bool finalDayEndOfWeek = position.finalDay % 7 == 6;
+        bool enteredAtStartOfWeek = positionStartDay % 7 == 0;
+        bool finalDayEndOfWeek = positionFinalDay % 7 == 6;
 
         // Can only claim the first week of rewards once the week finishes AND
         // they have not claimed rewards for the first week
         if (
             currentWeek > startWeek &&
-            startWeek == position.lastWeekRewardsClaimed &&
+            startWeek == positionLastWeekRewardsClaimed &&
             // If they staked on the first day of the week, we can skip this and use the next for loop for less iterations
             !enteredAtStartOfWeek
         ) {
             uint256 firstWeekRewardPerToken = _rewardPerTokenForDayRange(
-                position.startDay,
+                positionStartDay,
                 lastDayOfFirstWeek,
                 _tempCache
             );
 
-            reward += (position.veOwnAmount * firstWeekRewardPerToken) / 1e18;
+            reward += (positionVeOwnAmount * firstWeekRewardPerToken) / 1e18;
         }
 
         {
-            uint256 startWeekToIterateFrom = position.lastWeekRewardsClaimed;
+            uint256 startWeekToIterateFrom = positionLastWeekRewardsClaimed;
             // If they didn't enter at the start of the week, we need to start from the next week because the above logic will issue rewards for the first week
             if (!enteredAtStartOfWeek) {
                 ++startWeekToIterateFrom;
@@ -611,14 +621,14 @@ contract Stake is
                         _tempCache
                     );
                 reward +=
-                    (position.veOwnAmount * cache.weeklyRewardPerTokenCached) /
+                    (positionVeOwnAmount * cache.weeklyRewardPerTokenCached) /
                     1e18;
             }
         }
 
         // Add rewards for the last week they stake for
         if (
-            finalWeek > position.lastWeekRewardsClaimed &&
+            finalWeek > positionLastWeekRewardsClaimed &&
             currentWeek > finalWeek &&
             // This condition ensures that we use the more efficient weekly calculation above instead of the daily calculation here
             !finalDayEndOfWeek
@@ -626,11 +636,11 @@ contract Stake is
             uint256 firstDayOfFinalWeek = finalWeek * 7;
             uint256 lastWeekRewardPerToken = _rewardPerTokenForDayRange(
                 firstDayOfFinalWeek,
-                position.finalDay,
+                positionFinalDay,
                 _tempCache
             );
 
-            reward += (position.veOwnAmount * lastWeekRewardPerToken) / 1e18;
+            reward += (positionVeOwnAmount * lastWeekRewardPerToken) / 1e18;
         }
     }
 

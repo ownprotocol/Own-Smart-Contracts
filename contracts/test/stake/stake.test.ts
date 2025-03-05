@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { parseEther } from "viem";
 import { ownTestingAPI } from "../../helpers/testing-api";
-import { OwnContract, StakeContract, Signers, VeOWN } from "../../types";
+import { OwnContract, StakeContract, Signers, VeOwn } from "../../types";
 import { DayOfWeek, setDayOfWeekInHardhatNode } from "../../helpers/evm";
 import { getAddress } from "ethers";
 
@@ -9,7 +9,7 @@ describe("Stake - stake", async () => {
   let own: OwnContract;
   let stake: StakeContract;
   let signers: Signers;
-  let veOwn: VeOWN;
+  let veOwn: VeOwn;
 
   beforeEach(async () => {
     ({ stake, own, veOwn, signers } = await ownTestingAPI());

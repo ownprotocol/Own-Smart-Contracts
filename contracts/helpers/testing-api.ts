@@ -8,7 +8,7 @@ export const ownTestingAPI = async () => {
   // Remve first signer, as it is the deployer
   const deployer = signers[0];
 
-  const Own = await ethers.getContractFactory("OWN");
+  const Own = await ethers.getContractFactory("Own");
   const OwnDeployment = await upgrades.deployProxy(Own, [
     deployer.account.address,
     deployer.account.address,
@@ -16,16 +16,16 @@ export const ownTestingAPI = async () => {
 
   // we use ethers to deploy the contract, but viem to interact with it
   const own = await hre.viem.getContractAt(
-    "OWN",
+    "Own",
     (await OwnDeployment.getAddress()) as `0x${string}`,
   );
 
-  const VeOwn = await ethers.getContractFactory("VeOWN");
+  const VeOwn = await ethers.getContractFactory("VeOwn");
   const VeOwnDeployment = await upgrades.deployProxy(VeOwn);
 
   // we use ethers to deploy the contract, but viem to interact with it
   const veOwn = await hre.viem.getContractAt(
-    "VeOWN",
+    "VeOwn",
     (await VeOwnDeployment.getAddress()) as `0x${string}`,
   );
 

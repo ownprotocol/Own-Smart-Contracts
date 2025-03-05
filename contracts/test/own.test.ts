@@ -3,7 +3,7 @@ import { OWN_MAX_SUPPLY_WITH_DECIMALS } from "../constants";
 import { ownTestingAPI } from "../helpers/testing-api";
 import { OwnContract } from "../types";
 
-describe("OWN token testing", async () => {
+describe("Own token testing", async () => {
   let own: OwnContract;
 
   before(async () => {

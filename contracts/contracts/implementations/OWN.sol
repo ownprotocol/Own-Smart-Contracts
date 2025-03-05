@@ -10,7 +10,7 @@ import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/U
 
 import "../interfaces/IOwn.sol";
 
-contract OWN is
+contract Own is
     Initializable,
     ERC20Upgradeable,
     ERC20BurnableUpgradeable,
@@ -28,9 +28,9 @@ contract OWN is
         address _recipient,
         address _defaultAdmin
     ) public initializer {
-        __ERC20_init("OWN", "OWN");
+        __ERC20_init("Own", "Own");
         __ERC20Burnable_init();
-        __ERC20Permit_init("OWN");
+        __ERC20Permit_init("Own");
         __AccessControl_init();
         __UUPSUpgradeable_init();
 

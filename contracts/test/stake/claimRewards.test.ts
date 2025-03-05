@@ -4,7 +4,7 @@ import {
   OwnContract,
   StakeContract,
   Signers,
-  VeOWN,
+  VeOwn,
   MockSablierContract,
 } from "../../types";
 import { DayOfWeek, setDayOfWeekInHardhatNode } from "../../helpers/evm";
@@ -15,7 +15,7 @@ describe("Stake - claimRewards", async () => {
   let own: OwnContract;
   let stake: StakeContract;
   let signers: Signers;
-  let veOwn: VeOWN;
+  let veOwn: VeOwn;
   let mockSablierLockup: MockSablierContract;
   let alice: Signers[0];
 
@@ -336,12 +336,12 @@ describe("Stake - claimRewards", async () => {
       await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
     };
 
-    for (let i = 0; i < weeks - 1; i++) {
+    for (let i = 0; i < weeks - 1; ++i) {
       await skipWeekAndAddToRewards();
     }
 
     // Skip an additional 5 weeks to ensure we only receive rewards whilst our stake is active
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 5; ++i) {
       await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
     }
 

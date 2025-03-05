@@ -50,13 +50,13 @@ contract Presale is
     ) external override onlyOwner {
         uint256 allowableAllocation;
 
-        for (uint256 i = 0; i < presaleRounds.length; i++) {
+        for (uint256 i = 0; i < presaleRounds.length; ++i) {
             allowableAllocation +=
                 presaleRounds[i].allocation -
                 presaleRounds[i].sales;
         }
 
-        for (uint256 i = 0; i < _rounds.length; i++) {
+        for (uint256 i = 0; i < _rounds.length; ++i) {
             if (_rounds[i].duration == 0) {
                 revert CannotSetPresaleRoundDurationToZero();
             }
@@ -255,7 +255,7 @@ contract Presale is
         ) = _getCurrentPresaleRoundId();
 
         uint256 totalTokens;
-        for (uint256 i = 0; i < presalePurchases[msg.sender].length; i++) {
+        for (uint256 i = 0; i < presalePurchases[msg.sender].length; ++i) {
             if (!presalePurchases[msg.sender][i].claimed) {
                 if (
                     currentRoundId > presalePurchases[msg.sender][i].roundId ||
@@ -267,11 +267,11 @@ contract Presale is
             }
         }
 
-        own.transfer(msg.sender, totalTokens);
-
         if (totalTokens == 0) {
             revert NoPresaleTokensToClaim();
         }
+
+        own.transfer(msg.sender, totalTokens);
 
         emit PresaleTokensClaimed(msg.sender, totalTokens);
     }
@@ -330,7 +330,7 @@ contract Presale is
             presaleTimeElapsed = block.timestamp - startPresaleTime;
         }
 
-        for (uint256 i = 0; i < presaleRounds.length; i++) {
+        for (uint256 i = 0; i < presaleRounds.length; ++i) {
             if (presaleTimeElapsed < presaleRounds[i].duration) {
                 return (true, i);
             }

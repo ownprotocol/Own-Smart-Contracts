@@ -8,11 +8,11 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 
 import "../interfaces/IveOwn.sol";
 
-contract VeOWN is
+contract VeOwn is
     Initializable,
     ERC20Upgradeable,
     AccessControlUpgradeable,
-    IveOWN,
+    IveOwn,
     UUPSUpgradeable
 {
     bytes32 public MINTER_ROLE;
@@ -23,7 +23,7 @@ contract VeOWN is
     }
 
     function initialize() public initializer {
-        __ERC20_init("veOWN", "veOWN");
+        __ERC20_init("veOwn", "veOwn");
         __AccessControl_init();
         __UUPSUpgradeable_init();
 

@@ -2,12 +2,12 @@ import { expect } from "chai";
 import hre from "hardhat";
 import { parseEther } from "viem";
 import { ownTestingAPI } from "../../helpers/testing-api";
-import { Signers, VeOWN } from "../../types";
+import { Signers, VeOwn } from "../../types";
 import { ZeroAddress } from "ethers";
 import { MINTER_ROLE } from "../../constants/roles";
 
 describe("veOwn", async () => {
-  let veOwn: VeOWN;
+  let veOwn: VeOwn;
   let signers: Signers;
 
   before(async () => {
@@ -30,7 +30,7 @@ describe("veOwn", async () => {
     const receiverAddress = signers[0].account.address;
     const amount = parseEther("1000");
 
-    const veOwnOther = await hre.viem.getContractAt("VeOWN", veOwn.address, {
+    const veOwnOther = await hre.viem.getContractAt("VeOwn", veOwn.address, {
       client: { wallet: signers[1] },
     });
 

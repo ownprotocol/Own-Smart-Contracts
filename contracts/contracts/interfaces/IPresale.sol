@@ -108,7 +108,7 @@ interface IPresale {
         uint256 newPrice
     ) external;
 
-    // Checks contract has enough OWN to handle the increased allocation
+    // Checks contract has enough Own to handle the increased allocation
     function updatePresaleRoundAllocation(
         uint256 roundId,
         uint256 allocation
