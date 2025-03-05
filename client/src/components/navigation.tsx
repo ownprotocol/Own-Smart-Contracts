@@ -51,7 +51,7 @@ const Navigation = ({ authUser }: NavigationProps) => {
         <span className="sr-only">Open sidebar</span>
         <icons.RxHamburgerMenu className="size-6" aria-hidden="true" />
       </Button>
-      <Link href="/">
+      <Link href="/" className="flex items-center justify-center">
         <Image src="/own-logo.svg" height={40} width={80} alt="logo" />
       </Link>
       <div className="hidden items-center gap-4 border-gray-500 font-dm_mono md:flex-row lg:flex">
@@ -164,12 +164,41 @@ const Navigation = ({ authUser }: NavigationProps) => {
                           </Link>
                         </li>
                       ))}
+                      {isValid && (
+                        <li className="">
+                          <Link
+                            href={`/user-stake/${address}/rewards`}
+                            className={cn(
+                              pathname === `/user-stake/${address}/rewards`
+                                ? "bg-gray-800 text-white"
+                                : "text-gray-400 hover:bg-gray-800 hover:text-white",
+                              "group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold",
+                            )}
+                          >
+                            <icons.RiAedLine
+                              aria-hidden="true"
+                              className="size-6 shrink-0"
+                            />
+                            <p>Rewards</p>
+                          </Link>
+                          <Link
+                            href={`/user-stake/${address}/positions`}
+                            className={cn(
+                              pathname === `/user-stake/${address}/positions`
+                                ? "bg-gray-800 text-white"
+                                : "text-gray-400 hover:bg-gray-800 hover:text-white",
+                              "group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold",
+                            )}
+                          >
+                            <icons.RiAddLargeLine
+                              aria-hidden="true"
+                              className="size-6 shrink-0"
+                            />
+                            <p>Positions</p>
+                          </Link>
+                        </li>
+                      )}
                     </ul>
-                  </li>
-                  <li>
-                    <div className="text-xs/6 font-semibold text-gray-400">
-                      Your teams
-                    </div>
                   </li>
                 </ul>
               </nav>
