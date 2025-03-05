@@ -243,20 +243,10 @@ contract Stake is
         userPositions = new StakePosition[](usersTotalPositions);
         claimableRewardsPerPosition = new uint256[](usersTotalPositions);
 
-        uint256 currentVeOwnTotal = rewardValuesWeeklyCache[lastCachedWeek]
-            .validVeOwnAtEndOfWeek;
-
-        uint256 dailyRewardAmountCurrent = rewardValuesWeeklyCache[
-            lastCachedWeek
-        ].dailyRewardAmountAtEndOfWeek;
-
         (
             RewardValuesWeeklyCache[] memory updatedCacheValues,
 
-        ) = _updateWeeklyRewardValuesCache(
-                currentVeOwnTotal,
-                dailyRewardAmountCurrent
-            );
+        ) = _updateWeeklyRewardValuesCache();
 
         console.log("Last cached week: %s", lastCachedWeek);
         console.log("Updated cache values: %s", updatedCacheValues.length);
@@ -274,34 +264,20 @@ contract Stake is
         }
     }
 
-    function getPreviousWeekReturns() external returns (uint256) {
-        // ISSUE: We need a view function that runs the _updateVeOwnPerWeekCache function in case there are missing weeks in the calculation
+    function getPreviousWeekReturns() external view returns (uint256) {
+        uint256 currentWeek = getCurrentWeek();
 
-        uint256 currentWeek = getCurrentDay();
+        (
+            RewardValuesWeeklyCache[] memory updatedCacheValues,
 
-        uint256 reward;
+        ) = _updateWeeklyRewardValuesCache();
 
-        // for (uint256 i = 0; i < totalPositions; i++) {
-        //     StakePosition storage position = positions[i];
-        //
-        //     if (position. == currentWeek - 1) {
-        //         continue;
-        //     }
-        //
-        //     _updateVeOwnPerWeekCache();
-        //
-        //     for (
-        //         uint256 week = position.startWeek;
-        //         week < currentWeek;
-        //         ++week
-        //     ) {
-        //         reward +=
-        //             (position.veOwnAmount * weeklyRewardPerTokenCached[week]) /
-        //             1e18;
-        //     }
-        // }
+        RewardValuesWeeklyCache memory cache = _getRewardValuesCacheForWeek(
+            currentWeek - 1,
+            updatedCacheValues
+        );
 
-        return reward;
+        return cache.weeklyRewardPerTokenCached;
     }
 
     // Because in this contract weeks start from Saturday 00:00:00 UTC
@@ -411,21 +387,12 @@ contract Stake is
         return (_dailyRewardAmount * _boostMultiplier) / _validVeOwn;
     }
 
+    // TODO: rename
     function _buildUpdatedValues() internal {
-        uint256 currentVeOwnTotal = rewardValuesWeeklyCache[lastCachedWeek]
-            .validVeOwnAtEndOfWeek;
-
-        uint256 dailyRewardAmountCurrent = rewardValuesWeeklyCache[
-            lastCachedWeek
-        ].dailyRewardAmountAtEndOfWeek;
-
         (
             RewardValuesWeeklyCache[] memory updatedCacheValues,
             uint256 fromWeek
-        ) = _updateWeeklyRewardValuesCache(
-                currentVeOwnTotal,
-                dailyRewardAmountCurrent
-            );
+        ) = _updateWeeklyRewardValuesCache();
 
         if (updatedCacheValues.length == 0) {
             return;
@@ -438,10 +405,7 @@ contract Stake is
         lastCachedWeek = getCurrentWeek() - 1;
     }
 
-    function _updateWeeklyRewardValuesCache(
-        uint256 _currentVeOwnTotal,
-        uint256 _dailyRewardCurrent
-    )
+    function _updateWeeklyRewardValuesCache()
         internal
         view
         returns (
@@ -449,6 +413,12 @@ contract Stake is
             uint256 fromWeek
         )
     {
+        uint256 _currentVeOwnTotal = rewardValuesWeeklyCache[lastCachedWeek]
+            .validVeOwnAtEndOfWeek;
+
+        uint256 _dailyRewardCurrent = rewardValuesWeeklyCache[lastCachedWeek]
+            .dailyRewardAmountAtEndOfWeek;
+
         uint256 currentWeek = getCurrentWeek();
 
         fromWeek = lastCachedWeek + 1;
@@ -625,8 +595,6 @@ contract Stake is
             );
 
             reward += (position.veOwnAmount * firstWeekRewardPerToken) / 1e18;
-
-            console.log("Reward from first week: %s", reward);
         }
 
         {
@@ -651,7 +619,6 @@ contract Stake is
                 week < finalWeekToIterateTo;
                 ++week
             ) {
-                console.log("Calculating rewards for week: %s", week);
                 RewardValuesWeeklyCache
                     memory cache = _getRewardValuesCacheForWeek(
                         week,
@@ -660,13 +627,6 @@ contract Stake is
                 reward +=
                     (position.veOwnAmount * cache.weeklyRewardPerTokenCached) /
                     1e18;
-
-                console.log(
-                    "Rewards added for whole week: %s",
-                    (position.veOwnAmount * cache.weeklyRewardPerTokenCached) /
-                        1e18
-                );
-                console.log("Total rewards: %s", reward);
             }
         }
 
@@ -683,7 +643,6 @@ contract Stake is
                 position.finalDay,
                 _tempCache
             );
-            console.log("Calculating rewards for final week");
 
             reward += (position.veOwnAmount * lastWeekRewardPerToken) / 1e18;
         }
