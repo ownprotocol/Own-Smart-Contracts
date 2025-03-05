@@ -1,8 +1,14 @@
 import type { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox-viem";
 import "hardhat-chai-matchers-viem";
-// we use hardhat-upgrades for deploying UUPS contracts
 import "@openzeppelin/hardhat-upgrades";
+import * as dotenv from "dotenv";
+dotenv.config({ path: __dirname + "/.env" });
+
+const infuraApiKey = process.env.INFURA_API_KEY;
+const mnemonic = process.env.MNEMONIC;
+const etherscanApiKey = process.env.ETHERSCAN_API_KEY;
+console.log({ infuraApiKey, mnemonic, etherscanApiKey });
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -14,6 +20,18 @@ const config: HardhatUserConfig = {
         runs: 200,
       },
     },
+  },
+  networks: {
+    sepolia: {
+      url: `https://sepolia.infura.io/v3/${infuraApiKey}`,
+      chainId: 11155111,
+      accounts: {
+        mnemonic,
+      },
+    },
+  },
+  etherscan: {
+    apiKey: etherscanApiKey,
   },
 };
 

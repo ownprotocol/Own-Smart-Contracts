@@ -104,14 +104,14 @@ describe("Presale - purchasePresaleTokens", async () => {
       );
 
       expect(usersPresalePurchases.length).to.equal(1);
-      const { roundId, ownAmount, usdtAmount, buyer } =
+      const { roundId, ownAmount, usdtAmount, receiver } =
         usersPresalePurchases[0];
 
-      expect({ roundId, ownAmount, usdtAmount, buyer }).to.deep.equal({
+      expect({ roundId, ownAmount, usdtAmount, receiver }).to.deep.equal({
         roundId: BigInt(0),
         ownAmount: purchaseAmount,
         usdtAmount: purchaseAmount,
-        buyer: checksumAddress,
+        receiver: checksumAddress,
       });
     });
   });

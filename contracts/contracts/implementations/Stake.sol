@@ -88,7 +88,10 @@ contract Stake is
         address _newImplementation
     ) internal override onlyDefaultAdmin {}
 
-    function stake(uint256 _amount, uint256 _days) external nonReentrant {
+    function stake(
+        uint256 _amount,
+        uint256 _days
+    ) external override nonReentrant {
         if (_days < minimumLockDays || _days > maximumLockDays) {
             revert InvalidLockPeriod();
         }
@@ -149,7 +152,7 @@ contract Stake is
 
     function claimRewards(
         uint256[] calldata _positionIds
-    ) external nonReentrant {
+    ) external override nonReentrant {
         if (!hasStakingStarted()) {
             revert StakingNotStarted();
         }
@@ -239,6 +242,7 @@ contract Stake is
     )
         external
         view
+        override
         returns (
             StakePosition[] memory userPositions,
             uint256[] memory claimableRewardsPerPosition
@@ -266,7 +270,7 @@ contract Stake is
         }
     }
 
-    function getPreviousWeekReturns() external view returns (uint256) {
+    function getPreviousWeekReturns() external view override returns (uint256) {
         uint256 currentWeek = getCurrentWeek();
 
         (
@@ -283,15 +287,20 @@ contract Stake is
     }
 
     // Because in this contract weeks start from Saturday 00:00:00 UTC and UTC starts from Thursday we deduct 2 so that a Saturday is considered the start of a week
-    function getCurrentDay() public view returns (uint256) {
+    function getCurrentDay() public view override returns (uint256) {
         return block.timestamp / 1 days - 2;
     }
 
-    function getCurrentWeek() public view returns (uint256) {
+    function getCurrentWeek() public view override returns (uint256) {
         return getCurrentDay() / 7;
     }
 
-    function getWeekSinceStakingStarted() public view returns (uint256) {
+    function getWeekSinceStakingStarted()
+        public
+        view
+        override
+        returns (uint256)
+    {
         if (stakingStartWeek == 0) {
             return 0;
         }
@@ -307,7 +316,7 @@ contract Stake is
 
     function getUsersPositions(
         address _user
-    ) external view returns (StakePosition[] memory userPositions) {
+    ) external view override returns (StakePosition[] memory userPositions) {
         uint256[] memory userPositionIds = usersPositions[_user];
 
         userPositions = new StakePosition[](userPositionIds.length);
@@ -317,19 +326,21 @@ contract Stake is
         }
     }
 
-    function hasStakingStarted() public view returns (bool) {
+    function hasStakingStarted() public view override returns (bool) {
         return stakingStartWeek != 0 && stakingStartWeek <= getCurrentWeek();
     }
 
     // **** Admin functions ****
 
-    function setSablierStreamId(uint256 _streamId) external onlyDefaultAdmin {
+    function setSablierStreamId(
+        uint256 _streamId
+    ) external override onlyDefaultAdmin {
         sablierStreamId = _streamId;
 
         emit SablierStreamIdSet(_streamId);
     }
 
-    function startStakingNextWeek() external onlyDefaultAdmin {
+    function startStakingNextWeek() external override onlyDefaultAdmin {
         if (dailyRewardAmount == 0) {
             revert CannotStartStakingWithoutDailyRewardSet();
         }
@@ -353,7 +364,9 @@ contract Stake is
         emit StartStakingNextWeek(stakingStartWeek);
     }
 
-    function setDailyRewardAmount(uint256 _amount) external onlyDefaultAdmin {
+    function setDailyRewardAmount(
+        uint256 _amount
+    ) external override onlyDefaultAdmin {
         if (hasStakingStarted()) {
             // Re-sync the cache, as we need to ensure that the previous weeklyRewardAmount is carried into the cache
             _updateWeeklyRewardValuesCache();
@@ -648,19 +661,29 @@ contract Stake is
 
     BoostDetails[] public boostDetails;
 
-    function getBoostDetails() external view returns (BoostDetails[] memory) {
+    function getBoostDetails()
+        external
+        view
+        override
+        returns (BoostDetails[] memory)
+    {
         return boostDetails;
     }
 
     uint256 public finalBoostWeek;
 
-    function getCurrentBoostMultiplier() public view returns (uint256) {
+    function getCurrentBoostMultiplier()
+        public
+        view
+        override
+        returns (uint256)
+    {
         return getBoostMultiplierForWeek(getCurrentWeek());
     }
 
     function getBoostMultiplierForWeek(
         uint256 _week
-    ) public view returns (uint256) {
+    ) public view override returns (uint256) {
         uint256 weeksSinceStart = _week - stakingStartWeek;
 
         return getBoostMultiplierForWeekSinceStart(weeksSinceStart);
@@ -668,7 +691,7 @@ contract Stake is
 
     function getBoostMultiplierForWeekSinceStart(
         uint256 _weekSinceStart
-    ) public view returns (uint256) {
+    ) public view override returns (uint256) {
         if (boostDetails.length == 0 || _weekSinceStart > finalBoostWeek) {
             return 1 ether;
         }
@@ -697,7 +720,7 @@ contract Stake is
 
     function addBoostDetails(
         BoostDetails[] calldata _boostDetails
-    ) external onlyDefaultAdmin {
+    ) external override onlyDefaultAdmin {
         uint256 newFinalBoostWeek;
         uint256 currentWeek = getCurrentWeek();
         uint256 weeksSinceStakingStarted;

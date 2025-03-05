@@ -93,7 +93,7 @@ contract Presale is
         emit USDTClaimed(owner(), usdtBalance);
     }
 
-    function claimBackPresaleTokens() external onlyOwner {
+    function claimBackPresaleTokens() external override onlyOwner {
         (bool roundsInProgress, ) = _getCurrentPresaleRoundId();
 
         if (roundsInProgress) {
@@ -106,7 +106,9 @@ contract Presale is
         emit PresaleTokensClaimedBack(owner(), ownBalance);
     }
 
-    function setPresaleStartTime(uint256 _startPresaleTime) external onlyOwner {
+    function setPresaleStartTime(
+        uint256 _startPresaleTime
+    ) external override onlyOwner {
         if (_startPresaleTime < block.timestamp) {
             revert CannotSetPresaleStartTimeToPastTime();
         }
@@ -248,7 +250,7 @@ contract Presale is
         );
     }
 
-    function claimPresaleRoundTokens() external {
+    function claimPresaleRoundTokens() external override {
         (
             bool roundsInProgress,
             uint256 currentRoundId
@@ -280,13 +282,14 @@ contract Presale is
 
     function getUsersPresalePurchases(
         address _user
-    ) external view returns (PresalePurchase[] memory) {
+    ) external view override returns (PresalePurchase[] memory) {
         return presalePurchases[_user];
     }
 
     function getAllPresaleRounds()
         external
         view
+        override
         returns (PresaleRound[] memory)
     {
         return presaleRounds;
@@ -314,7 +317,7 @@ contract Presale is
         );
     }
 
-    function hasPresaleStarted() public view returns (bool) {
+    function hasPresaleStarted() public view override returns (bool) {
         return startPresaleTime != 0 && block.timestamp >= startPresaleTime;
     }
 
