@@ -4,6 +4,8 @@ pragma solidity ^0.8.28;
 import "@openzeppelin/contracts-upgradeable/access/extensions/AccessControlEnumerableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 import "../interfaces/IStake.sol";
 import "../interfaces/IveOwn.sol";
@@ -11,9 +13,11 @@ import "../interfaces/IOwn.sol";
 import "../interfaces/ISablierLockup.sol";
 
 contract Stake is
+    Initializable,
     IStake,
     AccessControlEnumerableUpgradeable,
-    ReentrancyGuardUpgradeable
+    ReentrancyGuardUpgradeable,
+    UUPSUpgradeable
 {
     using SafeERC20 for IOwn;
 
@@ -77,6 +81,10 @@ contract Stake is
         maximumLockDays = 364;
         minimumLockDays = 7;
     }
+
+    function _authorizeUpgrade(
+        address _newImplementation
+    ) internal override onlyDefaultAdmin {}
 
     function stake(uint256 _amount, uint256 _days) external nonReentrant {
         if (_days < minimumLockDays || _days > maximumLockDays) {

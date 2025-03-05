@@ -25,8 +25,8 @@ contract OWN is
     }
 
     function initialize(
-        address recipient,
-        address defaultAdmin
+        address _recipient,
+        address _defaultAdmin
     ) public initializer {
         __ERC20_init("OWN", "OWN");
         __ERC20Burnable_init();
@@ -34,11 +34,11 @@ contract OWN is
         __AccessControl_init();
         __UUPSUpgradeable_init();
 
-        _mint(recipient, 2_250_000_000 * 10 ** decimals());
-        _grantRole(DEFAULT_ADMIN_ROLE, defaultAdmin);
+        _mint(_recipient, 2_250_000_000 * 10 ** decimals());
+        _grantRole(DEFAULT_ADMIN_ROLE, _defaultAdmin);
     }
 
     function _authorizeUpgrade(
-        address newImplementation
+        address _newImplementation
     ) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
 }

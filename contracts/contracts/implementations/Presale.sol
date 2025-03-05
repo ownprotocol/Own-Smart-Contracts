@@ -4,11 +4,17 @@ pragma solidity ^0.8.28;
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 import "../interfaces/IPresale.sol";
 import "../interfaces/IOwn.sol";
 
-contract Presale is Initializable, IPresale, OwnableUpgradeable {
+contract Presale is
+    Initializable,
+    IPresale,
+    OwnableUpgradeable,
+    UUPSUpgradeable
+{
     IOwn public own;
     IERC20 public usdt;
 
@@ -31,6 +37,10 @@ contract Presale is Initializable, IPresale, OwnableUpgradeable {
         own = _own;
         usdt = _usdt;
     }
+
+    function _authorizeUpgrade(
+        address _newImplementation
+    ) internal override onlyOwner {}
 
     // *** Admin functions ***
 
