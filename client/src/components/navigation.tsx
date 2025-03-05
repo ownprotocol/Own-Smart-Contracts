@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
@@ -14,12 +14,12 @@ import { usePathname } from "next/navigation";
 import { ConnectButton } from "thirdweb/react";
 import { client, wallets } from "@/lib/client";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { generatePayload, isLoggedIn, login, logout } from "@/actions/login";
 import { TOP_NAVIGATION_LINKS } from "@/constants/top-navigation-links";
 import { icons } from "@/constants/icons";
 import { cn } from "@/lib/utils";
-import { colors } from "@/constants/thirdweb-styling/theming";
-import { GetUserQueryKey } from "@/query/get-user";
+import { GetUserQueryKey, useGetAuthUser } from "@/query/get-user";
 
 interface NavigationProps {
   authUser:
@@ -37,9 +37,21 @@ interface NavigationProps {
 
 const Navigation = ({ authUser }: NavigationProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [userAddress, setUserAddress] = useState<string | null>(null);
   const pathname = usePathname();
   const { isValid, address } = authUser;
   const queryClient = useQueryClient();
+  const router = useRouter();
+  const { refetch } = useGetAuthUser();
+  useEffect(() => {
+    async function fetchUser() {
+      await refetch();
+      setUserAddress(authUser.address);
+    }
+    if (userAddress) {
+      void fetchUser();
+    }
+  }, [refetch, authUser.address, userAddress]);
 
   return (
     <div className="mt-2 flex flex-row justify-between px-[5%] md:px-[10%]">
@@ -208,16 +220,19 @@ const Navigation = ({ authUser }: NavigationProps) => {
       </Dialog>
 
       <ConnectButton
+      
+        connectButton={{
+          label: "Connect Wallet",
+          style: {
+            borderRadius: "10px",
+            borderColor: "white",
+            backgroundColor: "#C58BFF",
+            color: "black",
+          },
+        }}
+        autoConnect
         client={client}
         wallets={wallets}
-        theme={{
-          colors: {
-            ...colors,
-            connectedButtonBg: "rgb(31 41 100)", // bg-gray-800
-          },
-          fontFamily: "Funnel Sans, system-ui, sans-serif",
-          type: "dark",
-        }}
         connectModal={{
           size: "wide",
           title: "Login/Sign up",
@@ -225,8 +240,15 @@ const Navigation = ({ authUser }: NavigationProps) => {
         auth={{
           isLoggedIn: async (address) => {
             console.log("checking if logged in!", { address });
-            const { isValid } = await isLoggedIn();
-            return isValid;
+            try {
+              console.log("About to call isLoggedIn function");
+              const result = await isLoggedIn();
+              console.log("isLoggedIn function returned:", result);
+              return result.isValid;
+            } catch (error) {
+              console.error("Error calling isLoggedIn:", error);
+              return false;
+            }
           },
           doLogin: async (params) => {
             console.log("logging in!");
@@ -244,6 +266,7 @@ const Navigation = ({ authUser }: NavigationProps) => {
             await queryClient.invalidateQueries({
               queryKey: [GetUserQueryKey],
             });
+            router.push("/");
           },
         }}
       />
