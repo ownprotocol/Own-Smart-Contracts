@@ -95,6 +95,20 @@ describe("Stake - claimRewards", async () => {
     ).to.changeTokenBalances(own, [signers[0].account], [expectedRewards]);
   });
 
+  it("Should revert if there aren't enough funds across vesting contract to satisfy rewrads", async () => {
+    await stake.write.setDailyRewardAmount([stakeInitialBalance]);
+
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+    await stake.write.stake([parseEther("50"), duration]);
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+    await expect(
+      stake.write.claimRewards([[BigInt(0)]]),
+    ).to.revertedWithCustomError(
+      stake,
+      "NotEnoughFundsAcrossVestingContractForRewards",
+    );
+  });
+
   it("Should claim rewards in the first week of staking", async () => {
     // Skip to start of staking
     await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);

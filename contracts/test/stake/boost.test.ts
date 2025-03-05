@@ -6,9 +6,10 @@ import { DayOfWeek, setDayOfWeekInHardhatNode } from "../../helpers/evm";
 
 describe("Stake - boost", async () => {
   let stake: StakeContract;
+  let signers: Signers;
 
   beforeEach(async () => {
-    ({ stake } = await ownTestingAPI());
+    ({ stake, signers } = await ownTestingAPI());
 
     await stake.write.setDailyRewardAmount([parseEther("5")]);
     await stake.write.startStakingNextWeek();
@@ -29,6 +30,23 @@ describe("Stake - boost", async () => {
         ],
       ]),
     ).to.be.revertedWithCustomError(stake, "CannotSetBoostForWeekInPast");
+  });
+
+  it("Should revert when trying to set the boost details from a non-admin account", async () => {
+    await expect(
+      stake.write.addBoostDetails(
+        [
+          [
+            {
+              startWeek: BigInt(0),
+              durationInWeeks: BigInt(1),
+              multiplier: parseEther("20"),
+            },
+          ],
+        ],
+        { account: signers[1].account },
+      ),
+    ).to.be.revertedWithCustomError(stake, "CallerIsNotTheAdmin");
   });
 
   it("Should revert when passing a _durationInWeeks that is 0", async () => {

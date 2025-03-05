@@ -2,6 +2,8 @@
 pragma solidity ^0.8.28;
 
 interface IStake {
+    // *** Structs ***
+
     struct StakePosition {
         address owner;
         uint256 ownAmount;
@@ -18,7 +20,16 @@ interface IStake {
         uint256 multiplier;
     }
 
+    struct RewardValuesWeeklyCache {
+        // This value is used to calculate the reward per token for the week when claiming rewards
+        uint256 weeklyRewardPerTokenCached;
+        // All these values are used in recalculation of subsequent weeks
+        uint256 validVeOwnAtEndOfWeek;
+        uint256 dailyRewardAmountAtEndOfWeek;
+    }
+
     // *** Errors ***
+
     error CannotStakeZeroAmount();
 
     error InvalidLockPeriod();
@@ -33,7 +44,18 @@ interface IStake {
 
     error CannotSetDurationInWeeksForBoostToZero();
 
+    error CallerIsNotTheAdmin();
+
+    error CannotSetDailyRewardAmountToZero();
+
+    error NotEnoughFundsAcrossVestingContractForRewards(
+        uint256 rewardsNeeded,
+        uint256 vestingBalance,
+        uint256 contractBalanceAllocatedForRewards
+    );
+
     // *** Events ***
+
     event Staked(
         address indexed user,
         uint256 startWeek,
@@ -49,4 +71,8 @@ interface IStake {
         uint256[] rewardPerPosition,
         uint256 totalReward
     );
+
+    event DailyRewardAmountSet(uint256 day, uint256 amount);
+
+    event BoostDetailsAdded(BoostDetails[] _boostDetails);
 }
