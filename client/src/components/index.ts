@@ -26,3 +26,4 @@ export { default as StakeRewardsTable } from "./user-stake/rewards/stake-rewards
 export { default as StakingRewards } from "./user-stake/staking-rewards";
 export { default as StakePositionsTable } from "./user-stake/positions/stake-positions-table";
 export { default as StakingDrawerContent } from "./staking/staking-drawer-content";
+export { default as LoginButton } from "./LoginButton";

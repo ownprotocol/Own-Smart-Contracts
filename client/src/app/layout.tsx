@@ -1,7 +1,6 @@
 import { DM_Mono, DM_Sans, Funnel_Sans } from "next/font/google";
 import { type Metadata } from "next";
 import { ToastContainer } from "react-toastify";
-import { ThirdwebProvider } from "thirdweb/react";
 
 import {
   Footer,
@@ -10,6 +9,8 @@ import {
   Navigation,
 } from "@/components";
 import "@/styles/globals.css";
+import ThirdwebClientProvider from "@/providers/ThirdwebClientprovider";
+import QueryProvider from "@/providers/queryClientprovider";
 
 const fun = Funnel_Sans({
   subsets: ["latin"],
@@ -46,13 +47,15 @@ export default function RootLayout({
     >
       <body className="flex flex-col bg-[linear-gradient(to_bottom,#141019_48%,#E49048_48%,#E49048_48%,#141019_48%)] text-white">
         <div className="container relative mx-auto flex flex-col border-x border-gray-500/30">
-          <ThirdwebProvider>
-            <Navigation />
-            <HomeSeparator />
-            {hasPresaleConcluded && <HasPresaleConcluded />}
-            <ToastContainer />
-            {children}
-          </ThirdwebProvider>
+          <QueryProvider>
+            <ThirdwebClientProvider>
+              <Navigation />
+              <HomeSeparator />
+              {hasPresaleConcluded && <HasPresaleConcluded />}
+              <ToastContainer />
+              {children}
+            </ThirdwebClientProvider>
+          </QueryProvider>
         </div>
 
         <Footer />

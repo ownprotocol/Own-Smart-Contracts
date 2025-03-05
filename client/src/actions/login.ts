@@ -37,12 +37,16 @@ export async function login(payload: VerifyLoginPayloadParams) {
 export async function isLoggedIn() {
   const jwt = (await cookies()).get("jwt");
   if (!jwt?.value) {
-    return false;
+    return {address: null, accessToken: null, isValid: false};
   }
 
   const authResult = await thirdwebAuth.verifyJWT({ jwt: jwt.value });
-  return authResult.valid;
+  if (authResult.valid) {
+    return {address: authResult.parsedJWT.sub, accessToken: jwt.value, isValid: true};
+  }
+  return {address: null, accessToken: null, isValid: false};
 }
+
 
 export async function logout() {
   (await cookies()).delete("jwt");

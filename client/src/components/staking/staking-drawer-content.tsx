@@ -24,7 +24,10 @@ const stakingSchema = z.object({
     }),
   lockupDuration: z
     .string()
-    .min(1, { message: "Lockup duration must be at least 1 week." }),
+    .min(1, { message: "Lockup duration must be at least 1 week." })
+    .regex(/^\d+(\.\d+)?$/, {
+      message: "Lockup duration must contain only numbers.",
+    }),
 });
 
 type StakingFormData = z.infer<typeof stakingSchema>;

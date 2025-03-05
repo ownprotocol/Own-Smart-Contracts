@@ -151,7 +151,8 @@ const Navigation = () => {
         auth={{
           isLoggedIn: async (address) => {
             console.log("checking if logged in!", { address });
-            return await isLoggedIn();
+            const { isValid } = await isLoggedIn();
+            return isValid;
           },
           doLogin: async (params) => {
             console.log("logging in!");
