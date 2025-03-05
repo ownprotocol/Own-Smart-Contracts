@@ -109,7 +109,7 @@ const StakingDrawerContent = () => {
                 </h1>
                 <div className="flex items-center border-2 border-gray-500/50 bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
                   <div className="shrink-0 select-none text-base text-gray-500 sm:text-sm/6">
-                    <div className="rounded-full border-2 border-black px-1 py-1.5 xl:px-2 xl:py-4">
+                    <div className="rounded-full border-2 border-gray-500 px-2 py-1.5 text-gray-500 opacity-50">
                       <Image
                         src="/own-logo.svg"
                         alt="Own token"
