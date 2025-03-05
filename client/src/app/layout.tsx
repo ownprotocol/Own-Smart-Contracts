@@ -42,7 +42,7 @@ export default async function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   const hasPresaleConcluded = false;
   const authUser = await isLoggedIn();
-  console.log(authUser);
+
   return (
     <html
       lang="en"

@@ -41,9 +41,7 @@ export const LoginButton = () => {
       payload,
     });
     // Step 3: Send the signature to the server for verification
-    const finalResult = await login(signatureResult);
-
-    console.log("finalResult", finalResult);
+    await login(signatureResult);
   }
 
   return <button onClick={handleClick}>Connect</button>;

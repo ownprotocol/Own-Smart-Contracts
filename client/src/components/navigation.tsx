@@ -13,12 +13,13 @@ import {
 import { usePathname } from "next/navigation";
 import { ConnectButton } from "thirdweb/react";
 import { client, wallets } from "@/lib/client";
-
+import { useQueryClient } from "@tanstack/react-query";
 import { generatePayload, isLoggedIn, login, logout } from "@/actions/login";
 import { TOP_NAVIGATION_LINKS } from "@/constants/top-navigation-links";
 import { icons } from "@/constants/icons";
 import { cn } from "@/lib/utils";
 import { colors } from "@/constants/thirdweb-styling/theming";
+import { GetUserQueryKey } from "@/query/get-user";
 
 interface NavigationProps {
   authUser:
@@ -38,6 +39,7 @@ const Navigation = ({ authUser }: NavigationProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
   const { isValid, address } = authUser;
+  const queryClient = useQueryClient();
 
   return (
     <div className="mt-2 flex flex-row justify-between px-[5%] md:px-[10%]">
@@ -200,11 +202,19 @@ const Navigation = ({ authUser }: NavigationProps) => {
           doLogin: async (params) => {
             console.log("logging in!");
             await login(params);
+            // Invalidate the user query after login
+            await queryClient.invalidateQueries({
+              queryKey: [GetUserQueryKey],
+            });
           },
           getLoginPayload: async ({ address }) => generatePayload({ address }),
           doLogout: async () => {
             console.log("logging out!");
             await logout();
+            // Invalidate the user query after logout
+            await queryClient.invalidateQueries({
+              queryKey: [GetUserQueryKey],
+            });
           },
         }}
       />
