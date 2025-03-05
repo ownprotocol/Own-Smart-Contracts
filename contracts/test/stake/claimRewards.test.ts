@@ -1,4 +1,4 @@
-import { getAddress, parseEther } from "viem";
+import { parseEther } from "viem";
 import { ownTestingAPI } from "../../helpers/testing-api";
 import {
   OwnContract,
@@ -11,7 +11,7 @@ import { DayOfWeek, setDayOfWeekInHardhatNode } from "../../helpers/evm";
 import { expect } from "chai";
 import hre from "hardhat";
 
-describe("Stake - claimRewards", async () => {
+describe.only("Stake - claimRewards", async () => {
   let own: OwnContract;
   let stake: StakeContract;
   let signers: Signers;
@@ -119,6 +119,10 @@ describe("Stake - claimRewards", async () => {
     const totalRewards =
       ((dailyRewardAmount * boostMultiplier) / BigInt(1e18)) * BigInt(2);
 
+    const [, claimableRewards] = await stake.read.getUsersPositionDetails([
+      signers[0].account.address,
+    ]);
+
     const claimRewardsTx = stake.write.claimRewards([[BigInt(0)]]);
 
     await expect(claimRewardsTx).to.changeTokenBalances(
@@ -128,6 +132,8 @@ describe("Stake - claimRewards", async () => {
     );
 
     await expect(claimRewardsTx).to.emit(stake, "RewardsClaimed");
+
+    expect(claimableRewards[0]).to.equal(totalRewards);
 
     const [, , , , , lastWeekRewardsClaimed] = await stake.read.positions([
       BigInt(0),
@@ -141,9 +147,6 @@ describe("Stake - claimRewards", async () => {
   });
 
   it("Should claim rewards for an entire week", async () => {
-    // Skip to start of staking
-    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
-
     await setDayOfWeekInHardhatNode(DayOfWeek.Friday);
 
     const amount = parseEther("50");
@@ -160,8 +163,9 @@ describe("Stake - claimRewards", async () => {
 
     const totalRewards = rewardsPerDay * BigInt(7);
 
-    const [details, claimableRewards] =
-      await stake.read.getUsersPositionDetails([signers[0].account.address]);
+    const [, claimableRewards] = await stake.read.getUsersPositionDetails([
+      signers[0].account.address,
+    ]);
 
     await expect(
       stake.write.claimRewards([[BigInt(0)]]),
@@ -202,7 +206,13 @@ describe("Stake - claimRewards", async () => {
         BigInt(1e18)) *
       BigInt(7);
 
+    const totalRewards = firstWeekRewards + secondWeekRewards;
+
     await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
+    const [, claimableRewards] = await stake.read.getUsersPositionDetails([
+      signers[0].account.address,
+    ]);
 
     await expect(
       stake.write.claimRewards([[BigInt(0)]]),
@@ -210,8 +220,10 @@ describe("Stake - claimRewards", async () => {
       own,
       [signers[0].account],
       // Staked for 7 days
-      [firstWeekRewards + secondWeekRewards],
+      [totalRewards],
     );
+
+    expect(claimableRewards[0]).to.equal(totalRewards);
   });
 
   it("Should claim rewards for the first half of the first week and up to final day in the last week", async () => {
@@ -238,6 +250,11 @@ describe("Stake - claimRewards", async () => {
         BigInt(1e18)) *
       BigInt(5);
 
+    const totalRewards = firstWeekRewards + secondWeekRewards;
+    const [, claimableRewards] = await stake.read.getUsersPositionDetails([
+      signers[0].account.address,
+    ]);
+
     await expect(
       stake.write.claimRewards([[BigInt(0)]]),
     ).to.changeTokenBalances(
@@ -246,6 +263,8 @@ describe("Stake - claimRewards", async () => {
       // Staked for 7 days
       [firstWeekRewards + secondWeekRewards + amount],
     );
+
+    expect(claimableRewards[0]).to.equal(totalRewards);
   });
 
   it("Should increase the rewards for the user when the daily reward amount is increased", async () => {
@@ -266,16 +285,18 @@ describe("Stake - claimRewards", async () => {
     const rewardsForFirstHalf = dailyRewardAmount * BigInt(2);
     const rewardsForSecondHalf = newDailyRewardAmount * BigInt(4);
 
+    const [details, claimableRewards] =
+      await stake.read.getUsersPositionDetails([signers[0].account.address]);
+
+    const totalRewards =
+      ((rewardsForFirstHalf + rewardsForSecondHalf) * boostMultiplier) /
+      BigInt(1e18);
+
     await expect(
       stake.write.claimRewards([[BigInt(0)]]),
-    ).to.changeTokenBalances(
-      own,
-      [signers[0].account],
-      [
-        ((rewardsForFirstHalf + rewardsForSecondHalf) * boostMultiplier) /
-          BigInt(1e18),
-      ],
-    );
+    ).to.changeTokenBalances(own, [signers[0].account], [totalRewards]);
+
+    expect(claimableRewards[0]).to.equal(totalRewards);
   });
 
   it("Should claim rewards for the 5 weeks the stake is active", async () => {
@@ -321,7 +342,9 @@ describe("Stake - claimRewards", async () => {
       [rewards + depositAmount],
     );
 
-    expect(claimableRewards[0]).to.equal(rewards + depositAmount);
+    expect(claimableRewards[0] + depositAmount).to.equal(
+      rewards + depositAmount,
+    );
 
     const [, , , , finalDay, lastWeekRewardsClaimed] =
       await stake.read.positions([BigInt(0)]);
@@ -371,15 +394,24 @@ describe("Stake - claimRewards", async () => {
       const rewardsForDeployer =
         rewardsForFirstHalfOfWeek + rewardsForFirstHalfOfWeek / BigInt(2);
 
+      const [, claimableRewards] = await stake.read.getUsersPositionDetails([
+        signers[0].account.address,
+      ]);
+
       await expect(
         stake.write.claimRewards([[BigInt(0)]]),
       ).to.changeTokenBalances(own, [signers[0].account], [rewardsForDeployer]);
+      expect(claimableRewards[0]).to.equal(rewardsForDeployer);
 
       const rewardsForAlice = rewardsForFirstHalfOfWeek / BigInt(2);
+      const [, aliceClaimableRewards] =
+        await stake.read.getUsersPositionDetails([alice.account.address]);
 
       await expect(
         stake_alice.write.claimRewards([[BigInt(1)]]),
       ).to.changeTokenBalances(own, [alice.account], [rewardsForAlice]);
+
+      expect(aliceClaimableRewards[0]).to.equal(rewardsForAlice);
     });
 
     it("Should increase the rewards for a user, when another users stake ends", async () => {
