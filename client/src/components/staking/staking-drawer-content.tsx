@@ -79,7 +79,7 @@ const StakingDrawerContent = () => {
         </DrawerClose>
         <DrawerTitle className="text-black">
           <div className="flex w-full flex-col justify-center gap-1 md:flex-row md:gap-4">
-            <div className="font-funnel w-full text-[42px] leading-[48px] tracking-[-5%] text-black md:text-[64px] md:leading-[72px]">
+            <div className="font-funnel w-full text-[24px] leading-[28px] tracking-[-5%] text-black lg:text-[32px] lg:leading-[38px] lg:tracking-[-5%] xl:text-[42px] xl:leading-[48px]">
               Stake tokens
             </div>
             <div className="flex w-full items-end justify-center gap-2 md:justify-start">
@@ -109,13 +109,13 @@ const StakingDrawerContent = () => {
                 </h1>
                 <div className="flex items-center border-2 border-gray-500/50 bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
                   <div className="shrink-0 select-none text-base text-gray-500 sm:text-sm/6">
-                    <div className="rounded-full border-2 border-black px-1 py-3 md:px-2 md:py-4">
+                    <div className="rounded-full border-2 border-black px-1 py-1.5 xl:px-2 xl:py-4">
                       <Image
                         src="/own-logo.svg"
                         alt="Own token"
-                        width={25}
-                        height={25}
-                        className="text-primary invert"
+                        width={20}
+                        height={20}
+                        className="text-primary invert xl:h-[25px] xl:w-[25px]"
                       />
                     </div>
                   </div>
@@ -123,15 +123,15 @@ const StakingDrawerContent = () => {
                     id="tokenAmount"
                     type="text"
                     placeholder="0.00"
-                    className="block w-full min-w-0 grow py-4 pl-4 pr-3 font-dm_sans text-[16px] leading-[20px] tracking-[0.5%] text-gray-900 text-primary placeholder:text-gray-400 focus:outline-none md:text-[20px] md:leading-[24px]"
+                    className="block w-1/2 min-w-0 grow py-2 pl-4 pr-3 font-dm_sans text-[16px] leading-[20px] tracking-[0.5%] text-gray-900 text-primary placeholder:text-gray-400 focus:outline-none xl:py-4 xl:text-[20px] xl:leading-[24px]"
                     {...register("tokenAmount")}
                     onChange={handleTokenAmountChange}
                   />
                 </div>
-                <p className="h-4 font-dm_mono text-[8px] font-[400] leading-[14px] tracking-[8%] text-red-500 md:text-[14px] md:leading-[16px]">
+                <p className="h-2 font-dm_mono text-[8px] font-[400] leading-[14px] tracking-[8%] text-red-500 md:text-[14px] md:leading-[16px]">
                   {errors.tokenAmount?.message}
                 </p>
-                <div className="flex justify-around gap-2">
+                <div className="flex flex-wrap justify-around gap-2">
                   <StakingButton label="25%" />
                   <StakingButton label="50%" isSelected={true} />
                   <StakingButton label="75%" />
@@ -150,10 +150,10 @@ const StakingDrawerContent = () => {
                       handleLockUpDuration(e.target.value, e.target.value)
                     }
                     placeholder="0"
-                    className="block w-full min-w-0 grow py-4 pl-4 pr-3 font-dm_sans text-[16px] leading-[20px] tracking-[0.5%] text-gray-900 text-primary placeholder:text-gray-400 focus:outline-none md:text-[20px] md:leading-[24px]"
+                    className="block w-1/2 min-w-0 grow py-2 pl-4 pr-3 font-dm_sans text-[16px] leading-[20px] tracking-[0.5%] text-gray-900 text-primary placeholder:text-gray-400 focus:outline-none xl:py-4 xl:text-[20px] xl:leading-[24px]"
                   />
                 </div>
-                <p className="h-4 font-dm_mono text-[8px] font-[400] leading-[14px] tracking-[8%] text-red-500 md:text-[14px] md:leading-[16px]">
+                <p className="h-2 font-dm_mono text-[8px] font-[400] leading-[14px] tracking-[8%] text-red-500 md:text-[14px] md:leading-[16px]">
                   {errors.lockupDuration?.message}
                 </p>
                 <div className="flex flex-wrap justify-around gap-2">
@@ -203,12 +203,10 @@ const StakingDrawerContent = () => {
               </div>
             </div>
             <DrawerFooter className="flex justify-start">
-              {isValid &&
-              
               <Button className="w-full rounded-lg bg-purple-700 px-4 py-2 font-dm_sans text-[14px] font-medium leading-[20px] text-white transition-colors hover:bg-purple-800 md:max-w-fit md:px-8 md:text-[18px] md:leading-[28px]">
                 Stake
               </Button>
-              }
+
               {/* <DrawerClose asChild>
               <Button>Cancel</Button>
             </DrawerClose> */}
@@ -294,15 +292,15 @@ const RewardCard = () => {
       <h2 className="px-0 font-dm_sans text-[16px] font-medium leading-[24px] text-black md:px-0 md:text-[18px] md:leading-[28px]">
         My veOwn
       </h2>
-      <div className="mt-2 rounded-lg bg-purple-100 px-4 py-4 md:py-8">
+      <div className="rounded-lg bg-purple-100 px-4 py-4 xl:mt-2 xl:py-8">
         <div className="flex items-center gap-4">
-          <div className="rounded-full bg-white/80 px-2 py-4">
+          <div className="rounded-full bg-white/80 px-2 py-2 xl:py-4">
             <Image
               src="/own-logo.svg"
               alt="Own token"
-              width={30}
-              height={30}
-              className="text-primary invert"
+              width={25}
+              height={25}
+              className="text-primary invert xl:h-[30px] xl:w-[30px]"
             />
           </div>
           <div className="flex flex-col">
