@@ -5,7 +5,7 @@ import {
   PresaleContract,
   Signers,
 } from "../../types";
-import { ownTestingAPI } from "../../helpers/testing-api";
+import { getContractInstances } from "../../helpers/testing-api";
 import { parseEther } from "viem";
 import { getCurrentBlockTimestamp, increaseTime } from "../../helpers/evm";
 
@@ -16,7 +16,7 @@ describe("Presale - claimBackPresaleTokens", async () => {
   let signers: Signers;
 
   beforeEach(async () => {
-    ({ presale, own, mockUSDT, signers } = await ownTestingAPI());
+    ({ presale, own, mockUSDT, signers } = await getContractInstances());
 
     await own.write.transfer([presale.address, BigInt(1000000)]);
     await mockUSDT.write.mint([signers[0].account.address, parseEther("1000")]);

@@ -1,5 +1,5 @@
 import { parseEther } from "viem";
-import { ownTestingAPI } from "../../helpers/testing-api";
+import { getContractInstances } from "../../helpers/testing-api";
 import { StakeContract, Signers } from "../../types";
 import { expect } from "chai";
 
@@ -8,7 +8,7 @@ describe("Stake - setDailyRewardAmount", async () => {
   let signers: Signers;
 
   beforeEach(async () => {
-    ({ stake, signers } = await ownTestingAPI());
+    ({ stake, signers } = await getContractInstances());
   });
 
   it("Should revert if not called by the owner", async () => {
@@ -23,6 +23,13 @@ describe("Stake - setDailyRewardAmount", async () => {
     await expect(
       stake.write.setDailyRewardAmount([BigInt(0)]),
     ).to.be.revertedWithCustomError(stake, "CannotSetDailyRewardAmountToZero");
+  });
+
+  it("Should revert when trying to set the daily reward amount to be greater than the maximum allowed", async () => {
+    const maximumDailyReward = await stake.read.maximumDailyRewardAmount();
+    await expect(
+      stake.write.setDailyRewardAmount([maximumDailyReward + BigInt(1)]),
+    ).to.be.revertedWithCustomError(stake, "DailyRewardAmountExceedsMaximum");
   });
 
   it("Should update the storage variables", async () => {

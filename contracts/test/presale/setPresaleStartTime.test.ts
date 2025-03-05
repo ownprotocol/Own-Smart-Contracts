@@ -1,5 +1,5 @@
 import { getCurrentBlockTimestamp, increaseTime } from "../../helpers/evm";
-import { ownTestingAPI } from "../../helpers/testing-api";
+import { getContractInstances } from "../../helpers/testing-api";
 import { PresaleContract, Signers } from "../../types";
 import { expect } from "chai";
 
@@ -8,7 +8,7 @@ describe("Stake - setPresaleStartTime", async () => {
   let signers: Signers;
 
   beforeEach(async () => {
-    ({ presale, signers } = await ownTestingAPI());
+    ({ presale, signers } = await getContractInstances());
   });
 
   it("Should revert when the caller is not the owner", async () => {

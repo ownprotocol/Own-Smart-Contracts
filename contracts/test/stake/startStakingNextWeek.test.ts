@@ -1,5 +1,5 @@
 import { Signers, StakeContract } from "../../types";
-import { ownTestingAPI } from "../../helpers/testing-api";
+import { getContractInstances } from "../../helpers/testing-api";
 import { expect } from "chai";
 
 describe("Stake - startStakingNextWeek", async () => {
@@ -7,7 +7,7 @@ describe("Stake - startStakingNextWeek", async () => {
   let signers: Signers;
 
   beforeEach(async () => {
-    ({ stake, signers } = await ownTestingAPI());
+    ({ stake, signers } = await getContractInstances());
   });
 
   it("Should revert if the daily reward amount isn't set", async () => {

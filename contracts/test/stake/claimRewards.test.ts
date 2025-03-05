@@ -1,5 +1,5 @@
 import { parseEther } from "viem";
-import { ownTestingAPI } from "../../helpers/testing-api";
+import { getContractInstances } from "../../helpers/testing-api";
 import {
   OwnContract,
   StakeContract,
@@ -26,7 +26,8 @@ describe("Stake - claimRewards", async () => {
   const stakeInitialBalance = parseEther("1000");
 
   beforeEach(async () => {
-    ({ stake, own, veOwn, signers, mockSablierLockup } = await ownTestingAPI());
+    ({ stake, own, veOwn, signers, mockSablierLockup } =
+      await getContractInstances());
     alice = signers[1];
     await stake.write.setDailyRewardAmount([dailyRewardAmount]);
 

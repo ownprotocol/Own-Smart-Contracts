@@ -1,103 +1,52 @@
-import hre, { ethers, upgrades } from "hardhat";
-import { MINTER_ROLE } from "../constants/roles";
-import { parseEther } from "viem";
+import hre from "hardhat";
 
-export const ownTestingAPI = async () => {
+export const getContractInstances = async () => {
+  const deployment = await hre.deployments.fixture("testbed");
+
+  const { Own, VeOwn, mockUSDT, presale, mockSablierLockup, stake } =
+    deployment;
   const signers = await hre.viem.getWalletClients();
 
-  // Remve first signer, as it is the deployer
-  const deployer = signers[0];
-
-  const Own = await ethers.getContractFactory("Own");
-  const OwnDeployment = await upgrades.deployProxy(Own, [
-    deployer.account.address,
-    deployer.account.address,
-  ]);
-
   // we use ethers to deploy the contract, but viem to interact with it
-  const own = await hre.viem.getContractAt(
+  const ownContract = await hre.viem.getContractAt(
     "Own",
-    (await OwnDeployment.getAddress()) as `0x${string}`,
+    Own.address as `0x${string}`,
   );
 
-  const VeOwn = await ethers.getContractFactory("VeOwn");
-  const VeOwnDeployment = await upgrades.deployProxy(VeOwn);
-
   // we use ethers to deploy the contract, but viem to interact with it
-  const veOwn = await hre.viem.getContractAt(
+  const veOwnContract = await hre.viem.getContractAt(
     "VeOwn",
-    (await VeOwnDeployment.getAddress()) as `0x${string}`,
+    VeOwn.address as `0x${string}`,
   );
 
-  const MockUSDT = await ethers.getContractFactory("MockERC20");
-  const MockUSDTDeployment = await MockUSDT.deploy();
-
-  const mockUSDT = await hre.viem.getContractAt(
+  const mockUSDTContract = await hre.viem.getContractAt(
     "MockERC20",
-    (await MockUSDTDeployment.getAddress()) as `0x${string}`,
+    mockUSDT.address as `0x${string}`,
   );
-
-  const Presale = await ethers.getContractFactory("Presale");
-  const PresaleDeployment = await upgrades.deployProxy(Presale, [
-    own.address,
-    mockUSDT.address,
-  ]);
 
   // we use ethers to deploy the contract, but viem to interact with it
-  const presale = await hre.viem.getContractAt(
+  const presaleContract = await hre.viem.getContractAt(
     "Presale",
-    (await PresaleDeployment.getAddress()) as `0x${string}`,
+    presale.address as `0x${string}`,
   );
 
-  const SablierLockup = await ethers.getContractFactory("MockSablierLockup");
-  const SablierDeployment = await SablierLockup.deploy(own.address);
-
-  const mockSablierLockup = await hre.viem.getContractAt(
+  const mockSablierLockupContract = await hre.viem.getContractAt(
     "MockSablierLockup",
-    (await SablierDeployment.getAddress()) as `0x${string}`,
+    mockSablierLockup.address as `0x${string}`,
   );
 
-  const Stake = await ethers.getContractFactory("Stake");
-  const StakeDeployment = await upgrades.deployProxy(Stake, [
-    own.address,
-    veOwn.address,
-    mockSablierLockup.address,
-  ]);
-
-  const stake = await hre.viem.getContractAt(
+  const stakeContract = await hre.viem.getContractAt(
     "Stake",
-    (await StakeDeployment.getAddress()) as `0x${string}`,
+    stake.address as `0x${string}`,
   );
-
-  await stake.write.addBoostDetails([
-    [
-      {
-        startWeek: BigInt(0),
-        durationInWeeks: BigInt(1),
-        multiplier: parseEther("10"),
-      },
-      {
-        startWeek: BigInt(1),
-        durationInWeeks: BigInt(3),
-        multiplier: parseEther("5"),
-      },
-      {
-        startWeek: BigInt(4),
-        durationInWeeks: BigInt(8),
-        multiplier: parseEther("3"),
-      },
-    ],
-  ]);
-
-  await veOwn.write.grantRole([MINTER_ROLE, stake.address]);
 
   return {
-    own,
-    veOwn,
+    own: ownContract,
+    veOwn: veOwnContract,
     signers,
-    presale,
-    mockUSDT,
-    stake,
-    mockSablierLockup,
+    presale: presaleContract,
+    mockUSDT: mockUSDTContract,
+    stake: stakeContract,
+    mockSablierLockup: mockSablierLockupContract,
   };
 };

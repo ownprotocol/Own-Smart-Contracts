@@ -1,13 +1,13 @@
 import { expect } from "chai";
 import { OWN_MAX_SUPPLY_WITH_DECIMALS } from "../constants";
-import { ownTestingAPI } from "../helpers/testing-api";
+import { getContractInstances } from "../helpers/testing-api";
 import { OwnContract } from "../types";
 
 describe("Own token testing", async () => {
   let own: OwnContract;
 
   before(async () => {
-    ({ own } = await ownTestingAPI());
+    ({ own } = await getContractInstances());
   });
 
   it("should have the correct max supply minted on deployment", async () => {

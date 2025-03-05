@@ -1,4 +1,4 @@
-import { ownTestingAPI } from "../helpers/testing-api";
+import { getContractInstances } from "../helpers/testing-api";
 import { StakeContract } from "../types";
 import {
   DayOfWeek,
@@ -12,7 +12,7 @@ describe("Helpers", async () => {
   let stake: StakeContract;
 
   before(async () => {
-    ({ stake } = await ownTestingAPI());
+    ({ stake } = await getContractInstances());
   });
 
   it("Should update the current day to wednesday", async () => {

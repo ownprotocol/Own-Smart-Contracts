@@ -5,7 +5,7 @@ import {
   PresaleContract,
   Signers,
 } from "../../types";
-import { ownTestingAPI } from "../../helpers/testing-api";
+import { getContractInstances } from "../../helpers/testing-api";
 import { getCurrentBlockTimestamp, increaseTime } from "../../helpers/evm";
 import { parseEther } from "ethers";
 
@@ -16,7 +16,7 @@ describe("Presale - addPresaleRounds", async () => {
   let mockUSDT: MockUSDTContract;
 
   beforeEach(async () => {
-    ({ presale, own, signers, mockUSDT } = await ownTestingAPI());
+    ({ presale, own, signers, mockUSDT } = await getContractInstances());
   });
 
   it("Should revert when the Presale contract doesn't have enough tokens for the presale rounds", async () => {

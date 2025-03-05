@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { parseEther } from "viem";
-import { ownTestingAPI } from "../../helpers/testing-api";
+import { getContractInstances } from "../../helpers/testing-api";
 import { OwnContract, StakeContract, Signers, VeOwn } from "../../types";
 import { DayOfWeek, setDayOfWeekInHardhatNode } from "../../helpers/evm";
 import { getAddress } from "ethers";
@@ -12,7 +12,7 @@ describe("Stake - stake", async () => {
   let veOwn: VeOwn;
 
   beforeEach(async () => {
-    ({ stake, own, veOwn, signers } = await ownTestingAPI());
+    ({ stake, own, veOwn, signers } = await getContractInstances());
   });
 
   it("Should revert if trying to stake for 0 weeks", async () => {

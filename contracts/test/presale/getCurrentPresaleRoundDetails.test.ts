@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { OwnContract, PresaleContract, Signers } from "../../types";
-import { ownTestingAPI } from "../../helpers/testing-api";
+import { getContractInstances } from "../../helpers/testing-api";
 import hre from "hardhat";
 import { getCurrentBlockTimestamp, increaseTime } from "../../helpers/evm";
 
@@ -13,7 +13,7 @@ describe("Presale - getCurrentPresaleRoundDetails", async () => {
   const secondPresaleRoundDuration = BigInt(100);
 
   beforeEach(async () => {
-    ({ presale, own, signers } = await ownTestingAPI());
+    ({ presale, own, signers } = await getContractInstances());
 
     await own.write.transfer([presale.address, BigInt(10000)]);
 

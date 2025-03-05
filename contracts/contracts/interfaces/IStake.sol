@@ -112,6 +112,13 @@ interface IStake {
      */
     event BoostDetailsAdded(BoostDetails[] boostDetails);
 
+    /**
+     * @notice Emitted when maximum daily reward amount is set
+     * @param day Day the maximum daily reward amount is set
+     * @param amount New maximum daily reward amount
+     */
+    event MaximumDailyRewardAmountSet(uint256 day, uint256 amount);
+
     // Custom Errors
 
     /// @notice Thrown when the caller is not the admin
@@ -154,6 +161,15 @@ interface IStake {
     /// @notice Thrown when attempting to set boost duration to zero
     error CannotSetDurationInWeeksForBoostToZero();
 
+    /// @notice Thrown when setting the maximum daily reward amount to zero
+    error CannotSetMaximumDailyRewardAmountToZero();
+
+    /// @notice Thrown when daily reward amount exceeds maximum daily reward amount
+    error DailyRewardAmountExceedsMaximum(
+        uint256 dailyRewardAmount,
+        uint256 maximumDailyRewardAmount
+    );
+
     // Core Staking Functions
 
     /**
@@ -187,6 +203,12 @@ interface IStake {
      * @param _amount New daily reward amount
      */
     function setDailyRewardAmount(uint256 _amount) external;
+
+    /**
+     * @notice Sets the maximum daily reward amount
+     * @param _amount New maximum daily reward amount
+     */
+    function setMaximumDailyRewardAmount(uint256 _amount) external;
 
     /**
      * @notice Adds boost details for staking rewards

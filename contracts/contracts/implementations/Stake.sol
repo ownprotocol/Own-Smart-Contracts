@@ -31,6 +31,7 @@ contract Stake is
     uint256 public minimumLockDays;
 
     uint256 public dailyRewardAmount;
+    uint256 public maximumDailyRewardAmount;
 
     uint256 public lastRewardValuesWeeklyCachedWeek;
 
@@ -364,6 +365,18 @@ contract Stake is
         emit StartStakingNextWeek(stakingStartWeek);
     }
 
+    function setMaximumDailyRewardAmount(
+        uint256 _amount
+    ) external override onlyDefaultAdmin {
+        if (_amount == 0) {
+            revert CannotSetMaximumDailyRewardAmountToZero();
+        }
+
+        maximumDailyRewardAmount = _amount;
+
+        emit MaximumDailyRewardAmountSet(getCurrentDay(), _amount);
+    }
+
     function setDailyRewardAmount(
         uint256 _amount
     ) external override onlyDefaultAdmin {
@@ -374,6 +387,13 @@ contract Stake is
 
         if (_amount == 0) {
             revert CannotSetDailyRewardAmountToZero();
+        }
+
+        if (_amount > maximumDailyRewardAmount) {
+            revert DailyRewardAmountExceedsMaximum(
+                _amount,
+                maximumDailyRewardAmount
+            );
         }
 
         uint256 currentWeek = getCurrentWeek();

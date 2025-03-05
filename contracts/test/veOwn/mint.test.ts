@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import hre from "hardhat";
 import { parseEther } from "viem";
-import { ownTestingAPI } from "../../helpers/testing-api";
+import { getContractInstances } from "../../helpers/testing-api";
 import { Signers, VeOwn } from "../../types";
 import { ZeroAddress } from "ethers";
 import { MINTER_ROLE } from "../../constants/roles";
@@ -11,7 +11,7 @@ describe("veOwn", async () => {
   let signers: Signers;
 
   before(async () => {
-    ({ veOwn, signers } = await ownTestingAPI());
+    ({ veOwn, signers } = await getContractInstances());
   });
 
   it("Should allow someone with the minter role to mint tokens", async () => {

@@ -6,7 +6,7 @@ import {
   PresaleContract,
   Signers,
 } from "../../types";
-import { ownTestingAPI } from "../../helpers/testing-api";
+import { getContractInstances } from "../../helpers/testing-api";
 import { parseEther } from "viem";
 
 describe("Presale - claimUsdt", async () => {
@@ -20,7 +20,7 @@ describe("Presale - claimUsdt", async () => {
   const amount = parseEther("100");
 
   beforeEach(async () => {
-    ({ presale, own, mockUSDT, signers } = await ownTestingAPI());
+    ({ presale, own, mockUSDT, signers } = await getContractInstances());
 
     presaleNonOwner = await hre.viem.getContractAt("Presale", presale.address, {
       client: { wallet: signers[1] },

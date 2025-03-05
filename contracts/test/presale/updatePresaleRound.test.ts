@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { OwnContract, PresaleContract, Signers } from "../../types";
-import { ownTestingAPI } from "../../helpers/testing-api";
+import { getContractInstances } from "../../helpers/testing-api";
 import hre from "hardhat";
 import { getCurrentBlockTimestamp } from "../../helpers/evm";
 
@@ -35,7 +35,7 @@ describe("Presale - update presale round", async () => {
   const ALLOCATION = BigInt(1000);
 
   beforeEach(async () => {
-    ({ presale, own, signers } = await ownTestingAPI());
+    ({ presale, own, signers } = await getContractInstances());
 
     presaleNonOwner = await hre.viem.getContractAt("Presale", presale.address, {
       client: { wallet: signers[1] },

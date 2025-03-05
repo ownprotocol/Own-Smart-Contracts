@@ -1,6 +1,6 @@
 import { parseEther } from "viem";
-import { ownTestingAPI } from "../../helpers/testing-api";
-import { StakeContract } from "../../types";
+import { getContractInstances } from "../../helpers/testing-api";
+import { Signers, StakeContract } from "../../types";
 import { expect } from "chai";
 import { DayOfWeek, setDayOfWeekInHardhatNode } from "../../helpers/evm";
 
@@ -9,7 +9,7 @@ describe("Stake - boost", async () => {
   let signers: Signers;
 
   beforeEach(async () => {
-    ({ stake, signers } = await ownTestingAPI());
+    ({ stake, signers } = await getContractInstances());
 
     await stake.write.setDailyRewardAmount([parseEther("5")]);
     await stake.write.startStakingNextWeek();

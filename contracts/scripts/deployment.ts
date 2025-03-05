@@ -1,8 +1,9 @@
 import hre from "hardhat";
 import { parseEther } from "ethers";
+import { getContractInstances } from "../helpers/testing-api";
 
 const main = async () => {
-  await ownTestingAPI();
+  await getContractInstances();
   // const stake = await hre.viem.getContractAt(
   //   "Stake",
   //   "0x529cad80eb5839772e43bcbe20498f2792b58bb5" as `0x${string}`,
