@@ -1,12 +1,14 @@
 "use client";
 
 import { PresaleBannerSkeleton } from "@/components";
-
+import { useGetAuthUser } from "@/query/get-user";
 interface PresaleBannerProps {
   isLoading: boolean;
 }
 
 function PresaleBanner({ isLoading }: PresaleBannerProps) {
+  const { userAuthState } = useGetAuthUser();
+  console.log(userAuthState);
   if (isLoading) {
     return <PresaleBannerSkeleton  />;
   }
