@@ -1,6 +1,7 @@
-import { ethers, upgrades } from "hardhat";
+import { ethers, network, upgrades } from "hardhat";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
+import { isTestNetwork } from "../helpers/deployments";
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments } = hre;
@@ -10,7 +11,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const Presale = await ethers.getContractFactory("Presale");
 
   let usdtAddress;
-  if (hre.network.name === "hardhat") {
+  if (isTestNetwork()) {
     const MockUSDT = await ethers.getContractFactory("MockERC20");
     const MockUSDTDeployment = await MockUSDT.deploy();
 
@@ -21,19 +22,17 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
       abi: MockUSDT.interface.format(),
     });
   } else {
-    throw new Error("USDT address not set for network");
+    if (network.name === "mainnet") {
+      usdtAddress = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
+    } else {
+      throw new Error("USDT address not set for network");
+    }
   }
 
   const PresaleDeployment = await upgrades.deployProxy(Presale, [
     Own.address,
     usdtAddress,
   ]);
-
-  // we use ethers to deploy the contract, but viem to interact with it
-  const presale = await hre.viem.getContractAt(
-    "Presale",
-    (await PresaleDeployment.getAddress()) as `0x${string}`,
-  );
 
   console.log("Presale deployed at:", await PresaleDeployment.getAddress());
 

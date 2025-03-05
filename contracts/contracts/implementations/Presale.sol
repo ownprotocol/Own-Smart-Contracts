@@ -191,6 +191,26 @@ contract Presale is
         );
     }
 
+    function setOwnAddress(IOwn _own) external override onlyOwner {
+        if (address(_own) == address(0)) {
+            revert CannotSetAddressToZero();
+        }
+
+        own = _own;
+
+        emit OwnAddressSet(address(_own));
+    }
+
+    function setUSDTAddress(IERC20 _usdt) external override onlyOwner {
+        if (address(_usdt) == address(0)) {
+            revert CannotSetAddressToZero();
+        }
+
+        usdt = _usdt;
+
+        emit USDTAddressSet(address(_usdt));
+    }
+
     // *** Public functions ***
 
     function purchasePresaleTokens(

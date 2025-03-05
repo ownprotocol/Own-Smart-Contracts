@@ -119,6 +119,18 @@ interface IPresale {
     );
 
     /**
+     * @notice Emitted when the own address is set
+     * @param ownAddress Address of the own token contract
+     */
+    event OwnAddressSet(address indexed ownAddress);
+
+    /**
+     * @notice Emitted when the USDT address is set
+     * @param usdtAddress Address of the USDT token contract
+     */
+    event USDTAddressSet(address indexed usdtAddress);
+
+    /**
      * @notice Emitted when a user claims their presale tokens
      * @param user Address of the user claiming tokens
      * @param amount Number of tokens claimed
@@ -201,6 +213,11 @@ interface IPresale {
     );
 
     /**
+     * @notice Error thrown when attempting to set a contract address to zero
+     */
+    error CannotSetAddressToZero();
+
+    /**
      * @notice Adds new presale rounds to the contract
      * @dev Can only be called by the contract owner
      * @param _rounds Array of presale rounds to be added
@@ -275,6 +292,20 @@ interface IPresale {
      * @param _startTime Timestamp when presale begins
      */
     function setPresaleStartTime(uint256 _startTime) external;
+
+    /**
+     * @notice Sets the address of the OWN token contract
+     * @dev Can only be called by the contract owner
+     * @param _own Address of the OWN token contract
+     */
+    function setOwnAddress(IOwn _own) external;
+
+    /**
+     * @notice Sets the address of the USDT token contract
+     * @dev Can only be called by the contract owner
+     * @param _usdt Address of the USDT token contract
+     */
+    function setUSDTAddress(IERC20 _usdt) external;
 
     /**
      * @notice Retrieves all presale purchases for a specific user

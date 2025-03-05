@@ -3,6 +3,9 @@ import { DeployFunction } from "hardhat-deploy/dist/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
+  console.log(hre.network.name);
+  // throw new Error("This is an error");
+
   const { deployments } = hre;
   const signers = await hre.viem.getWalletClients();
   const deployer = signers[0];

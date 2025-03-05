@@ -1,3 +1,4 @@
+import { parseEther } from "ethers";
 import hre from "hardhat";
 
 export const getContractInstances = async () => {
@@ -39,6 +40,8 @@ export const getContractInstances = async () => {
     "Stake",
     stake.address as `0x${string}`,
   );
+
+  await stakeContract.write.setMaximumDailyRewardAmount([parseEther("1000")]);
 
   return {
     own: ownContract,

@@ -119,6 +119,24 @@ interface IStake {
      */
     event MaximumDailyRewardAmountSet(uint256 day, uint256 amount);
 
+    /**
+     * @notice Emitted when the Own addres is set
+     * @param ownAddress Address of the Own token
+     */
+    event OwnAddressSet(address ownAddress);
+
+    /**
+     * @notice Emitted when the veOwn address is set
+     * @param veOwnAddress Address of the veOwn token
+     */
+    event VeOwnAddressSet(address veOwnAddress);
+
+    /**
+     * @notice Emitted when the SablierLockup address is set
+     * @param sablierLockupAddress Address of the SablierLockup contract
+     */
+    event SablierLockupAddressSet(address sablierLockupAddress);
+
     // Custom Errors
 
     /// @notice Thrown when the caller is not the admin
@@ -170,6 +188,9 @@ interface IStake {
         uint256 maximumDailyRewardAmount
     );
 
+    /// @notice Error thrown when attempting to set a contract address to zero
+    error CannotSetAddressToZero();
+
     // Core Staking Functions
 
     /**
@@ -209,6 +230,24 @@ interface IStake {
      * @param _amount New maximum daily reward amount
      */
     function setMaximumDailyRewardAmount(uint256 _amount) external;
+
+    /**
+     * @notice Sets the Own token address
+     * @param _own Address of the Own token
+     */
+    function setOwnAddress(IOwn _own) external;
+
+    /**
+     * @notice Sets the veOwn token address
+     * @param _veOwn Address of the veOwn token
+     */
+    function setVeOwnAddress(IveOwn _veOwn) external;
+
+    /**
+     * @notice Sets the SablierLockup address
+     * @param _sablierLockup Address of the SablierLockup contract
+     */
+    function setSablierLockupAddress(ISablierLockup _sablierLockup) external;
 
     /**
      * @notice Adds boost details for staking rewards

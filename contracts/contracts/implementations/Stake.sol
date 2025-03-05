@@ -416,6 +416,38 @@ contract Stake is
         emit DailyRewardAmountSet(currentDay, _amount);
     }
 
+    function setOwnAddress(IOwn _own) external override onlyDefaultAdmin {
+        if (address(_own) == address(0)) {
+            revert CannotSetAddressToZero();
+        }
+
+        ownToken = _own;
+
+        emit OwnAddressSet(address(_own));
+    }
+
+    function setVeOwnAddress(IveOwn _veOwn) external override onlyDefaultAdmin {
+        if (address(_veOwn) == address(0)) {
+            revert CannotSetAddressToZero();
+        }
+
+        veOwn = _veOwn;
+
+        emit VeOwnAddressSet(address(_veOwn));
+    }
+
+    function setSablierLockupAddress(
+        ISablierLockup _sablierLockup
+    ) external override onlyDefaultAdmin {
+        if (address(_sablierLockup) == address(0)) {
+            revert CannotSetAddressToZero();
+        }
+
+        sablierLockup = _sablierLockup;
+
+        emit SablierLockupAddressSet(address(_sablierLockup));
+    }
+
     // **** Internal functions ****
 
     function _calculateRewardPerToken(

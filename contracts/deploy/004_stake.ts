@@ -1,15 +1,16 @@
 import { parseEther } from "ethers";
-import { ethers, upgrades } from "hardhat";
+import { ethers, network, upgrades } from "hardhat";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { MINTER_ROLE } from "../constants/roles";
+import { isTestNetwork } from "../helpers/deployments";
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments } = hre;
   const { Own, VeOwn } = await deployments.all();
 
   let sablierAddress;
-  if (hre.network.name === "hardhat") {
+  if (isTestNetwork()) {
     const SablierLockup = await ethers.getContractFactory("MockSablierLockup");
     const SablierDeployment = await SablierLockup.deploy(Own.address);
 
@@ -25,7 +26,12 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
       abi: SablierLockup.interface.format(),
     });
   } else {
-    throw new Error("SablierLockup not deployed in network");
+    if (network.name === "mainnet") {
+      // Sablier addresses: https://docs.sablier.com/guides/lockup/deployments
+      sablierAddress = "0x7C01AA3783577E15fD7e272443D44B92d5b21056";
+    } else {
+      throw new Error("SablierLockup not deployed in network");
+    }
   }
 
   const Stake = await ethers.getContractFactory("Stake");
@@ -64,8 +70,6 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
       },
     ],
   ]);
-
-  await stake.write.setMaximumDailyRewardAmount([parseEther("10000")]);
 
   const veOwnContract = await hre.viem.getContractAt(
     "VeOwn",
