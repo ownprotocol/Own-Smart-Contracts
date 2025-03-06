@@ -14,12 +14,14 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   if (isTestNetwork()) {
     const MockUSDT = await ethers.getContractFactory("MockERC20");
     const MockUSDTDeployment = await MockUSDT.deploy();
+    await MockUSDTDeployment.waitForDeployment();
 
     usdtAddress = await MockUSDTDeployment.getAddress();
 
-    deployments.save("mockUSDT", {
+    await deployments.save("mockUSDT", {
       address: usdtAddress,
-      abi: MockUSDT.interface.format(),
+      abi: JSON.parse(MockUSDT.interface.formatJson()),
+      ...MockUSDTDeployment,
     });
   } else {
     if (network.name === "mainnet") {
@@ -34,12 +36,29 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     usdtAddress,
   ]);
 
+  await PresaleDeployment.waitForDeployment();
+
   console.log("Presale deployed at:", await PresaleDeployment.getAddress());
 
   // Save the deployment to hardhat so that the contract can be fetched via ethers.getContract, upgradeable contracts don't do this by default
-  deployments.save("presale", {
+  await deployments.save("presale", {
     address: await PresaleDeployment.getAddress(),
-    abi: PresaleDeployment.interface.format(),
+    abi: JSON.parse(PresaleDeployment.interface.formatJson()),
+    ...PresaleDeployment,
+  });
+
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+
+  // Get the implementation address
+  const implementationAddress = await upgrades.erc1967.getImplementationAddress(
+    await PresaleDeployment.getAddress(),
+  );
+
+  // You can also save the implementation separately if needed
+  await deployments.save("PresaleImplementation", {
+    address: implementationAddress,
+    abi: JSON.parse(PresaleDeployment.interface.formatJson()),
+    ...PresaleDeployment,
   });
 };
 

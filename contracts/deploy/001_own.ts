@@ -3,29 +3,41 @@ import { DeployFunction } from "hardhat-deploy/dist/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
-  console.log(hre.network.name);
-  // throw new Error("This is an error");
-
   const { deployments } = hre;
   const signers = await hre.viem.getWalletClients();
   const deployer = signers[0];
 
   const Own = await ethers.getContractFactory("Own");
 
-  // TODO: Setup receiver address for tokens and default admin
-  const OwnDeployment = await upgrades.deployProxy(Own, [
-    deployer.account.address,
-    deployer.account.address,
-  ]);
+  const OwnDeployment = await upgrades.deployProxy(
+    Own,
+    [deployer.account.address, deployer.account.address],
+    { metadata: { tag: "Own" } },
+  );
 
+  await OwnDeployment.waitForDeployment();
   const address = await OwnDeployment.getAddress();
 
   console.log("Own deployed at:", await OwnDeployment.getAddress());
 
   // Save the deployment to hardhat so that the contract can be fetched via ethers.getContract, upgradeable contracts don't do this by default
-  deployments.save("Own", {
+  await deployments.save("Own", {
     address,
-    abi: Own.interface.format(),
+    abi: JSON.parse(Own.interface.formatJson()),
+    ...Own,
+  });
+
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+
+  // Get the implementation address
+  const implementationAddress =
+    await upgrades.erc1967.getImplementationAddress(address);
+
+  // You can also save the implementation separately if needed
+  await deployments.save("OwnImplementation", {
+    address: implementationAddress,
+    abi: JSON.parse(Own.interface.formatJson()),
+    ...Own,
   });
 };
 

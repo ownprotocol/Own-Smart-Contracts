@@ -13,6 +13,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   if (isTestNetwork()) {
     const SablierLockup = await ethers.getContractFactory("MockSablierLockup");
     const SablierDeployment = await SablierLockup.deploy(Own.address);
+    await SablierDeployment.waitForDeployment();
 
     const mockSablierLockup = await hre.viem.getContractAt(
       "MockSablierLockup",
@@ -21,9 +22,10 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
     sablierAddress = mockSablierLockup.address;
 
-    deployments.save("mockSablierLockup", {
+    await deployments.save("mockSablierLockup", {
       address: sablierAddress,
-      abi: SablierLockup.interface.format(),
+      abi: JSON.parse(SablierLockup.interface.formatJson()),
+      ...SablierLockup,
     });
   } else {
     if (network.name === "mainnet") {
@@ -40,15 +42,31 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     VeOwn.address,
     sablierAddress,
   ]);
+  await StakeDeployment.waitForDeployment();
 
   const stake = await hre.viem.getContractAt(
     "Stake",
     (await StakeDeployment.getAddress()) as `0x${string}`,
   );
 
-  deployments.save("stake", {
+  await deployments.save("stake", {
     address: stake.address,
-    abi: Stake.interface.format(),
+    abi: JSON.parse(Stake.interface.formatJson()),
+    ...Stake,
+  });
+
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+
+  // Get the implementation address
+  const implementationAddress = await upgrades.erc1967.getImplementationAddress(
+    await StakeDeployment.getAddress(),
+  );
+
+  // You can also save the implementation separately if needed
+  await deployments.save("StakeImplementation", {
+    address: implementationAddress,
+    abi: JSON.parse(StakeDeployment.interface.formatJson()),
+    ...StakeDeployment,
   });
 
   await stake.write.addBoostDetails([
