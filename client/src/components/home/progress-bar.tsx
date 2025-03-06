@@ -1,6 +1,18 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
+import {
+  motion,
+  useMotionValue,
+  useTransform,
+  animate,
+  type MotionValue,
+  type ObjectTarget,
+  type Easing,
+} from "framer-motion";
+import { useEffect } from "react";
 
 interface ProgressBarProps {
   sold: number;
@@ -20,6 +32,46 @@ function ProgressBar({
   easing = "easeInOut",
 }: ProgressBarProps) {
   const progress = (sold / cap) * 100;
+
+  // Create motion values for animating the numbers
+  const soldCount = useMotionValue(0);
+  const capCount = useMotionValue(0);
+
+  // Transform the motion values to formatted strings
+  const displaySold = useTransform(soldCount, (value: number) =>
+    Math.round(value).toLocaleString(),
+  );
+  const displayCap = useTransform(capCount, (value: number) =>
+    Math.round(value).toLocaleString(),
+  );
+
+  // Animate the counters when component mounts
+  useEffect(() => {
+    const soldAnimation = animate(
+      soldCount,
+      sold as ObjectTarget<MotionValue<number>>,
+      {
+        duration,
+        delay,
+        ease: easing as Easing,
+      },
+    );
+
+    const capAnimation = animate(
+      capCount,
+      cap as ObjectTarget<MotionValue<number>>,
+      {
+        duration,
+        delay,
+        ease: easing as Easing,
+      },
+    );
+
+    return () => {
+      soldAnimation.stop();
+      capAnimation.stop();
+    };
+  }, [sold, cap, duration, delay, easing, soldCount, capCount]);
 
   const variants = {
     initial: {
@@ -50,7 +102,7 @@ function ProgressBar({
         style={{
           width: `${progress}%`,
           clipPath:
-            "polygon(0 0, 70% 0, calc(70% + 20px) 50%, 70% 100%, 0 100%)",
+            "polygon(0 0, 80% 0, calc(80% + 20px) 50%, 80% 100%, 0 100%)",
         }}
       />
 
@@ -78,17 +130,17 @@ function ProgressBar({
           <span className="font-dm_mono text-[10px] font-normal leading-[10px] tracking-[0.08em] opacity-80 md:text-[14px] md:leading-[14px]">
             SOLD
           </span>
-          <p className="font-dm_sans text-base font-medium leading-[40px] tracking-[-0.06em] md:text-[40px]">
-            {sold.toLocaleString()}
-          </p>
+          <motion.p className="font-dm_sans text-base font-medium leading-[40px] tracking-[-0.06em] md:text-[40px]">
+            {displaySold}
+          </motion.p>
         </div>
         <div className="text-right">
           <span className="font-dm_mono text-[10px] font-normal leading-[10px] tracking-[0.08em] opacity-80 md:text-[14px] md:leading-[14px]">
             PRESALE CAP
           </span>
-          <p className="font-dm_sans text-base font-medium leading-[40px] tracking-[-0.06em] md:text-[40px]">
-            {cap.toLocaleString()}
-          </p>
+          <motion.p className="font-dm_sans text-base font-medium leading-[40px] tracking-[-0.06em] md:text-[40px]">
+            {displayCap}
+          </motion.p>
         </div>
       </div>
     </div>
@@ -98,19 +150,19 @@ function ProgressBar({
 function ProgressDots() {
   return (
     <>
-      <div className="absolute left-[85%] top-[15%] flex -translate-y-1/2 gap-1 md:left-[75%]">
+      <div className="absolute left-[85%] top-[15%] flex -translate-y-1/2 gap-1 md:left-[85%]">
         <div className="h-2 w-2 rounded-full bg-orange-300"></div>
       </div>
-      <div className="absolute left-[91%] top-[38%] flex -translate-y-1/2 gap-1 md:left-[81%]">
+      <div className="absolute left-[91%] top-[38%] flex -translate-y-1/2 gap-1 md:left-[85%]">
         <div className="h-1 w-1 rounded-full bg-orange-300"></div>
       </div>
-      <div className="absolute left-[88%] top-[52%] flex -translate-y-1/2 gap-1 md:left-[78%]">
+      <div className="absolute left-[88%] top-[52%] flex -translate-y-1/2 gap-1 md:left-[88%]">
         <div className="h-3 w-3 rounded-full bg-orange-300"></div>
       </div>
       <div className="absolute left-[94%] top-[72%] flex -translate-y-1/2 gap-1 md:left-[84%]">
         <div className="h-1.5 w-1.5 rounded-full bg-orange-300"></div>
       </div>
-      <div className="absolute left-[90%] top-[85%] flex -translate-y-1/2 gap-1 md:left-[80%]">
+      <div className="absolute left-[90%] top-[85%] flex -translate-y-1/2 gap-1 md:left-[86%]">
         <div className="h-2 w-2 rounded-full bg-orange-300"></div>
       </div>
     </>
