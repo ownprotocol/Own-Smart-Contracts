@@ -28,9 +28,9 @@ contract Own is
         address _recipient,
         address _defaultAdmin
     ) public initializer {
-        __ERC20_init("Own", "Own");
+        __ERC20_init("testToken", "testToken");
         __ERC20Burnable_init();
-        __ERC20Permit_init("Own");
+        __ERC20Permit_init("testToken");
         __AccessControl_init();
         __UUPSUpgradeable_init();
 

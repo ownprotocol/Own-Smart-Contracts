@@ -49,6 +49,8 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     (await StakeDeployment.getAddress()) as `0x${string}`,
   );
 
+  console.log("Stake deployed at:", await StakeDeployment.getAddress());
+
   await deployments.save("stake", {
     address: stake.address,
     abi: JSON.parse(Stake.interface.formatJson()),
