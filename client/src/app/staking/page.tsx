@@ -50,7 +50,6 @@ function StakingPage() {
             </DrawerContent>
           </Drawer>
         </div>
-        {/* create a useConnectModal */}
         {!isValid && (
           //
           <ConnectButton

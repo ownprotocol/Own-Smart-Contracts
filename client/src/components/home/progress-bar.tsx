@@ -1,14 +1,39 @@
 "use client";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 interface ProgressBarProps {
   sold: number;
   cap: number;
   className?: string;
+  duration?: number;
+  delay?: number;
+  easing?: string;
 }
 
-function ProgressBar({ sold, cap, className }: ProgressBarProps) {
+function ProgressBar({
+  sold,
+  cap,
+  className,
+  duration = 3,
+  delay = 0.5,
+  easing = "easeInOut",
+}: ProgressBarProps) {
   const progress = (sold / cap) * 100;
+
+  const variants = {
+    initial: {
+      x: "-100%",
+    },
+    animate: {
+      x: "0%",
+      transition: {
+        duration,
+        delay,
+        ease: easing,
+      },
+    },
+  };
 
   return (
     <div
@@ -17,9 +42,11 @@ function ProgressBar({ sold, cap, className }: ProgressBarProps) {
         className,
       )}
     >
-      {/* Gradient progress bar */}
-      <div
-        className="absolute inset-y-0 left-0 bg-gradient-to-r from-purple-600 to-amber-400 transition-all duration-500"
+      <motion.div
+        variants={variants}
+        initial="initial"
+        animate="animate"
+        className="absolute inset-y-0 left-0 bg-gradient-to-r from-purple-600 to-amber-400"
         style={{
           width: `${progress}%`,
           clipPath:
@@ -27,12 +54,13 @@ function ProgressBar({ sold, cap, className }: ProgressBarProps) {
         }}
       />
 
-      {/* Orange glow effect - moved outside the clipped div */}
-      <div
-        className="absolute inset-y-0 left-0 transition-all duration-500"
+      <motion.div
+        variants={variants}
+        initial="initial"
+        animate="animate"
+        className="absolute inset-y-0 left-0"
         style={{ width: `${progress}%` }}
       >
-        {/* Orange glow effect with consistent gradient */}
         <div
           className="absolute inset-0 bg-gradient-to-r"
           style={{
@@ -43,9 +71,8 @@ function ProgressBar({ sold, cap, className }: ProgressBarProps) {
         />
 
         <ProgressDots />
-      </div>
+      </motion.div>
 
-      {/* Text labels */}
       <div className="relative flex h-full items-center justify-between px-4 font-medium text-white">
         <div>
           <span className="font-dm_mono text-[10px] font-normal leading-[10px] tracking-[0.08em] opacity-80 md:text-[14px] md:leading-[14px]">
