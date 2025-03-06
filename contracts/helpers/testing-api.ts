@@ -1,32 +1,55 @@
-import hre, { ethers, upgrades } from "hardhat";
+import { parseEther } from "ethers";
+import hre from "hardhat";
 
-export const ownTestingAPI = async () => {
+export const getContractInstances = async () => {
+  const deployment = await hre.deployments.fixture("testbed");
+
+  const { Own, VeOwn, mockUSDT, presale, mockSablierLockup, stake } =
+    deployment;
   const signers = await hre.viem.getWalletClients();
 
-  const deployer = signers[0];
-
-  const Own = await ethers.getContractFactory("OWN");
-  const OwnDeployment = await upgrades.deployProxy(Own, [
-    deployer.account.address,
-    deployer.account.address,
-  ]);
-
   // we use ethers to deploy the contract, but viem to interact with it
-  const own = await hre.viem.getContractAt(
-    "OWN",
-    (await OwnDeployment.getAddress()) as `0x${string}`,
+  const ownContract = await hre.viem.getContractAt(
+    "Own",
+    Own.address as `0x${string}`,
   );
 
-  const stake = await hre.viem.deployContract("Stake", [own.address]);
+  // we use ethers to deploy the contract, but viem to interact with it
+  const veOwnContract = await hre.viem.getContractAt(
+    "VeOwn",
+    VeOwn.address as `0x${string}`,
+  );
 
-  const veOWNAddress = await stake.read.veOWN();
+  const mockUSDTContract = await hre.viem.getContractAt(
+    "MockERC20",
+    mockUSDT.address as `0x${string}`,
+  );
 
-  const veOWN = await hre.viem.getContractAt("VeOWN", veOWNAddress);
+  // we use ethers to deploy the contract, but viem to interact with it
+  const presaleContract = await hre.viem.getContractAt(
+    "Presale",
+    presale.address as `0x${string}`,
+  );
+
+  const mockSablierLockupContract = await hre.viem.getContractAt(
+    "MockSablierLockup",
+    mockSablierLockup.address as `0x${string}`,
+  );
+
+  const stakeContract = await hre.viem.getContractAt(
+    "Stake",
+    stake.address as `0x${string}`,
+  );
+
+  await stakeContract.write.setMaximumDailyRewardAmount([parseEther("1000")]);
 
   return {
-    own,
+    own: ownContract,
+    veOwn: veOwnContract,
     signers,
-    stake,
-    veOWN,
+    presale: presaleContract,
+    mockUSDT: mockUSDTContract,
+    stake: stakeContract,
+    mockSablierLockup: mockSablierLockupContract,
   };
 };

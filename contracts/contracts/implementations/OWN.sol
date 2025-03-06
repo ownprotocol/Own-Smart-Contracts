@@ -8,13 +8,16 @@ import {ERC20PermitUpgradeable} from "@openzeppelin/contracts-upgradeable/token/
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
-contract OWN is
+import "../interfaces/IOwn.sol";
+
+contract Own is
     Initializable,
     ERC20Upgradeable,
     ERC20BurnableUpgradeable,
     ERC20PermitUpgradeable,
     AccessControlUpgradeable,
-    UUPSUpgradeable
+    UUPSUpgradeable,
+    IOwn
 {
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -22,20 +25,20 @@ contract OWN is
     }
 
     function initialize(
-        address recipient,
-        address defaultAdmin
+        address _recipient,
+        address _defaultAdmin
     ) public initializer {
-        __ERC20_init("OWN", "OWN");
+        __ERC20_init("testToken", "testToken");
         __ERC20Burnable_init();
-        __ERC20Permit_init("OWN");
+        __ERC20Permit_init("testToken");
         __AccessControl_init();
         __UUPSUpgradeable_init();
 
-        _mint(recipient, 450_000_000 * 10 ** decimals());
-        _grantRole(DEFAULT_ADMIN_ROLE, defaultAdmin);
+        _mint(_recipient, 2_250_000_000 * 10 ** decimals());
+        _grantRole(DEFAULT_ADMIN_ROLE, _defaultAdmin);
     }
 
     function _authorizeUpgrade(
-        address newImplementation
+        address _newImplementation
     ) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
 }

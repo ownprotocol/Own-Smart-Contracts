@@ -15,5 +15,12 @@
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@sablier/lockup": "^2.0.1",
+    "date-fns": "^4.1.0",
+    "dotenv": "^16.4.7",
+    "hardhat-chai-matchers-viem": "^2.0.8",
+    "hardhat-deploy": "^0.14.0"
   }
 }
