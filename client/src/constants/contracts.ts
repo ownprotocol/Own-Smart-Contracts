@@ -1,0 +1,3 @@
+export const USDTAddress = "0xBC4e5986e9d76C6f32CE37C4991dC4160f047D82";
+
+export const PresaleAddress = "0x59dA58dcAA1FBc65D5efe4F67BC4A746807C8043";
