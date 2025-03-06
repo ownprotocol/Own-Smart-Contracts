@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { Button } from "./ui/button";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
@@ -11,15 +10,13 @@ import {
   TransitionChild,
 } from "@headlessui/react";
 import { usePathname } from "next/navigation";
-import { ConnectButton } from "thirdweb/react";
-import { client, wallets } from "@/lib/client";
-import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { generatePayload, isLoggedIn, login, logout } from "@/actions/login";
+
+import { Button } from "./ui/button";
 import { TOP_NAVIGATION_LINKS } from "@/constants/top-navigation-links";
 import { icons } from "@/constants/icons";
 import { cn } from "@/lib/utils";
-import { GetUserQueryKey, useGetAuthUser } from "@/query/get-user";
+import { useGetAuthUser } from "@/query/get-user";
+import { ConnectWalletButton } from "@/components";
 
 interface NavigationProps {
   authUser:
@@ -40,8 +37,6 @@ const Navigation = ({ authUser }: NavigationProps) => {
   const [userAddress, setUserAddress] = useState<string | null>(null);
   const pathname = usePathname();
   const { isValid, address } = authUser;
-  const queryClient = useQueryClient();
-  const router = useRouter();
   const { refetch } = useGetAuthUser();
   useEffect(() => {
     async function fetchUser() {
@@ -219,57 +214,7 @@ const Navigation = ({ authUser }: NavigationProps) => {
         </div>
       </Dialog>
 
-      <ConnectButton
-      
-        connectButton={{
-          label: "Connect Wallet",
-          style: {
-            borderRadius: "10px",
-            borderColor: "white",
-            backgroundColor: "#C58BFF",
-            color: "black",
-          },
-        }}
-        autoConnect
-        client={client}
-        wallets={wallets}
-        connectModal={{
-          size: "wide",
-          title: "Login/Sign up",
-        }}
-        auth={{
-          isLoggedIn: async (address) => {
-            console.log("checking if logged in!", { address });
-            try {
-              console.log("About to call isLoggedIn function");
-              const result = await isLoggedIn();
-              console.log("isLoggedIn function returned:", result);
-              return result.isValid;
-            } catch (error) {
-              console.error("Error calling isLoggedIn:", error);
-              return false;
-            }
-          },
-          doLogin: async (params) => {
-            console.log("logging in!");
-            await login(params);
-            // Invalidate the user query after login
-            await queryClient.invalidateQueries({
-              queryKey: [GetUserQueryKey],
-            });
-          },
-          getLoginPayload: async ({ address }) => generatePayload({ address }),
-          doLogout: async () => {
-            console.log("logging out!");
-            await logout();
-            // Invalidate the user query after logout
-            await queryClient.invalidateQueries({
-              queryKey: [GetUserQueryKey],
-            });
-            router.push("/");
-          },
-        }}
-      />
+      <ConnectWalletButton />
     </div>
   );
 };

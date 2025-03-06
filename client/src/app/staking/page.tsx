@@ -4,24 +4,17 @@ import {
   StakeOwnTokenBanner,
   EarnAPYTimer,
   MainNavigation,
+  ConnectWalletButton,
 } from "@/components";
 import { useState } from "react";
-import { ConnectButton } from "thirdweb/react";
-import { client, wallets } from "@/lib/client";
-import { useRouter } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
 
 import StakingDrawerContent from "@/components/staking/staking-drawer-content";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { GetUserQueryKey, useGetAuthUser } from "@/query";
-import { isLoggedIn, logout } from "@/actions/login";
-import { generatePayload, login } from "@/actions/login";
+import { useGetAuthUser } from "@/query";
 
 function StakingPage() {
-  const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
 
   const { isValid } = useGetAuthUser();
   console.log(isValid);
@@ -50,62 +43,7 @@ function StakingPage() {
             </DrawerContent>
           </Drawer>
         </div>
-        {!isValid && (
-          //
-          <ConnectButton
-            connectButton={{
-              label: "Stake $Own",
-              style: {
-                borderRadius: "10px",
-                borderColor: "white",
-                backgroundColor: "#C58BFF",
-                color: "black",
-                width: "10%",
-                margin: "0 auto 0 auto",
-              },
-            }}
-            autoConnect
-            client={client}
-            wallets={wallets}
-            connectModal={{
-              size: "wide",
-              title: "Login/Sign up",
-            }}
-            auth={{
-              isLoggedIn: async (address) => {
-                console.log("checking if logged in!", { address });
-                try {
-                  console.log("About to call isLoggedIn function");
-                  const result = await isLoggedIn();
-                  console.log("isLoggedIn function returned:", result);
-                  return result.isValid;
-                } catch (error) {
-                  console.error("Error calling isLoggedIn:", error);
-                  return false;
-                }
-              },
-              doLogin: async (params) => {
-                console.log("logging in!");
-                await login(params);
-                // Invalidate the user query after login
-                await queryClient.invalidateQueries({
-                  queryKey: [GetUserQueryKey],
-                });
-              },
-              getLoginPayload: async ({ address }) =>
-                generatePayload({ address }),
-              doLogout: async () => {
-                console.log("logging out!");
-                await logout();
-                // Invalidate the user query after logout
-                await queryClient.invalidateQueries({
-                  queryKey: [GetUserQueryKey],
-                });
-                router.push("/");
-              },
-            }}
-          />
-        )}
+        {!isValid && <ConnectWalletButton />}
         <MainNavigation isLoading={false} />
       </div>
     </main>

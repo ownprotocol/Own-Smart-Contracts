@@ -1,0 +1,72 @@
+"use client";
+
+import { ConnectButton } from "thirdweb/react";
+import { client, wallets } from "@/lib/client";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { generatePayload, isLoggedIn, login, logout } from "@/actions/login";
+import { GetUserQueryKey } from "@/query/get-user";
+
+function ConnectWalletButton() {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  return (
+    <div>
+      <ConnectButton
+        connectButton={{
+          label: "Connect Wallet",
+          style: {
+            borderRadius: "10px",
+            borderColor: "white",
+            border: "1px solid gray",
+            backgroundColor: "#141019",
+            color: "white",
+          },
+          className: "hover:bg-[#141019] hover:text-red-500",
+        }}
+        autoConnect
+        client={client}
+        wallets={wallets}
+        connectModal={{
+          size: "wide",
+          title: "Login/Sign up",
+        }}
+        auth={{
+          isLoggedIn: async (address) => {
+            console.log("checking if logged in!", { address });
+            try {
+              console.log("About to call isLoggedIn function");
+              const result = await isLoggedIn();
+              console.log("isLoggedIn function returned:", result);
+              return result.isValid;
+            } catch (error) {
+              console.error("Error calling isLoggedIn:", error);
+              return false;
+            }
+          },
+          doLogin: async (params) => {
+            console.log("logging in!");
+            await login(params);
+            // Invalidate the user query after login
+            await queryClient.invalidateQueries({
+              queryKey: [GetUserQueryKey],
+            });
+          },
+          getLoginPayload: async ({ address }) => generatePayload({ address }),
+          doLogout: async () => {
+            console.log("logging out!");
+            await logout();
+            // Invalidate the user query after logout
+            await queryClient.invalidateQueries({
+              queryKey: [GetUserQueryKey],
+            });
+            router.push("/");
+          },
+        }}
+      />
+    </div>
+  );
+}
+
+export default ConnectWalletButton;
