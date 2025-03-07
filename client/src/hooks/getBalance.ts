@@ -384,7 +384,7 @@ export const useGetPresaleRound = () => {
   const { presaleContract } = useContracts();
 
   // @Sethu - data here is typed without having to supply types !!!!
-  const { data, isLoading } = useReadContract<typeof presaleABI, "getCurrentPresaleRoundDetails">({
+  const { data, isLoading } = useReadContract({
     contract: presaleContract,
     method: "getCurrentPresaleRoundDetails",
   });
