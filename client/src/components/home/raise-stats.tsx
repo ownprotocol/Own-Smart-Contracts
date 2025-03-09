@@ -1,26 +1,33 @@
+"use client";
+
 import { ProgressBar, RaiseStatsSkeleton } from "@/components";
 import Image from "next/image";
+import { useGetBalanceUSDT, useGetCurrentPresaleRound } from "@/hooks";
 
-interface RaiseStatsProps {
-  isLoading: boolean;
-}
+function RaiseStats() {
+  const { usdtPresaleBalance, isLoading: isLoadingPresaleBalance } =
+    useGetBalanceUSDT();
 
-function RaiseStats({ isLoading }: RaiseStatsProps) {
-  if (isLoading) {
+  const { presaleData, isLoading: isLoadingPresaleRound } =
+    useGetCurrentPresaleRound();
+
+  if (isLoadingPresaleBalance || isLoadingPresaleRound || !presaleData) {
     return <RaiseStatsSkeleton />;
   }
 
-  const amountRaised = "$1,030,000";
-  const usdPrice = "$1.2";
+  const {
+    round: { price, sales, allocation },
+  } = presaleData;
+
   return (
-    <div className="relative flex md:min-h-[200px] flex-col gap-4 md:mt-1">
+    <div className="relative flex flex-col gap-4 md:mt-1 md:min-h-[200px]">
       <div className="flex w-full flex-row">
         <div className="flex w-1/2 flex-col">
           <h5 className="font-dmMono mb-2 text-[14px] font-normal leading-[14px] text-[#808080]">
             TOTAL RAISED
           </h5>
           <h6 className="font-dmSans text-[22px] font-medium leading-[22px]">
-            {amountRaised}
+            ${usdtPresaleBalance}
           </h6>
         </div>
         <div className="flex w-1/2 flex-col">
@@ -28,13 +35,16 @@ function RaiseStats({ isLoading }: RaiseStatsProps) {
             $OWN PRICE
           </h5>
           <h6 className="font-dmSans text-[22px] font-medium leading-[22px]">
-            {usdPrice}
+            ${price}
             <span className="text-[#808080]">USD</span>
           </h6>
         </div>
       </div>
       <div className="">
-        <ProgressBar sold={12000} cap={30000} />
+        <ProgressBar
+          sales={sales ? sales : 12000}
+          allocation={allocation ? allocation : 30000}
+        />
       </div>
       <div className="absolute left-[-15%] top-[-15%] -z-10 hidden md:block">
         <Image

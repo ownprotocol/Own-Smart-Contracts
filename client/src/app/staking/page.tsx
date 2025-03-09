@@ -17,7 +17,7 @@ function StakingPage() {
   const [isOpen, setIsOpen] = useState(false);
 
   const { isValid } = useGetAuthUser();
-  console.log(isValid);
+
 
   return (
     <main className="min-h-screen px-[5%] pt-4 md:px-[10%] md:pt-8">

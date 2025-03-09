@@ -1,14 +1,16 @@
 "use client";
 
 import { PresaleBannerSkeleton } from "@/components";
-interface PresaleBannerProps {
-  isLoading: boolean;
-}
+import { useGetCurrentPresaleRound } from "@/hooks";
 
-function PresaleBanner({ isLoading }: PresaleBannerProps) {
-  if (isLoading) {
+function PresaleBanner() {
+  const { presaleData, isLoading: isLoadingPresaleRound } =
+    useGetCurrentPresaleRound();
+
+  if (isLoadingPresaleRound || !presaleData) {
     return <PresaleBannerSkeleton />;
   }
+  const { roundId } = presaleData;
 
   return (
     <div className="relative min-h-[200px]">
@@ -21,7 +23,7 @@ function PresaleBanner({ isLoading }: PresaleBannerProps) {
         </h1>
         <div className="flex w-full justify-start md:w-1/4 md:justify-end">
           <span className="rounded-full bg-[#C1691180] px-4 py-1.5 pt-2 text-sm font-normal uppercase tracking-wider text-[#F1AF6E] md:text-xs">
-            Phase 1
+            Phase {roundId || 1}
           </span>
         </div>
       </div>

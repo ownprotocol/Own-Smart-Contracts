@@ -11,15 +11,14 @@ import {
 
 export default async function HomePage() {
   const hasPresaleConcluded = false;
-  const { isValid } = await isLoggedIn();
-  console.log("isValid", isValid);
+  await isLoggedIn();
   return (
     <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
       <div className="relative flex flex-col">
         {!hasPresaleConcluded && (
           <>
-            <PresaleBanner isLoading={false} />
-            <RaiseStats isLoading={false} />
+            <PresaleBanner />
+            <RaiseStats />
             <PriceIncreaseTimer isLoading={false} />
             <ActionButtons isLoading={false} />
           </>
