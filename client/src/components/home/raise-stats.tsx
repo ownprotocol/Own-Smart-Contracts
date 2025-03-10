@@ -3,10 +3,10 @@
 import { ProgressBar, RaiseStatsSkeleton } from "@/components";
 import Image from "next/image";
 import { useGetBalanceUSDT, useGetCurrentPresaleRound } from "@/hooks";
-
+import { PresaleAddress } from "@/constants/contracts";
 function RaiseStats() {
-  const { usdtPresaleBalance, isLoading: isLoadingPresaleBalance } =
-    useGetBalanceUSDT();
+  const { usdtBalance, isLoading: isLoadingPresaleBalance } =
+    useGetBalanceUSDT(PresaleAddress);
 
   const { presaleData, isLoading: isLoadingPresaleRound } =
     useGetCurrentPresaleRound();
@@ -27,7 +27,7 @@ function RaiseStats() {
             TOTAL RAISED
           </h5>
           <h6 className="font-dmSans text-[22px] font-medium leading-[22px]">
-            ${usdtPresaleBalance}
+            ${usdtBalance}
           </h6>
         </div>
         <div className="flex w-1/2 flex-col">

@@ -2,7 +2,15 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
+
 import Image from "next/image";
+import { useActiveAccount } from "thirdweb/react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useGetAuthUser } from "@/query";
+
 import { Button } from "../ui/button";
 import {
   DrawerHeader,
@@ -10,11 +18,8 @@ import {
   DrawerClose,
   DrawerFooter,
 } from "../ui/drawer";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useGetAuthUser } from "@/query";
+import { useGetBalanceUSDT, useGetCurrentPresaleRound } from "@/hooks";
+import { toast } from "react-toastify";
 
 const stakingSchema = z.object({
   tokenAmount: z
@@ -34,6 +39,17 @@ const stakingSchema = z.object({
 type StakingFormData = z.infer<typeof stakingSchema>;
 
 const StakingDrawerContent = () => {
+  const activeAccount = useActiveAccount();
+  const { presaleData, isLoading: isLoadingPresaleRound } =
+    useGetCurrentPresaleRound();
+
+  console.log("address", activeAccount?.address);
+  const { usdtBalance, isLoading: isLoadingUsdtBalance } = useGetBalanceUSDT(
+    activeAccount?.address ?? "",
+  );
+  const currentOwnPrice =
+    presaleData?.round.price === 0 ? 2 : presaleData?.round.price;
+
   const {
     register,
     handleSubmit,
@@ -51,21 +67,44 @@ const StakingDrawerContent = () => {
   console.log(isValid);
 
   const [durationWeeks, setDurationWeeks] = useState<string>("");
-  const [selectedDuration, setSelectedDuration] = useState<string>("");
-  const [tokenAmount, setTokenAmount] = useState<string>("");
+  const [activeDuration, setActiveDuration] = useState<string>("");
+  const [stakingTokens, setStakingTokens] = useState<string>("");
 
-  const handleLockUpDuration = (duration: string, weeks: string) => {
-    setSelectedDuration(duration);
-    setDurationWeeks(weeks);
-    setValue("lockupDuration", weeks);
+  const handleLockUpDuration = (
+    duration?: string,
+    weeks?: string,
+  ) => {
+    setActiveDuration(duration ?? "");
+    setDurationWeeks(weeks ?? "");
+    setValue("lockupDuration", weeks ?? "");
   };
-  const handleTokenAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTokenAmount(e.target.value);
-    setValue("tokenAmount", e.target.value);
+  const handleInputToken = (
+    e?: React.ChangeEvent<HTMLInputElement>,
+    percentage?: number,
+  ) => {
+    const maxTokenAmount = Number(usdtBalance) / (currentOwnPrice ?? 1);
+    let tokenAmountNumber = 0;
+    if (e) {
+      const numberOfTokensToStake = e?.target.value;
+      tokenAmountNumber = Number(numberOfTokensToStake);
+    }
+    if (percentage) {
+      tokenAmountNumber =
+        (Number(usdtBalance) * (percentage / 100)) / (currentOwnPrice ?? 1);
+    }
+    if (tokenAmountNumber > maxTokenAmount) {
+      toast.warning(
+        `You don't have enough balance to stake that amount. Max stake amount is ${maxTokenAmount.toFixed(2)}`,
+      );
+      setStakingTokens(maxTokenAmount.toString());
+      setValue("tokenAmount", maxTokenAmount.toString());
+    } else {
+      setStakingTokens(tokenAmountNumber.toString());
+      setValue("tokenAmount", tokenAmountNumber.toString());
+    }
   };
-
+  console.log("stakingTokens", stakingTokens);
   const onSubmit = (data: StakingFormData) => {
-    console.log(tokenAmount);
     console.log(data);
   };
 
@@ -125,17 +164,34 @@ const StakingDrawerContent = () => {
                     placeholder="0.00"
                     className="block w-1/2 min-w-0 grow py-2 pl-4 pr-3 font-dm_sans text-[16px] leading-[20px] tracking-[0.5%] text-gray-900 text-primary placeholder:text-gray-400 focus:outline-none xl:py-4 xl:text-[20px] xl:leading-[24px]"
                     {...register("tokenAmount")}
-                    onChange={handleTokenAmountChange}
+                    onChange={handleInputToken}
                   />
                 </div>
                 <p className="h-2 font-dm_mono text-[8px] font-[400] leading-[14px] tracking-[8%] text-red-500 md:text-[14px] md:leading-[16px]">
                   {errors.tokenAmount?.message}
                 </p>
                 <div className="flex flex-wrap justify-around gap-2">
-                  <StakingButton label="25%" />
-                  <StakingButton label="50%" isSelected={true} />
-                  <StakingButton label="75%" />
-                  <StakingButton label="Max" />
+                  <StakingButton
+                    label="25%"
+                    isLoading={isLoadingUsdtBalance || isLoadingPresaleRound}
+                    onClick={() => handleInputToken(undefined, 25)}
+                  />
+                  <StakingButton
+                    label="50%"
+                    isSelected={true}
+                    isLoading={isLoadingUsdtBalance || isLoadingPresaleRound}
+                    onClick={() => handleInputToken(undefined, 50)}
+                  />
+                  <StakingButton
+                    label="75%"
+                    isLoading={isLoadingUsdtBalance || isLoadingPresaleRound}
+                    onClick={() => handleInputToken(undefined, 75)}
+                  />
+                  <StakingButton
+                    label="Max"
+                    isLoading={isLoadingUsdtBalance || isLoadingPresaleRound}
+                    onClick={() => handleInputToken(undefined, 100)}
+                  />
                 </div>
               </div>
               <div className="flex w-full flex-col gap-2">
@@ -146,8 +202,9 @@ const StakingDrawerContent = () => {
                   <input
                     type="text"
                     value={durationWeeks || ""}
+                    {...register("lockupDuration")}
                     onChange={(e) =>
-                      handleLockUpDuration(e.target.value, e.target.value)
+                      handleLockUpDuration(undefined, e.target.value)
                     }
                     placeholder="0"
                     className="block w-1/2 min-w-0 grow py-2 pl-4 pr-3 font-dm_sans text-[16px] leading-[20px] tracking-[0.5%] text-gray-900 text-primary placeholder:text-gray-400 focus:outline-none xl:py-4 xl:text-[20px] xl:leading-[24px]"
@@ -159,22 +216,22 @@ const StakingDrawerContent = () => {
                 <div className="flex flex-wrap justify-around gap-2">
                   <DurationButton
                     duration="1 Week"
-                    isSelected={selectedDuration === "1 Week"}
+                    isSelected={activeDuration === "1 Week"}
                     onClick={() => handleLockUpDuration("1 Week", "1")}
                   />
                   <DurationButton
                     duration="1 Month"
-                    isSelected={selectedDuration === "1 Month"}
+                    isSelected={activeDuration === "1 Month"}
                     onClick={() => handleLockUpDuration("1 Month", "4")}
                   />
                   <DurationButton
                     duration="1 Year"
-                    isSelected={selectedDuration === "1 Year"}
+                    isSelected={activeDuration === "1 Year"}
                     onClick={() => handleLockUpDuration("1 Year", "52")}
                   />
                   <DurationButton
                     duration="4 Year"
-                    isSelected={selectedDuration === "4 Year"}
+                    isSelected={activeDuration === "4 Year"}
                     onClick={() => handleLockUpDuration("4 Year", "208")}
                   />
                 </div>
@@ -206,10 +263,6 @@ const StakingDrawerContent = () => {
               <Button className="w-full rounded-lg bg-purple-700 px-4 py-2 font-dm_sans text-[14px] font-medium leading-[20px] text-white transition-colors hover:bg-purple-800 md:max-w-fit md:px-8 md:text-[18px] md:leading-[28px]">
                 Stake
               </Button>
-
-              {/* <DrawerClose asChild>
-              <Button>Cancel</Button>
-            </DrawerClose> */}
             </DrawerFooter>
           </div>
         </form>
@@ -222,15 +275,18 @@ interface StakingButtonProps {
   label: string;
   isSelected?: boolean;
   onClick?: () => void;
+  isLoading?: boolean;
 }
 
 const StakingButton = ({
   label,
   isSelected = false,
   onClick,
+  isLoading,
 }: StakingButtonProps) => {
   return (
     <button
+      disabled={isLoading}
       type="button"
       onClick={onClick}
       className={`rounded-full px-4 py-2 font-dm_sans text-[12px] font-medium leading-[24px] transition-colors md:px-8 md:text-[18px] md:leading-[28px] ${
