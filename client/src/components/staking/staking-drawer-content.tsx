@@ -10,7 +10,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useGetAuthUser } from "@/query";
-import { format, addWeeks } from "date-fns";
 
 import { Button } from "../ui/button";
 import {
@@ -21,6 +20,11 @@ import {
 } from "../ui/drawer";
 import { useGetBalanceUSDT, useGetCurrentPresaleRound } from "@/hooks";
 import { toast } from "react-toastify";
+import { calculateUnlockDate } from "@/helpers";
+import StakingButton from "./staking-button";
+import DurationButton from "./duration-button";
+import SummaryRow from "./summary-row";
+import RewardCard from "./reward-card";
 
 const stakingSchema = z.object({
   tokenAmount: z
@@ -150,14 +154,6 @@ const StakingDrawerContent = () => {
 
   const onSubmit = (data: StakingFormData) => {
     console.log(data);
-  };
-
-  const calculateUnlockDate = (durationInWeeks: number): string => {
-    if (!durationInWeeks || durationInWeeks <= 0) return "N/A";
-
-    const currentDate = new Date();
-    const unlockDate = addWeeks(currentDate, durationInWeeks);
-    return format(unlockDate, "MMM d yyyy HH:mm");
   };
 
   return (
@@ -332,108 +328,6 @@ const StakingDrawerContent = () => {
             </DrawerFooter>
           </div>
         </form>
-      </div>
-    </div>
-  );
-};
-
-interface StakingButtonProps {
-  label: string;
-  isSelected?: boolean;
-  onClick?: () => void;
-  isLoading?: boolean;
-}
-
-const StakingButton = ({
-  label,
-  isSelected = false,
-  onClick,
-  isLoading,
-}: StakingButtonProps) => {
-  return (
-    <button
-      disabled={isLoading}
-      type="button"
-      onClick={onClick}
-      className={`rounded-full px-4 py-2 font-dm_sans text-[12px] font-medium leading-[24px] transition-colors md:px-8 md:text-[18px] md:leading-[28px] ${
-        isSelected
-          ? "bg-purple-700 text-white hover:bg-purple-800"
-          : "bg-purple-100 text-purple-900 hover:bg-purple-200"
-      }`}
-    >
-      {label}
-    </button>
-  );
-};
-
-interface DurationButtonProps {
-  duration: string;
-  isSelected?: boolean;
-  onClick?: () => void;
-}
-
-const DurationButton = ({
-  duration,
-  isSelected = false,
-  onClick,
-}: DurationButtonProps) => {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`relative rounded-full px-4 py-2 font-dm_sans text-[12px] font-medium leading-[24px] transition-colors md:text-[18px] md:leading-[28px] ${
-        isSelected
-          ? "bg-purple-700 text-white hover:bg-purple-800"
-          : "bg-purple-100 text-purple-900 hover:bg-purple-200"
-      }`}
-    >
-      <span>{duration}</span>
-    </button>
-  );
-};
-
-interface SummaryRowProps {
-  label: string;
-  value: string | number;
-}
-
-const SummaryRow = ({ label, value }: SummaryRowProps) => (
-  <div className="flex justify-between py-1 md:py-2">
-    <span className="font-dm_sans text-[14px] leading-[20px] text-gray-500 md:text-[16px] md:leading-[24px]">
-      {label}
-    </span>
-    <span className="font-dm_sans text-[14px] leading-[20px] text-black md:text-[16px] md:leading-[24px]">
-      {value}
-    </span>
-  </div>
-);
-
-const RewardCard = () => {
-  return (
-    <div className="w-full">
-      <h2 className="px-0 font-dm_sans text-[16px] font-medium leading-[24px] text-black md:px-0 md:text-[18px] md:leading-[28px]">
-        My veOwn
-      </h2>
-      <div className="rounded-lg bg-purple-100 px-4 py-4 xl:mt-2 xl:py-8">
-        <div className="flex items-center gap-4">
-          <div className="rounded-full bg-white/80 px-2 py-2 xl:py-4">
-            <Image
-              src="/own-logo.svg"
-              alt="Own token"
-              width={25}
-              height={25}
-              className="text-primary invert xl:h-[30px] xl:w-[30px]"
-            />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-dm_sans text-[32px] font-normal leading-[32px] tracking-[0.005] text-black md:text-[48px] md:leading-[48px]">
-              2,000
-            </span>
-          </div>
-        </div>
-        <span className="font-dm_mono text-[12px] font-normal leading-[12px] tracking-[0.08em] text-gray-600 md:text-[14px] md:leading-[14px]">
-          $VEOWN EARNED
-        </span>
       </div>
     </div>
   );
