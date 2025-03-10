@@ -1,10 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-
 const stakePositions = [
   {
-    id: 1,    
+    id: 1,
     date: "2024-01-01",
     own_locked: "1000",
     rewards: "100",
