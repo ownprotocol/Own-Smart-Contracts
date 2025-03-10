@@ -51,6 +51,9 @@ const StakingDrawerContent = () => {
     presaleData?.round.price === 0 ? 2 : presaleData?.round.price;
   const [tokensToStake, setTokensToStake] = useState<number>(0);
   const [lockupDuration, setLockupDuration] = useState<number>(0);
+  const [activePercentage, setActivePercentage] = useState<number | null>(null);
+  const [activeDuration, setActiveDuration] = useState<string>("");
+
   const {
     register,
     handleSubmit,
@@ -66,25 +69,27 @@ const StakingDrawerContent = () => {
 
   const { isValid } = useGetAuthUser();
 
-  const [activeDuration, setActiveDuration] = useState<string>("");
-
   const handleLockUpDuration = (duration?: string, weeks?: string) => {
-    const isValidInput = z
-      .string()
-      .regex(/^\d+(\.\d+)?$/)
-      .safeParse(weeks);
-    if (!isValidInput.success) {
-      toast.warning("Invalid input. Please enter a valid number.");
-      return;
-    }
+    // Set the value and trigger validation immediately
+    setValue("lockupDuration", weeks ?? "", { shouldValidate: true });
 
-    if (weeks && Number(weeks) > 208) {
-      toast.warning("Lockup duration cannot be more than 4 years.");
-      return;
+    // Only proceed with additional logic if the input is a valid number
+    if (weeks && /^\d+(\.\d+)?$/.test(weeks)) {
+      if (Number(weeks) > 208) {
+        toast.warning("Lockup duration cannot be more than 4 years.");
+        setValue("lockupDuration", "208", { shouldValidate: true });
+        setLockupDuration(208);
+        setActiveDuration("4 Year");
+        return;
+      }
+
+      setActiveDuration(duration ?? "");
+      setLockupDuration(Number(weeks));
+    } else {
+      // If input is not a valid number, reset the lockup duration
+      setLockupDuration(0);
+      setActiveDuration("");
     }
-    setActiveDuration(duration ?? "");
-    setLockupDuration(Number(weeks ?? ""));
-    setValue("lockupDuration", weeks ?? "");
   };
 
   const handleInputToken = (
@@ -92,32 +97,54 @@ const StakingDrawerContent = () => {
     percentage?: number,
   ) => {
     const maxTokenAmount = Number(usdtBalance) / (currentOwnPrice ?? 1);
-    let tokenAmountNumber = 0;
-    if (e) {
-      const isValidInput = z
-        .string()
-        .regex(/^\d+(\.\d+)?$/)
-        .safeParse(e?.target.value);
-      if (!isValidInput.success) {
-        toast.warning("Invalid input. Please enter a valid number.");
-        return;
-      }
-      const numberOfTokensToStake = e?.target.value;
-      tokenAmountNumber = Number(numberOfTokensToStake);
-    }
+
+    // Handle percentage-based input
     if (percentage) {
-      tokenAmountNumber =
+      setActivePercentage(percentage);
+      const tokenAmountNumber =
         (Number(usdtBalance) * (percentage / 100)) / (currentOwnPrice ?? 1);
+      if (tokenAmountNumber > maxTokenAmount) {
+        toast.warning(
+          `You don't have enough balance to stake that amount. Max stake amount is ${maxTokenAmount.toFixed(2)}`,
+        );
+        setValue("tokenAmount", maxTokenAmount.toString(), {
+          shouldValidate: true,
+        });
+        setTokensToStake(maxTokenAmount);
+      } else {
+        setValue("tokenAmount", tokenAmountNumber.toString(), {
+          shouldValidate: true,
+        });
+        setTokensToStake(tokenAmountNumber);
+      }
+      return;
     }
-    if (tokenAmountNumber > maxTokenAmount) {
-      toast.warning(
-        `You don't have enough balance to stake that amount. Max stake amount is ${maxTokenAmount.toFixed(2)}`,
-      );
-      setValue("tokenAmount", maxTokenAmount.toString());
-      setTokensToStake(maxTokenAmount);
-    } else {
-      setValue("tokenAmount", tokenAmountNumber.toString());
-      setTokensToStake(tokenAmountNumber);
+
+    // Handle direct input - reset percentage selection when manually typing
+    if (e) {
+      setActivePercentage(null);
+      const inputValue = e.target.value;
+      // Set the value and trigger validation
+      setValue("tokenAmount", inputValue, { shouldValidate: true });
+
+      // Only check max amount and update tokens to stake if the input is a valid number
+      if (/^\d+(\.\d+)?$/.test(inputValue)) {
+        const tokenAmountNumber = Number(inputValue);
+        setTokensToStake(tokenAmountNumber);
+
+        if (tokenAmountNumber > maxTokenAmount) {
+          toast.warning(
+            `You don't have enough balance to stake that amount. Max stake amount is ${maxTokenAmount.toFixed(2)}`,
+          );
+          setValue("tokenAmount", maxTokenAmount.toString(), {
+            shouldValidate: true,
+          });
+          setTokensToStake(maxTokenAmount);
+        }
+      } else {
+        // If input is not a valid number, set tokensToStake to 0
+        setTokensToStake(0);
+      }
     }
   };
 
@@ -132,6 +159,8 @@ const StakingDrawerContent = () => {
     const unlockDate = addWeeks(currentDate, durationInWeeks);
     return format(unlockDate, "MMM d yyyy HH:mm");
   };
+
+  console.log(tokensToStake);
 
   return (
     <div className="mx-auto w-full px-[0%] pt-0 md:px-[5%] md:pt-8">
@@ -198,22 +227,25 @@ const StakingDrawerContent = () => {
                 <div className="flex flex-wrap justify-around gap-2">
                   <StakingButton
                     label="25%"
+                    isSelected={activePercentage === 25}
                     isLoading={isLoadingUsdtBalance || isLoadingPresaleRound}
                     onClick={() => handleInputToken(undefined, 25)}
                   />
                   <StakingButton
                     label="50%"
-                    isSelected={true}
+                    isSelected={activePercentage === 50}
                     isLoading={isLoadingUsdtBalance || isLoadingPresaleRound}
                     onClick={() => handleInputToken(undefined, 50)}
                   />
                   <StakingButton
                     label="75%"
+                    isSelected={activePercentage === 75}
                     isLoading={isLoadingUsdtBalance || isLoadingPresaleRound}
                     onClick={() => handleInputToken(undefined, 75)}
                   />
                   <StakingButton
                     label="Max"
+                    isSelected={activePercentage === 100}
                     isLoading={isLoadingUsdtBalance || isLoadingPresaleRound}
                     onClick={() => handleInputToken(undefined, 100)}
                   />
