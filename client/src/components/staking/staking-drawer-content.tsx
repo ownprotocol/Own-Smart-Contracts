@@ -160,8 +160,6 @@ const StakingDrawerContent = () => {
     return format(unlockDate, "MMM d yyyy HH:mm");
   };
 
-  console.log(tokensToStake);
-
   return (
     <div className="mx-auto w-full px-[0%] pt-0 md:px-[5%] md:pt-8">
       <DrawerHeader className="relative">
