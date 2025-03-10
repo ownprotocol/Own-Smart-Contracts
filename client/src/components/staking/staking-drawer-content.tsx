@@ -57,10 +57,7 @@ const StakingDrawerContent = () => {
   const { isValid } = useGetAuthUser();
 
   const handleLockUpDuration = (duration?: string, weeks?: string) => {
-    // Set the value and trigger validation immediately
     setValue("lockupDuration", weeks ?? "", { shouldValidate: true });
-
-    // Only proceed with additional logic if the input is a valid number
     if (weeks && /^\d+(\.\d+)?$/.test(weeks)) {
       if (Number(weeks) > 208) {
         toast.warning("Lockup duration cannot be more than 4 years.");
@@ -73,7 +70,6 @@ const StakingDrawerContent = () => {
       setActiveDuration(duration ?? "");
       setLockupDuration(Number(weeks));
     } else {
-      // If input is not a valid number, reset the lockup duration
       setLockupDuration(0);
       setActiveDuration("");
     }
@@ -84,11 +80,10 @@ const StakingDrawerContent = () => {
     percentage?: number,
   ) => {
     const maxTokenAmount = Number(usdtBalance) / (currentOwnPrice ?? 1);
-    if (percentage) {
-      setActivePercentage(percentage);
-      const tokenAmountNumber =
-        (Number(usdtBalance) * (percentage / 100)) / (currentOwnPrice ?? 1);
-      if (tokenAmountNumber > maxTokenAmount) {
+    let tokenAmountNumber = 0;
+
+    const validateAndSetTokenAmount = (amount: number) => {
+      if (amount > maxTokenAmount) {
         toast.warning(
           `You don't have enough balance to stake that amount. Max stake amount is ${maxTokenAmount.toFixed(2)}`,
         );
@@ -97,37 +92,29 @@ const StakingDrawerContent = () => {
         });
         setTokensToStake(maxTokenAmount);
       } else {
-        setValue("tokenAmount", tokenAmountNumber.toString(), {
+        setValue("tokenAmount", amount.toString(), {
           shouldValidate: true,
         });
-        setTokensToStake(tokenAmountNumber);
+        setTokensToStake(amount);
       }
-      return;
+    };
+
+    if (percentage) {
+      setActivePercentage(percentage);
+      tokenAmountNumber =
+        (Number(usdtBalance) * (percentage / 100)) / (currentOwnPrice ?? 1);
+      validateAndSetTokenAmount(tokenAmountNumber);
     }
 
-    // Handle direct input - reset percentage selection when manually typing
     if (e) {
       setActivePercentage(null);
       const inputValue = e.target.value;
-      // Set the value and trigger validation
       setValue("tokenAmount", inputValue, { shouldValidate: true });
 
-      // Only check max amount and update tokens to stake if the input is a valid number
       if (/^\d+(\.\d+)?$/.test(inputValue)) {
-        const tokenAmountNumber = Number(inputValue);
-        setTokensToStake(tokenAmountNumber);
-
-        if (tokenAmountNumber > maxTokenAmount) {
-          toast.warning(
-            `You don't have enough balance to stake that amount. Max stake amount is ${maxTokenAmount.toFixed(2)}`,
-          );
-          setValue("tokenAmount", maxTokenAmount.toString(), {
-            shouldValidate: true,
-          });
-          setTokensToStake(maxTokenAmount);
-        }
+        tokenAmountNumber = Number(inputValue);
+        validateAndSetTokenAmount(tokenAmountNumber);
       } else {
-        // If input is not a valid number, set tokensToStake to 0
         setTokensToStake(0);
       }
     }
@@ -302,7 +289,8 @@ const StakingDrawerContent = () => {
             <DrawerFooter className="flex justify-start">
               <Button
                 disabled={!isValid}
-                className="w-full rounded-lg bg-purple-700 px-4 py-2 font-dm_sans text-[14px] font-medium leading-[20px] text-white transition-colors hover:bg-purple-800 md:max-w-fit md:px-8 md:text-[18px] md:leading-[28px]"
+                type="submit"
+                className="w-full rounded-lg bg-purple-700 px-4 py-2 font-dm_sans text-[14px] font-medium leading-[20px] text-white transition-colors hover:bg-purple-800 disabled:cursor-not-allowed md:max-w-fit md:px-8 md:text-[18px] md:leading-[28px]"
               >
                 Stake
               </Button>
