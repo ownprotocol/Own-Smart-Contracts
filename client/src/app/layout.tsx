@@ -9,9 +9,10 @@ import {
   Navigation,
 } from "@/components";
 import "@/styles/globals.css";
-import ThirdwebClientProvider from "@/providers/ThirdwebClientprovider";
-import QueryProvider from "@/providers/queryClientprovider";
+
 import { isLoggedIn } from "@/actions/login";
+import { ThirdwebProvider } from "thirdweb/react";
+import QueryProvider from "@/providers/queryClientProvider";
 
 const fun = Funnel_Sans({
   subsets: ["latin"],
@@ -51,13 +52,13 @@ export default async function RootLayout({
       <body className="flex flex-col bg-[linear-gradient(to_bottom,#141019_48%,#E49048_48%,#E49048_48%,#141019_48%)] text-white">
         <div className="container relative mx-auto flex flex-col border-x border-gray-500/30">
           <QueryProvider>
-            <ThirdwebClientProvider>
+            <ThirdwebProvider>
               <Navigation authUser={authUser} />
               <HomeSeparator />
               {hasPresaleConcluded && <HasPresaleConcluded />}
               <ToastContainer />
               {children}
-            </ThirdwebClientProvider>
+            </ThirdwebProvider>
           </QueryProvider>
         </div>
 
