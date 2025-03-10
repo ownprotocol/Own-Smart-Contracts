@@ -15,8 +15,8 @@ import {
 import { useEffect } from "react";
 
 interface ProgressBarProps {
-  sold: number;
-  cap: number;
+  sales: number;
+  allocation: number;
   className?: string;
   duration?: number;
   delay?: number;
@@ -24,14 +24,14 @@ interface ProgressBarProps {
 }
 
 function ProgressBar({
-  sold,
-  cap,
+  sales,
+  allocation,
   className,
   duration = 3,
   delay = 0.5,
   easing = "easeInOut",
 }: ProgressBarProps) {
-  const progress = (sold / cap) * 100;
+  const progress = (sales / allocation) * 100;
 
   // Create motion values for animating the numbers
   const soldCount = useMotionValue(0);
@@ -49,7 +49,7 @@ function ProgressBar({
   useEffect(() => {
     const soldAnimation = animate(
       soldCount,
-      sold as ObjectTarget<MotionValue<number>>,
+      sales as ObjectTarget<MotionValue<number>>,
       {
         duration,
         delay,
@@ -59,7 +59,7 @@ function ProgressBar({
 
     const capAnimation = animate(
       capCount,
-      cap as ObjectTarget<MotionValue<number>>,
+      allocation as ObjectTarget<MotionValue<number>>,
       {
         duration,
         delay,
@@ -71,7 +71,7 @@ function ProgressBar({
       soldAnimation.stop();
       capAnimation.stop();
     };
-  }, [sold, cap, duration, delay, easing, soldCount, capCount]);
+  }, [sales, allocation, duration, delay, easing, soldCount, capCount]);
 
   const variants = {
     initial: {

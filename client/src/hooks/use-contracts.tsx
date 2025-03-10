@@ -2,7 +2,6 @@ import { PresaleAddress, USDTAddress } from "@/constants/contracts";
 import { client } from "@/lib/client";
 import { getContract } from "thirdweb";
 import { sepolia } from "thirdweb/chains";
-import { useActiveAccount, useReadContract } from "thirdweb/react";
 
 const presaleABI = [
     {
@@ -348,7 +347,7 @@ const presaleABI = [
     }
   ] as const;
 
-const useContracts = () => {
+export const useContracts = () => {
   
   const usdtContract = getContract({
     client,
@@ -364,28 +363,4 @@ const useContracts = () => {
   });
 
   return { usdtContract, presaleContract };
-};
-
-export const useGetBalanceUSDT = () => {
-  const { usdtContract } = useContracts();
-
-  const account = useActiveAccount();
-
-  const { data, isLoading } = useReadContract({
-    contract: usdtContract,
-    method: "function balanceOf(address account) returns (uint256)",
-    params: [PresaleAddress],
-  });
-
-  return data;
-};
-
-export const useGetPresaleRound = () => {
-  const { presaleContract } = useContracts();
-
-  // @Sethu - data here is typed without having to supply types !!!!
-  const { data, isLoading } = useReadContract({
-    contract: presaleContract,
-    method: "getCurrentPresaleRoundDetails",
-  });
 };

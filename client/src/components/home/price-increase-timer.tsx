@@ -3,20 +3,29 @@
 import Image from "next/image";
 import { useTimer } from "react-timer-hook";
 import { PriceIncreaseTimerSkeleton } from "@/components";
+import { useGetCurrentPresaleRound } from "@/hooks";
 
 interface PriceIncreaseTimerProps {
   isLoading: boolean;
 }
 
 function PriceIncreaseTimer({ isLoading }: PriceIncreaseTimerProps) {
-  const { days, hours, minutes, seconds } = useTimer({
-    expiryTimestamp: new Date(Date.now() + 1000 * 60 * 60 * 24),
-  });
+  const { presaleData } = useGetCurrentPresaleRound();
+  const expiryTimestamp = new Date(
+    Date.now() + (presaleData?.round.duration ?? 0) * 1000,
+  );
+  const { days, hours, minutes, seconds } = useTimer({ expiryTimestamp });
+
   if (isLoading) {
     return <PriceIncreaseTimerSkeleton />;
   }
+
+  if (!presaleData || presaleData.round.duration === 0) {
+    return <RoundCompleted />;
+  }
+
   return (
-    <div className="relative mt-4 md:mt-0 flex min-h-[100px] justify-center">
+    <div className="relative mt-4 flex min-h-[100px] justify-center md:mt-0">
       <div className="flex flex-col gap-4">
         <h1 className="font-funnel px-4 py-2 text-center text-[14px] font-medium leading-[14px] md:text-[16px] md:leading-[16px] lg:text-[18px] lg:leading-[18px]">
           Price Increase Timer
@@ -67,11 +76,23 @@ function TimerBox({ label, value }: TimerBoxProps) {
       <h1 className="font-funnel text-[14px] tracking-[-2.5%] text-[#A78BFA] md:text-[20px] lg:text-[24px]">
         {label}
       </h1>
-      <div className="font-funnel text-[20px]  tracking-[-2.5%] text-white md:text-[40px]">
+      <div className="font-funnel text-[20px] tracking-[-2.5%] text-white md:text-[40px]">
         {value}
       </div>
     </div>
   );
 }
+
+const RoundCompleted = () => {
+  return (
+    <div className="relative mt-4 flex min-h-[100px] justify-center md:mt-0">
+      <div className="flex flex-col gap-4">
+        <h1 className="font-funnel px-4 py-2 text-center text-[14px] font-medium leading-[14px] md:text-[16px] md:leading-[16px] lg:text-[18px] lg:leading-[18px]">
+          Round Completed
+        </h1>
+      </div>
+    </div>
+  );
+};
 
 export default PriceIncreaseTimer;
