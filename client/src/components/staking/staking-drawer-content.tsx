@@ -8,9 +8,8 @@ import { useActiveAccount } from "thirdweb/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useGetAuthUser } from "@/query";
 
+import { useGetAuthUser } from "@/query";
 import { Button } from "../ui/button";
 import {
   DrawerHeader,
@@ -25,23 +24,7 @@ import StakingButton from "./staking-button";
 import DurationButton from "./duration-button";
 import SummaryRow from "./summary-row";
 import RewardCard from "./reward-card";
-
-const stakingSchema = z.object({
-  tokenAmount: z
-    .string()
-    .min(1, { message: "Token amount must be more than 0 to stake." })
-    .regex(/^\d+(\.\d+)?$/, {
-      message: "Token amount must contain only numbers.",
-    }),
-  lockupDuration: z
-    .string()
-    .min(1, { message: "Lockup duration must be at least 1 week." })
-    .regex(/^\d+(\.\d+)?$/, {
-      message: "Lockup duration must contain only numbers.",
-    }),
-});
-
-type StakingFormData = z.infer<typeof stakingSchema>;
+import { stakingSchema, type StakingFormData } from "@/types/staking";
 
 const StakingDrawerContent = () => {
   const activeAccount = useActiveAccount();
@@ -101,8 +84,6 @@ const StakingDrawerContent = () => {
     percentage?: number,
   ) => {
     const maxTokenAmount = Number(usdtBalance) / (currentOwnPrice ?? 1);
-
-    // Handle percentage-based input
     if (percentage) {
       setActivePercentage(percentage);
       const tokenAmountNumber =
