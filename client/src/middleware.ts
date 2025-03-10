@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { isLoggedIn } from "./actions/login";
 
 const protectedRoute = ["/user-stake/"];
 
@@ -20,15 +21,15 @@ export async function middleware(request: NextRequest) {
     }
 
     // Verify the JWT
-    // try {
-    //   const { isValid } = await isLoggedIn();
-    //   if (!isValid) {
-    //     return NextResponse.redirect(new URL(`/`, request.url));
-    //   }
-    // } catch (error) {
-    //   console.error("JWT verification error:", error);
-    //   return NextResponse.redirect(new URL("/", request.url));
-    // }
+    try {
+      const { isValid } = await isLoggedIn();
+      if (!isValid) {
+        return NextResponse.redirect(new URL(`/`, request.url));
+      }
+    } catch (error) {
+      console.error("JWT verification error:", error);
+      return NextResponse.redirect(new URL("/", request.url));
+    }
   }
 
   // For authenticated users, allow the request
