@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useGetAuthUser } from "@/query";
+import { format, addWeeks } from "date-fns";
 
 import { Button } from "../ui/button";
 import {
@@ -43,13 +44,13 @@ const StakingDrawerContent = () => {
   const { presaleData, isLoading: isLoadingPresaleRound } =
     useGetCurrentPresaleRound();
 
-  console.log("address", activeAccount?.address);
   const { usdtBalance, isLoading: isLoadingUsdtBalance } = useGetBalanceUSDT(
     activeAccount?.address ?? "",
   );
   const currentOwnPrice =
     presaleData?.round.price === 0 ? 2 : presaleData?.round.price;
-
+  const [tokensToStake, setTokensToStake] = useState<number>(0);
+  const [lockupDuration, setLockupDuration] = useState<number>(0);
   const {
     register,
     handleSubmit,
@@ -64,20 +65,28 @@ const StakingDrawerContent = () => {
   });
 
   const { isValid } = useGetAuthUser();
-  console.log(isValid);
 
-  const [durationWeeks, setDurationWeeks] = useState<string>("");
   const [activeDuration, setActiveDuration] = useState<string>("");
-  const [stakingTokens, setStakingTokens] = useState<string>("");
 
-  const handleLockUpDuration = (
-    duration?: string,
-    weeks?: string,
-  ) => {
+  const handleLockUpDuration = (duration?: string, weeks?: string) => {
+    const isValidInput = z
+      .string()
+      .regex(/^\d+(\.\d+)?$/)
+      .safeParse(weeks);
+    if (!isValidInput.success) {
+      toast.warning("Invalid input. Please enter a valid number.");
+      return;
+    }
+
+    if (weeks && Number(weeks) > 208) {
+      toast.warning("Lockup duration cannot be more than 4 years.");
+      return;
+    }
     setActiveDuration(duration ?? "");
-    setDurationWeeks(weeks ?? "");
+    setLockupDuration(Number(weeks ?? ""));
     setValue("lockupDuration", weeks ?? "");
   };
+
   const handleInputToken = (
     e?: React.ChangeEvent<HTMLInputElement>,
     percentage?: number,
@@ -85,6 +94,14 @@ const StakingDrawerContent = () => {
     const maxTokenAmount = Number(usdtBalance) / (currentOwnPrice ?? 1);
     let tokenAmountNumber = 0;
     if (e) {
+      const isValidInput = z
+        .string()
+        .regex(/^\d+(\.\d+)?$/)
+        .safeParse(e?.target.value);
+      if (!isValidInput.success) {
+        toast.warning("Invalid input. Please enter a valid number.");
+        return;
+      }
       const numberOfTokensToStake = e?.target.value;
       tokenAmountNumber = Number(numberOfTokensToStake);
     }
@@ -96,16 +113,24 @@ const StakingDrawerContent = () => {
       toast.warning(
         `You don't have enough balance to stake that amount. Max stake amount is ${maxTokenAmount.toFixed(2)}`,
       );
-      setStakingTokens(maxTokenAmount.toString());
       setValue("tokenAmount", maxTokenAmount.toString());
+      setTokensToStake(maxTokenAmount);
     } else {
-      setStakingTokens(tokenAmountNumber.toString());
       setValue("tokenAmount", tokenAmountNumber.toString());
+      setTokensToStake(tokenAmountNumber);
     }
   };
-  console.log("stakingTokens", stakingTokens);
+
   const onSubmit = (data: StakingFormData) => {
     console.log(data);
+  };
+
+  const calculateUnlockDate = (durationInWeeks: number): string => {
+    if (!durationInWeeks || durationInWeeks <= 0) return "N/A";
+
+    const currentDate = new Date();
+    const unlockDate = addWeeks(currentDate, durationInWeeks);
+    return format(unlockDate, "MMM d yyyy HH:mm");
   };
 
   return (
@@ -201,7 +226,6 @@ const StakingDrawerContent = () => {
                 <div className="flex items-center border-2 border-gray-500/50 bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
                   <input
                     type="text"
-                    value={durationWeeks || ""}
                     {...register("lockupDuration")}
                     onChange={(e) =>
                       handleLockUpDuration(undefined, e.target.value)
@@ -247,10 +271,19 @@ const StakingDrawerContent = () => {
                     Summary
                   </h2>
                   <div className="flex flex-col">
-                    <SummaryRow label="Token to be locked" value="1000" />
+                    <SummaryRow
+                      label="Token to be locked"
+                      value={tokensToStake}
+                    />
                     <SummaryRow label="Factor" value="0.99x" />
-                    <SummaryRow label="Lock-up Duration" value="208 weeks" />
-                    <SummaryRow label="Unlock Date" value="Dec 14 2028 08:00" />
+                    <SummaryRow
+                      label="Lock-up Duration"
+                      value={`${lockupDuration} weeks`}
+                    />
+                    <SummaryRow
+                      label="Unlock Date"
+                      value={calculateUnlockDate(lockupDuration)}
+                    />
                   </div>
                 </div>
                 <div className="w-full"></div>
@@ -260,7 +293,10 @@ const StakingDrawerContent = () => {
               </div>
             </div>
             <DrawerFooter className="flex justify-start">
-              <Button className="w-full rounded-lg bg-purple-700 px-4 py-2 font-dm_sans text-[14px] font-medium leading-[20px] text-white transition-colors hover:bg-purple-800 md:max-w-fit md:px-8 md:text-[18px] md:leading-[28px]">
+              <Button
+                disabled={!isValid}
+                className="w-full rounded-lg bg-purple-700 px-4 py-2 font-dm_sans text-[14px] font-medium leading-[20px] text-white transition-colors hover:bg-purple-800 md:max-w-fit md:px-8 md:text-[18px] md:leading-[28px]"
+              >
                 Stake
               </Button>
             </DrawerFooter>
