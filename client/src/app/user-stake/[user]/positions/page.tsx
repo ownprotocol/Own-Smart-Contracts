@@ -1,5 +1,4 @@
-import { redirect } from "next/navigation";
-import { isLoggedIn } from "@/actions/login";
+"use client";
 
 import {
   MainNavigation,
@@ -7,11 +6,7 @@ import {
   StakePositionsTable,
 } from "@/components";
 
-async function UserStakePage() {
-  if (!(await isLoggedIn())) {
-    redirect("/");
-  }
-
+function UserStakingPositionsPage() {
   return (
     <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
       <div className="relative flex flex-col">
@@ -26,4 +21,4 @@ async function UserStakePage() {
   );
 }
 
-export default UserStakePage;
+export default UserStakingPositionsPage;

@@ -1,3 +1,5 @@
+"use client";
+
 import { MainNavigation, StakingRewards, StakeRewardsTable } from "@/components";
 
 function UserStakingRewardsPage() {
