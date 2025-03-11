@@ -76,6 +76,32 @@ const Navigation = ({ authUser }: NavigationProps) => {
             {link.name}
           </Link>
         ))}
+        {!isValid && (
+          <>
+            <Link
+              href={`/unauthorized/user-stake/rewards`}
+              className={cn(
+                "transition-colors hover:text-gray-300",
+                pathname === `/unauthorized/user-stake/rewards`
+                  ? "font-semibold underline underline-offset-4"
+                  : "",
+              )}
+            >
+              Rewards
+            </Link>
+            <Link
+              href={`/unauthorized/user-stake/positions`}
+              className={cn(
+                "transition-colors hover:text-gray-300",
+                pathname === `/unauthorized/user-stake/positions`
+                  ? "font-semibold underline underline-offset-4"
+                  : "",
+              )}
+            >
+              Positions
+            </Link>
+          </>
+        )}
         {isValid && (
           <>
             <Link
@@ -171,6 +197,40 @@ const Navigation = ({ authUser }: NavigationProps) => {
                           </Link>
                         </li>
                       ))}
+                      {!isValid && (
+                        <li className="">
+                          <Link
+                            href={`/unauthorized/user-stake/rewards`}
+                            className={cn(
+                              pathname === `/unauthorized/user-stake/rewards`
+                                ? "bg-gray-800 text-white"
+                                : "text-gray-400 hover:bg-gray-800 hover:text-white",
+                              "group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold",
+                            )}
+                          >
+                            <icons.RiAedLine
+                              aria-hidden="true"
+                              className="size-6 shrink-0"
+                            />
+                            <p>Rewards</p>
+                          </Link>
+                          <Link
+                            href={`/unauthorized/user-stake/positions`}
+                            className={cn(
+                              pathname === `/unauthorized/user-stake/positions`
+                                ? "bg-gray-800 text-white"
+                                : "text-gray-400 hover:bg-gray-800 hover:text-white",
+                              "group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold",
+                            )}
+                          >
+                            <icons.RiAddLargeLine
+                              aria-hidden="true"
+                              className="size-6 shrink-0"
+                            />
+                            <p>Positions</p>
+                          </Link>
+                        </li>
+                      )}
                       {isValid && (
                         <li className="">
                           <Link
