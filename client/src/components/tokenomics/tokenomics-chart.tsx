@@ -29,12 +29,12 @@ const TokenomicsChart = ({ isLoading }: TokenomicsChartProps) => {
     { name: "Mining Rewards", value: 24, color: "#2D126E" },
   ];
 
-  const handleLegendClick = (index: number) => {
-    if (activeIndex === index) {
-      setActiveIndex(null);
-    } else {
-      setActiveIndex(index);
-    }
+  const handleLegendHover = (index: number) => {
+    setActiveIndex(index);
+  };
+
+  const handleLegendLeave = () => {
+    setActiveIndex(null);
   };
 
   const renderCustomizedLegend = () => {
@@ -49,7 +49,8 @@ const TokenomicsChart = ({ isLoading }: TokenomicsChartProps) => {
               <div
                 key={`item-${index}`}
                 className="flex cursor-pointer items-center space-x-3 whitespace-nowrap"
-                onClick={() => handleLegendClick(index)}
+                onMouseEnter={() => handleLegendHover(index)}
+                onMouseLeave={handleLegendLeave}
                 style={{
                   opacity:
                     activeIndex === null || activeIndex === index ? 1 : 0.5,
@@ -71,7 +72,8 @@ const TokenomicsChart = ({ isLoading }: TokenomicsChartProps) => {
                 <div
                   key={`item-${actualIndex}`}
                   className="flex cursor-pointer items-center space-x-3 whitespace-nowrap"
-                  onClick={() => handleLegendClick(actualIndex)}
+                  onMouseEnter={() => handleLegendHover(actualIndex)}
+                  onMouseLeave={handleLegendLeave}
                   style={{
                     opacity:
                       activeIndex === null || activeIndex === actualIndex
