@@ -50,7 +50,7 @@ function UnauthorizedUserStakingRewardsPage() {
   return (
     <main className="min-h-screen px-[5%] pt-[10%] backdrop-blur-2xl md:px-[10%] md:pt-[3%]">
       <Dialog defaultOpen onOpenChange={(open) => !open && handleDialogClose()}>
-        <DialogContent className="border-gray-800 bg-blue-950/90 backdrop-blur-2xl sm:max-w-[425px]">
+        <DialogContent className="border-gray-800 bg-[#141019] backdrop-blur-2xl sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle className="text-white">
               Connect Wallet to View Rewards
