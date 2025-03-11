@@ -216,7 +216,8 @@ contract Presale is
         if (startPresaleTimeCache != 0) {
             uint256 totalPresaleDuration = startPresaleTimeCache;
 
-            for (uint256 i = 0; i < presaleRounds.length; ++i) {
+            // Count up to and including the round we are updating
+            for (uint256 i = 0; i <= _roundId; ++i) {
                 totalPresaleDuration += presaleRounds[i].duration;
             }
 
