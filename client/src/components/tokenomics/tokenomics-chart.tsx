@@ -43,14 +43,17 @@ const TokenomicsChart = ({ isLoading }: TokenomicsChartProps) => {
 
     return (
       <div className="flex w-full flex-col pl-12">
-        <div className="grid grid-cols-2 gap-x-16 gap-y-2">
+        <div
+          className="grid grid-cols-2 gap-x-16 gap-y-2"
+          onMouseLeave={handleLegendLeave}
+        >
           <div className="min-w-[200px] space-y-3">
             {firstHalf.map((entry, index) => (
               <div
                 key={`item-${index}`}
                 className="flex cursor-pointer items-center space-x-3 whitespace-nowrap"
                 onMouseEnter={() => handleLegendHover(index)}
-                onMouseLeave={handleLegendLeave}
+                // onMouseLeave={handleLegendLeave}
                 style={{
                   opacity:
                     activeIndex === null || activeIndex === index ? 1 : 0.5,
@@ -60,8 +63,10 @@ const TokenomicsChart = ({ isLoading }: TokenomicsChartProps) => {
                   className="h-6 w-1.5"
                   style={{ backgroundColor: entry.color }}
                 />
-                <span className="text-sm md:text-xs text-gray-200">{entry.name}</span>
-                <span className="text-sm md:text-xs text-gray-400">24%</span>
+                <span className="text-sm text-gray-200 md:text-xs">
+                  {entry.name}
+                </span>
+                <span className="text-sm text-gray-400 md:text-xs">24%</span>
               </div>
             ))}
           </div>
@@ -73,7 +78,7 @@ const TokenomicsChart = ({ isLoading }: TokenomicsChartProps) => {
                   key={`item-${actualIndex}`}
                   className="flex cursor-pointer items-center space-x-3 whitespace-nowrap"
                   onMouseEnter={() => handleLegendHover(actualIndex)}
-                  onMouseLeave={handleLegendLeave}
+                  // onMouseLeave={handleLegendLeave}
                   style={{
                     opacity:
                       activeIndex === null || activeIndex === actualIndex
@@ -85,8 +90,10 @@ const TokenomicsChart = ({ isLoading }: TokenomicsChartProps) => {
                     className="h-6 w-1.5"
                     style={{ backgroundColor: entry.color }}
                   />
-                  <span className="text-sm md:text-xs text-gray-200">{entry.name}</span>
-                  <span className="text-sm md:text-xs text-gray-400">24%</span>
+                  <span className="text-sm text-gray-200 md:text-xs">
+                    {entry.name}
+                  </span>
+                  <span className="text-sm text-gray-400 md:text-xs">24%</span>
                 </div>
               );
             })}
