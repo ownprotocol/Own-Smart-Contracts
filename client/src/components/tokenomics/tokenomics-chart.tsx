@@ -17,8 +17,8 @@ const TokenomicsChart = () => {
     { name: "Seed", value: 24, color: "#D06F9A" },
     { name: "Institutional", value: 24, color: "#AF6BBF" },
     { name: "Public Presale", value: 24, color: "#8E68DE" },
-    { name: "Public", value: 24, color: "#5A2A91" },
-    { name: "Airdrop", value: 24, color: "#7B3DB2" },
+    { name: "Public", value: 28, color: "#5A2A91" },
+    { name: "Airdrop", value: 20, color: "#7B3DB2" },
     { name: "Treasury", value: 24, color: "#4F2186" },
     { name: "Ecosystem", value: 24, color: "#3E197A" },
     { name: "Mining Rewards", value: 24, color: "#2D126E" },
@@ -61,7 +61,9 @@ const TokenomicsChart = () => {
                 <span className="text-sm text-gray-200 md:text-xs">
                   {entry.name}
                 </span>
-                <span className="text-sm text-gray-400 md:text-xs">24%</span>
+                <span className="text-sm text-gray-400 md:text-xs">
+                  {entry.value}%
+                </span>
               </div>
             ))}
           </div>
@@ -88,7 +90,9 @@ const TokenomicsChart = () => {
                   <span className="text-sm text-gray-200 md:text-xs">
                     {entry.name}
                   </span>
-                  <span className="text-sm text-gray-400 md:text-xs">24%</span>
+                  <span className="text-sm text-gray-400 md:text-xs">
+                    {entry.value}%
+                  </span>
                 </div>
               );
             })}
@@ -116,7 +120,16 @@ const TokenomicsChart = () => {
             top: "57%",
           }}
         >
-          Allocation
+          {activeIndex !== null ? (
+            <div className="flex flex-col items-center">
+              <span className="mt-1 md:text-7xl text-white">
+                {data[activeIndex]?.value}%
+              </span>
+              <span>{data[activeIndex]?.name}</span>
+            </div>
+          ) : (
+            "Allocation"
+          )}
         </div>
         {isClient && (
           <PieChart width={500} height={500}>
@@ -131,6 +144,8 @@ const TokenomicsChart = () => {
               onClick={() => {
                 console.log("clicked");
               }}
+              onMouseEnter={(_, index) => handleLegendHover(index)}
+              onMouseLeave={handleLegendLeave}
             >
               {data.map((entry, index) => (
                 <Cell
