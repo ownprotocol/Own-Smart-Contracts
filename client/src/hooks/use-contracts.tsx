@@ -2,6 +2,7 @@ import {
   PresaleAddress,
   StakeAddress,
   USDTAddress,
+  OwnTokenAddress,
 } from "@/constants/contracts";
 import { client } from "@/lib/client";
 import { getContract } from "thirdweb";
@@ -371,5 +372,11 @@ export const useContracts = () => {
     chain: sepolia,
     // abi: stakeABI,
   });
-  return { usdtContract, presaleContract, stakeContract };
+
+  const ownTokenContract = getContract({
+    client,
+    address: OwnTokenAddress,
+    chain: sepolia,
+  });
+  return { usdtContract, presaleContract, stakeContract, ownTokenContract };
 };
