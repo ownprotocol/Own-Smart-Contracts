@@ -151,19 +151,19 @@ function ProgressDots() {
   return (
     <>
       <div className="absolute left-[85%] top-[15%] flex -translate-y-1/2 gap-1 md:left-[85%]">
-        <div className="h-2 w-2 rounded-full bg-orange-300"></div>
+        <div className="h-2 w-2 animate-pulse rounded-full bg-orange-300"></div>
       </div>
       <div className="absolute left-[91%] top-[38%] flex -translate-y-1/2 gap-1 md:left-[85%]">
-        <div className="h-1 w-1 rounded-full bg-orange-300"></div>
+        <div className="h-1 w-1 animate-pulse rounded-full bg-orange-300 delay-75"></div>
       </div>
       <div className="absolute left-[98%] top-[52%] flex -translate-y-1/2 gap-1 md:left-[88%]">
-        <div className="h-3 w-3 rounded-full bg-orange-300"></div>
+        <div className="h-3 w-3 animate-pulse rounded-full bg-orange-300 delay-150"></div>
       </div>
       <div className="absolute left-[94%] top-[72%] flex -translate-y-1/2 gap-1 md:left-[84%]">
-        <div className="h-1.5 w-1.5 rounded-full bg-orange-300"></div>
+        <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-orange-300 delay-300"></div>
       </div>
       <div className="absolute left-[90%] top-[85%] flex -translate-y-1/2 gap-1 md:left-[86%]">
-        <div className="h-2 w-2 rounded-full bg-orange-300"></div>
+        <div className="h-2 w-2 animate-pulse rounded-full bg-orange-300 delay-500"></div>
       </div>
     </>
   );
