@@ -14,7 +14,7 @@ function HomeSeparator() {
   return (
     <Separator
       orientation="vertical"
-      className="absolute left-[35%] -z-10 h-full -translate-x-1/2 bg-gray-500/30"
+      className="absolute left-[35%] -z-50 h-full -translate-x-1/2 bg-gray-500/30"
     />
   );
 }

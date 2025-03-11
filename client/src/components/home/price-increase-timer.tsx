@@ -5,18 +5,17 @@ import { useTimer } from "react-timer-hook";
 import { PriceIncreaseTimerSkeleton } from "@/components";
 import { useGetCurrentPresaleRound } from "@/hooks";
 
-interface PriceIncreaseTimerProps {
-  isLoading: boolean;
-}
 
-function PriceIncreaseTimer({ isLoading }: PriceIncreaseTimerProps) {
-  const { presaleData } = useGetCurrentPresaleRound();
+
+function PriceIncreaseTimer() {
+  const { presaleData, isLoading: isLoadingPresaleRound } =
+    useGetCurrentPresaleRound();
   const expiryTimestamp = new Date(
     Date.now() + (presaleData?.round.duration ?? 0) * 1000,
   );
   const { days, hours, minutes, seconds } = useTimer({ expiryTimestamp });
 
-  if (isLoading) {
+  if (isLoadingPresaleRound) {
     return <PriceIncreaseTimerSkeleton />;
   }
 

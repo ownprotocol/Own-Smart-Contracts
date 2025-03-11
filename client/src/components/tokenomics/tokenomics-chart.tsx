@@ -2,13 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { PieChart, Pie, Cell } from "recharts";
-import { TokenomicsChartSkeleton } from "..";
 
-interface TokenomicsChartProps {
-  isLoading: boolean;
-}
-
-const TokenomicsChart = ({ isLoading }: TokenomicsChartProps) => {
+const TokenomicsChart = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isClient, setIsClient] = useState(false);
 
@@ -102,9 +97,7 @@ const TokenomicsChart = ({ isLoading }: TokenomicsChartProps) => {
       </div>
     );
   };
-  if (isLoading) {
-    return <TokenomicsChartSkeleton />;
-  }
+
   return (
     <div className="z-20 mt-[10%] hidden min-h-[500px] w-full rounded-lg lg:flex">
       <div className="relative flex-1">

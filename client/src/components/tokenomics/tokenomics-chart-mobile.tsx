@@ -2,13 +2,8 @@
 
 import { PieChart, Pie, Cell } from "recharts";
 import { useEffect, useState } from "react";
-import { TokenomicsChartMobileSkeleton } from "@/components";
 
-interface TokenomicsChartMobileProps {
-  isLoading: boolean;
-}
-
-const TokenomicsChartMobile = ({ isLoading }: TokenomicsChartMobileProps) => {
+const TokenomicsChartMobile = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isClient, setIsClient] = useState(false);
 
@@ -63,9 +58,7 @@ const TokenomicsChartMobile = ({ isLoading }: TokenomicsChartMobileProps) => {
       </div>
     );
   };
-  if (isLoading) {
-    return <TokenomicsChartMobileSkeleton />;
-  }
+
   return (
     <div className="mt-12 flex w-full flex-col items-center rounded-lg lg:hidden">
       <h2 className="text-3xl font-semibold text-gray-200">Tokenomics</h2>

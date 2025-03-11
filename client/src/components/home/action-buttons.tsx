@@ -1,15 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ActionButtonsSkeleton } from "@/components";
-interface ActionButtonsProps {
-  isLoading: boolean;
-}
 
-function ActionButtons({ isLoading }: ActionButtonsProps) {
-  if (isLoading) {
-    return <ActionButtonsSkeleton />;
-  }
+function ActionButtons() {
   return (
     <div className="mt-4 flex flex-col gap-3 p-4 sm:flex-row md:justify-center md:gap-4">
       <Button

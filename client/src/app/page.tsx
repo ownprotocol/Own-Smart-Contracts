@@ -19,13 +19,13 @@ export default async function HomePage() {
           <>
             <PresaleBanner />
             <RaiseStats />
-            <PriceIncreaseTimer isLoading={false} />
-            <ActionButtons isLoading={false} />
+            <PriceIncreaseTimer />
+            <ActionButtons />
           </>
         )}
-        <TokenomicsChart isLoading={false} />
-        <TokenomicsChartMobile isLoading={false} />
-        <MainNavigation isLoading={false} />
+        <TokenomicsChart />
+        <TokenomicsChartMobile />
+        <MainNavigation />
       </div>
     </main>
   );

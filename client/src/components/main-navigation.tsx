@@ -1,16 +1,8 @@
 import { FOOTER_LINKS } from "@/constants/main-navigation-links";
 import Image from "next/image";
 import Link from "next/link";
-import MainNavigationSkeleton from "@/components/ui/loading-skeletons/main-navigation-skeleton";
 
-interface MainNavigationProps {
-  isLoading: boolean;
-}
-
-function MainNavigation({ isLoading }: MainNavigationProps) {
-  if (isLoading) {
-    return <MainNavigationSkeleton />;
-  }
+function MainNavigation() {
   return (
     <div className="mb-[10%] mt-[30%] flex min-h-[100px] w-full justify-between md:mt-16">
       <div className="w-1/3 md:w-1/2">

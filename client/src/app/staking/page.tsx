@@ -18,7 +18,6 @@ function StakingPage() {
 
   const { isValid } = useGetAuthUser();
 
-
   return (
     <main className="min-h-screen px-[5%] pt-4 md:px-[10%] md:pt-8">
       <div className="relative flex flex-col">
@@ -44,7 +43,7 @@ function StakingPage() {
           </Drawer>
         </div>
         {!isValid && <ConnectWalletButton />}
-        <MainNavigation isLoading={false} />
+        <MainNavigation />
       </div>
     </main>
   );
