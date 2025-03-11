@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { PieChart, Pie, Cell } from "recharts";
@@ -24,12 +25,12 @@ const TokenomicsChartMobile = () => {
     { name: "Rewards", value: 24, color: "#2D126E" },
   ];
 
+  const handleSegmentClick = (_: any, index: number) => {
+    setActiveIndex(index === activeIndex ? null : index);
+  };
+
   const handleLegendClick = (index: number) => {
-    if (activeIndex === index) {
-      setActiveIndex(null);
-    } else {
-      setActiveIndex(index);
-    }
+    setActiveIndex(index === activeIndex ? null : index);
   };
 
   const renderCustomizedLegend = () => {
@@ -73,7 +74,16 @@ const TokenomicsChartMobile = () => {
             letterSpacing: "-5%",
           }}
         >
-          Allocation
+          {activeIndex !== null ? (
+            <div className="flex flex-col items-center">
+              <span className="mt-1 text-4xl text-white">
+                {data[activeIndex]?.value}%
+              </span>
+              <span className="text-lg">{data[activeIndex]?.name}</span>
+            </div>
+          ) : (
+            "Allocation"
+          )}
         </div>
         {isClient ? (
           <PieChart width={350} height={350}>
@@ -85,9 +95,7 @@ const TokenomicsChartMobile = () => {
               outerRadius={150}
               paddingAngle={0}
               dataKey="value"
-              onClick={() => {
-                console.log("clicked");
-              }}
+              onClick={handleSegmentClick}
             >
               {data.map((entry, index) => (
                 <Cell
