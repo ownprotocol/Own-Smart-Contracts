@@ -11,9 +11,7 @@ function EarnAPYTimer() {
     <div className="relative flex min-h-[100px] justify-center pt-4 md:pt-12">
       <div className="flex flex-col gap-4">
         <h1 className="font-funnel px-4 py-2 text-center text-[14px] font-[500] leading-[14px] md:text-[16px] md:leading-[16px] lg:text-[20px] lg:leading-[20px]">
-          EARN {" "}
-          <span className="text-orange-500">10X</span>{" "}
-          APY FOR NEXT
+          EARN <span className="text-orange-500">10X</span> APY FOR NEXT
         </h1>
         <div className="flex flex-col justify-center gap-4 md:flex-row">
           <div className="flex gap-4">
@@ -64,13 +62,14 @@ type TimerBoxProps = {
 };
 
 function TimerBox({ label, value }: TimerBoxProps) {
+  const formattedValue = value.toString().padStart(2, "0");
   return (
     <div className="flex w-1/2 flex-col items-center rounded-md bg-black px-6 py-2 md:w-[120px]">
-      <h1 className="font-funnel text-[14px] tracking-[-2.5%] text-[#A78BFA] md:text-[20px]">
+      <h1 className="font-funnel text-[14px] tracking-[-2.5%] text-[#A78BFA] md:text-[20px] lg:text-[24px]">
         {label}
       </h1>
-      <div className="font-funnel text-[24px] tracking-[-2.5%] text-white">
-        {value}
+      <div className="font-funnel text-[20px] tracking-[-2.5%] text-white md:text-[40px]">
+        {formattedValue}
       </div>
     </div>
   );
