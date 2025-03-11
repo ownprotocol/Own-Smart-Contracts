@@ -15,12 +15,14 @@ interface IPresale {
      * @param price Price of tokens in the current round (in USDT)
      * @param allocation Total number of tokens available in this round
      * @param sales Number of tokens already sold in this round
+     * @param claimTokensTimestamp Timestamp when tokens can be claimed by users, must be after the round ends
      */
     struct PresaleRound {
         uint256 duration;
         uint256 price;
         uint256 allocation;
         uint256 sales;
+        uint256 claimTokensTimestamp;
     }
 
     /**
@@ -102,6 +104,18 @@ interface IPresale {
         uint256 roundId,
         uint256 newAllocation,
         uint256 oldAllocation
+    );
+
+    /**
+     * @notice Emitted when a presale round's claim timestamp is updated
+     * @param roundId ID of the presale round
+     * @param newClaimTimestamp Updated claim timestamp for the round
+     * @param oldClaimTimestamp Previous claim timestamp for the round
+     */
+    event PresaleClaimTimestampUpdated(
+        uint256 roundId,
+        uint256 newClaimTimestamp,
+        uint256 oldClaimTimestamp
     );
 
     /**
@@ -217,6 +231,8 @@ interface IPresale {
      */
     error CannotSetAddressToZero();
 
+    error CannotSetPresaleClaimTimestampToBeBeforeRoundEnd();
+
     /**
      * @notice Adds new presale rounds to the contract
      * @dev Can only be called by the contract owner
@@ -261,6 +277,17 @@ interface IPresale {
     function updatePresaleRoundAllocation(
         uint256 _roundId,
         uint256 _newAllocation
+    ) external;
+
+    /**
+     * @notice Updates the claim timestamp of a future presale round
+     * @dev Can only be called by the contract owner for future rounds
+     * @param _roundId ID of the round to update
+     * @param _newClaimTimestamp New claim timestamp for the round
+     */
+    function updatePresaleRoundClaimTimestamp(
+        uint256 _roundId,
+        uint256 _newClaimTimestamp
     ) external;
 
     /**

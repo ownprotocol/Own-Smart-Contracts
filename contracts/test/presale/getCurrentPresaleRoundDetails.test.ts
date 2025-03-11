@@ -18,24 +18,27 @@ describe("Presale - getCurrentPresaleRoundDetails", async () => {
     await own.write.transfer([presale.address, BigInt(10000)]);
 
     const currentTime = await getCurrentBlockTimestamp();
-    await presale.write.setPresaleStartTime([BigInt(currentTime + 5)]);
 
-    await presale.write.addPresaleRounds([
+     await presale.write.addPresaleRounds([
       [
         {
           duration: firstPresaleRoundDuration,
           price: BigInt(1),
           allocation: BigInt(1000),
           sales: BigInt(0),
+          claimTokensTimestamp: BigInt(0),
         },
         {
           duration: secondPresaleRoundDuration,
           price: BigInt(2),
           allocation: BigInt(2000),
           sales: BigInt(0),
+          claimTokensTimestamp: BigInt(0),
         },
       ],
     ]);
+
+    await presale.write.setPresaleStartTime([BigInt(currentTime + 5)]);
   });
 
   it("Should return the correct presale round details for the first presale round", async () => {

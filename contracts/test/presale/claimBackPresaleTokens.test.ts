@@ -29,6 +29,7 @@ describe("Presale - claimBackPresaleTokens", async () => {
           price: parseEther("1"),
           allocation: BigInt(1000),
           sales: BigInt(0),
+          claimTokensTimestamp: BigInt(0),
         },
       ],
     ]);

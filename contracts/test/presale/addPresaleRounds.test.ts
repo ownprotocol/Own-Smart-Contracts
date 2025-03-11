@@ -28,6 +28,7 @@ describe("Presale - addPresaleRounds", async () => {
             price: BigInt(1),
             allocation: BigInt(1),
             sales: BigInt(0),
+            claimTokensTimestamp: BigInt(0),
           },
         ],
       ]),
@@ -46,6 +47,7 @@ describe("Presale - addPresaleRounds", async () => {
             price: BigInt(1),
             allocation: BigInt(1),
             sales: BigInt(0),
+            claimTokensTimestamp: BigInt(0),
           },
         ],
       ]),
@@ -64,6 +66,7 @@ describe("Presale - addPresaleRounds", async () => {
             price: BigInt(0),
             allocation: BigInt(1),
             sales: BigInt(0),
+            claimTokensTimestamp: BigInt(0),
           },
         ],
       ]),
@@ -82,12 +85,50 @@ describe("Presale - addPresaleRounds", async () => {
             price: BigInt(1),
             allocation: BigInt(0),
             sales: BigInt(0),
+            claimTokensTimestamp: BigInt(0),
           },
         ],
       ]),
     ).to.be.revertedWithCustomError(
       presale,
       "CannotSetPresaleRoundAllocationToZero",
+    );
+  });
+
+  it("Should revert if the presale time is set and trying to set the claim tokens timestamp to before a previous round is due to end", async() => {
+    await own.write.transfer([presale.address, BigInt(10)]);
+
+    await presale.write.addPresaleRounds([
+      [
+        {
+          duration: BigInt(100),
+          price: BigInt(1),
+          allocation: BigInt(3),
+          sales: BigInt(0),
+          claimTokensTimestamp: BigInt(0),
+        },
+      ],
+    ]);
+
+    const currentTime = await getCurrentBlockTimestamp();
+
+    await presale.write.setPresaleStartTime([BigInt(currentTime + 5)]);
+
+    await expect(
+      presale.write.addPresaleRounds([
+        [
+          {
+            duration: BigInt(1),
+            price: BigInt(1),
+            allocation: BigInt(3),
+            sales: BigInt(0),
+            claimTokensTimestamp: BigInt(1),
+          },
+        ],
+      ]),
+    ).to.be.revertedWithCustomError(
+      presale,
+      "CannotSetPresaleClaimTimestampToBeBeforeRoundEnd",
     );
   });
 
@@ -100,12 +141,14 @@ describe("Presale - addPresaleRounds", async () => {
         price: BigInt(1),
         allocation: BigInt(3),
         sales: BigInt(0),
+        claimTokensTimestamp: BigInt(0),
       },
       {
         duration: BigInt(1),
         price: BigInt(1),
         allocation: BigInt(7),
         sales: BigInt(0),
+        claimTokensTimestamp: BigInt(0),
       },
     ];
 
@@ -131,12 +174,14 @@ describe("Presale - addPresaleRounds", async () => {
           price: BigInt(1),
           allocation: BigInt(3),
           sales: BigInt(0),
+          claimTokensTimestamp: BigInt(0),
         },
         {
           duration: BigInt(1),
           price: BigInt(1),
           allocation: BigInt(7),
           sales: BigInt(0),
+          claimTokensTimestamp: BigInt(0),
         },
       ],
     ]);
@@ -149,6 +194,7 @@ describe("Presale - addPresaleRounds", async () => {
             price: BigInt(1),
             allocation: BigInt(10),
             sales: BigInt(0),
+            claimTokensTimestamp: BigInt(0),
           },
         ],
       ]),
@@ -168,12 +214,14 @@ describe("Presale - addPresaleRounds", async () => {
           price: BigInt(1),
           allocation: BigInt(3),
           sales: BigInt(0),
+            claimTokensTimestamp: BigInt(0),
         },
         {
           duration: BigInt(1),
           price: BigInt(1),
           allocation: BigInt(7),
           sales: BigInt(0),
+            claimTokensTimestamp: BigInt(0),
         },
       ],
     ]);
@@ -186,6 +234,7 @@ describe("Presale - addPresaleRounds", async () => {
             price: BigInt(1),
             allocation: BigInt(10),
             sales: BigInt(0),
+            claimTokensTimestamp: BigInt(0),
           },
         ],
       ]),
@@ -202,6 +251,7 @@ describe("Presale - addPresaleRounds", async () => {
           price: BigInt(1),
           allocation: BigInt(3),
           sales: BigInt(0),
+            claimTokensTimestamp: BigInt(0),
         },
       ],
     ]);
@@ -213,6 +263,7 @@ describe("Presale - addPresaleRounds", async () => {
           price: BigInt(1),
           allocation: BigInt(3),
           sales: BigInt(0),
+            claimTokensTimestamp: BigInt(0),
         },
       ],
     ]);
@@ -228,6 +279,7 @@ describe("Presale - addPresaleRounds", async () => {
               price: BigInt(1),
               allocation: BigInt(3),
               sales: BigInt(0),
+            claimTokensTimestamp: BigInt(0),
             },
           ],
         ],
@@ -246,6 +298,7 @@ describe("Presale - addPresaleRounds", async () => {
           price: parseEther("1"),
           allocation: parseEther("3"),
           sales: BigInt(0),
+          claimTokensTimestamp: BigInt(0),
         },
       ],
     ]);
@@ -264,6 +317,7 @@ describe("Presale - addPresaleRounds", async () => {
       parseEther("3"),
       signers[0].account.address,
     ]);
+    
 
     await expect(
       presale.write.addPresaleRounds([
@@ -273,6 +327,7 @@ describe("Presale - addPresaleRounds", async () => {
             price: BigInt(1),
             allocation: parseEther("10"),
             sales: BigInt(0),
+            claimTokensTimestamp: BigInt(currentTime + 50),
           },
         ],
       ]),
@@ -291,6 +346,7 @@ describe("Presale - addPresaleRounds", async () => {
             price: BigInt(1),
             allocation: parseEther("10"),
             sales: BigInt(0),
+            claimTokensTimestamp: BigInt(currentTime + 50),
           },
         ],
       ]),

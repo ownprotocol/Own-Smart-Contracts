@@ -27,7 +27,9 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     ...Own,
   });
 
-  await new Promise((resolve) => setTimeout(resolve, 5000));
+  if (hre.network.name !== "hardhat") {
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+  }
 
   // Get the implementation address
   const implementationAddress =
