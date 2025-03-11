@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const RewardCard = () => {
   return (
-    <div className="w-full">
+    <div className="">
       <h2 className="px-0 font-dm_sans text-[16px] font-medium leading-[24px] text-black md:px-0 md:text-[18px] md:leading-[28px]">
         My veOwn
       </h2>

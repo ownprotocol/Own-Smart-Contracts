@@ -13,9 +13,10 @@ import { DrawerFooter } from "../ui/drawer";
 import { useGetBalanceUSDT, useGetCurrentPresaleRound } from "@/hooks";
 import StakingButton from "./staking-button";
 import DurationButton from "./duration-button";
-import StakingSummary from "./staking-summary";
+
 import RewardCard from "./reward-card";
 import { stakingSchema, type StakingFormData } from "@/types/staking";
+import StakingSummary from "./staking-summary";
 
 function StakingForm() {
   const activeAccount = useActiveAccount();
@@ -220,10 +221,15 @@ function StakingForm() {
             MAX REWARD
           </div>
           <div className="flex flex-col gap-2 md:flex-row md:gap-4">
-            <StakingSummary
-              tokensToStake={tokensToStake}
-              lockupDuration={lockupDuration}
-            />
+            <div className="flex w-full flex-col gap-2">
+              <div className="w-full rounded-lg px-0 md:px-4">
+                <StakingSummary
+                  tokensToStake={tokensToStake}
+                  lockupDuration={lockupDuration}
+                />
+              </div>
+              <div className="w-full"></div>
+            </div>
             <div className="w-full">
               <RewardCard />
             </div>
@@ -231,8 +237,7 @@ function StakingForm() {
           <DrawerFooter className="flex justify-start">
             <Button
               disabled={!isValid}
-              type="submit"
-              className="w-full rounded-lg bg-purple-700 px-4 py-2 font-dm_sans text-[14px] font-medium leading-[20px] text-white transition-colors hover:bg-purple-800 disabled:cursor-not-allowed md:max-w-fit md:px-8 md:text-[18px] md:leading-[28px]"
+              className="w-full rounded-lg bg-purple-700 px-4 py-2 font-dm_sans text-[14px] font-medium leading-[20px] text-white transition-colors hover:bg-purple-800 md:max-w-fit md:px-8 md:text-[18px] md:leading-[28px]"
             >
               Stake
             </Button>
