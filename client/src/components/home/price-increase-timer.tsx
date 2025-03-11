@@ -20,9 +20,9 @@ function PriceIncreaseTimer({ isLoading }: PriceIncreaseTimerProps) {
     return <PriceIncreaseTimerSkeleton />;
   }
 
-  if (!presaleData || presaleData.round.duration === 0) {
-    return <RoundCompleted />;
-  }
+  // if (!presaleData || presaleData.round.duration === 0) {
+  //   return <RoundCompleted />;
+  // }
 
   return (
     <div className="relative mt-4 flex min-h-[100px] justify-center md:mt-0">
@@ -83,16 +83,16 @@ function TimerBox({ label, value }: TimerBoxProps) {
   );
 }
 
-const RoundCompleted = () => {
-  return (
-    <div className="relative mt-4 flex min-h-[100px] justify-center md:mt-0">
-      <div className="flex flex-col gap-4">
-        <h1 className="font-funnel px-4 py-2 text-center text-[14px] font-medium leading-[14px] md:text-[16px] md:leading-[16px] lg:text-[18px] lg:leading-[18px]">
-          Round Completed
-        </h1>
-      </div>
-    </div>
-  );
-};
+// const RoundCompleted = () => {
+//   return (
+//     <div className="relative mt-4 flex min-h-[100px] justify-center md:mt-0">
+//       <div className="flex flex-col gap-4">
+//         <h1 className="font-funnel px-4 py-2 text-center text-[14px] font-medium leading-[14px] md:text-[16px] md:leading-[16px] lg:text-[18px] lg:leading-[18px]">
+//           Round Completed
+//         </h1>
+//       </div>
+//     </div>
+//   );
+// };
 
 export default PriceIncreaseTimer;
