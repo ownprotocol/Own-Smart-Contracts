@@ -16,7 +16,7 @@ function UserStakingPositionsPage() {
         <StakingRewards />
         <StakePositionsTable />
       </div>
-      <MainNavigation isLoading={false} />
+      <MainNavigation />
     </main>
   );
 }
