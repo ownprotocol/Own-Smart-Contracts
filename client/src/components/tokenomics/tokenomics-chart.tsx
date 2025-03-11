@@ -122,7 +122,7 @@ const TokenomicsChart = () => {
         >
           {activeIndex !== null ? (
             <div className="flex flex-col items-center">
-              <span className="mt-1 md:text-7xl text-white">
+              <span className="mt-1 text-white md:text-7xl">
                 {data[activeIndex]?.value}%
               </span>
               <span>{data[activeIndex]?.name}</span>
@@ -151,13 +151,25 @@ const TokenomicsChart = () => {
                 <Cell
                   key={`cell-${index}`}
                   fill={entry.color}
-                  stroke="none"
+                  stroke={
+                    activeIndex === index ? "rgba(255,255,255,0.5)" : "none"
+                  }
+                  strokeWidth={activeIndex === index ? 2 : 0}
                   opacity={
                     activeIndex === null ? 1 : activeIndex === index ? 1 : 0.2
                   }
-                  style={{ outline: "none" }}
+                  style={{
+                    outline: "none",
+                    transition: "all 0.3s ease",
+                    transform:
+                      activeIndex === index ? "scale(1.02)" : "scale(1)",
+                    filter:
+                      activeIndex === index
+                        ? "drop-shadow(0 4px 6px rgba(0, 0, 0, 0.25))"
+                        : "none",
+                  }}
+                  className="hover:scale-102 hover:drop-shadow-lg hover:[stroke-width:2px] hover:[stroke:rgba(255,255,255,0.5)] focus:outline-none"
                   tabIndex={-1}
-                  className="focus:outline-none"
                 />
               ))}
             </Pie>
