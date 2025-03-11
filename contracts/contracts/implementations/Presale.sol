@@ -49,11 +49,16 @@ contract Presale is
         PresaleRound[] memory _rounds
     ) external override onlyOwner {
         uint256 allowableAllocation;
+        uint256 totalPresaleDuration = startPresaleTime;
 
         for (uint256 i = 0; i < presaleRounds.length; ++i) {
             allowableAllocation +=
                 presaleRounds[i].allocation -
                 presaleRounds[i].sales;
+
+            if (startPresaleTime != 0) {
+                totalPresaleDuration += presaleRounds[i].duration;
+            }
         }
 
         for (uint256 i = 0; i < _rounds.length; ++i) {
@@ -69,16 +74,27 @@ contract Presale is
                 revert CannotSetPresaleRoundAllocationToZero();
             }
 
+            totalPresaleDuration += _rounds[i].duration;
+
+            // NOTE: This check only works if the startPresaleTime is set
+            // This has been noted by Fasset
+            if (
+                startPresaleTime != 0 &&
+                _rounds[i].claimTokensTimestamp < totalPresaleDuration
+            ) {
+                revert CannotSetPresaleClaimTimestampToBeBeforeRoundEnd();
+            }
+
             allowableAllocation += _rounds[i].allocation;
             _rounds[i].sales = 0;
 
             presaleRounds.push(_rounds[i]);
         }
 
-        uint256 veOwnBalance = own.balanceOf(address(this));
-        if (allowableAllocation > veOwnBalance) {
+        uint256 ownBalance = own.balanceOf(address(this));
+        if (allowableAllocation > ownBalance) {
             revert InsufficientOwnBalanceForPresaleRounds(
-                veOwnBalance,
+                ownBalance,
                 allowableAllocation
             );
         }
@@ -191,6 +207,35 @@ contract Presale is
         );
     }
 
+    function updatePresaleRoundClaimTimestamp(
+        uint256 _roundId,
+        uint256 _newClaimTimestamp
+    ) external override onlyOwner updatePresaleRound(_roundId) {
+        uint256 startPresaleTimeCache = startPresaleTime;
+
+        if (startPresaleTimeCache != 0) {
+            uint256 totalPresaleDuration = startPresaleTimeCache;
+
+            for (uint256 i = 0; i < presaleRounds.length; ++i) {
+                totalPresaleDuration += presaleRounds[i].duration;
+            }
+
+            if (_newClaimTimestamp < totalPresaleDuration) {
+                revert CannotSetPresaleClaimTimestampToBeBeforeRoundEnd();
+            }
+        }
+
+        uint256 oldClaimTimestamp = presaleRounds[_roundId]
+            .claimTokensTimestamp;
+        presaleRounds[_roundId].claimTokensTimestamp = _newClaimTimestamp;
+
+        emit PresaleClaimTimestampUpdated(
+            _roundId,
+            _newClaimTimestamp,
+            oldClaimTimestamp
+        );
+    }
+
     function setOwnAddress(IOwn _own) external override onlyOwner {
         if (address(_own) == address(0)) {
             revert CannotSetAddressToZero();
@@ -277,14 +322,26 @@ contract Presale is
         ) = _getCurrentPresaleRoundId();
 
         uint256 totalTokens;
+
         for (uint256 i = 0; i < presalePurchases[msg.sender].length; ++i) {
             if (!presalePurchases[msg.sender][i].claimed) {
+                uint256 purchasedInPresaleRoundId = presalePurchases[
+                    msg.sender
+                ][i].roundId;
+
                 if (
-                    currentRoundId > presalePurchases[msg.sender][i].roundId ||
+                    currentRoundId > purchasedInPresaleRoundId ||
                     !roundsInProgress
                 ) {
-                    totalTokens += presalePurchases[msg.sender][i].ownAmount;
-                    presalePurchases[msg.sender][i].claimed = true;
+                    if (
+                        block.timestamp >=
+                        presaleRounds[purchasedInPresaleRoundId]
+                            .claimTokensTimestamp
+                    ) {
+                        totalTokens += presalePurchases[msg.sender][i]
+                            .ownAmount;
+                        presalePurchases[msg.sender][i].claimed = true;
+                    }
                 }
             }
         }
@@ -327,7 +384,7 @@ contract Presale is
         ) = _getCurrentPresaleRoundId();
 
         if (!roundsInProgress) {
-            return (false, PresaleRound(0, 0, 0, 0), 0);
+            return (false, PresaleRound(0, 0, 0, 0, 0), 0);
         }
 
         return (

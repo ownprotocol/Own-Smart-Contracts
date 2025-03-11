@@ -43,7 +43,6 @@ describe("Presale - update presale round", async () => {
 
     const currentTime = await getCurrentBlockTimestamp();
 
-    await presale.write.setPresaleStartTime([BigInt(currentTime + 5)]);
 
     await own.write.transfer([presale.address, ALLOCATION]);
 
@@ -54,15 +53,19 @@ describe("Presale - update presale round", async () => {
           price: BigInt(1),
           allocation: ALLOCATION / BigInt(2),
           sales: BigInt(0),
+          claimTokensTimestamp: BigInt(0),
         },
         {
           duration: BigInt(50),
           price: BigInt(1),
           allocation: ALLOCATION / BigInt(2),
           sales: BigInt(0),
+          claimTokensTimestamp: BigInt(0),
         },
       ],
     ]);
+
+    await presale.write.setPresaleStartTime([BigInt(currentTime + 5)]);
   });
 
   updateMethods.forEach(
@@ -70,7 +73,7 @@ describe("Presale - update presale round", async () => {
       describe(methodName, async () => {
         it("Should revert if the caller is not the owner", async () => {
           await expect(
-            presaleNonOwner.write.updatePresaleRoundPrice([
+            presaleNonOwner.write[methodName]([
               BigInt(1),
               BigInt(1),
             ]),
@@ -98,11 +101,11 @@ describe("Presale - update presale round", async () => {
           );
         });
 
-        it("Should revert when setting the value to 0", async () => {
-          await expect(
-            presale.write[methodName]([BigInt(1), BigInt(0)]),
-          ).to.be.revertedWithCustomError(presale, zeroValueErrorName);
-        });
+          it("Should revert when setting the value to 0", async () => {
+            await expect(
+              presale.write[methodName]([BigInt(1), BigInt(0)]),
+            ).to.be.revertedWithCustomError(presale, zeroValueErrorName);
+          });
 
         it("Should revert when there are no more presale rounds", async () => {
           await hre.ethers.provider.send("evm_increaseTime", [200]);

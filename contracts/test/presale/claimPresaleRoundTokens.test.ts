@@ -6,7 +6,7 @@ import {
   Signers,
 } from "../../types";
 import { getContractInstances } from "../../helpers/testing-api";
-import { parseEther } from "viem";
+import { parseEther, ripemd160 } from "viem";
 import { getCurrentBlockTimestamp, increaseTime } from "../../helpers/evm";
 
 describe("Presale - claimPresaleRoundTokens", async () => {
@@ -29,6 +29,7 @@ describe("Presale - claimPresaleRoundTokens", async () => {
           price: parseEther("1"),
           allocation: BigInt(1000),
           sales: BigInt(0),
+          claimTokensTimestamp: BigInt(0),
         },
       ],
     ]);
@@ -66,6 +67,8 @@ describe("Presale - claimPresaleRoundTokens", async () => {
   });
 
   it("Should transfer multiple rounds of tokens", async () => {
+    const currentTime = await getCurrentBlockTimestamp();
+
     await presale.write.addPresaleRounds([
       [
         {
@@ -73,6 +76,7 @@ describe("Presale - claimPresaleRoundTokens", async () => {
           price: parseEther("1.5"),
           allocation: BigInt(1000),
           sales: BigInt(0),
+          claimTokensTimestamp: BigInt(currentTime + 150),
         },
       ],
     ]);
@@ -89,7 +93,7 @@ describe("Presale - claimPresaleRoundTokens", async () => {
       signers[0].account.address,
     ]);
 
-    await increaseTime(50);
+    await increaseTime(250);
 
     const totalTokens =
       BigInt(1000) + (BigInt(1000) * BigInt(1e18)) / BigInt(1.5e18);

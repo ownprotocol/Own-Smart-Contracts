@@ -57,7 +57,9 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     ...Stake,
   });
 
-  await new Promise((resolve) => setTimeout(resolve, 5000));
+  if (hre.network.name !== "hardhat") {
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+  }
 
   // Get the implementation address
   const implementationAddress = await upgrades.erc1967.getImplementationAddress(
