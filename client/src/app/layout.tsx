@@ -12,7 +12,7 @@ import "@/styles/globals.css";
 
 import { isLoggedIn } from "@/actions/login";
 import { ThirdwebProvider } from "thirdweb/react";
-import QueryProvider from "@/providers/queryClientProvider";
+import QueryProvider from "@/providers/query-client-provider";
 
 const fun = Funnel_Sans({
   subsets: ["latin"],

@@ -1,7 +1,7 @@
 "use client";
 
 import StakingDrawerHeader from "./staking-drawer-header";
-import Staking from "./staking-form";
+import Staking from "./staking";
 
 const StakingDrawerContent = () => {
   return (
