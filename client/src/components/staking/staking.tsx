@@ -21,7 +21,7 @@ import StakingLockupPeriod from "./staking-lockup-period";
 import StakingTokens from "./staking-tokens";
 import { toast } from "react-toastify";
 
-function StakingForm() {
+function Staking() {
   const { isValid } = useGetAuthUser();
   const activeAccount = useActiveAccount();
   const { stakeContract } = useContracts();
@@ -79,7 +79,7 @@ function StakingForm() {
   return (
     <div className="px-4 py-2">
       {isPendingSendTx && (
-        <div className="flex items-center justify-center">Loading...</div>
+        <div className="flex items-center justify-center text-primary">Loading...</div>
       )}
 
       {!isPendingSendTx && (
@@ -137,4 +137,4 @@ function StakingForm() {
   );
 }
 
-export default StakingForm;
+export default Staking;
