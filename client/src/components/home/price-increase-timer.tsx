@@ -58,9 +58,9 @@ function PriceIncreaseTimer() {
             height={75}
             priority
           />
-          <div className="animate-dot-pulse absolute left-[27%] top-[13%] h-[6px] w-[6px] rounded-full bg-orange-600 [animation-delay:0ms]" />
-          <div className="animate-dot-pulse absolute left-[67%] top-[27%] h-[6px] w-[6px] rounded-full bg-orange-600 [animation-delay:500ms]" />
-          <div className="animate-dot-pulse absolute left-[40%] top-[53%] h-[6px] w-[6px] rounded-full bg-orange-600 [animation-delay:1000ms]" />
+          <div className="animate-dot-pulse absolute left-[27%] top-[13%] h-[6px] w-[6px] rounded-full bg-[#ff844f] [animation-delay:0ms]" />
+          <div className="animate-dot-pulse absolute left-[67%] top-[27%] h-[6px] w-[6px] rounded-full bg-[#ff844f] [animation-delay:500ms]" />
+          <div className="animate-dot-pulse absolute left-[40%] top-[53%] h-[6px] w-[6px] rounded-full bg-[#ff844f] [animation-delay:1000ms]" />
         </div>
       </div>
     </div>
