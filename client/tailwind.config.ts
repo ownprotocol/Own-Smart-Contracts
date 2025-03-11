@@ -6,6 +6,15 @@ export default {
   content: ["./src/**/*.tsx"],
   theme: {
     extend: {
+      keyframes: {
+        "dot-pulse": {
+          "0%, 100%": { opacity: "1", transform: "scale(1)" },
+          "50%": { opacity: "0.5", transform: "scale(1.5)" },
+        },
+      },
+      animation: {
+        "dot-pulse": "dot-pulse 2s ease-in-out infinite",
+      },
       fontFamily: {
         sans: ["var(--font-geist-sans)", ...fontFamily.sans],
         fun: ["var(--font-funnel-sans)", ...fontFamily.sans],
