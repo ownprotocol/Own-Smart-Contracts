@@ -36,7 +36,7 @@ function RaiseStats() {
           </h5>
           <h6 className="font-dmSans text-[22px] font-medium leading-[22px]">
             ${price}
-            <span className="text-[#808080]">USD</span>
+            <span className="text-[#808080] pl-2">USD</span>
           </h6>
         </div>
       </div>
