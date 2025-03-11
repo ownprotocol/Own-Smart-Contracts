@@ -19,7 +19,7 @@ function ActionButtons({ isLoading }: ActionButtonsProps) {
           console.log("Credit card payment clicked");
         }}
       >
-        Buy with Credit Card
+        Buy with Card
       </Button>
 
       <Button
