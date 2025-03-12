@@ -128,6 +128,17 @@ const Navigation = ({ authUser }: NavigationProps) => {
             </Link>
           </>
         )}
+        <Link
+          href={`/faq`}
+          className={cn(
+            "transition-colors hover:text-gray-300",
+            pathname === `/faq`
+              ? "font-semibold underline underline-offset-4"
+              : "",
+          )}
+        >
+          FAQ
+        </Link>
       </div>
 
       {/* mobile side navbar */}
@@ -262,6 +273,21 @@ const Navigation = ({ authUser }: NavigationProps) => {
                               className="size-6 shrink-0"
                             />
                             <p>Positions</p>
+                          </Link>
+                          <Link
+                            href={`/faq`}
+                            className={cn(
+                              pathname === `/faq`
+                                ? "bg-gray-800 text-white"
+                                : "text-gray-400 hover:bg-gray-800 hover:text-white",
+                              "group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold",
+                            )}
+                          >
+                            <icons.GoQuestion
+                              aria-hidden="true"
+                              className="size-6 shrink-0"
+                            />
+                            <p>FAQ</p>
                           </Link>
                         </li>
                       )}

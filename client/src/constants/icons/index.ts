@@ -8,6 +8,7 @@ import { GiReceiveMoney } from "react-icons/gi";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { RiAddLargeLine } from "react-icons/ri";
 import { RiAedLine } from "react-icons/ri";
+import { GoQuestion } from "react-icons/go";
 
 export const icons = {
   AiOutlineReddit,
@@ -20,4 +21,5 @@ export const icons = {
   RxHamburgerMenu,
   RiAddLargeLine,
   RiAedLine,
+  GoQuestion,
 };
