@@ -67,7 +67,7 @@ const Navigation = ({ authUser }: NavigationProps) => {
             key={link.name}
             href={link.link}
             className={cn(
-              "transition-colors hover:text-gray-300",
+              "tracking transition-colors hover:text-gray-300",
               pathname === link.link
                 ? "font-semibold underline underline-offset-4"
                 : "",
@@ -81,7 +81,7 @@ const Navigation = ({ authUser }: NavigationProps) => {
             <Link
               href={`/unauthorized/user-stake/rewards`}
               className={cn(
-                "transition-colors hover:text-gray-300",
+                "tracking-tight transition-colors hover:text-gray-300",
                 pathname === `/unauthorized/user-stake/rewards`
                   ? "font-semibold underline underline-offset-4"
                   : "",
@@ -92,7 +92,7 @@ const Navigation = ({ authUser }: NavigationProps) => {
             <Link
               href={`/unauthorized/user-stake/positions`}
               className={cn(
-                "transition-colors hover:text-gray-300",
+                "tracking-tight transition-colors hover:text-gray-300",
                 pathname === `/unauthorized/user-stake/positions`
                   ? "font-semibold underline underline-offset-4"
                   : "",
@@ -107,7 +107,7 @@ const Navigation = ({ authUser }: NavigationProps) => {
             <Link
               href={`/user-stake/${address}/rewards`}
               className={cn(
-                "transition-colors hover:text-gray-300",
+                "tracking transition-colors hover:text-gray-300",
                 pathname === `/user-stake/${address}/rewards`
                   ? "font-semibold underline underline-offset-4"
                   : "",
@@ -118,7 +118,7 @@ const Navigation = ({ authUser }: NavigationProps) => {
             <Link
               href={`/user-stake/${address}/positions`}
               className={cn(
-                "transition-colors hover:text-gray-300",
+                "tracking-tighter transition-colors hover:text-gray-300",
                 pathname === `/user-stake/${address}/positions`
                   ? "font-semibold underline underline-offset-4"
                   : "",
@@ -128,17 +128,6 @@ const Navigation = ({ authUser }: NavigationProps) => {
             </Link>
           </>
         )}
-        <Link
-          href={`/faq`}
-          className={cn(
-            "transition-colors hover:text-gray-300",
-            pathname === `/faq`
-              ? "font-semibold underline underline-offset-4"
-              : "",
-          )}
-        >
-          FAQ
-        </Link>
       </div>
 
       {/* mobile side navbar */}
@@ -273,21 +262,6 @@ const Navigation = ({ authUser }: NavigationProps) => {
                               className="size-6 shrink-0"
                             />
                             <p>Positions</p>
-                          </Link>
-                          <Link
-                            href={`/faq`}
-                            className={cn(
-                              pathname === `/faq`
-                                ? "bg-gray-800 text-white"
-                                : "text-gray-400 hover:bg-gray-800 hover:text-white",
-                              "group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold",
-                            )}
-                          >
-                            <icons.GoQuestion
-                              aria-hidden="true"
-                              className="size-6 shrink-0"
-                            />
-                            <p>FAQ</p>
                           </Link>
                         </li>
                       )}
