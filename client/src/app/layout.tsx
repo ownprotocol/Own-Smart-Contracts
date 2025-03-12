@@ -13,7 +13,7 @@ import "@/styles/globals.css";
 import { isLoggedIn } from "@/actions/login";
 import { ThirdwebProvider } from "thirdweb/react";
 import QueryProvider from "@/providers/query-client-provider";
-import { getActiveChain } from "@/config/chain";
+import { ChainConnector } from "@/providers/chain-connect-provider";
 const fun = Funnel_Sans({
   subsets: ["latin"],
   display: "swap",
@@ -43,8 +43,6 @@ export default async function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   const hasPresaleConcluded = false;
   const authUser = await isLoggedIn();
-  const activeChain = getActiveChain();
-  console.log(activeChain);
 
   return (
     <html
@@ -55,11 +53,13 @@ export default async function RootLayout({
         <div className="container relative mx-auto flex flex-col border-x border-gray-500/30">
           <QueryProvider>
             <ThirdwebProvider>
-              <Navigation authUser={authUser} />
-              <HomeSeparator />
-              {hasPresaleConcluded && <HasPresaleConcluded />}
-              <ToastContainer />
-              {children}
+              <ChainConnector>
+                <Navigation authUser={authUser} />
+                <HomeSeparator />
+                {hasPresaleConcluded && <HasPresaleConcluded />}
+                <ToastContainer />
+                {children}
+              </ChainConnector>
             </ThirdwebProvider>
           </QueryProvider>
         </div>
