@@ -29,6 +29,9 @@ const config: HardhatUserConfig = {
         mnemonic,
       },
     },
+    hardhat: {
+      chainId: 1337, // <---
+    },
   },
   etherscan: {
     apiKey: etherscanApiKey,
