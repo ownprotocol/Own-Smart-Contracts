@@ -2814,7 +2814,6 @@ export const ownTokenABI = [
     type: "function",
   },
 ] as const;
-
 export const veOwnTokenABI = [
   {
     inputs: [],
@@ -3531,4 +3530,3 @@ export const veOwnTokenABI = [
     type: "function",
   },
 ];
-    

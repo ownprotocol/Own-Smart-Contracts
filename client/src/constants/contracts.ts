@@ -5,3 +5,5 @@ export const PresaleAddress = "0x59dA58dcAA1FBc65D5efe4F67BC4A746807C8043";
 export const StakeAddress = "0xb66dA146c4EeD81390815382Af5d259238347FA1";
 
 export const OwnTokenAddress = "0xBbB541c3cfB1093497cB2333B4fc01802c332f69";
+
+export const veOwnTokenAddress = "0x31307591ab5b5fB4E604628B895a207E6125821F";
