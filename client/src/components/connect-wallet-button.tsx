@@ -7,7 +7,11 @@ import { useRouter } from "next/navigation";
 import { generatePayload, isLoggedIn, login, logout } from "@/actions/login";
 import { GetUserQueryKey } from "@/query/get-user";
 
-function ConnectWalletButton() {
+interface ConnectWalletButtonProps {
+  redirectTo?: string;
+}
+
+function ConnectWalletButton({ redirectTo }: ConnectWalletButtonProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -48,6 +52,16 @@ function ConnectWalletButton() {
             await queryClient.invalidateQueries({
               queryKey: [GetUserQueryKey],
             });
+
+            if (redirectTo) {
+              if (redirectTo === "/user-stake/rewards") {
+                router.push(`/user-stake/${params.payload.address}/rewards`);
+              } else if (redirectTo === "/user-stake/positions") {
+                router.push(`/user-stake/${params.payload.address}/positions`);
+              } else {
+                router.push("/");
+              }
+            }
           },
           getLoginPayload: async ({ address }) => generatePayload({ address }),
           doLogout: async () => {

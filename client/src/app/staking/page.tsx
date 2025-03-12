@@ -27,12 +27,7 @@ function StakingPage() {
           <Drawer open={isOpen} onOpenChange={setIsOpen}>
             <DrawerTrigger asChild>
               {isValid && (
-                <Button
-                  className="font-funnel bg-[#C58BFF] px-8 py-6 text-[14px] font-medium leading-[14px] tracking-[0%] text-black hover:bg-[#E49048] md:text-[16px] md:leading-[16px]"
-                  onClick={() => {
-                    console.log("Stake $Own clicked");
-                  }}
-                >
+                <Button className="font-funnel bg-[#C58BFF] px-8 py-6 text-[14px] font-medium leading-[14px] tracking-[0%] text-black hover:bg-[#E49048] md:text-[16px] md:leading-[16px]">
                   Stake $Own
                 </Button>
               )}
@@ -42,7 +37,11 @@ function StakingPage() {
             </DrawerContent>
           </Drawer>
         </div>
-        {!isValid && <ConnectWalletButton />}
+        {!isValid && (
+          <div className="mx-auto w-full max-w-[200px]">
+            <ConnectWalletButton />
+          </div>
+        )}
         <MainNavigation />
       </div>
     </main>
