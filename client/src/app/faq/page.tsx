@@ -16,7 +16,7 @@ function FAQPage() {
       <Accordion type="single" collapsible>
         <AccordionItem value="item-1">
           <AccordionTrigger>
-            <h2 className="text-left font-['DM_Sans'] text-xl leading-6 text-[#B4B4B4] md:text-2xl md:leading-8">
+            <h2 className="text-left font-['DM_Sans'] text-xl leading-6 text-slate-300 md:text-2xl md:leading-8">
               What are Own tokens?
             </h2>
           </AccordionTrigger>
@@ -34,7 +34,7 @@ function FAQPage() {
 
         <AccordionItem value="item-2">
           <AccordionTrigger>
-            <h2 className="text-left font-['DM_Sans'] text-xl leading-6 text-[#B4B4B4] md:text-2xl md:leading-8">
+            <h2 className="text-left font-['DM_Sans'] text-xl leading-6 text-slate-300 md:text-2xl md:leading-8">
               How do I participate in a quest?
             </h2>
           </AccordionTrigger>
@@ -51,7 +51,7 @@ function FAQPage() {
 
         <AccordionItem value="item-3">
           <AccordionTrigger>
-            <h2 className="text-left font-['DM_Sans'] text-xl leading-6 text-[#B4B4B4] md:text-2xl md:leading-8">
+            <h2 className="text-left font-['DM_Sans'] text-xl leading-6 text-slate-300 md:text-2xl md:leading-8">
               Where can I track my rewards?
             </h2>
           </AccordionTrigger>
@@ -67,7 +67,7 @@ function FAQPage() {
 
         <AccordionItem value="item-4">
           <AccordionTrigger>
-            <h2 className="text-left font-['DM_Sans'] text-xl leading-6 text-[#B4B4B4] md:text-2xl md:leading-8">
+            <h2 className="text-left font-['DM_Sans'] text-xl leading-6 text-slate-300 md:text-2xl md:leading-8">
               Why do I need the Fasset app?
             </h2>
           </AccordionTrigger>
