@@ -8,13 +8,16 @@ import { useActiveWalletChain } from "thirdweb/react";
  * @returns {Object} An object containing:
  * - needsSwitch: boolean indicating if chain switch is needed
  * - switchToCorrectChain: function to switch to the correct chain
+ * - isValid: boolean indicating if the user is authenticated
  */
-export const useCheckAndSwitchToActiveChain = () => {
+
+export const useCheckAndSwitchToActiveChain = (isValid = false) => {
   const activeChain = useActiveWalletChain();
   const currentAppChain = getActiveChain();
   const switchChain = useSwitchActiveWalletChain();
 
-  const needsSwitch = activeChain && activeChain.name !== currentAppChain.name;
+  const needsSwitch =
+    isValid && activeChain && activeChain.name !== currentAppChain.name;
 
   const switchToCorrectChain = async () => {
     if (needsSwitch) {
@@ -25,6 +28,7 @@ export const useCheckAndSwitchToActiveChain = () => {
   return {
     needsSwitch,
     switchToCorrectChain,
+    currentAppChain,
   };
 };
 
