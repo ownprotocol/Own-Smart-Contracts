@@ -11,7 +11,7 @@ function EarnAPYTimer() {
     <div className="relative flex min-h-[100px] justify-center pt-4 md:pt-12">
       <div className="flex flex-col gap-4">
         <h1 className="font-funnel px-4 py-2 text-center text-[14px] font-[500] leading-[14px] md:text-[16px] md:leading-[16px] lg:text-[20px] lg:leading-[20px]">
-          EARN <span className="text-orange-500">10X</span> APY FOR NEXT
+          EARN <span className="text-orange-500">10X</span> APY FOR NEXT YEAR
         </h1>
         <div className="flex flex-col justify-center gap-4 md:flex-row">
           <div className="flex gap-4">
