@@ -7,6 +7,7 @@ import {
 import { client } from "@/lib/client";
 import { getContract } from "thirdweb";
 import { sepolia } from "thirdweb/chains";
+import { useChainMetadata } from "thirdweb/react";
 
 const presaleABI = [
   {
@@ -353,9 +354,12 @@ const presaleABI = [
 ] as const;
 
 export const useContracts = () => {
+  // const { data: chainMetadata } = useChainMetadata();
+  // if (chainMetadata.name === '')
   const usdtContract = getContract({
     client,
     address: USDTAddress,
+    // chain: chainMetadata?.chain,
     chain: sepolia,
   });
 
