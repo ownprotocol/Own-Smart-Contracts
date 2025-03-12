@@ -1,12 +1,41 @@
 "use client";
 
+import { useGetAuthUser } from "@/query";
+import { useCheckAndSwitchToActiveChain } from "@/hooks";
+
+import { useRouter } from "next/navigation";
+import { BlurredStakingBoard } from "@/components";
+
 import {
   MainNavigation,
   StakingRewards,
   StakePositionsTable,
+  NetworkSwitchDialog,
 } from "@/components";
 
 function UserStakingPositionsPage() {
+  const router = useRouter();
+  const { isValid } = useGetAuthUser();
+  const { needsSwitch, switchToCorrectChain, currentAppChain } =
+    useCheckAndSwitchToActiveChain(isValid);
+
+  const handleDialogClose = () => {
+    router.push("/");
+  };
+
+  if (needsSwitch) {
+    return (
+      <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
+        <NetworkSwitchDialog
+          isOpen={needsSwitch}
+          onClose={handleDialogClose}
+          onSwitch={switchToCorrectChain}
+          networkName={currentAppChain?.name ?? ""}
+        />
+        <BlurredStakingBoard />
+      </main>
+    );
+  }
   return (
     <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
       <div className="relative flex flex-col">
