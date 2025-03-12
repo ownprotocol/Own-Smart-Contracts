@@ -4,7 +4,12 @@ import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { prepareContractCall, toWei } from "thirdweb";
+import {
+  prepareContractCall,
+  type PreparedTransaction,
+  type PrepareTransactionOptions,
+  toWei,
+} from "thirdweb";
 
 import { Button } from "../ui/button";
 import { useGetAuthUser } from "@/query";
@@ -20,6 +25,7 @@ import StakingSummary from "./staking-summary";
 import StakingLockupPeriod from "./staking-lockup-period";
 import StakingTokens from "./staking-tokens";
 import { toast } from "react-toastify";
+import { type AbiFunction } from "thirdweb/utils";
 
 function Staking() {
   const { isValid } = useGetAuthUser();
@@ -61,25 +67,34 @@ function Staking() {
 
     const transaction = prepareContractCall({
       contract: stakeContract,
-      method: "function stake(uint256 amount, uint256 duration)",
+      method: "stake",
       params: [amount, days],
     });
-    sendTx(transaction, {
-      onSuccess: () => {
-        toast.success("Stake successful");
+    sendTx(
+      transaction as PreparedTransaction<
+        [],
+        AbiFunction,
+        PrepareTransactionOptions
+      >,
+      {
+        onSuccess: () => {
+          toast.success("Stake successful");
+        },
+        onError: (error) => {
+          toast.error("Stake failed");
+          console.log({ error });
+          console.log({ transaction });
+          console.log({ transactionResult });
+        },
       },
-      onError: (error) => {
-        toast.error("Stake failed");
-        console.log({ error });
-        console.log({ transaction });
-        console.log({ transactionResult });
-      },
-    });
+    );
   };
   return (
     <div className="px-4 py-2">
       {isPendingSendTx && (
-        <div className="flex items-center justify-center text-primary">Loading...</div>
+        <div className="flex items-center justify-center text-primary">
+          Loading...
+        </div>
       )}
 
       {!isPendingSendTx && (

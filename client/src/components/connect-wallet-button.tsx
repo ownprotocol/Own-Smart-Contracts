@@ -33,12 +33,9 @@ function ConnectWalletButton() {
           title: "Login/Sign up",
         }}
         auth={{
-          isLoggedIn: async (address) => {
-            console.log("checking if logged in!", { address });
+          isLoggedIn: async () => {
             try {
-              console.log("About to call isLoggedIn function");
               const result = await isLoggedIn();
-              console.log("isLoggedIn function returned:", result);
               return result.isValid;
             } catch (error) {
               console.error("Error calling isLoggedIn:", error);
@@ -46,7 +43,6 @@ function ConnectWalletButton() {
             }
           },
           doLogin: async (params) => {
-            console.log("logging in!");
             await login(params);
             // Invalidate the user query after login
             await queryClient.invalidateQueries({
@@ -55,7 +51,6 @@ function ConnectWalletButton() {
           },
           getLoginPayload: async ({ address }) => generatePayload({ address }),
           doLogout: async () => {
-            console.log("logging out!");
             await logout();
             // Invalidate the user query after logout
             await queryClient.invalidateQueries({
