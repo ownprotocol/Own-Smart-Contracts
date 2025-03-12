@@ -1,9 +1,11 @@
 import { sepolia, mainnet, localhost, type Chain } from "thirdweb/chains";
 
+
 /**
  * Chain configuration for the application
  * Supports switching between mainnet, testnet, and local development environments
  * based on environment variables
+ * chain name: sepolia, mainnet, localhost
  */
 
 // Environment variable that determines which network to use
@@ -29,7 +31,7 @@ export function getActiveChain(): Chain {
       return sepolia;
   }
 }
-            
+
 export const activeChain = getActiveChain();
 
 export const isDevelopment = () =>

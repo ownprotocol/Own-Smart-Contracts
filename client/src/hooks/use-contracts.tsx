@@ -17,10 +17,17 @@ import { type Chain, getContract } from "thirdweb";
 import { localhost, mainnet, sepolia } from "thirdweb/chains";
 import { type Abi } from "thirdweb/utils";
 
+/**
+ * Chain configuration for the application
+ * Supports switching between mainnet, testnet, and local development environments
+ * based on environment variables
+ * chain name: sepolia, mainnet, localhost
+ */
+
 export const useContracts = () => {
   const activeChain = getActiveChain();
   let chain: Chain;
-  if (activeChain.name === "Sepolia") {
+  if (activeChain.name === "sepolia") {
     chain = sepolia;
   } else if (activeChain.name === "localhost") {
     chain = localhost;
