@@ -1,3 +1,4 @@
+import { getActiveChain } from "@/config/chain";
 import {
   presaleABI,
   stakeABI,
@@ -14,15 +15,14 @@ import {
 import { client } from "@/lib/client";
 import { type Chain, getContract } from "thirdweb";
 import { localhost, mainnet, sepolia } from "thirdweb/chains";
-import { useChainMetadata } from "thirdweb/react";
 import { type Abi } from "thirdweb/utils";
 
 export const useContracts = () => {
-  const { data: chainMetadata } = useChainMetadata();
+  const activeChain = getActiveChain();
   let chain: Chain;
-  if (chainMetadata?.name === "Sepolia") {
+  if (activeChain.name === "Sepolia") {
     chain = sepolia;
-  } else if (chainMetadata?.name === "Hardhat") {
+  } else if (activeChain.name === "localhost") {
     chain = localhost;
   } else {
     chain = mainnet;
