@@ -34,10 +34,11 @@ function ConnectWalletButton({
             border: "1px solid gray",
             backgroundColor: bgColor ?? "#141019",
             color: textColor ?? "white",
-            padding: "undefined",
+            padding: "1px 2px",
+            fontSize: "14px",
           },
 
-          className: `!text-xs md:text-lg hover:!bg-[#C1691180] `,
+          className: `hover:!bg-[#C1691180]`,
         }}
         autoConnect
         client={client}
