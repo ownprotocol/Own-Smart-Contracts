@@ -39,7 +39,7 @@ function StakingPage() {
         </div>
         {!isValid && (
           <div className="mx-auto w-full max-w-[200px]">
-            <ConnectWalletButton />
+            <ConnectWalletButton title="Stake $Own" bgColor="#C58BFF" />
           </div>
         )}
         <MainNavigation />

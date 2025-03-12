@@ -9,9 +9,17 @@ import { GetUserQueryKey } from "@/query/get-user";
 
 interface ConnectWalletButtonProps {
   redirectTo?: string;
+  title?: string;
+  bgColor?: string;
+  textColor?: string;
 }
 
-function ConnectWalletButton({ redirectTo }: ConnectWalletButtonProps) {
+function ConnectWalletButton({
+  redirectTo,
+  title,
+  bgColor,
+  textColor,
+}: ConnectWalletButtonProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -19,15 +27,17 @@ function ConnectWalletButton({ redirectTo }: ConnectWalletButtonProps) {
     <div>
       <ConnectButton
         connectButton={{
-          label: "Connect Wallet",
+          label: title ?? "Connect Wallet",
           style: {
             borderRadius: "10px",
             borderColor: "white",
             border: "1px solid gray",
-            backgroundColor: "#141019",
-            color: "white",
+            backgroundColor: bgColor ?? "#141019",
+            color: textColor ?? "white",
+            padding: "undefined",
           },
-          className: "hover:bg-[#141019] hover:text-red-500",
+
+          className: `!text-xs md:text-lg hover:!bg-[#C1691180] `,
         }}
         autoConnect
         client={client}
