@@ -126,7 +126,11 @@ function Staking({ ownBalance }: StakingProps) {
                 <div className="w-full"></div>
               </div>
               <div className="w-full">
-                <RewardCard />
+                <RewardCard
+                  tokensToStake={tokensToStake}
+                  lockupDuration={lockupDuration}
+                  factor={0.99}
+                />
               </div>
             </div>
             <DrawerFooter className="flex justify-start">
