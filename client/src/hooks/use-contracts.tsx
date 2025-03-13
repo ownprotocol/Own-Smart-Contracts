@@ -5,13 +5,7 @@ import {
   ownTokenABI,
   veOwnTokenABI,
 } from "@/constants/abi";
-import {
-  PresaleAddress,
-  StakeAddress,
-  USDTAddress,
-  OwnTokenAddress,
-  veOwnTokenAddress,
-} from "@/constants/contracts";
+import { getContractAddresses } from "@/config/contracts";
 import { client } from "@/lib/client";
 import { type Chain, getContract } from "thirdweb";
 import { localhost, mainnet, sepolia } from "thirdweb/chains";
@@ -22,41 +16,45 @@ export const useContracts = () => {
   let chain: Chain;
   if (activeChain.name === "Sepolia") {
     chain = sepolia;
-  } else if (activeChain.name === "localhost") {
+  } else if (activeChain.name === "Localhost") {
     chain = localhost;
   } else {
     chain = mainnet;
   }
+  console.log(activeChain.name);
+  const contractAddresses = getContractAddresses(
+    process.env.NEXT_PUBLIC_NETWORK as "Localhost" | "Sepolia" | "Ethereum",
+  );
   const usdtContract = getContract({
     client,
-    address: USDTAddress,
+    address: contractAddresses.usdtAddress,
     chain,
   });
 
   const presaleContract = getContract({
     client,
-    address: PresaleAddress,
+    address: contractAddresses.presaleAddress,
     chain,
     abi: presaleABI,
   });
 
   const stakeContract = getContract({
     client,
-    address: StakeAddress,
+    address: contractAddresses.stakeAddress,
     chain,
     abi: stakeABI,
   });
 
   const ownTokenContract = getContract({
     client,
-    address: OwnTokenAddress,
+    address: contractAddresses.ownTokenAddress,
     chain,
     abi: ownTokenABI,
   });
 
   const veOwnTokenContract = getContract({
     client,
-    address: veOwnTokenAddress,
+    address: contractAddresses.veOwnTokenAddress,
     chain,
     abi: veOwnTokenABI as Abi,
   });

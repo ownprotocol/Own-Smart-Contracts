@@ -1,12 +1,16 @@
-"use client";
+  "use client";
 
 import { ProgressBar, RaiseStatsSkeleton } from "@/components";
 import Image from "next/image";
 import { useGetBalanceUSDT, useGetCurrentPresaleRound } from "@/hooks";
-import { PresaleAddress } from "@/constants/contracts";
+import { getContractAddresses } from "@/config/contracts";
+import { type Network } from "@/types";
 function RaiseStats() {
+  const { presaleAddress } = getContractAddresses(
+    process.env.NEXT_PUBLIC_NETWORK as Network,
+  );
   const { usdtBalance, isLoading: isLoadingPresaleBalance } =
-    useGetBalanceUSDT(PresaleAddress);
+    useGetBalanceUSDT(presaleAddress);
 
   const { presaleData, isLoading: isLoadingPresaleRound } =
     useGetCurrentPresaleRound();
@@ -36,7 +40,7 @@ function RaiseStats() {
           </h5>
           <h6 className="font-dmSans text-[22px] font-medium leading-[22px]">
             ${price}
-            <span className="text-[#808080] pl-2">USD</span>
+            <span className="pl-2 text-[#808080]">USD</span>
           </h6>
         </div>
       </div>
@@ -55,9 +59,9 @@ function RaiseStats() {
             height={75}
             priority
           />
-          <div className="animate-dot-pulse absolute left-[27%] top-[13%] h-[6px] w-[6px] rounded-full bg-[#ff844f] [animation-delay:0ms]" />
-          <div className="animate-dot-pulse absolute left-[67%] top-[27%] h-[6px] w-[6px] rounded-full bg-[#ff844f] [animation-delay:500ms]" />
-          <div className="animate-dot-pulse absolute left-[40%] top-[53%] h-[6px] w-[6px] rounded-full bg-[#ff844f] [animation-delay:1000ms]" />
+          <div className="absolute left-[27%] top-[13%] h-[6px] w-[6px] animate-dot-pulse rounded-full bg-[#ff844f] [animation-delay:0ms]" />
+          <div className="absolute left-[67%] top-[27%] h-[6px] w-[6px] animate-dot-pulse rounded-full bg-[#ff844f] [animation-delay:500ms]" />
+          <div className="absolute left-[40%] top-[53%] h-[6px] w-[6px] animate-dot-pulse rounded-full bg-[#ff844f] [animation-delay:1000ms]" />
         </div>
       </div>
       <div className="absolute left-0 top-0 h-[580px] w-[200px] rotate-[24.3deg] rounded-full bg-[#E49048] opacity-10 blur-[200px]" />

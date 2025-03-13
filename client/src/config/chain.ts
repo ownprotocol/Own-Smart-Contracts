@@ -3,14 +3,14 @@ import { sepolia, mainnet, localhost, type Chain } from "thirdweb/chains";
 
 /**
  * Chain configuration for the application
- * Supports switching between mainnet, testnet, and local development environments
+ * Supports switching between Sepolia, Ethereum, and Localhost
  * based on environment variables
- * chain name: sepolia, mainnet, localhost
+ * chain name: Sepolia, Ethereum, Localhost
  */
 
 // Environment variable that determines which network to use
-// Can be "mainnet", "testnet", or "localhost"
-const NEXT_PUBLIC_NETWORK = process.env.NEXT_PUBLIC_NETWORK ?? "sepolia";
+// Can be "Ethereum", "Sepolia", or "Localhost"
+const NEXT_PUBLIC_NETWORK = process.env.NEXT_PUBLIC_NETWORK ?? "Sepolia";
 
 /**
  * Get the appropriate chain based on the environment configuration
@@ -18,11 +18,11 @@ const NEXT_PUBLIC_NETWORK = process.env.NEXT_PUBLIC_NETWORK ?? "sepolia";
  */
 export function getActiveChain(): Chain {
   switch (NEXT_PUBLIC_NETWORK) {
-    case "mainnet":
+    case "Ethereum":
       return mainnet;
-    case "sepolia":
+    case "Sepolia":
       return sepolia;
-    case "localhost":
+    case "Localhost":
       return localhost;
     default:
       console.warn(
@@ -35,13 +35,13 @@ export function getActiveChain(): Chain {
 export const activeChain = getActiveChain();
 
 export const isDevelopment = () =>
-  NEXT_PUBLIC_NETWORK === "localhost" || process.env.NODE_ENV === "development";
+  NEXT_PUBLIC_NETWORK === "Localhost" || process.env.NODE_ENV === "development";
 
 export const isTestnet = () =>
-  NEXT_PUBLIC_NETWORK === "sepolia" || activeChain.testnet === true;
+  NEXT_PUBLIC_NETWORK === "Sepolia" || activeChain.testnet === true;
 
 export const isMainnet = () =>
-  NEXT_PUBLIC_NETWORK === "mainnet" && activeChain.testnet !== true;
+  NEXT_PUBLIC_NETWORK === "Ethereum" && activeChain.testnet !== true;
 
 export const getRpcUrl = (): string => {
   const defaultRpc = activeChain.rpc[0]!;

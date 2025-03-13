@@ -1,4 +1,4 @@
-import { stakeRewards } from "@/constants/utils";
+import { stakeRewards } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 import RewardBox from "./reward-box";
