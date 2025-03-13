@@ -8,7 +8,7 @@ const RewardCard = () => {
       </h2>
       <div className="rounded-lg bg-purple-100 px-4 py-4 xl:mt-2 xl:py-8">
         <div className="flex items-center gap-4">
-          <div className="rounded-full bg-white/80 px-2 py-2 xl:py-4">
+          <div className="rounded-full bg-white/80 px-2 py-2">
             <Image
               src="/own-logo.svg"
               alt="Own token"
