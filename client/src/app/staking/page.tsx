@@ -23,7 +23,7 @@ function StakingPage() {
       <div className="relative flex flex-col">
         <StakeOwnTokenBanner />
         <EarnAPYTimer />
-        <div className="mt-2 flex flex-col gap-3 p-4 sm:flex-row md:justify-center md:gap-4">
+        <div className="mt-2 flex flex-col gap-3 p-4 sm:flex-row sm:justify-center sm:gap-4">
           <Drawer open={isOpen} onOpenChange={setIsOpen}>
             <DrawerTrigger asChild>
               {isValid && (
