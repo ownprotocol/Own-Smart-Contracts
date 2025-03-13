@@ -21,7 +21,6 @@ export const useContracts = () => {
   } else {
     chain = mainnet;
   }
-  console.log(activeChain.name);
   const contractAddresses = getContractAddresses(
     process.env.NEXT_PUBLIC_NETWORK as "Localhost" | "Sepolia" | "Ethereum",
   );

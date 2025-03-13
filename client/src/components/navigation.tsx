@@ -200,6 +200,7 @@ const Navigation = ({ authUser }: NavigationProps) => {
                       {!isValid && (
                         <li className="">
                           <Link
+                            onClick={() => setSidebarOpen(false)}
                             href={`/unauthorized/user-stake/rewards`}
                             className={cn(
                               pathname === `/unauthorized/user-stake/rewards`
@@ -215,6 +216,7 @@ const Navigation = ({ authUser }: NavigationProps) => {
                             <p>Rewards</p>
                           </Link>
                           <Link
+                            onClick={() => setSidebarOpen(false)}
                             href={`/unauthorized/user-stake/positions`}
                             className={cn(
                               pathname === `/unauthorized/user-stake/positions`
@@ -234,6 +236,7 @@ const Navigation = ({ authUser }: NavigationProps) => {
                       {isValid && (
                         <li className="">
                           <Link
+                            onClick={() => setSidebarOpen(false)}
                             href={`/user-stake/${address}/rewards`}
                             className={cn(
                               pathname === `/user-stake/${address}/rewards`
@@ -249,6 +252,7 @@ const Navigation = ({ authUser }: NavigationProps) => {
                             <p>Rewards</p>
                           </Link>
                           <Link
+                            onClick={() => setSidebarOpen(false)}
                             href={`/user-stake/${address}/positions`}
                             className={cn(
                               pathname === `/user-stake/${address}/positions`
