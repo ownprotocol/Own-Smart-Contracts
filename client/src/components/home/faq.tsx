@@ -8,8 +8,8 @@ import {
 
 function FAQPage() {
   return (
-    <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
-      <h1 className="mb-8 text-left font-sans text-[32px] font-[400] leading-[32px] tracking-[-0.05em] md:text-[72px] md:leading-[72px]">
+    <main className="mt-16">
+      <h1 className="mb-2 text-left font-sans text-[32px] font-[400] leading-[32px] tracking-[-0.05em] md:mb-8 md:text-[72px] md:leading-[72px]">
         Have Questions?
       </h1>
 

@@ -32,3 +32,4 @@ export { default as DurationButton } from "./staking/duration-button";
 export { default as NetworkSwitchDialog } from "./network-switch-dialog";
 export { default as RewardBox } from "./reward-box";
 export { default as BlurredStakingBoard } from "./blurred-staking-board";
+export { default as FAQPage } from "./home/faq";

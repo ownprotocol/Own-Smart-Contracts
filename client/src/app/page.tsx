@@ -1,6 +1,7 @@
 import { isLoggedIn } from "@/actions/login";
 import {
   ActionButtons,
+  FAQPage,
   MainNavigation,
   PresaleBanner,
   PriceIncreaseTimer,
@@ -25,6 +26,7 @@ export default async function HomePage() {
         )}
         <TokenomicsChart />
         <TokenomicsChartMobile />
+        <FAQPage />
         <MainNavigation />
       </div>
     </main>
