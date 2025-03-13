@@ -4,7 +4,12 @@ import { DrawerClose } from "../ui/drawer";
 import { DrawerHeader } from "../ui/drawer";
 import Image from "next/image";
 
-function StakingDrawerHeader() {
+interface StakingDrawerHeaderProps {
+  ownBalance: string;
+  ownTokenSymbol?: string;
+}
+
+function StakingDrawerHeader({ ownBalance }: StakingDrawerHeaderProps) {
   return (
     <DrawerHeader className="relative">
       <DrawerClose className="absolute right-0 top-0">
@@ -28,7 +33,7 @@ function StakingDrawerHeader() {
               height={15}
             />
             <p className="font-dm_mono text-[12px] font-[400] leading-[14px] tracking-[8%] text-black md:text-[14px] md:leading-[16px]">
-              30,000
+            {Number(ownBalance).toLocaleString()}
             </p>
           </div>
         </div>

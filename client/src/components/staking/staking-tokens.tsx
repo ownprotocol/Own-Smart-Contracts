@@ -14,10 +14,8 @@ interface StakingTokensProps {
   register: UseFormRegister<StakingFormData>;
   setValue: UseFormSetValue<StakingFormData>;
   errors: FieldErrors<StakingFormData>;
-  usdtBalance: number;
-  currentOwnPrice: number;
+  ownBalance: number;
   setTokensToStake: (amount: number) => void;
-  isLoading: boolean;
 }
 
 function StakingTokens({
@@ -25,10 +23,8 @@ function StakingTokens({
   register,
   setValue,
   errors,
-  usdtBalance,
-  currentOwnPrice,
+  ownBalance,
   setTokensToStake,
-  isLoading,
 }: StakingTokensProps) {
   const [activePercentage, setActivePercentage] = useState<number | null>(null);
 
@@ -36,7 +32,7 @@ function StakingTokens({
     e?: React.ChangeEvent<HTMLInputElement>,
     percentage?: number,
   ) => {
-    const maxTokenAmount = Number(usdtBalance) / (currentOwnPrice ?? 1);
+    const maxTokenAmount = ownBalance;
     let tokenAmountNumber = 0;
 
     const validateAndSetTokenAmount = (amount: number) => {
@@ -59,7 +55,7 @@ function StakingTokens({
     if (percentage) {
       setActivePercentage(percentage);
       tokenAmountNumber =
-        (Number(usdtBalance) * (percentage / 100)) / (currentOwnPrice ?? 1);
+        (ownBalance * (percentage / 100));
       validateAndSetTokenAmount(tokenAmountNumber);
     }
 
@@ -109,25 +105,21 @@ function StakingTokens({
         <StakingButton
           label="25%"
           isSelected={activePercentage === 25}
-          isLoading={isLoading}
           onClick={() => handleInputToken(undefined, 25)}
         />
         <StakingButton
           label="50%"
           isSelected={activePercentage === 50}
-          isLoading={isLoading}
           onClick={() => handleInputToken(undefined, 50)}
         />
         <StakingButton
           label="75%"
           isSelected={activePercentage === 75}
-          isLoading={isLoading}
           onClick={() => handleInputToken(undefined, 75)}
         />
         <StakingButton
           label="Max"
           isSelected={activePercentage === 100}
-          isLoading={isLoading}
           onClick={() => handleInputToken(undefined, 100)}
         />
       </div>

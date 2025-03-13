@@ -1,6 +1,6 @@
 "use client";
 
-import { useActiveAccount, useSendTransaction } from "thirdweb/react";
+import { useSendTransaction } from "thirdweb/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,11 +14,7 @@ import {
 import { Button } from "../ui/button";
 import { useGetAuthUser } from "@/query";
 import { DrawerFooter } from "../ui/drawer";
-import {
-  useContracts,
-  useGetBalanceUSDT,
-  useGetCurrentPresaleRound,
-} from "@/hooks";
+import { useContracts } from "@/hooks";
 import RewardCard from "./reward-card";
 import { stakingSchema, type StakingFormData } from "@/types/staking";
 import StakingSummary from "./staking-summary";
@@ -27,23 +23,21 @@ import StakingTokens from "./staking-tokens";
 import { toast } from "react-toastify";
 import { type AbiFunction } from "thirdweb/utils";
 
-function Staking() {
+interface StakingProps {
+  ownBalance: string;
+  ownTokenSymbol?: string;
+}
+
+function Staking({ ownBalance }: StakingProps) {
   const { isValid } = useGetAuthUser();
-  const activeAccount = useActiveAccount();
   const { stakeContract } = useContracts();
-  const { presaleData, isLoading: isLoadingPresaleRound } =
-    useGetCurrentPresaleRound();
+
   const {
     mutate: sendTx,
     data: transactionResult,
     isPending: isPendingSendTx,
   } = useSendTransaction();
 
-  const { usdtBalance, isLoading: isLoadingUsdtBalance } = useGetBalanceUSDT(
-    activeAccount?.address ?? "",
-  );
-  const currentOwnPrice =
-    presaleData?.round.price === 0 ? 2 : presaleData?.round.price;
   const [tokensToStake, setTokensToStake] = useState<number>(0);
   const [lockupDuration, setLockupDuration] = useState<number>(0);
 
@@ -106,10 +100,8 @@ function Staking() {
                 register={register}
                 setValue={setValue}
                 errors={errors}
-                usdtBalance={Number(usdtBalance ?? 0)}
-                currentOwnPrice={currentOwnPrice ?? 1}
+                ownBalance={Number(ownBalance ?? 0)}
                 setTokensToStake={setTokensToStake}
-                isLoading={isLoadingUsdtBalance || isLoadingPresaleRound}
               />
 
               <StakingLockupPeriod
