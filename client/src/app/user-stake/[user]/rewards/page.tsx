@@ -25,7 +25,7 @@ function UserStakingRewardsPage() {
     return (
       <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
         <NetworkSwitchDialog
-          title="Switch to Correct Network to view your rewards"
+          title={`Switch to view your rewards on ${currentAppChain?.name}`}
           isOpen={needsSwitch}
           onClose={handleDialogClose}
           onSwitch={switchToCorrectChain}

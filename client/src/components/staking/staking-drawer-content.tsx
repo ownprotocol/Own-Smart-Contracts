@@ -48,7 +48,7 @@ const StakingDrawerContent = ({ setIsOpen }: StakingDrawerContentProps) => {
     <div className="mx-auto w-full px-[0%] pt-0 md:px-[5%] md:pt-8">
       {needsSwitch && (
         <NetworkSwitchDialog
-          title="Switch to Correct Network to stake $Own"
+          title={`Switch to stake $Own on ${currentAppChain?.name}`}
           isOpen={needsSwitch}
           onClose={handleDialogClose}
           onSwitch={switchToCorrectChain}

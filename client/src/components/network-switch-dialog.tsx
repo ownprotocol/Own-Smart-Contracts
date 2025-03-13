@@ -13,7 +13,7 @@ interface NetworkSwitchDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onSwitch: () => void;
-  networkName: string;
+  networkName?: string;
   title: string;
 }
 
@@ -21,7 +21,6 @@ function NetworkSwitchDialog({
   isOpen,
   onClose,
   onSwitch,
-  networkName,
   title,
 }: NetworkSwitchDialogProps) {
   return (
@@ -29,14 +28,16 @@ function NetworkSwitchDialog({
       <Dialog defaultOpen={isOpen} onOpenChange={(open) => !open && onClose()}>
         <DialogContent className="border-gray-800 bg-[#141019] backdrop-blur-2xl sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle className="text-white">{title}</DialogTitle>
+            <DialogTitle className="text-center text-white">
+              {title}
+            </DialogTitle>
           </DialogHeader>
           <div className="flex justify-center py-4">
             <Button
               onClick={onSwitch}
-              className="w-full rounded-lg bg-[#9333EA] px-6 py-3 text-white transition-colors hover:bg-[#7E22CE]"
+              className="w-1/2 rounded-lg bg-[#9333EA] px-6 py-3 text-white transition-colors hover:bg-[#7E22CE]"
             >
-              Switch to {networkName} Network
+              Switch
             </Button>
           </div>
         </DialogContent>
