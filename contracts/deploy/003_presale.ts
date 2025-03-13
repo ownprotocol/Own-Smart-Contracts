@@ -18,6 +18,8 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
     usdtAddress = await MockUSDTDeployment.getAddress();
 
+    console.log("MockUSDT deployed at:", usdtAddress);
+
     await deployments.save("mockUSDT", {
       address: usdtAddress,
       abi: JSON.parse(MockUSDT.interface.formatJson()),

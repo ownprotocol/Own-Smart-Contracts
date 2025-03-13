@@ -30,7 +30,7 @@ const config: HardhatUserConfig = {
       },
     },
     hardhat: {
-      chainId: 1337, // <---
+      chainId: 1337,
     },
   },
   etherscan: {
