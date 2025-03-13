@@ -33,3 +33,5 @@ export { default as NetworkSwitchDialog } from "./network-switch-dialog";
 export { default as RewardBox } from "./reward-box";
 export { default as BlurredStakingBoard } from "./blurred-staking-board";
 export { default as FAQPage } from "./home/faq";
+export { default as StakingDrawerHeaderLoading } from "./ui/loading-skeletons/staking-drawer-header.loading";
+export { default as StakingLoading } from "./ui/loading-skeletons/staking-loading";
