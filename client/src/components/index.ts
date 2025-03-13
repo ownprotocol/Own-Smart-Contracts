@@ -35,3 +35,7 @@ export { default as BlurredStakingBoard } from "./blurred-staking-board";
 export { default as FAQPage } from "./home/faq";
 export { default as StakingDrawerHeaderLoading } from "./ui/loading-skeletons/staking-drawer-header.loading";
 export { default as StakingLoading } from "./ui/loading-skeletons/staking-loading";
+export { default as StakingSummary } from "./staking/staking-summary";
+export { default as StakingTokens } from "./staking/staking-tokens";
+export { default as StakingLockupPeriod } from "./staking/staking-lockup-period";
+export { default as Staking } from "./staking/staking";

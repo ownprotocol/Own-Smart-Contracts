@@ -1,13 +1,16 @@
+"use client";
+
 import {
   type FieldErrors,
   type UseFormRegister,
   type UseFormSetValue,
 } from "react-hook-form";
-import { type StakingFormData } from "@/types/staking";
-import Image from "next/image";
-import StakingButton from "./staking-button";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import Image from "next/image";
+
+import StakingButton from "./staking-button";
+import { type StakingFormData } from "@/types/staking";
 
 interface StakingTokensProps {
   title: string;
@@ -54,8 +57,7 @@ function StakingTokens({
 
     if (percentage) {
       setActivePercentage(percentage);
-      tokenAmountNumber =
-        (ownBalance * (percentage / 100));
+      tokenAmountNumber = ownBalance * (percentage / 100);
       validateAndSetTokenAmount(tokenAmountNumber);
     }
 

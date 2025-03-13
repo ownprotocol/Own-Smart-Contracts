@@ -4,12 +4,14 @@ import { useSendTransaction } from "thirdweb/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-toastify";
 import {
   prepareContractCall,
   type PreparedTransaction,
   type PrepareTransactionOptions,
   toWei,
 } from "thirdweb";
+import { type AbiFunction } from "thirdweb/utils";
 
 import { Button } from "../ui/button";
 import { useGetAuthUser } from "@/query";
@@ -17,18 +19,18 @@ import { DrawerFooter } from "../ui/drawer";
 import { useContracts } from "@/hooks";
 import RewardCard from "./reward-card";
 import { stakingSchema, type StakingFormData } from "@/types/staking";
-import StakingSummary from "./staking-summary";
 import StakingLockupPeriod from "./staking-lockup-period";
 import StakingTokens from "./staking-tokens";
-import { toast } from "react-toastify";
-import { type AbiFunction } from "thirdweb/utils";
+
+import StakingSummary from "./staking-summary";
 
 interface StakingProps {
   ownBalance: string;
   ownTokenSymbol?: string;
+  needsSwitch: boolean;
 }
 
-function Staking({ ownBalance }: StakingProps) {
+function Staking({ ownBalance, needsSwitch }: StakingProps) {
   const { isValid } = useGetAuthUser();
   const { stakeContract } = useContracts();
 
@@ -83,6 +85,7 @@ function Staking({ ownBalance }: StakingProps) {
       },
     );
   };
+
   return (
     <div className="px-4 py-2">
       {isPendingSendTx && (
@@ -135,10 +138,10 @@ function Staking({ ownBalance }: StakingProps) {
             </div>
             <DrawerFooter className="flex justify-start">
               <Button
-                disabled={!isValid}
+                disabled={!isValid || tokensToStake === 0 || needsSwitch}
                 className="w-full rounded-lg bg-purple-700 px-4 py-2 font-dm_sans text-[14px] font-medium leading-[20px] text-white transition-colors hover:bg-purple-800 md:max-w-fit md:px-8 md:text-[18px] md:leading-[28px]"
               >
-                Stake
+                Stakes
               </Button>
             </DrawerFooter>
           </div>

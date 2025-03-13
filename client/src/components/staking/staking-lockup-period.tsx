@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+"use client";
 import { type StakingFormData } from "@/types/staking";
 import {
   type UseFormSetValue,

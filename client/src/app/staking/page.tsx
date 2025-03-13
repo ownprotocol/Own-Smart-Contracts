@@ -33,7 +33,7 @@ function StakingPage() {
               )}
             </DrawerTrigger>
             <DrawerContent className="h-[90vh] max-h-[90vh] px-[5%] md:px-[10%] xl:h-[90vh] xl:max-h-[90vh]">
-              <StakingDrawerContent />
+              <StakingDrawerContent setIsOpen={setIsOpen} />
             </DrawerContent>
           </Drawer>
         </div>
