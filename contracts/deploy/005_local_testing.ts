@@ -4,7 +4,7 @@ import { getContractInstancesFromDeployment } from "../helpers/testing-api";
 import { DayOfWeek, setDayOfWeekInHardhatNode } from "../helpers/evm";
 import { parseEther } from "ethers";
 
-const isTesting = true;
+const isTesting = process.env.IS_TESTING || false;
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   if (!isTesting) return;
