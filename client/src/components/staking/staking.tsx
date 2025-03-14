@@ -2,7 +2,7 @@
 
 import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { allowance } from "thirdweb/extensions/erc20";
-import { useState } from "react";
+import { type Dispatch, type SetStateAction } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
@@ -30,9 +30,20 @@ interface StakingProps {
   ownBalance: string;
   ownTokenSymbol?: string;
   needsSwitch: boolean;
+  tokensToStake: number;
+  lockupDuration: number;
+  setTokensToStake: Dispatch<SetStateAction<number>>;
+  setLockupDuration: Dispatch<SetStateAction<number>>;
 }
 
-function Staking({ ownBalance, needsSwitch }: StakingProps) {
+function Staking({
+  ownBalance,
+  needsSwitch,
+  tokensToStake,
+  lockupDuration,
+  setTokensToStake,
+  setLockupDuration,
+}: StakingProps) {
   const { isValid } = useGetAuthUser();
   const activeAccount = useActiveAccount();
   const { stakeContract, ownTokenContract } = useContracts();
@@ -41,13 +52,10 @@ function Staking({ ownBalance, needsSwitch }: StakingProps) {
   );
 
   const {
-    mutate: sendTx,
-    data: transactionResult,
+    
+    mutateAsync: sendTxAsync,
     isPending: isPendingSendTx,
   } = useSendTransaction();
-
-  const [tokensToStake, setTokensToStake] = useState<number>(0);
-  const [lockupDuration, setLockupDuration] = useState<number>(0);
 
   const {
     register,
@@ -82,22 +90,14 @@ function Staking({ ownBalance, needsSwitch }: StakingProps) {
         params: [stakeAddress, amount],
       });
 
-      sendTx(
+      await sendTxAsync(
         approvalTx as PreparedTransaction<
           [],
           AbiFunction,
           PrepareTransactionOptions
-        >,
-        {
-          onSuccess: () => {
-            toast.success("Approval successful");
-          },
-          onError: (error) => {
-            toast.error("Approval failed");
-            console.log({ error });
-          },
-        },
+        >
       );
+      toast.success("Approval successful");
     }
 
     const stakingTx = prepareContractCall({
@@ -105,24 +105,15 @@ function Staking({ ownBalance, needsSwitch }: StakingProps) {
       method: "stake",
       params: [amount, days * 7n],
     });
-    sendTx(
+     await sendTxAsync(
       stakingTx as PreparedTransaction<
         [],
         AbiFunction,
         PrepareTransactionOptions
       >,
-      {
-        onSuccess: () => {
-          toast.success("Stake successful");
-        },
-        onError: (error) => {
-          toast.error("Stake failed");
-          console.log({ error });
-          console.log({ stakingTx });
-          console.log({ transactionResult });
-        },
-      },
     );
+    
+    toast.success("Stake successful");
   };
 
   return (
@@ -171,13 +162,18 @@ function Staking({ ownBalance, needsSwitch }: StakingProps) {
                 <RewardCard
                   tokensToStake={tokensToStake}
                   lockupDuration={lockupDuration}
-                  factor={0.99}
+                  factor={1}
                 />
               </div>
             </div>
             <DrawerFooter className="flex justify-start">
               <Button
-                disabled={!isValid || tokensToStake === 0 || needsSwitch}
+                disabled={
+                  !isValid ||
+                  tokensToStake === 0 ||
+                  needsSwitch ||
+                  lockupDuration === 0
+                }
                 className="w-full rounded-lg bg-purple-700 px-4 py-2 font-dm_sans text-[14px] font-medium leading-[20px] text-white transition-colors hover:bg-purple-800 md:max-w-fit md:px-8 md:text-[18px] md:leading-[28px]"
               >
                 Stake

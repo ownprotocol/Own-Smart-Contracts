@@ -10,7 +10,7 @@ function StakingSummary({
   tokensToStake,
   lockupDuration,
 }: StakingSummaryProps) {
-  const factor = 0.99 * (lockupDuration);
+  const factor = 1 * (lockupDuration);
   return (
     <>
       <h2 className="font-dm_sans text-[16px] font-medium leading-[24px] text-black md:text-[18px] md:leading-[28px]">
