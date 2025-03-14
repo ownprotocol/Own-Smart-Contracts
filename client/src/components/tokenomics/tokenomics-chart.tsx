@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { PieChart, Pie, Cell } from "recharts";
-
+import { tokenomicsData } from "@/constants";
 const TokenomicsChart = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isClient, setIsClient] = useState(false);
@@ -10,19 +10,6 @@ const TokenomicsChart = () => {
   useEffect(() => {
     setIsClient(true);
   }, []);
-
-  const data = [
-    { name: "Team & Advisors", value: 24, color: "#E9A76F" },
-    { name: "Pre-seed", value: 24, color: "#E28677" },
-    { name: "Seed", value: 24, color: "#D06F9A" },
-    { name: "Institutional", value: 24, color: "#AF6BBF" },
-    { name: "Public Presale", value: 24, color: "#8E68DE" },
-    { name: "Public", value: 28, color: "#5A2A91" },
-    { name: "Airdrop", value: 20, color: "#7B3DB2" },
-    { name: "Treasury", value: 24, color: "#4F2186" },
-    { name: "Ecosystem", value: 24, color: "#3E197A" },
-    { name: "Mining Rewards", value: 24, color: "#2D126E" },
-  ];
 
   const handleLegendHover = (index: number) => {
     setActiveIndex(index);
@@ -33,8 +20,8 @@ const TokenomicsChart = () => {
   };
 
   const renderCustomizedLegend = () => {
-    const firstHalf = data.slice(0, 5);
-    const secondHalf = data.slice(5);
+    const firstHalf = tokenomicsData.slice(0, 5);
+    const secondHalf = tokenomicsData.slice(5);
 
     return (
       <div className="flex w-full flex-col pl-12">
@@ -123,9 +110,9 @@ const TokenomicsChart = () => {
           {activeIndex !== null ? (
             <div className="flex flex-col items-center">
               <span className="mt-1 text-white md:text-7xl">
-                {data[activeIndex]?.value}%
+                {tokenomicsData[activeIndex]?.value}%
               </span>
-              <span>{data[activeIndex]?.name}</span>
+              <span>{tokenomicsData[activeIndex]?.name}</span>
             </div>
           ) : (
             "Allocation"
@@ -134,7 +121,7 @@ const TokenomicsChart = () => {
         {isClient && (
           <PieChart width={500} height={500}>
             <Pie
-              data={data}
+              data={tokenomicsData}
               cx={220}
               cy={250}
               innerRadius={180}
@@ -147,7 +134,7 @@ const TokenomicsChart = () => {
               onMouseEnter={(_, index) => handleLegendHover(index)}
               onMouseLeave={handleLegendLeave}
             >
-              {data.map((entry, index) => (
+              {tokenomicsData.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={entry.color}

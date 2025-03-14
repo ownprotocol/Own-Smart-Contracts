@@ -3,6 +3,7 @@
 
 import { PieChart, Pie, Cell } from "recharts";
 import { useEffect, useState } from "react";
+import { tokenomicsData } from "@/constants";
 
 const TokenomicsChartMobile = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -12,18 +13,7 @@ const TokenomicsChartMobile = () => {
     setIsClient(true);
   }, []);
 
-  const data = [
-    { name: "Advisors", value: 24, color: "#E9A76F" },
-    { name: "Pre-seed", value: 24, color: "#E28677" },
-    { name: "Seed", value: 24, color: "#D06F9A" },
-    { name: "Institutional", value: 24, color: "#AF6BBF" },
-    { name: "Presale", value: 24, color: "#8E68DE" },
-    { name: "Public", value: 24, color: "#5A2A91" },
-    { name: "Airdrop", value: 24, color: "#7B3DB2" },
-    { name: "Treasury", value: 24, color: "#4F2186" },
-    { name: "Ecosystem", value: 24, color: "#3E197A" },
-    { name: "Rewards", value: 24, color: "#2D126E" },
-  ];
+ 
 
   const handleSegmentClick = (_: any, index: number) => {
     setActiveIndex(index === activeIndex ? null : index);
@@ -37,7 +27,7 @@ const TokenomicsChartMobile = () => {
     return (
       <div className="flex w-full flex-col items-center px-4">
         <div className="grid grid-cols-2 gap-x-8 gap-y-3">
-          {data.map((entry, index) => (
+          {tokenomicsData.map((entry, index) => (
             <div
               key={`legend-${index}`}
               className="flex cursor-pointer items-center space-x-3 whitespace-nowrap"
@@ -77,9 +67,9 @@ const TokenomicsChartMobile = () => {
           {activeIndex !== null ? (
             <div className="flex flex-col items-center">
               <span className="mt-1 text-4xl text-white">
-                {data[activeIndex]?.value}%
+                {tokenomicsData[activeIndex]?.value}%
               </span>
-              <span className="text-lg">{data[activeIndex]?.name}</span>
+              <span className="text-lg">{tokenomicsData[activeIndex]?.name}</span>
             </div>
           ) : (
             "Allocation"
@@ -88,7 +78,7 @@ const TokenomicsChartMobile = () => {
         {isClient ? (
           <PieChart width={350} height={350}>
             <Pie
-              data={data}
+              data={tokenomicsData}
               cx={175}
               cy={175}
               innerRadius={120}
@@ -97,7 +87,7 @@ const TokenomicsChartMobile = () => {
               dataKey="value"
               onClick={handleSegmentClick}
             >
-              {data.map((entry, index) => (
+              {tokenomicsData.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={entry.color}

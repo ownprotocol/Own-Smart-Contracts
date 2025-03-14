@@ -16,7 +16,7 @@ import { useGetAuthUser } from "@/query";
 function StakingPage() {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { isValid } = useGetAuthUser();
+  const { isValid, isPending } = useGetAuthUser();
 
   return (
     <main className="min-h-screen px-[5%] pt-4 md:px-[10%] md:pt-8">
@@ -26,20 +26,31 @@ function StakingPage() {
         <div className="mt-2 flex flex-col gap-3 p-4 sm:flex-row sm:justify-center sm:gap-4">
           <Drawer open={isOpen} onOpenChange={setIsOpen}>
             <DrawerTrigger asChild>
+              <div>
               {isValid && (
                 <Button className="font-funnel bg-[#C58BFF] px-8 py-6 text-[14px] font-medium leading-[14px] tracking-[0%] text-black hover:bg-[#E49048] md:text-[16px] md:leading-[16px]">
                   Stake $Own
                 </Button>
               )}
+              {isPending && (
+                <Button className="font-funnel bg-[#C58BFF] px-8 py-6 text-[14px] font-medium leading-[14px] tracking-[0%] text-black hover:bg-[#E49048] md:text-[16px] md:leading-[16px]">
+                  Stake $Own
+                </Button>
+              )}
+              </div>
             </DrawerTrigger>
             <DrawerContent className="h-[90vh] max-h-[90vh] px-[5%] md:px-[10%] xl:h-[90vh] xl:max-h-[90vh]">
               <StakingDrawerContent setIsOpen={setIsOpen} />
             </DrawerContent>
           </Drawer>
         </div>
-        {!isValid && (
-          <div className="mx-auto w-full max-w-[200px] pl-4 md:pl-0">
-            <ConnectWalletButton title="Stake $Own" bgColor="#C58BFF" textColor="black" />
+        {!isValid && !isPending && (
+          <div className="p- flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
+            <ConnectWalletButton
+              title="Stake $Own"
+              bgColor="#C58BFF"
+              textColor="black"
+            />
           </div>
         )}
         <MainNavigation />

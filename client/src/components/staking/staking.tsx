@@ -64,7 +64,7 @@ function Staking({ ownBalance, needsSwitch }: StakingProps) {
     const transaction = prepareContractCall({
       contract: stakeContract,
       method: "stake",
-      params: [amount, days],
+      params: [amount, days * 7n],
     });
     sendTx(
       transaction as PreparedTransaction<
@@ -141,7 +141,7 @@ function Staking({ ownBalance, needsSwitch }: StakingProps) {
                 disabled={!isValid || tokensToStake === 0 || needsSwitch}
                 className="w-full rounded-lg bg-purple-700 px-4 py-2 font-dm_sans text-[14px] font-medium leading-[20px] text-white transition-colors hover:bg-purple-800 md:max-w-fit md:px-8 md:text-[18px] md:leading-[28px]"
               >
-                Stakes
+                Stake
               </Button>
             </DrawerFooter>
           </div>
