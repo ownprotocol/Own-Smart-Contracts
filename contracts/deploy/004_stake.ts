@@ -17,7 +17,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
     const mockSablierLockup = await hre.viem.getContractAt(
       "MockSablierLockup",
-      (await SablierDeployment.getAddress()) as `0x${string}`,
+      (await SablierDeployment.getAddress()) as `0x${string}`
     );
 
     sablierAddress = mockSablierLockup.address;
@@ -46,7 +46,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   const stake = await hre.viem.getContractAt(
     "Stake",
-    (await StakeDeployment.getAddress()) as `0x${string}`,
+    (await StakeDeployment.getAddress()) as `0x${string}`
   );
 
   console.log("Stake deployed at:", await StakeDeployment.getAddress());
@@ -63,7 +63,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   // Get the implementation address
   const implementationAddress = await upgrades.erc1967.getImplementationAddress(
-    await StakeDeployment.getAddress(),
+    await StakeDeployment.getAddress()
   );
 
   // You can also save the implementation separately if needed
@@ -95,7 +95,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   const veOwnContract = await hre.viem.getContractAt(
     "VeOwn",
-    VeOwn.address as `0x${string}`,
+    VeOwn.address as `0x${string}`
   );
 
   await veOwnContract.write.grantRole([MINTER_ROLE, stake.address]);
