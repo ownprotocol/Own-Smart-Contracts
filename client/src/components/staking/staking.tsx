@@ -1,17 +1,19 @@
 "use client";
 
-import { useSendTransaction } from "thirdweb/react";
+import { useActiveAccount, useSendTransaction } from "thirdweb/react";
+import { sendTransaction } from "thirdweb";
+import { allowance, approve } from "thirdweb/extensions/erc20";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
+import { type AbiFunction } from "thirdweb/utils";
 import {
   prepareContractCall,
   type PreparedTransaction,
   type PrepareTransactionOptions,
   toWei,
 } from "thirdweb";
-import { type AbiFunction } from "thirdweb/utils";
 
 import { Button } from "../ui/button";
 import { useGetAuthUser } from "@/query";
@@ -21,8 +23,10 @@ import RewardCard from "./reward-card";
 import { stakingSchema, type StakingFormData } from "@/types/staking";
 import StakingLockupPeriod from "./staking-lockup-period";
 import StakingTokens from "./staking-tokens";
-
 import StakingSummary from "./staking-summary";
+import { getContractAddresses } from "@/config/contracts";
+import { type Network } from "@/types";
+import { Account } from "thirdweb/wallets";
 
 interface StakingProps {
   ownBalance: string;
@@ -32,7 +36,11 @@ interface StakingProps {
 
 function Staking({ ownBalance, needsSwitch }: StakingProps) {
   const { isValid } = useGetAuthUser();
-  const { stakeContract } = useContracts();
+  const activeAccount = useActiveAccount();
+  const { stakeContract, ownTokenContract } = useContracts();
+  const { stakeAddress } = getContractAddresses(
+    process.env.NEXT_PUBLIC_NETWORK as Network,
+  );
 
   const {
     mutate: sendTx,
@@ -56,18 +64,51 @@ function Staking({ ownBalance, needsSwitch }: StakingProps) {
     },
   });
 
-  const onSubmit = (data: StakingFormData) => {
+  const onSubmit = async (data: StakingFormData) => {
     console.log(data);
     const amount = toWei(data.tokenAmount);
     const days = BigInt(data.lockupDuration);
 
-    const transaction = prepareContractCall({
+    //allowance check
+    const allowanceTx = await allowance({
+      contract: ownTokenContract,
+      owner: activeAccount?.address ?? "",
+      spender: stakeAddress,
+    });
+
+    // check if approval is needed
+    if (allowanceTx < amount) {
+      const approvalTx = prepareContractCall({
+        contract: ownTokenContract,
+        method: "approve",
+        params: [stakeAddress, amount],
+      });
+
+      sendTx(
+        approvalTx as PreparedTransaction<
+          [],
+          AbiFunction,
+          PrepareTransactionOptions
+        >,
+        {
+          onSuccess: () => {
+            toast.success("Approval successful");
+          },
+          onError: (error) => {
+            toast.error("Approval failed");
+            console.log({ error });
+          },
+        },
+      );
+    }
+
+    const stakingTx = prepareContractCall({
       contract: stakeContract,
       method: "stake",
       params: [amount, days * 7n],
     });
     sendTx(
-      transaction as PreparedTransaction<
+      stakingTx as PreparedTransaction<
         [],
         AbiFunction,
         PrepareTransactionOptions
@@ -79,7 +120,7 @@ function Staking({ ownBalance, needsSwitch }: StakingProps) {
         onError: (error) => {
           toast.error("Stake failed");
           console.log({ error });
-          console.log({ transaction });
+          console.log({ stakingTx });
           console.log({ transactionResult });
         },
       },
