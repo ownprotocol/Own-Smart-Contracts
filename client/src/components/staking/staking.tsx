@@ -1,8 +1,7 @@
 "use client";
 
 import { useActiveAccount, useSendTransaction } from "thirdweb/react";
-import { sendTransaction } from "thirdweb";
-import { allowance, approve } from "thirdweb/extensions/erc20";
+import { allowance } from "thirdweb/extensions/erc20";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,7 +25,6 @@ import StakingTokens from "./staking-tokens";
 import StakingSummary from "./staking-summary";
 import { getContractAddresses } from "@/config/contracts";
 import { type Network } from "@/types";
-import { Account } from "thirdweb/wallets";
 
 interface StakingProps {
   ownBalance: string;
