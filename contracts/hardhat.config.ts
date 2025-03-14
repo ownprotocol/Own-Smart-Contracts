@@ -3,9 +3,6 @@ import "@nomicfoundation/hardhat-toolbox-viem";
 import "hardhat-chai-matchers-viem";
 import "@openzeppelin/hardhat-upgrades";
 import "hardhat-deploy";
-import "@typechain/hardhat";
-import "@nomicfoundation/hardhat-ethers";
-import "@nomicfoundation/hardhat-chai-matchers";
 
 import * as dotenv from "dotenv";
 dotenv.config({ path: __dirname + "/.env" });
