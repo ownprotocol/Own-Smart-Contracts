@@ -24,7 +24,6 @@ import StakingLockupPeriod from "./staking-lockup-period";
 import StakingTokens from "./staking-tokens";
 import StakingSummary from "./staking-summary";
 import { getContractAddresses } from "@/config/contracts";
-import { type Network } from "@/types";
 
 interface StakingProps {
   ownBalance: string;
@@ -47,9 +46,7 @@ function Staking({
   const { isValid } = useGetAuthUser();
   const activeAccount = useActiveAccount();
   const { stakeContract, ownTokenContract } = useContracts();
-  const { stakeAddress } = getContractAddresses(
-    process.env.NEXT_PUBLIC_NETWORK as Network,
-  );
+  const { stakeAddress } = getContractAddresses();
 
   const { mutateAsync: sendTxAsync, isPending: isPendingSendTx } =
     useSendTransaction();
@@ -100,7 +97,7 @@ function Staking({
         } catch (approvalError) {
           toast.error("Approval failed");
           console.error("Approval error:", approvalError);
-          return; 
+          return;
         }
       }
 

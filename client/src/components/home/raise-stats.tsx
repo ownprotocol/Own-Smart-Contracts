@@ -1,14 +1,12 @@
-  "use client";
+"use client";
 
 import { ProgressBar, RaiseStatsSkeleton } from "@/components";
 import Image from "next/image";
 import { useGetBalanceUSDT, useGetCurrentPresaleRound } from "@/hooks";
 import { getContractAddresses } from "@/config/contracts";
-import { type Network } from "@/types";
+
 function RaiseStats() {
-  const { presaleAddress } = getContractAddresses(
-    process.env.NEXT_PUBLIC_NETWORK as Network,
-  );
+  const { presaleAddress } = getContractAddresses();
   const { usdtBalance, isLoading: isLoadingPresaleBalance } =
     useGetBalanceUSDT(presaleAddress);
 

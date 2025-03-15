@@ -8,7 +8,9 @@ export interface ContractAddresses {
   veOwnTokenAddress: string;
 }
 
-export const getContractAddresses = (network: Network): ContractAddresses => {
+export const getContractAddresses = (): ContractAddresses => {
+  const network = process.env.NEXT_PUBLIC_NETWORK as Network;
+
   if (network === "Localhost") {
     return {
       usdtAddress: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
