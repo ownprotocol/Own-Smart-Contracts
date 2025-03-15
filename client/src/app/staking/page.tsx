@@ -27,16 +27,12 @@ function StakingPage() {
           <Drawer open={isOpen} onOpenChange={setIsOpen}>
             <DrawerTrigger asChild>
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
-                {isValid &&  (
-                  <Button className="font-funnel bg-[#C58BFF] px-8 py-6 text-[14px] font-medium leading-[14px] tracking-[0%] text-black hover:bg-[#E49048] md:text-[16px] md:leading-[16px] max-w-fit w-full mx-auto">
+                {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- This is required for conditional rendering */}
+                {(isValid || isPending) && (
+                  <Button className="font-funnel mx-auto w-full max-w-fit bg-[#C58BFF] px-8 py-6 text-[14px] font-medium leading-[14px] tracking-[0%] text-black hover:bg-[#D58BFF]] md:text-[16px] md:leading-[16px]">
                     Stake $Own
                   </Button>
                 )}
-              {isPending && (
-                <Button className="font-funnel bg-[#C58BFF] px-8 py-6 text-[14px] font-medium leading-[14px] tracking-[0%] text-black hover:bg-[#E49048] md:text-[16px] md:leading-[16px] max-w-fit w-full mx-auto">
-                  Stake $Own
-                </Button>
-              )}
               </div>
             </DrawerTrigger>
             <DrawerContent className="h-[90vh] max-h-[90vh] px-[5%] md:px-[10%] xl:h-[90vh] xl:max-h-[90vh]">
