@@ -278,7 +278,7 @@ const Navigation = ({ authUser }: NavigationProps) => {
         </div>
       </Dialog>
 
-      <ConnectWalletButton />
+      <ConnectWalletButton isHoverable={true} />
     </div>
   );
 };

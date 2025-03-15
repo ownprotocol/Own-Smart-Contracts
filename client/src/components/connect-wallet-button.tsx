@@ -12,11 +12,15 @@ interface ConnectWalletButtonProps {
   title?: string;
   bgColor?: string;
   textColor?: string;
+  isHoverable?: boolean;
 }
 
 function ConnectWalletButton({
   redirectTo,
   title,
+  bgColor,
+  textColor,
+  isHoverable,
 }: ConnectWalletButtonProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -27,12 +31,15 @@ function ConnectWalletButton({
         connectButton={{
           label: title ?? "Connect Wallet",
           className: `!min-w-[125px] !h-[50px] !px-1 !py-0.5 !rounded-lg !border !border-gray-500 
-                   !bg-[#14101A] !text-white !text-sm !font-normal hover:!bg-[#C1691180]
+                    !text-sm !font-normal ${isHoverable ? "hover:!bg-[#C1691180]" : ""}
                    md:!min-w-auto md:!h-10 md:!px-2.5 md:!py-1 !text-center`,
           style: {
             all: "unset",
             display: "block",
             border: "2px solid white",
+            backgroundColor: bgColor ?? "#14101A",
+            color: textColor ?? "white",
+            margin: "0 auto",
           },
         }}
         autoConnect

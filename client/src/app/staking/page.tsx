@@ -26,14 +26,14 @@ function StakingPage() {
         <div className="mt-2 flex flex-col gap-3 p-4 sm:flex-row sm:justify-center sm:gap-4">
           <Drawer open={isOpen} onOpenChange={setIsOpen}>
             <DrawerTrigger asChild>
-              <div>
-              {isValid && (
-                <Button className="font-funnel bg-[#C58BFF] px-8 py-6 text-[14px] font-medium leading-[14px] tracking-[0%] text-black hover:bg-[#E49048] md:text-[16px] md:leading-[16px]">
-                  Stake $Own
-                </Button>
-              )}
+              <div className="flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
+                {isValid &&  (
+                  <Button className="font-funnel bg-[#C58BFF] px-8 py-6 text-[14px] font-medium leading-[14px] tracking-[0%] text-black hover:bg-[#E49048] md:text-[16px] md:leading-[16px] max-w-fit w-full mx-auto">
+                    Stake $Own
+                  </Button>
+                )}
               {isPending && (
-                <Button className="font-funnel bg-[#C58BFF] px-8 py-6 text-[14px] font-medium leading-[14px] tracking-[0%] text-black hover:bg-[#E49048] md:text-[16px] md:leading-[16px]">
+                <Button className="font-funnel bg-[#C58BFF] px-8 py-6 text-[14px] font-medium leading-[14px] tracking-[0%] text-black hover:bg-[#E49048] md:text-[16px] md:leading-[16px] max-w-fit w-full mx-auto">
                   Stake $Own
                 </Button>
               )}
@@ -50,6 +50,7 @@ function StakingPage() {
               title="Stake $Own"
               bgColor="#C58BFF"
               textColor="black"
+              isHoverable={false}
             />
           </div>
         )}
