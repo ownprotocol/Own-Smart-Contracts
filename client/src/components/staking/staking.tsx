@@ -51,11 +51,8 @@ function Staking({
     process.env.NEXT_PUBLIC_NETWORK as Network,
   );
 
-  const {
-    
-    mutateAsync: sendTxAsync,
-    isPending: isPendingSendTx,
-  } = useSendTransaction();
+  const { mutateAsync: sendTxAsync, isPending: isPendingSendTx } =
+    useSendTransaction();
 
   const {
     register,
@@ -71,49 +68,64 @@ function Staking({
   });
 
   const onSubmit = async (data: StakingFormData) => {
-    console.log(data);
-    const amount = toWei(data.tokenAmount);
-    const days = BigInt(data.lockupDuration);
+    try {
+      console.log(data);
+      const amount = toWei(data.tokenAmount);
+      const days = BigInt(data.lockupDuration);
 
-    //allowance check
-    const allowanceTx = await allowance({
-      contract: ownTokenContract,
-      owner: activeAccount?.address ?? "",
-      spender: stakeAddress,
-    });
-
-    // check if approval is needed
-    if (allowanceTx < amount) {
-      const approvalTx = prepareContractCall({
+      //allowance check
+      const allowanceTx = await allowance({
         contract: ownTokenContract,
-        method: "approve",
-        params: [stakeAddress, amount],
+        owner: activeAccount?.address ?? "",
+        spender: stakeAddress,
       });
 
-      await sendTxAsync(
-        approvalTx as PreparedTransaction<
-          [],
-          AbiFunction,
-          PrepareTransactionOptions
-        >
-      );
-      toast.success("Approval successful");
-    }
+      // check if approval is needed
+      if (allowanceTx < amount) {
+        try {
+          const approvalTx = prepareContractCall({
+            contract: ownTokenContract,
+            method: "approve",
+            params: [stakeAddress, amount],
+          });
 
-    const stakingTx = prepareContractCall({
-      contract: stakeContract,
-      method: "stake",
-      params: [amount, days * 7n],
-    });
-     await sendTxAsync(
-      stakingTx as PreparedTransaction<
-        [],
-        AbiFunction,
-        PrepareTransactionOptions
-      >,
-    );
-    
-    toast.success("Stake successful");
+          await sendTxAsync(
+            approvalTx as PreparedTransaction<
+              [],
+              AbiFunction,
+              PrepareTransactionOptions
+            >,
+          );
+          toast.success("Approval successful");
+        } catch (approvalError) {
+          toast.error("Approval failed");
+          console.error("Approval error:", approvalError);
+          return; 
+        }
+      }
+
+      try {
+        const stakingTx = prepareContractCall({
+          contract: stakeContract,
+          method: "stake",
+          params: [amount, days * 7n],
+        });
+        await sendTxAsync(
+          stakingTx as PreparedTransaction<
+            [],
+            AbiFunction,
+            PrepareTransactionOptions
+          >,
+        );
+        toast.success("Stake successful");
+      } catch (stakingError) {
+        toast.error("Staking failed");
+        console.error("Staking error:", stakingError);
+      }
+    } catch (error) {
+      toast.error("Transaction failed");
+      console.error("Transaction error:", error);
+    }
   };
 
   return (

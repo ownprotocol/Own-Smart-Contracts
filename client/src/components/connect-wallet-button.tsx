@@ -17,28 +17,23 @@ interface ConnectWalletButtonProps {
 function ConnectWalletButton({
   redirectTo,
   title,
-  bgColor,
-  textColor,
 }: ConnectWalletButtonProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
 
   return (
-    <div>
+    <div className="">
       <ConnectButton
         connectButton={{
           label: title ?? "Connect Wallet",
+          className: `!min-w-[125px] !h-[50px] !px-1 !py-0.5 !rounded-lg !border !border-gray-500 
+                   !bg-[#14101A] !text-white !text-sm !font-normal hover:!bg-[#C1691180]
+                   md:!min-w-auto md:!h-10 md:!px-2.5 md:!py-1 !text-center`,
           style: {
-            borderRadius: "10px",
-            borderColor: "white",
-            border: "1px solid gray",
-            backgroundColor: bgColor ?? "#141019",
-            color: textColor ?? "white",
-            padding: "1px 2px",
-            fontSize: "14px",
+            all: "unset",
+            display: "block",
+            border: "2px solid white",
           },
-
-          className: `hover:!bg-[#C1691180]`,
         }}
         autoConnect
         client={client}
