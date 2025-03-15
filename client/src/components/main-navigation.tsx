@@ -14,7 +14,7 @@ import {
 function MainNavigation() {
   return (
     <div className="mb-[10%] mt-[30%] flex min-h-[100px] w-full justify-between md:mt-16">
-      <div className="relative w-1/3 md:w-1/2">
+      <div className="relative h-[100px] w-1/3  md:w-1/2">
         <Image
           src="/own-logo.svg"
           alt="own logo"
@@ -22,6 +22,7 @@ function MainNavigation() {
           height={100}
           priority
           className="object-contain"
+          style={{ width: "auto", height: "auto" }}
         />
       </div>
       <div className="flex w-full gap-16 pl-12 md:w-1/2 md:gap-28">
@@ -63,7 +64,7 @@ const EcosystemDropdown = () => {
         {ECOSYSTEM_DROPDOWN.map((item) => (
           <DropdownMenuItem
             key={item.name}
-            className="rounded bg-slate-900 hover:bg-[#1f1a2a] focus:bg-[#1f1a2a] px-4 py-2"
+            className="rounded bg-slate-900 px-4 py-2 hover:bg-[#1f1a2a] focus:bg-[#1f1a2a]"
           >
             <Link
               href={item.link}
