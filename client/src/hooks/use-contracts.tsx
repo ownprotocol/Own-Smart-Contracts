@@ -21,9 +21,7 @@ export const useContracts = () => {
   } else {
     chain = mainnet;
   }
-  const contractAddresses = getContractAddresses(
-    process.env.NEXT_PUBLIC_NETWORK as "Localhost" | "Sepolia" | "Ethereum",
-  );
+  const contractAddresses = getContractAddresses();
   const usdtContract = getContract({
     client,
     address: contractAddresses.usdtAddress,

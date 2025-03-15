@@ -4,7 +4,6 @@ export async function GET() {
   try {
     const userAuthState = await isLoggedIn();
 
-    // Ensure we're returning a plain serializable object
     return new Response(
       JSON.stringify({
         address: userAuthState?.address ?? null,
