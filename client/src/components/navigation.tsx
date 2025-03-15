@@ -61,7 +61,7 @@ const Navigation = ({ authUser }: NavigationProps) => {
       <Link href="/" className="flex items-center justify-center">
         <Image src="/own-logo.svg" height={40} width={80} alt="logo" />
       </Link>
-      <div className="hidden items-center gap-4 border-gray-500 font-dm_mono md:flex-row lg:flex">
+      <div className="hidden items-center justify-center gap-4 border-gray-500 font-dm_mono lg:flex lg:w-[500px] lg:flex-row">
         {TOP_NAVIGATION_LINKS.map((link) => (
           <Link
             key={link.name}
@@ -277,8 +277,9 @@ const Navigation = ({ authUser }: NavigationProps) => {
           </DialogPanel>
         </div>
       </Dialog>
-
-      <ConnectWalletButton isHoverable={true} />
+      <div className="flex items-center justify-center md:justify-end lg:w-48">
+        <ConnectWalletButton isHoverable={true} />
+      </div>
     </div>
   );
 };
