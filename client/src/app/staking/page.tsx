@@ -24,8 +24,6 @@ function StakingPage() {
     }
   }, [isPending]);
 
-  console.log("isPending outside useEffect", isPending);
-  console.log("authStatus outside useEffect", isValid);
   const buttonStyles =
     "font-funnel hover:bg-[#D58BFF] !mx-auto !w-full !max-w-fit !bg-[#C58BFF] !px-8 !py-6 !text-[14px] !font-medium !leading-[14px] !tracking-[0%] !text-black !md:text-[16px] !md:leading-[16px]";
 
@@ -57,7 +55,7 @@ function StakingPage() {
               textColor="black"
               isHoverable={false}
               className={
-                "!md:text-[20px] !md:leading-[20px] !cursor-pointer !font-fun !font-semibold"
+                "!md:text-[20px] !md:leading-[20px] !font-funnel !cursor-pointer !font-semibold"
               }
             />
           )}

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
 import { useActiveAccount } from "thirdweb/react";
 import { useRouter } from "next/navigation";

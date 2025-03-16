@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 
 import { PieChart, Pie, Cell } from "recharts";
@@ -13,9 +13,7 @@ const TokenomicsChartMobile = () => {
     setIsClient(true);
   }, []);
 
- 
-
-  const handleSegmentClick = (_: any, index: number) => {
+  const handleSegmentClick = (_: MouseEvent, index: number) => {
     setActiveIndex(index === activeIndex ? null : index);
   };
 
