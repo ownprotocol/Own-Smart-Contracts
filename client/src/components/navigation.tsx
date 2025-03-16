@@ -44,7 +44,7 @@ const Navigation = () => {
             key={link.name}
             href={link.link}
             className={cn(
-              "tracking transition-colors hover:text-gray-300",
+              "tracking-normal transition-colors hover:text-gray-300",
               pathname === link.link
                 ? "font-semibold underline underline-offset-4"
                 : "",
@@ -58,7 +58,7 @@ const Navigation = () => {
             <Link
               href={`/unauthorized/user-stake/rewards`}
               className={cn(
-                "tracking-tight transition-colors hover:text-gray-300",
+                "tracking-normal transition-colors hover:text-gray-300",
                 pathname === `/unauthorized/user-stake/rewards`
                   ? "font-semibold underline underline-offset-4"
                   : "",
@@ -69,7 +69,7 @@ const Navigation = () => {
             <Link
               href={`/unauthorized/user-stake/positions`}
               className={cn(
-                "tracking-tight transition-colors hover:text-gray-300",
+                "tracking-normal transition-colors hover:text-gray-300",
                 pathname === `/unauthorized/user-stake/positions`
                   ? "font-semibold underline underline-offset-4"
                   : "",
@@ -84,7 +84,7 @@ const Navigation = () => {
             <Link
               href={`/user-stake/${address}/rewards`}
               className={cn(
-                "tracking transition-colors hover:text-gray-300",
+                "tracking-normal transition-colors hover:text-gray-300",
                 pathname === `/user-stake/${address}/rewards`
                   ? "font-semibold underline underline-offset-4"
                   : "",
@@ -95,7 +95,7 @@ const Navigation = () => {
             <Link
               href={`/user-stake/${address}/positions`}
               className={cn(
-                "tracking-tighter transition-colors hover:text-gray-300",
+                "tracking-normal transition-colors hover:text-gray-300",
                 pathname === `/user-stake/${address}/positions`
                   ? "font-semibold underline underline-offset-4"
                   : "",
