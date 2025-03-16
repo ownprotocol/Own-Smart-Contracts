@@ -39,3 +39,5 @@ export { default as StakingSummary } from "./staking/staking-summary";
 export { default as StakingTokens } from "./staking/staking-tokens";
 export { default as StakingLockupPeriod } from "./staking/staking-lockup-period";
 export { default as Staking } from "./staking/staking";
+export { default as DesktopNavbar } from "./desktop-sidenavbar";
+export { default as MobileSidebar } from "./mobile-sidebar";
