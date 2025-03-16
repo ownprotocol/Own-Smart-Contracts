@@ -10,7 +10,19 @@ const protectedRoute = ["/user-stake/"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const isProtectedRoute = protectedRoute.includes(pathname);
+
+  const contractAddressMatch =
+    /\/user-stake\/([^\/]+)\/(rewards|positions)/.exec(pathname);
+  const contractAddress = contractAddressMatch ? contractAddressMatch[1] : null;
+
+  // if (contractAddress) {
+  //   const requestHeaders = new Headers(request.headers);
+  //   requestHeaders.set("x-contract-address", contractAddress);
+  // }
+
+  const isProtectedRoute = protectedRoute.some((route) =>
+    pathname.startsWith(route),
+  );
 
   if (isProtectedRoute) {
     const jwt = request.cookies.get("jwt");
@@ -28,6 +40,9 @@ export async function middleware(request: NextRequest) {
         },
       );
       const response = (await result.json()) as UserAuthResponse;
+      if (response.address !== contractAddress) {
+        return NextResponse.redirect(new URL("/not-found", request.url));
+      }
       if (!response.isValid) {
         return NextResponse.redirect(new URL(`/`, request.url));
       }

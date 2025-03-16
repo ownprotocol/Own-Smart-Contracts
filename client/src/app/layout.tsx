@@ -1,6 +1,7 @@
 import { DM_Mono, DM_Sans, Funnel_Sans } from "next/font/google";
 import { type Metadata } from "next";
 import { ToastContainer } from "react-toastify";
+import { ThirdwebProvider } from "thirdweb/react";
 
 import {
   Footer,
@@ -9,11 +10,9 @@ import {
   Navigation,
 } from "@/components";
 import "@/styles/globals.css";
-
-import { isLoggedIn } from "@/actions/login";
-import { ThirdwebProvider } from "thirdweb/react";
 import QueryProvider from "@/providers/query-client-provider";
 import { ChainConnector } from "@/providers/chain-connect-provider";
+
 const fun = Funnel_Sans({
   subsets: ["latin"],
   display: "swap",
@@ -42,7 +41,6 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const hasPresaleConcluded = false;
-  const authUser = await isLoggedIn();
 
   return (
     <html
@@ -54,7 +52,7 @@ export default async function RootLayout({
           <QueryProvider>
             <ThirdwebProvider>
               <ChainConnector>
-                <Navigation authUser={authUser} />
+                <Navigation />
                 <HomeSeparator />
                 {hasPresaleConcluded && <HasPresaleConcluded />}
                 <ToastContainer />

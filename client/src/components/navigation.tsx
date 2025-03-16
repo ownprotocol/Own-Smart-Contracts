@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
@@ -18,35 +18,12 @@ import { cn } from "@/lib/utils";
 import { useGetAuthUser } from "@/query/get-user";
 import { ConnectWalletButton } from "@/components";
 
-interface NavigationProps {
-  authUser:
-    | {
-        address: null;
-        accessToken: null;
-        isValid: boolean;
-      }
-    | {
-        address: string;
-        accessToken: string;
-        isValid: boolean;
-      };
-}
-
-const Navigation = ({ authUser }: NavigationProps) => {
+const Navigation = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [userAddress, setUserAddress] = useState<string | null>(null);
+
   const pathname = usePathname();
-  const { isValid, address } = authUser;
-  const { refetch } = useGetAuthUser();
-  useEffect(() => {
-    async function fetchUser() {
-      await refetch();
-      setUserAddress(authUser.address);
-    }
-    if (userAddress) {
-      void fetchUser();
-    }
-  }, [refetch, authUser.address, userAddress]);
+
+  const { isValid, address } = useGetAuthUser();
 
   return (
     <div className="mt-2 flex flex-row justify-between px-[5%] md:px-[10%]">
