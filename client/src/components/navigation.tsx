@@ -16,9 +16,7 @@ import {
 
 const Navigation = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
   const pathname = usePathname();
-
   const { isValid, address } = useGetAuthUser();
 
   return (
