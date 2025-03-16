@@ -6,7 +6,7 @@ import {
   MainNavigation,
   ConnectWalletButton,
 } from "@/components";
-import { startTransition, useActionState, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import StakingDrawerContent from "@/components/staking/staking-drawer-content";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
