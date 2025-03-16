@@ -13,6 +13,7 @@ interface ConnectWalletButtonProps {
   bgColor?: string;
   textColor?: string;
   isHoverable?: boolean;
+  className?: string;
 }
 
 function ConnectWalletButton({
@@ -21,6 +22,7 @@ function ConnectWalletButton({
   bgColor,
   textColor,
   isHoverable,
+  className,
 }: ConnectWalletButtonProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -30,9 +32,9 @@ function ConnectWalletButton({
       <ConnectButton
         connectButton={{
           label: title ?? "Connect Wallet",
-          className: `!min-w-[125px] !h-[50px] !px-1 !py-0.5 !rounded-lg !border !border-gray-500 
-                    !text-sm !font-normal ${isHoverable ? "hover:!bg-[#C1691180]" : ""}
-                   md:!min-w-auto md:!h-10 md:!px-2.5 md:!py-1 !text-center`,
+          className: `!min-w-[125px] !h-[50px] !px-1 !py-0.5 !rounded-lg  !border !border-gray-500 
+                       !text-sm !font-normal ${isHoverable ? "hover:!bg-[#C1691180]" : ""}
+                    md:!min-w-auto md:!h-10 md:!px-2.5 md:!py-1 !text-center ${className}`,
           style: {
             all: "unset",
             display: "block",
