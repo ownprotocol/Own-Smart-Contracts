@@ -10,19 +10,13 @@ const protectedRoute = ["/user-stake/"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const isProtectedRoute = protectedRoute.some((route) => {
-    return pathname.startsWith(route);
-  });
+  const isProtectedRoute = protectedRoute.includes(pathname);
 
   if (isProtectedRoute) {
-    // Get the JWT from cookies
     const jwt = request.cookies.get("jwt");
-    console.log("jwt", jwt);
     if (!jwt?.value) {
       return NextResponse.redirect(new URL(`/`, request.url));
     }
-
-    // Verify the JWT
     try {
       const result = await fetch(
         `${request.nextUrl.origin}/api/users/auth/get-user`,
@@ -42,8 +36,6 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/", request.url));
     }
   }
-
-  // For authenticated users, allow the request
   return NextResponse.next();
 }
 

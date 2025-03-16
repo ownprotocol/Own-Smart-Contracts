@@ -57,7 +57,7 @@ function UnauthorizedUserStakingPositionsPage() {
             </DialogTitle>
           </DialogHeader>
           <div className="flex justify-center py-4">
-            <ConnectWalletButton redirectTo={`/user-stake/rewards`} />
+            <ConnectWalletButton redirectTo={`/user-stake/rewards`}  className="!cursor-pointer"/>
           </div>
         </DialogContent>
       </Dialog>
