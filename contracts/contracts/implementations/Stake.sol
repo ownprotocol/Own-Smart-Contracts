@@ -44,14 +44,20 @@ contract Stake is
     // Tracks all users who have staked at some point
     uint256 public totalUsers;
 
-    uint256 public totalPositions;
-    mapping(uint256 => StakePosition) public positions;
-    mapping(address => uint256[]) public usersPositions;
-    mapping(uint256 => uint256) public validVeOwnAdditionsInDay;
-    mapping(uint256 => uint256) public validVeOwnSubtractionsInDay;
+    BoostDetails[] public boostDetails;
+    uint256 public finalBoostWeek;
 
-    mapping(uint256 => uint256) public dailyRewardValueHistory;
-    mapping(uint256 => RewardValuesWeeklyCache) public rewardValuesWeeklyCache;
+    uint256 public totalPositions;
+    mapping(uint256 positionId => StakePosition position) public positions;
+    mapping(address user => uint256[] positionIds) public usersPositions;
+    mapping(uint256 day => uint256 veOwnAddition)
+        public validVeOwnAdditionsInDay;
+    mapping(uint256 day => uint256 veOwnSubtraction)
+        public validVeOwnSubtractionsInDay;
+
+    mapping(uint256 day => uint256 rewardValue) public dailyRewardValueHistory;
+    mapping(uint256 week => RewardValuesWeeklyCache cache)
+        public rewardValuesWeeklyCache;
 
     modifier onlyDefaultAdmin() {
         if (!hasRole(DEFAULT_ADMIN_ROLE, msg.sender)) {
@@ -164,6 +170,7 @@ contract Stake is
 
         uint256[] memory rewardPerPosition = new uint256[](_positionIds.length);
         uint256 totalReward;
+        uint256 totalStakeDeductions;
 
         for (uint256 i = 0; i < _positionIds.length; ++i) {
             uint256 positionId = _positionIds[i];
@@ -195,24 +202,31 @@ contract Stake is
                 uint256 ownAmount = positions[positionId].ownAmount;
 
                 totalReward += ownAmount;
-                totalStaked -= ownAmount;
+                totalStakeDeductions += ownAmount;
             } else {
                 positions[positionId].lastWeekRewardsClaimed = currentWeek;
             }
+        }
+
+        if (totalStakeDeductions > 0) {
+            totalStaked -= totalStakeDeductions;
         }
 
         if (totalReward == 0) {
             revert NoRewardsToClaim();
         }
 
+        IOwn ownCache = ownToken;
+        ISablierLockup sablierLockupCache = sablierLockup;
+        uint256 sablierStreamIdCache = sablierStreamId;
+
         // Should be safe to deduct the total reward from the total staked amount because we never issue more than what is held by the contract
-        uint256 remainingBalanceForRewards = ownToken.balanceOf(address(this)) -
+        uint256 remainingBalanceForRewards = ownCache.balanceOf(address(this)) -
             totalStaked;
 
         if (totalReward > remainingBalanceForRewards) {
-            uint256 withdrawableAmount = sablierLockup.withdrawableAmountOf(
-                sablierStreamId
-            );
+            uint256 withdrawableAmount = sablierLockupCache
+                .withdrawableAmountOf(sablierStreamIdCache);
 
             if (remainingBalanceForRewards + withdrawableAmount < totalReward) {
                 revert NotEnoughFundsAcrossVestingContractForRewards(
@@ -222,12 +236,12 @@ contract Stake is
                 );
             }
 
-            sablierLockup.withdrawMax(sablierStreamId, address(this));
+            sablierLockupCache.withdrawMax(sablierStreamIdCache, address(this));
         }
 
         totalRewardsIssued += totalReward;
 
-        ownToken.safeTransfer(msg.sender, totalReward);
+        ownCache.safeTransfer(msg.sender, totalReward);
 
         emit RewardsClaimed(
             msg.sender,
@@ -302,17 +316,18 @@ contract Stake is
         override
         returns (uint256)
     {
-        if (stakingStartWeek == 0) {
+        uint256 stakingStartWeekCache = stakingStartWeek;
+        if (stakingStartWeekCache == 0) {
             return 0;
         }
 
         uint256 currentWeek = getCurrentWeek();
 
-        if (currentWeek < stakingStartWeek) {
+        if (currentWeek < stakingStartWeekCache) {
             return 0;
         }
 
-        return (currentWeek + 1) - stakingStartWeek;
+        return (currentWeek + 1) - stakingStartWeekCache;
     }
 
     function getUsersPositions(
@@ -328,7 +343,10 @@ contract Stake is
     }
 
     function hasStakingStarted() public view override returns (bool) {
-        return stakingStartWeek != 0 && stakingStartWeek <= getCurrentWeek();
+        uint256 stakingStartWeekCache = stakingStartWeek;
+        return
+            stakingStartWeekCache != 0 &&
+            stakingStartWeekCache <= getCurrentWeek();
     }
 
     // **** Admin functions ****
@@ -352,7 +370,8 @@ contract Stake is
 
         uint256 currentWeek = getCurrentWeek();
 
-        stakingStartWeek = currentWeek + 1;
+        uint256 stakingStartWeekCache = currentWeek + 1;
+        stakingStartWeek = stakingStartWeekCache;
 
         lastRewardValuesWeeklyCachedWeek = currentWeek;
 
@@ -362,7 +381,7 @@ contract Stake is
             dailyRewardAmountAtEndOfWeek: dailyRewardAmount
         });
 
-        emit StartStakingNextWeek(stakingStartWeek);
+        emit StartStakingNextWeek(stakingStartWeekCache);
     }
 
     function setMaximumDailyRewardAmount(
@@ -599,7 +618,7 @@ contract Stake is
     function _getRewardValuesCacheForWeek(
         uint256 _week,
         RewardValuesWeeklyCache[] memory _tempCache
-    ) internal view returns (RewardValuesWeeklyCache memory) {
+    ) internal view returns (RewardValuesWeeklyCache memory rewardValues) {
         if (_week <= lastRewardValuesWeeklyCachedWeek) {
             return rewardValuesWeeklyCache[_week];
         }
@@ -607,9 +626,7 @@ contract Stake is
         uint256 weekDiff = _week - lastRewardValuesWeeklyCachedWeek;
 
         // Arrays start from 0, so subtract 1
-        RewardValuesWeeklyCache memory value = _tempCache[weekDiff - 1];
-
-        return value;
+        rewardValues = _tempCache[weekDiff - 1];
     }
 
     function _calculateRewardsForPosition(
@@ -711,8 +728,6 @@ contract Stake is
 
     // **** Boost functions ****
 
-    BoostDetails[] public boostDetails;
-
     function getBoostDetails()
         external
         view
@@ -721,8 +736,6 @@ contract Stake is
     {
         return boostDetails;
     }
-
-    uint256 public finalBoostWeek;
 
     function getCurrentBoostMultiplier()
         public
@@ -744,26 +757,26 @@ contract Stake is
     function getBoostMultiplierForWeekSinceStart(
         uint256 _weekSinceStart
     ) public view override returns (uint256) {
-        if (boostDetails.length == 0 || _weekSinceStart > finalBoostWeek) {
+        uint256 boostDetailsLength = boostDetails.length;
+
+        if (boostDetailsLength == 0 || _weekSinceStart > finalBoostWeek) {
             return 1 ether;
         }
 
-        uint256 i = boostDetails.length;
+        while (boostDetailsLength > 0) {
+            --boostDetailsLength;
 
-        while (i > 0) {
-            --i;
-
-            uint256 boostStartWeek = boostDetails[i].startWeek;
+            uint256 boostStartWeek = boostDetails[boostDetailsLength].startWeek;
             // Inclusive of the final week, so subtract 1
             uint256 boostFinalWeek = boostStartWeek +
-                boostDetails[i].durationInWeeks -
+                boostDetails[boostDetailsLength].durationInWeeks -
                 1;
 
             if (
                 _weekSinceStart >= boostStartWeek &&
                 _weekSinceStart <= boostFinalWeek
             ) {
-                return boostDetails[i].multiplier;
+                return boostDetails[boostDetailsLength].multiplier;
             }
         }
 
@@ -775,17 +788,19 @@ contract Stake is
     ) external override onlyDefaultAdmin {
         uint256 newFinalBoostWeek;
         uint256 currentWeek = getCurrentWeek();
+        uint256 stakingStartWeekCache = stakingStartWeek;
         uint256 weeksSinceStakingStarted;
-        if (currentWeek < stakingStartWeek || stakingStartWeek == 0) {
+
+        if (currentWeek < stakingStartWeekCache || stakingStartWeekCache == 0) {
             weeksSinceStakingStarted = 0;
         } else {
-            weeksSinceStakingStarted = currentWeek - stakingStartWeek;
+            weeksSinceStakingStarted = currentWeek - stakingStartWeekCache;
         }
 
         for (uint256 i; i < _boostDetails.length; ++i) {
             // If staking has started and trying to update a boost that has already started, revert
             if (
-                currentWeek >= stakingStartWeek &&
+                currentWeek >= stakingStartWeekCache &&
                 _boostDetails[i].startWeek < weeksSinceStakingStarted
             ) {
                 revert CannotSetBoostForWeekInPast();

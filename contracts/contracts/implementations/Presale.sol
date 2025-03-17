@@ -4,6 +4,7 @@ pragma solidity ^0.8.28;
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 import "../interfaces/IPresale.sol";
@@ -15,6 +16,9 @@ contract Presale is
     OwnableUpgradeable,
     UUPSUpgradeable
 {
+    using SafeERC20 for IOwn;
+    using SafeERC20 for IERC20;
+
     IOwn public own;
     IERC20 public usdt;
 
@@ -46,7 +50,7 @@ contract Presale is
     // *** Admin functions ***
 
     function addPresaleRounds(
-        PresaleRound[] memory _rounds
+        PresaleRound[] calldata _rounds
     ) external override onlyOwner {
         uint256 allowableAllocation;
         uint256 totalPresaleDuration = startPresaleTime;
@@ -74,6 +78,10 @@ contract Presale is
                 revert CannotSetPresaleRoundAllocationToZero();
             }
 
+            if (_rounds[i].sales != 0) {
+                revert CannotSetPresaleRoundSalesToNonZero();
+            }
+
             totalPresaleDuration += _rounds[i].duration;
 
             // NOTE: This check only works if the startPresaleTime is set
@@ -86,7 +94,6 @@ contract Presale is
             }
 
             allowableAllocation += _rounds[i].allocation;
-            _rounds[i].sales = 0;
 
             presaleRounds.push(_rounds[i]);
         }
@@ -103,10 +110,11 @@ contract Presale is
     }
 
     function claimUSDT() external override onlyOwner {
-        uint256 usdtBalance = usdt.balanceOf(address(this));
-        usdt.transfer(owner(), usdtBalance);
+        IERC20 usdtCache = usdt;
+        uint256 usdtBalance = usdtCache.balanceOf(address(this));
+        usdtCache.safeTransfer(msg.sender, usdtBalance);
 
-        emit USDTClaimed(owner(), usdtBalance);
+        emit USDTClaimed(msg.sender, usdtBalance);
     }
 
     function claimBackPresaleTokens() external override onlyOwner {
@@ -116,8 +124,9 @@ contract Presale is
             revert CannotClaimBackPresaleTokensWhilePresaleIsInProgress();
         }
 
-        uint256 ownBalance = own.balanceOf(address(this));
-        own.transfer(owner(), ownBalance);
+        IOwn ownCache = own;
+        uint256 ownBalance = ownCache.balanceOf(address(this));
+        ownCache.safeTransfer(msg.sender, ownBalance);
 
         emit PresaleTokensClaimedBack(owner(), ownBalance);
     }
@@ -129,7 +138,12 @@ contract Presale is
             revert CannotSetPresaleStartTimeToPastTime();
         }
 
-        if (startPresaleTime != 0 && startPresaleTime < block.timestamp) {
+        uint256 startPresaleTimeCache = startPresaleTime;
+
+        if (
+            startPresaleTimeCache != 0 &&
+            startPresaleTimeCache < block.timestamp
+        ) {
             revert CannotSetPresaleStartTimeOncePresaleHasStarted();
         }
 
@@ -282,6 +296,11 @@ contract Presale is
         uint256 currentRoundSales = presaleRounds[currentRoundId].sales;
 
         uint256 amount = (_usdtAmount * 1e18) / currentRoundPrice;
+
+        if (amount == 0) {
+            revert CannotPurchase0PresaleTokens();
+        }
+
         uint256 remainingAllocation = currentRoundAllocation -
             currentRoundSales;
 
@@ -324,7 +343,8 @@ contract Presale is
 
         uint256 totalTokens;
 
-        for (uint256 i = 0; i < presalePurchases[msg.sender].length; ++i) {
+        uint256 presalePurchaseLength = presalePurchases[msg.sender].length;
+        for (uint256 i = 0; i < presalePurchaseLength; ++i) {
             if (!presalePurchases[msg.sender][i].claimed) {
                 uint256 purchasedInPresaleRoundId = presalePurchases[
                     msg.sender
@@ -360,7 +380,7 @@ contract Presale is
 
     function getUsersPresalePurchases(
         address _user
-    ) external view override returns (PresalePurchase[] memory) {
+    ) external view override returns (PresalePurchase[] memory usersPurchases) {
         return presalePurchases[_user];
     }
 
@@ -423,12 +443,14 @@ contract Presale is
             presaleTimeElapsed = block.timestamp - startPresaleTime;
         }
 
-        for (uint256 i = 0; i < presaleRounds.length; ++i) {
-            if (presaleTimeElapsed < presaleRounds[i].duration) {
+        uint256 presaleRoundLength = presaleRounds.length;
+        for (uint256 i = 0; i < presaleRoundLength; ++i) {
+            uint256 presaleRoundDuration = presaleRounds[i].duration;
+            if (presaleTimeElapsed < presaleRoundDuration) {
                 return (true, i);
             }
 
-            presaleTimeElapsed -= presaleRounds[i].duration;
+            presaleTimeElapsed -= presaleRoundDuration;
         }
 
         return (false, 0);
