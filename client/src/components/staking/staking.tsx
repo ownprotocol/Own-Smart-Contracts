@@ -24,6 +24,7 @@ import StakingLockupPeriod from "./staking-lockup-period";
 import StakingTokens from "./staking-tokens";
 import StakingSummary from "./staking-summary";
 import { getContractAddresses } from "@/config/contracts";
+import { useGetAllowance } from "@/query/get-allowance";
 
 interface StakingProps {
   ownBalance: string;
@@ -47,6 +48,12 @@ function Staking({
   const activeAccount = useActiveAccount();
   const { stakeContract, ownTokenContract } = useContracts();
   const { stakeAddress } = getContractAddresses();
+  const { allowance: allowanceData, isLoading: isLoadingAllowance } =
+    useGetAllowance(
+      activeAccount?.address ?? "",
+      stakeAddress,
+      ownTokenContract.address,
+    );
 
   const { mutateAsync: sendTxAsync, isPending: isPendingSendTx } =
     useSendTransaction();
@@ -66,17 +73,10 @@ function Staking({
 
   const onSubmit = async (data: StakingFormData) => {
     try {
-      console.log(data);
       const amount = toWei(data.tokenAmount);
       const days = BigInt(data.lockupDuration);
 
-      //allowance check
-      const allowanceTx = await allowance({
-        contract: ownTokenContract,
-        owner: activeAccount?.address ?? "",
-        spender: stakeAddress,
-      });
-
+      const allowanceTx = BigInt(allowanceData ?? 0);
       // check if approval is needed
       if (allowanceTx < amount) {
         try {
