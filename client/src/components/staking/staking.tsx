@@ -1,7 +1,6 @@
 "use client";
 
 import { useActiveAccount, useSendTransaction } from "thirdweb/react";
-import { allowance } from "thirdweb/extensions/erc20";
 import { type Dispatch, type SetStateAction } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -54,6 +53,8 @@ function Staking({
       stakeAddress,
       ownTokenContract.address,
     );
+
+  console.log(isLoadingAllowance);
 
   const { mutateAsync: sendTxAsync, isPending: isPendingSendTx } =
     useSendTransaction();
