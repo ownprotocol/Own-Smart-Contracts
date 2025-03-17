@@ -1,344 +1,1076 @@
 export const presaleABI = [
   {
-    type: "function",
-    name: "UPGRADE_INTERFACE_VERSION",
-    constant: true,
-    stateMutability: "view",
-    payable: false,
     inputs: [],
-    outputs: [
-      {
-        type: "string",
-        name: "",
-      },
-    ],
-  },
-
-  {
-    type: "function",
-    name: "getAllPresaleRounds",
-    constant: true,
-    stateMutability: "view",
-    payable: false,
-    inputs: [],
-    outputs: [
-      {
-        type: "tuple[]",
-        name: "",
-        components: [
-          {
-            type: "uint256",
-            name: "duration",
-          },
-          {
-            type: "uint256",
-            name: "price",
-          },
-          {
-            type: "uint256",
-            name: "allocation",
-          },
-          {
-            type: "uint256",
-            name: "sales",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    type: "function",
-    name: "getCurrentPresaleRoundDetails",
-    constant: true,
-    stateMutability: "view",
-    payable: false,
-    inputs: [],
-    outputs: [
-      {
-        type: "bool",
-        name: "success",
-      },
-      {
-        type: "tuple",
-        name: "",
-        components: [
-          {
-            type: "uint256",
-            name: "duration",
-          },
-          {
-            type: "uint256",
-            name: "price",
-          },
-          {
-            type: "uint256",
-            name: "allocation",
-          },
-          {
-            type: "uint256",
-            name: "sales",
-          },
-        ],
-      },
-      {
-        type: "uint256",
-        name: "roundId",
-      },
-    ],
-  },
-  {
-    type: "function",
-    name: "getUsersPresalePurchases",
-    constant: true,
-    stateMutability: "view",
-    payable: false,
-    inputs: [
-      {
-        type: "address",
-        name: "_user",
-      },
-    ],
-    outputs: [
-      {
-        type: "tuple[]",
-        name: "",
-        components: [
-          {
-            type: "uint256",
-            name: "roundId",
-          },
-          {
-            type: "uint256",
-            name: "ownAmount",
-          },
-          {
-            type: "uint256",
-            name: "usdtAmount",
-          },
-          {
-            type: "address",
-            name: "receiver",
-          },
-          {
-            type: "uint256",
-            name: "timestamp",
-          },
-          {
-            type: "bool",
-            name: "claimed",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    type: "function",
-    name: "hasPresaleStarted",
-    constant: true,
-    stateMutability: "view",
-    payable: false,
-    inputs: [],
-    outputs: [
-      {
-        type: "bool",
-        name: "",
-      },
-    ],
-  },
-
-  {
-    type: "function",
-    name: "own",
-    constant: true,
-    stateMutability: "view",
-    payable: false,
-    inputs: [],
-    outputs: [
-      {
-        type: "address",
-        name: "",
-      },
-    ],
-  },
-  {
-    type: "function",
-    name: "owner",
-    constant: true,
-    stateMutability: "view",
-    payable: false,
-    inputs: [],
-    outputs: [
-      {
-        type: "address",
-        name: "",
-      },
-    ],
-  },
-  {
-    type: "function",
-    name: "presalePurchases",
-    constant: true,
-    stateMutability: "view",
-    payable: false,
-    inputs: [
-      {
-        type: "address",
-        name: "",
-      },
-      {
-        type: "uint256",
-        name: "",
-      },
-    ],
-    outputs: [
-      {
-        type: "uint256",
-        name: "roundId",
-      },
-      {
-        type: "uint256",
-        name: "ownAmount",
-      },
-      {
-        type: "uint256",
-        name: "usdtAmount",
-      },
-      {
-        type: "address",
-        name: "receiver",
-      },
-      {
-        type: "uint256",
-        name: "timestamp",
-      },
-      {
-        type: "bool",
-        name: "claimed",
-      },
-    ],
-  },
-  {
-    type: "function",
-    name: "presaleRounds",
-    constant: true,
-    stateMutability: "view",
-    payable: false,
-    inputs: [
-      {
-        type: "uint256",
-        name: "",
-      },
-    ],
-    outputs: [
-      {
-        type: "uint256",
-        name: "duration",
-      },
-      {
-        type: "uint256",
-        name: "price",
-      },
-      {
-        type: "uint256",
-        name: "allocation",
-      },
-      {
-        type: "uint256",
-        name: "sales",
-      },
-    ],
-  },
-  {
-    type: "function",
-    name: "proxiableUUID",
-    constant: true,
-    stateMutability: "view",
-    payable: false,
-    inputs: [],
-    outputs: [
-      {
-        type: "bytes32",
-        name: "",
-      },
-    ],
-  },
-  {
-    type: "function",
-    name: "startPresaleTime",
-    constant: true,
-    stateMutability: "view",
-    payable: false,
-    inputs: [],
-    outputs: [
-      {
-        type: "uint256",
-        name: "",
-      },
-    ],
-  },
-  {
-    type: "function",
-    name: "totalSales",
-    constant: true,
-    stateMutability: "view",
-    payable: false,
-    inputs: [],
-    outputs: [
-      {
-        type: "uint256",
-        name: "",
-      },
-    ],
-  },
-  {
-    type: "function",
-    name: "updatePresaleRoundPrice",
-    constant: false,
-    payable: false,
     stateMutability: "nonpayable",
-    inputs: [
-      {
-        type: "uint256",
-        name: "_roundId",
-      },
-      {
-        type: "uint256",
-        name: "_newPrice",
-      },
-    ],
-    outputs: [],
+    type: "constructor",
   },
   {
-    type: "function",
-    name: "upgradeToAndCall",
-    constant: false,
-    stateMutability: "payable",
-    payable: true,
     inputs: [
       {
+        internalType: "address",
+        name: "target",
         type: "address",
-        name: "newImplementation",
-      },
-      {
-        type: "bytes",
-        name: "data",
       },
     ],
-    outputs: [],
+    name: "AddressEmptyCode",
+    type: "error",
   },
   {
-    type: "function",
-    name: "usdt",
-    constant: true,
-    stateMutability: "view",
-    payable: false,
     inputs: [],
+    name: "AllPresaleRoundsHaveEnded",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "CannotClaimBackPresaleTokensWhilePresaleIsInProgress",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "CannotSetAddressToZero",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "CannotSetPresaleClaimTimestampToBeBeforeRoundEnd",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "CannotSetPresaleRoundAllocationToZero",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "CannotSetPresaleRoundDurationToZero",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "CannotSetPresaleRoundPriceToZero",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "CannotSetPresaleStartTimeOncePresaleHasStarted",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "CannotSetPresaleStartTimeToPastTime",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "CannotUpdatePresaleRoundThatHasEndedOrInProgress",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "implementation",
+        type: "address",
+      },
+    ],
+    name: "ERC1967InvalidImplementation",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ERC1967NonPayable",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "FailedCall",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "remaining",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "requested",
+        type: "uint256",
+      },
+    ],
+    name: "InsufficientBalanceInPresaleRoundForSale",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "balance",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "allocation",
+        type: "uint256",
+      },
+    ],
+    name: "InsufficientOwnBalanceForPresaleRounds",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "InvalidInitialization",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NoPresaleTokensToClaim",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotInitializing",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+    ],
+    name: "OwnableInvalidOwner",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "OwnableUnauthorizedAccount",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "PresaleHasNotStarted",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "PresaleRoundIndexOutOfBounds",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "UUPSUnauthorizedCallContext",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "slot",
+        type: "bytes32",
+      },
+    ],
+    name: "UUPSUnsupportedProxiableUUID",
+    type: "error",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint64",
+        name: "version",
+        type: "uint64",
+      },
+    ],
+    name: "Initialized",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "ownAddress",
+        type: "address",
+      },
+    ],
+    name: "OwnAddressSet",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "previousOwner",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "OwnershipTransferred",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "roundId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "newClaimTimestamp",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "oldClaimTimestamp",
+        type: "uint256",
+      },
+    ],
+    name: "PresaleClaimTimestampUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "roundId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "newAllocation",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "oldAllocation",
+        type: "uint256",
+      },
+    ],
+    name: "PresaleRoundAllocationUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "roundId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "newDuration",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "oldDuration",
+        type: "uint256",
+      },
+    ],
+    name: "PresaleRoundDurationUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "roundId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "newPrice",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "oldPrice",
+        type: "uint256",
+      },
+    ],
+    name: "PresaleRoundPriceUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "duration",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "price",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "allocation",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "sales",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "claimTokensTimestamp",
+            type: "uint256",
+          },
+        ],
+        indexed: false,
+        internalType: "struct IPresale.PresaleRound[]",
+        name: "rounds",
+        type: "tuple[]",
+      },
+    ],
+    name: "PresaleRoundsAdded",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "startTime",
+        type: "uint256",
+      },
+    ],
+    name: "PresaleStartTimeSet",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "PresaleTokensClaimed",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "PresaleTokensClaimedBack",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "receiver",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "roundId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "price",
+        type: "uint256",
+      },
+    ],
+    name: "PresaleTokensPurchased",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "usdtAddress",
+        type: "address",
+      },
+    ],
+    name: "USDTAddressSet",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "USDTClaimed",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "implementation",
+        type: "address",
+      },
+    ],
+    name: "Upgraded",
+    type: "event",
+  },
+  {
+    inputs: [],
+    name: "UPGRADE_INTERFACE_VERSION",
     outputs: [
       {
-        type: "address",
+        internalType: "string",
         name: "",
+        type: "string",
       },
     ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "duration",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "price",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "allocation",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "sales",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "claimTokensTimestamp",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct IPresale.PresaleRound[]",
+        name: "_rounds",
+        type: "tuple[]",
+      },
+    ],
+    name: "addPresaleRounds",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "claimBackPresaleTokens",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "claimPresaleRoundTokens",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "claimUSDT",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getAllPresaleRounds",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "duration",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "price",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "allocation",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "sales",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "claimTokensTimestamp",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct IPresale.PresaleRound[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getCurrentPresaleRoundDetails",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "success",
+        type: "bool",
+      },
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "duration",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "price",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "allocation",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "sales",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "claimTokensTimestamp",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct IPresale.PresaleRound",
+        name: "",
+        type: "tuple",
+      },
+      {
+        internalType: "uint256",
+        name: "roundId",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_user",
+        type: "address",
+      },
+    ],
+    name: "getUsersPresalePurchases",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "roundId",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "ownAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "usdtAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "receiver",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "timestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "claimed",
+            type: "bool",
+          },
+        ],
+        internalType: "struct IPresale.PresalePurchase[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "hasPresaleStarted",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IOwn",
+        name: "_own",
+        type: "address",
+      },
+      {
+        internalType: "contract IERC20",
+        name: "_usdt",
+        type: "address",
+      },
+    ],
+    name: "initialize",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "own",
+    outputs: [
+      {
+        internalType: "contract IOwn",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "owner",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "presalePurchases",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "roundId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "ownAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "usdtAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "receiver",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "timestamp",
+        type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "claimed",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "presaleRounds",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "duration",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "price",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "allocation",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "sales",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "claimTokensTimestamp",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "proxiableUUID",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_usdtAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "_receiver",
+        type: "address",
+      },
+    ],
+    name: "purchasePresaleTokens",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "renounceOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IOwn",
+        name: "_own",
+        type: "address",
+      },
+    ],
+    name: "setOwnAddress",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_startPresaleTime",
+        type: "uint256",
+      },
+    ],
+    name: "setPresaleStartTime",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IERC20",
+        name: "_usdt",
+        type: "address",
+      },
+    ],
+    name: "setUSDTAddress",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "startPresaleTime",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "totalSales",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_roundId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_newAllocation",
+        type: "uint256",
+      },
+    ],
+    name: "updatePresaleRoundAllocation",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_roundId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_newClaimTimestamp",
+        type: "uint256",
+      },
+    ],
+    name: "updatePresaleRoundClaimTimestamp",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_roundId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_newDuration",
+        type: "uint256",
+      },
+    ],
+    name: "updatePresaleRoundDuration",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_roundId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_newPrice",
+        type: "uint256",
+      },
+    ],
+    name: "updatePresaleRoundPrice",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newImplementation",
+        type: "address",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+    ],
+    name: "upgradeToAndCall",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "usdt",
+    outputs: [
+      {
+        internalType: "contract IERC20",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
   },
 ] as const;
 export const stakeABI = [

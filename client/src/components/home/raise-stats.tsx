@@ -18,7 +18,7 @@ function RaiseStats() {
   }
 
   const {
-    round: { price, sales, allocation },
+    roundDetails: { price, sales, allocation },
   } = presaleData;
 
   return (
