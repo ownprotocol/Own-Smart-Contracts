@@ -1,7 +1,6 @@
 "use client";
 import { useActiveAccount } from "thirdweb/react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 
 import StakingDrawerHeader from "./staking-drawer-header";
 import Staking from "./staking";
@@ -15,7 +14,7 @@ import {
 } from "@/components";
 import { useGetAuthUser } from "@/query";
 import { useState } from "react";
-import { DrawerHeader, DrawerTitle, DrawerClose } from "../ui/drawer";
+
 
 interface StakingDrawerContentProps {
   setIsOpen: (isOpen: boolean) => void;
