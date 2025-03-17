@@ -358,11 +358,17 @@ interface IPresale {
      * @return success Boolean indicating if a round is currently active
      * @return round Details of the current presale round
      * @return roundId ID of the current presale round
+     * @return endTime Timestamp when the current round ends
      */
     function getCurrentPresaleRoundDetails()
         external
         view
-        returns (bool success, PresaleRound memory round, uint256 roundId);
+        returns (
+            bool success,
+            PresaleRound memory round,
+            uint256 roundId,
+            uint256 endTime
+        );
 
     /**
      * @notice Checks if the presale has started

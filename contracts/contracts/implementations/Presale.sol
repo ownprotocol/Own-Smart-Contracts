@@ -377,7 +377,12 @@ contract Presale is
         external
         view
         override
-        returns (bool success, PresaleRound memory, uint256 roundId)
+        returns (
+            bool success,
+            PresaleRound memory,
+            uint256 roundId,
+            uint256 endTime
+        )
     {
         (
             bool roundsInProgress,
@@ -385,13 +390,20 @@ contract Presale is
         ) = _getCurrentPresaleRoundId();
 
         if (!roundsInProgress) {
-            return (false, PresaleRound(0, 0, 0, 0, 0), 0);
+            return (false, PresaleRound(0, 0, 0, 0, 0), 0, 0);
+        }
+
+        uint256 endTimeForPresaleRound = startPresaleTime;
+
+        for (uint256 i = 0; i <= currentPresaleRoundId; ++i) {
+            endTimeForPresaleRound += presaleRounds[i].duration;
         }
 
         return (
             true,
             presaleRounds[currentPresaleRoundId],
-            currentPresaleRoundId
+            currentPresaleRoundId,
+            endTimeForPresaleRound
         );
     }
 
