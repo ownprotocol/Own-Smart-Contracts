@@ -1,7 +1,11 @@
 import { DeployFunction } from "hardhat-deploy/dist/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { getContractInstancesFromDeployment } from "../helpers/testing-api";
-import { DayOfWeek, setDayOfWeekInHardhatNode } from "../helpers/evm";
+import {
+  DayOfWeek,
+  getCurrentBlockTimestamp,
+  setDayOfWeekInHardhatNode,
+} from "../helpers/evm";
 import { parseEther } from "ethers";
 
 const isTesting = process.env.IS_TESTING || false;
@@ -11,7 +15,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   console.log("Setting up test environment");
 
-  const { own, stake } = await getContractInstancesFromDeployment(
+  const { own, stake, presale } = await getContractInstancesFromDeployment(
     await hre.deployments.all()
   );
 
@@ -20,6 +24,23 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   await stake.write.startStakingNextWeek();
 
   await own.write.transfer([stake.address, parseEther("1000000")]);
+
+  await own.write.transfer([presale.address, parseEther("1000000")]);
+
+  await presale.write.addPresaleRounds([
+    [
+      {
+        duration: 3600n,
+        price: parseEther("1.5"),
+        allocation: parseEther("1000"),
+        sales: 0n,
+        claimTokensTimestamp: 0n,
+      },
+    ],
+  ]);
+
+  const currentTime = await getCurrentBlockTimestamp();
+  await presale.write.setPresaleStartTime([BigInt(currentTime + 60)]);
 
   await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
 };
