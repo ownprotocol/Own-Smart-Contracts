@@ -21,7 +21,7 @@ export const useGetCurrentPresaleRound = () => {
           claimTokensTimestamp: Number(data[1].claimTokensTimestamp),
         },
         roundId: Number(data[2]),
-
+        endTime: Number(data[3]),
       }
     : null;
   return { presaleData, isLoading };

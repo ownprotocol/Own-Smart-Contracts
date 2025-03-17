@@ -9,7 +9,7 @@ function PriceIncreaseTimer() {
   const { presaleData, isLoading: isLoadingPresaleRound } =
     useGetCurrentPresaleRound();
   const expiryTimestamp = new Date(
-    Date.now() + (presaleData?.roundDetails?.duration ?? 0) * 1000,
+    Date.now() + (presaleData?.endTime ?? 0) * 1000,
   );
   const { days, hours, minutes, seconds } = useTimer({ expiryTimestamp });
 

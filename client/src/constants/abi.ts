@@ -653,6 +653,11 @@ export const presaleABI = [
         name: "roundId",
         type: "uint256",
       },
+      {
+        internalType: "uint256",
+        name: "endTime",
+        type: "uint256",
+      },
     ],
     stateMutability: "view",
     type: "function",
