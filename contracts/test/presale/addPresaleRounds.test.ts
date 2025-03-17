@@ -31,10 +31,10 @@ describe("Presale - addPresaleRounds", async () => {
             claimTokensTimestamp: BigInt(0),
           },
         ],
-      ]),
+      ])
     ).to.be.revertedWithCustomError(
       presale,
-      "InsufficientOwnBalanceForPresaleRounds",
+      "InsufficientOwnBalanceForPresaleRounds"
     );
   });
 
@@ -50,10 +50,10 @@ describe("Presale - addPresaleRounds", async () => {
             claimTokensTimestamp: BigInt(0),
           },
         ],
-      ]),
+      ])
     ).to.be.revertedWithCustomError(
       presale,
-      "CannotSetPresaleRoundDurationToZero",
+      "CannotSetPresaleRoundDurationToZero"
     );
   });
 
@@ -69,10 +69,29 @@ describe("Presale - addPresaleRounds", async () => {
             claimTokensTimestamp: BigInt(0),
           },
         ],
-      ]),
+      ])
     ).to.be.revertedWithCustomError(
       presale,
-      "CannotSetPresaleRoundPriceToZero",
+      "CannotSetPresaleRoundPriceToZero"
+    );
+  });
+
+  it("Should revert when passing a value other than 0 for sales when adding a presale round", async () => {
+    await expect(
+      presale.write.addPresaleRounds([
+        [
+          {
+            duration: BigInt(1),
+            price: BigInt(1),
+            allocation: BigInt(1),
+            sales: BigInt(1),
+            claimTokensTimestamp: BigInt(0),
+          },
+        ],
+      ])
+    ).to.be.revertedWithCustomError(
+      presale,
+      "CannotSetPresaleRoundSalesToNonZero"
     );
   });
 
@@ -88,14 +107,14 @@ describe("Presale - addPresaleRounds", async () => {
             claimTokensTimestamp: BigInt(0),
           },
         ],
-      ]),
+      ])
     ).to.be.revertedWithCustomError(
       presale,
-      "CannotSetPresaleRoundAllocationToZero",
+      "CannotSetPresaleRoundAllocationToZero"
     );
   });
 
-  it("Should revert if the presale time is set and trying to set the claim tokens timestamp to before a previous round is due to end", async() => {
+  it("Should revert if the presale time is set and trying to set the claim tokens timestamp to before a previous round is due to end", async () => {
     await own.write.transfer([presale.address, BigInt(10)]);
 
     await presale.write.addPresaleRounds([
@@ -125,10 +144,10 @@ describe("Presale - addPresaleRounds", async () => {
             claimTokensTimestamp: BigInt(1),
           },
         ],
-      ]),
+      ])
     ).to.be.revertedWithCustomError(
       presale,
-      "CannotSetPresaleClaimTimestampToBeBeforeRoundEnd",
+      "CannotSetPresaleClaimTimestampToBeBeforeRoundEnd"
     );
   });
 
@@ -154,7 +173,7 @@ describe("Presale - addPresaleRounds", async () => {
 
     await expect(presale.write.addPresaleRounds([presaleRounds])).to.emit(
       presale,
-      "PresaleRoundsAdded",
+      "PresaleRoundsAdded"
     );
 
     const fetchedPresaleRounds = await presale.read.getAllPresaleRounds();
@@ -197,10 +216,10 @@ describe("Presale - addPresaleRounds", async () => {
             claimTokensTimestamp: BigInt(0),
           },
         ],
-      ]),
+      ])
     ).to.be.revertedWithCustomError(
       presale,
-      "InsufficientOwnBalanceForPresaleRounds",
+      "InsufficientOwnBalanceForPresaleRounds"
     );
   });
 
@@ -214,14 +233,14 @@ describe("Presale - addPresaleRounds", async () => {
           price: BigInt(1),
           allocation: BigInt(3),
           sales: BigInt(0),
-            claimTokensTimestamp: BigInt(0),
+          claimTokensTimestamp: BigInt(0),
         },
         {
           duration: BigInt(1),
           price: BigInt(1),
           allocation: BigInt(7),
           sales: BigInt(0),
-            claimTokensTimestamp: BigInt(0),
+          claimTokensTimestamp: BigInt(0),
         },
       ],
     ]);
@@ -237,7 +256,7 @@ describe("Presale - addPresaleRounds", async () => {
             claimTokensTimestamp: BigInt(0),
           },
         ],
-      ]),
+      ])
     ).to.emit(presale, "PresaleRoundsAdded");
   });
 
@@ -251,7 +270,7 @@ describe("Presale - addPresaleRounds", async () => {
           price: BigInt(1),
           allocation: BigInt(3),
           sales: BigInt(0),
-            claimTokensTimestamp: BigInt(0),
+          claimTokensTimestamp: BigInt(0),
         },
       ],
     ]);
@@ -263,7 +282,7 @@ describe("Presale - addPresaleRounds", async () => {
           price: BigInt(1),
           allocation: BigInt(3),
           sales: BigInt(0),
-            claimTokensTimestamp: BigInt(0),
+          claimTokensTimestamp: BigInt(0),
         },
       ],
     ]);
@@ -279,12 +298,12 @@ describe("Presale - addPresaleRounds", async () => {
               price: BigInt(1),
               allocation: BigInt(3),
               sales: BigInt(0),
-            claimTokensTimestamp: BigInt(0),
+              claimTokensTimestamp: BigInt(0),
             },
           ],
         ],
-        { account: signers[1].account },
-      ),
+        { account: signers[1].account }
+      )
     ).to.be.revertedWithCustomError(presale, "OwnableUnauthorizedAccount");
   });
 
@@ -317,7 +336,6 @@ describe("Presale - addPresaleRounds", async () => {
       parseEther("3"),
       signers[0].account.address,
     ]);
-    
 
     await expect(
       presale.write.addPresaleRounds([
@@ -330,10 +348,10 @@ describe("Presale - addPresaleRounds", async () => {
             claimTokensTimestamp: BigInt(currentTime + 50),
           },
         ],
-      ]),
+      ])
     ).to.revertedWithCustomError(
       presale,
-      "InsufficientOwnBalanceForPresaleRounds",
+      "InsufficientOwnBalanceForPresaleRounds"
     );
 
     await own.write.transfer([presale.address, parseEther("10")]);
@@ -349,7 +367,7 @@ describe("Presale - addPresaleRounds", async () => {
             claimTokensTimestamp: BigInt(currentTime + 50),
           },
         ],
-      ]),
+      ])
     ).to.emit(presale, "PresaleRoundsAdded");
   });
 });

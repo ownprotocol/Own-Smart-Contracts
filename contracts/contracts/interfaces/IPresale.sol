@@ -217,6 +217,11 @@ interface IPresale {
     error NoPresaleTokensToClaim();
 
     /**
+     * @notice Error thrown when setting a presale sales amount to a non-zero value when adding it
+     */
+    error CannotSetPresaleRoundSalesToNonZero();
+
+    /**
      * @notice Error thrown when requested purchase amount exceeds remaining round allocation
      * @param remaining Remaining tokens in the round
      * @param requested Tokens requested for purchase
@@ -231,7 +236,15 @@ interface IPresale {
      */
     error CannotSetAddressToZero();
 
+    /**
+     * @notice Error thrown when attempting to set a presale claim timestamp to be before the round ends
+     */
     error CannotSetPresaleClaimTimestampToBeBeforeRoundEnd();
+
+    /**
+     * @notice Thrown when attempting to purchase 0 tokens
+     */
+    error CannotPurchase0PresaleTokens();
 
     /**
      * @notice Adds new presale rounds to the contract
