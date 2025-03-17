@@ -23,7 +23,7 @@ import StakingLockupPeriod from "./staking-lockup-period";
 import StakingTokens from "./staking-tokens";
 import StakingSummary from "./staking-summary";
 import { getContractAddresses } from "@/config/contracts";
-import { useGetAllowance } from "@/query/get-allowance";
+import { allowance } from "thirdweb/extensions/erc20";
 
 interface StakingProps {
   ownBalance: string;
@@ -33,6 +33,8 @@ interface StakingProps {
   lockupDuration: number;
   setTokensToStake: Dispatch<SetStateAction<number>>;
   setLockupDuration: Dispatch<SetStateAction<number>>;
+  setIsStakingLoading: Dispatch<SetStateAction<boolean>>;
+  setConfirmStaking: Dispatch<SetStateAction<boolean>>;
 }
 
 function Staking({
@@ -42,19 +44,13 @@ function Staking({
   lockupDuration,
   setTokensToStake,
   setLockupDuration,
+  setIsStakingLoading,
+  setConfirmStaking,
 }: StakingProps) {
   const { isValid } = useGetAuthUser();
   const activeAccount = useActiveAccount();
   const { stakeContract, ownTokenContract } = useContracts();
   const { stakeAddress } = getContractAddresses();
-  const { allowance: allowanceData, isLoading: isLoadingAllowance } =
-    useGetAllowance(
-      activeAccount?.address ?? "",
-      stakeAddress,
-      ownTokenContract.address,
-    );
-
-  console.log(isLoadingAllowance);
 
   const { mutateAsync: sendTxAsync, isPending: isPendingSendTx } =
     useSendTransaction();
@@ -73,11 +69,16 @@ function Staking({
   });
 
   const onSubmit = async (data: StakingFormData) => {
+    setIsStakingLoading(true);
     try {
       const amount = toWei(data.tokenAmount);
       const days = BigInt(data.lockupDuration);
 
-      const allowanceTx = BigInt(allowanceData ?? 0);
+      const allowanceTx = await allowance({
+        contract: ownTokenContract,
+        owner: activeAccount?.address ?? "",
+        spender: stakeAddress,
+      });
       // check if approval is needed
       if (allowanceTx < amount) {
         try {
@@ -94,7 +95,6 @@ function Staking({
               PrepareTransactionOptions
             >,
           );
-          toast.success("Approval successful");
         } catch (approvalError) {
           toast.error("Approval failed");
           console.error("Approval error:", approvalError);
@@ -115,7 +115,6 @@ function Staking({
             PrepareTransactionOptions
           >,
         );
-        toast.success("Stake successful");
       } catch (stakingError) {
         toast.error("Staking failed");
         console.error("Staking error:", stakingError);
@@ -123,17 +122,14 @@ function Staking({
     } catch (error) {
       toast.error("Transaction failed");
       console.error("Transaction error:", error);
+    } finally {
+      setIsStakingLoading(false);
+      setConfirmStaking(true);
     }
   };
 
   return (
     <div className="px-4 py-2">
-      {isPendingSendTx && (
-        <div className="flex items-center justify-center text-primary">
-          Loading...
-        </div>
-      )}
-
       {!isPendingSendTx && (
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-0 md:gap-4">
@@ -182,7 +178,8 @@ function Staking({
                   !isValid ||
                   tokensToStake === 0 ||
                   needsSwitch ||
-                  lockupDuration === 0
+                  lockupDuration === 0 ||
+                  isPendingSendTx
                 }
                 className="w-full rounded-lg bg-purple-700 px-4 py-2 font-dm_sans text-[14px] font-medium leading-[20px] text-white transition-colors hover:bg-purple-800 md:max-w-fit md:px-8 md:text-[18px] md:leading-[28px]"
               >
