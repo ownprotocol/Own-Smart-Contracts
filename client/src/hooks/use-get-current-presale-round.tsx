@@ -8,7 +8,6 @@ export const useGetCurrentPresaleRound = () => {
     contract: presaleContract,
     method: "getCurrentPresaleRoundDetails",
   });
-  console.log(data);
   const presaleData = data
     ? {
         success: data[0],
