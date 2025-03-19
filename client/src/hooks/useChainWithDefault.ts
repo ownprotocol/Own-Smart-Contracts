@@ -1,5 +1,5 @@
 import { MAIN_CHAIN } from "@/config/contracts";
-import { ChainOptions } from "thirdweb/chains";
+import { type ChainOptions } from "thirdweb/chains";
 import { useActiveWalletChain } from "thirdweb/react";
 
 export const useActiveChainWithDefault = (): Readonly<

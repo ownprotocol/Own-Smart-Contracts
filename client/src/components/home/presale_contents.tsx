@@ -17,7 +17,7 @@ export const PresalePageContents = () => {
         <PresaleBanner roundId={null} />
         <RaiseStatsSkeleton />
         <PriceIncreaseTimerSkeleton />
-        <ActionButtons disabled={true} />
+        <ActionButtons />
       </>
     );
   }

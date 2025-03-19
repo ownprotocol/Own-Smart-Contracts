@@ -2,7 +2,7 @@
 
 import { ProgressBar } from "@/components";
 import Image from "next/image";
-import { CurrentPresaleRoundDetails } from "@/types/presale";
+import { type CurrentPresaleRoundDetails } from "@/types/presale";
 
 interface RaiseStatsProps {
   usdtBalance: number;
