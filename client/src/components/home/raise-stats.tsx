@@ -13,13 +13,15 @@ function RaiseStats() {
   const { presaleData, isLoading: isLoadingPresaleRound } =
     useGetCurrentPresaleRound();
 
-  if (isLoadingPresaleBalance || isLoadingPresaleRound || !presaleData) {
+  if (isLoadingPresaleBalance || isLoadingPresaleRound) {
     return <RaiseStatsSkeleton />;
   }
 
   const {
     roundDetails: { price, sales, allocation },
-  } = presaleData;
+  } = presaleData ?? {
+    roundDetails: { price: 0, sales: 0, allocation: 0 },
+  };
 
   return (
     <div className="relative flex flex-col gap-4 md:mt-1 md:min-h-[200px]">
@@ -44,8 +46,8 @@ function RaiseStats() {
       </div>
       <div className="">
         <ProgressBar
-          sales={sales ? sales : 12000}
-          allocation={allocation ? allocation : 30000}
+          sales={sales ?? 12000}
+          allocation={allocation ?? 30000}
         />
       </div>
       <div className="absolute left-[-15%] top-[-15%] -z-10 hidden md:block">

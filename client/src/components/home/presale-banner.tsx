@@ -6,11 +6,10 @@ import { useGetCurrentPresaleRound } from "@/hooks";
 function PresaleBanner() {
   const { presaleData, isLoading: isLoadingPresaleRound } =
     useGetCurrentPresaleRound();
-
-  if (isLoadingPresaleRound || !presaleData) {
+  if (isLoadingPresaleRound) {
     return <PresaleBannerSkeleton />;
   }
-  const { roundId } = presaleData;
+  const roundId = presaleData?.roundId ?? 1;
 
   return (
     <div className="relative min-h-[200px]">
