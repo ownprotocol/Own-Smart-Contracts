@@ -1,4 +1,5 @@
 import { type Network } from "@/types";
+import { sepolia } from "thirdweb/chains";
 
 export interface ContractAddresses {
   usdtAddress: string;
@@ -33,3 +34,7 @@ export const getContractAddresses = (): ContractAddresses => {
 
   throw new Error(`Unknown network: ${network}`);
 };
+
+// The default network we are using
+// TODO: Change to mainnet for deployment
+export const MAIN_CHAIN = sepolia;

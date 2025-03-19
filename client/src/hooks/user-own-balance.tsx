@@ -1,8 +1,7 @@
 "use client";
 
-import { useWalletBalance } from "thirdweb/react";
+import { useActiveWalletChain, useWalletBalance } from "thirdweb/react";
 
-import { getActiveChain } from "@/config/chain";
 import { getContractAddresses } from "@/config/contracts";
 import { client } from "@/lib/client";
 
@@ -12,13 +11,15 @@ export const useUserOwnBalance = ({
   userWalletAddress: string;
 }) => {
   const { ownTokenAddress } = getContractAddresses();
-  const activeChain = getActiveChain();
+  const activeChain = useActiveWalletChain();
+
   const { data, isLoading, isError } = useWalletBalance({
     chain: activeChain,
     address: userWalletAddress,
     client,
     tokenAddress: ownTokenAddress,
   });
+
   return {
     ownBalance: data?.displayValue,
     ownTokenSymbol: data?.symbol,

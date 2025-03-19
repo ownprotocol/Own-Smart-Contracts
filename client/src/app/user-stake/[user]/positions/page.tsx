@@ -1,6 +1,5 @@
 "use client";
 
-import { useGetAuthUser } from "@/query";
 import { useCheckAndSwitchToActiveChain } from "@/hooks";
 
 import { useRouter } from "next/navigation";
@@ -15,9 +14,8 @@ import {
 
 function UserStakingPositionsPage() {
   const router = useRouter();
-  const { isValid } = useGetAuthUser();
   const { needsSwitch, switchToCorrectChain, currentAppChain } =
-    useCheckAndSwitchToActiveChain(isValid);
+    useCheckAndSwitchToActiveChain();
 
   const handleDialogClose = () => {
     router.push("/");

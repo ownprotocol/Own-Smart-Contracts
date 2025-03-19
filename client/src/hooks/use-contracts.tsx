@@ -1,26 +1,18 @@
-import { getActiveChain } from "@/config/chain";
 import {
   presaleABI,
   stakeABI,
   ownTokenABI,
   veOwnTokenABI,
 } from "@/constants/abi";
-import { getContractAddresses } from "@/config/contracts";
+import { getContractAddresses, MAIN_CHAIN } from "@/config/contracts";
 import { client } from "@/lib/client";
-import { type Chain, getContract } from "thirdweb";
-import { localhost, mainnet, sepolia } from "thirdweb/chains";
+import { getContract } from "thirdweb";
 import { type Abi } from "thirdweb/utils";
+import { useActiveWalletChain } from "thirdweb/react";
 
 export const useContracts = () => {
-  const activeChain = getActiveChain();
-  let chain: Chain;
-  if (activeChain.name === "Sepolia") {
-    chain = sepolia;
-  } else if (activeChain.name === "Localhost") {
-    chain = localhost;
-  } else {
-    chain = mainnet;
-  }
+  const chain = useActiveWalletChain() ?? MAIN_CHAIN;
+
   const contractAddresses = getContractAddresses();
   const usdtContract = getContract({
     client,

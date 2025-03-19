@@ -1,34 +1,25 @@
-import { getActiveChain } from "@/config/chain";
+import { MAIN_CHAIN } from "@/config/contracts";
+import { SUPPORTED_NETWORKS } from "@/types";
 import { useSwitchActiveWalletChain } from "thirdweb/react";
 import { useActiveWalletChain } from "thirdweb/react";
 
-/**
- * This hook checks if the active chain is different from the app's configured chain
- * and returns a function to switch to the correct chain if needed.
- * @returns {Object} An object containing:
- * - needsSwitch: boolean indicating if chain switch is needed
- * - switchToCorrectChain: function to switch to the correct chain
- * - isValid: boolean indicating if the user is authenticated
- */
-
-export const useCheckAndSwitchToActiveChain = (isValid = false) => {
+export const useCheckAndSwitchToActiveChain = () => {
   const activeChain = useActiveWalletChain();
-  const currentAppChain = getActiveChain();
   const switchChain = useSwitchActiveWalletChain();
 
   const needsSwitch =
-    isValid && activeChain && activeChain.name !== currentAppChain.name;
+    activeChain && SUPPORTED_NETWORKS.includes(activeChain?.name as any);
 
   const switchToCorrectChain = async () => {
     if (needsSwitch) {
-      await switchChain(currentAppChain);
+      await switchChain(MAIN_CHAIN);
     }
   };
 
   return {
     needsSwitch,
     switchToCorrectChain,
-    currentAppChain,
+    currentAppChain: MAIN_CHAIN,
   };
 };
 

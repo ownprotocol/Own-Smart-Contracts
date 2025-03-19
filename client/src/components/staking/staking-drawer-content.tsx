@@ -12,9 +12,7 @@ import {
   StakingLoading,
   StakingLoadingState,
 } from "@/components";
-import { useGetAuthUser } from "@/query";
 import { useState } from "react";
-
 
 interface StakingDrawerContentProps {
   setIsOpen: (isOpen: boolean) => void;
@@ -28,9 +26,8 @@ const StakingDrawerContent = ({ setIsOpen }: StakingDrawerContentProps) => {
   const [confirmStaking, setConfirmStaking] = useState(false);
   const [tokensToStake, setTokensToStake] = useState<number>(0);
   const [lockupDuration, setLockupDuration] = useState<number>(0);
-  const { isValid } = useGetAuthUser();
   const { needsSwitch, switchToCorrectChain, currentAppChain } =
-    useCheckAndSwitchToActiveChain(isValid);
+    useCheckAndSwitchToActiveChain();
   const {
     ownBalance,
     ownTokenSymbol,

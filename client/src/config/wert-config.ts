@@ -1,7 +1,7 @@
 import type { Options } from "@wert-io/widget-initializer/types";
 import { v4 as uuidv4 } from "uuid";
-import { activeChain } from "@/config/chain";
 import WertWidget from "@wert-io/widget-initializer";
+import { MAIN_CHAIN } from "./contracts";
 
 /**
  * Return only the base options in production
@@ -14,7 +14,7 @@ export const getWertOptions = (): Options => {
     partner_id: process.env.NEXT_PUBLIC_WERT_PARTNER_ID!,
     click_id: uuidv4(),
     commodity: "ETH",
-    network: activeChain.name,
+    network: MAIN_CHAIN.name,
     commodities: JSON.stringify([
       {
         commodity: "ETH",

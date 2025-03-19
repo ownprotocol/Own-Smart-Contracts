@@ -6,16 +6,14 @@ import {
   StakeRewardsTable,
   NetworkSwitchDialog,
 } from "@/components";
-import { useGetAuthUser } from "@/query";
 import { useCheckAndSwitchToActiveChain } from "@/hooks";
 
 import { useRouter } from "next/navigation";
 import { BlurredStakingBoard } from "@/components";
 function UserStakingRewardsPage() {
   const router = useRouter();
-  const { isValid } = useGetAuthUser();
   const { needsSwitch, switchToCorrectChain, currentAppChain } =
-    useCheckAndSwitchToActiveChain(isValid);
+    useCheckAndSwitchToActiveChain();
 
   const handleDialogClose = () => {
     router.push("/");
