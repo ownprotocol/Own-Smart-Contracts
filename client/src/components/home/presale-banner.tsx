@@ -1,16 +1,8 @@
-"use client";
+interface PresaleBannerProps {
+  roundId: number | null;
+}
 
-import { PresaleBannerSkeleton } from "@/components";
-import { useGetCurrentPresaleRound } from "@/hooks";
-
-function PresaleBanner() {
-  const { presaleData, isLoading: isLoadingPresaleRound } =
-    useGetCurrentPresaleRound();
-  if (isLoadingPresaleRound) {
-    return <PresaleBannerSkeleton />;
-  }
-  const roundId = presaleData?.roundId ?? 1;
-
+function PresaleBanner({ roundId }: PresaleBannerProps) {
   return (
     <div className="relative min-h-[200px]">
       {/* Glow effect */}
@@ -21,9 +13,11 @@ function PresaleBanner() {
           Buy $Own Token in Presale Now
         </h1>
         <div className="flex w-full justify-start md:w-1/4 md:justify-end">
-          <span className="rounded-full bg-[#C1691180] px-4 py-1.5 pt-2 text-sm font-normal uppercase tracking-wider text-[#F1AF6E] md:text-xs">
-            Phase {roundId || 1}
-          </span>
+          {roundId !== null && (
+            <span className="rounded-full bg-[#C1691180] px-4 py-1.5 pt-2 text-sm font-normal uppercase tracking-wider text-[#F1AF6E] md:text-xs">
+              Phase {roundId}
+            </span>
+          )}
         </div>
       </div>
     </div>

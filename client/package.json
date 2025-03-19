@@ -26,6 +26,7 @@
     "@t3-oss/env-nextjs": "^0.10.1",
     "@tanstack/react-query": "^5.67.1",
     "@wert-io/widget-initializer": "^6.7.1",
+    "abitype": "^1.0.8",
     "axios": "^1.8.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -49,6 +50,7 @@
     "thirdweb": "^5.90.1",
     "uuid": "^11.1.0",
     "vaul": "^1.1.2",
+    "viem": "^2.23.12",
     "zod": "^3.24.2"
   },
   "devDependencies": {

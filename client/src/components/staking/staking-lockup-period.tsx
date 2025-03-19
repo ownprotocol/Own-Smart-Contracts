@@ -8,6 +8,7 @@ import { type Dispatch, type SetStateAction, useState } from "react";
 import { type FieldErrors } from "react-hook-form";
 import { toast } from "react-toastify";
 import DurationButton from "./duration-button";
+import { FormInput } from "../ui/input";
 
 interface StakingLockupPeriodProps {
   title: string;
@@ -46,21 +47,12 @@ function StakingLockupPeriod({
   };
   return (
     <div className="flex w-full flex-col gap-2">
-      <h1 className="font-dm_mono text-[10px] font-[400] leading-[14px] tracking-[8%] text-gray-500 md:text-[14px] md:leading-[16px]">
-        {title}
-      </h1>
-      <div className="flex items-center border-2 border-gray-500/50 bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
-        <input
-          type="text"
-          {...register("lockupDuration")}
-          onChange={(e) => handleLockUpDuration(undefined, e.target.value)}
-          placeholder="0"
-          className="block w-1/2 min-w-0 grow py-2 pl-4 pr-3 font-dm_sans text-[16px] leading-[20px] tracking-[0.5%] text-gray-900 text-primary placeholder:text-gray-400 focus:outline-none xl:py-4 xl:text-[20px] xl:leading-[24px]"
-        />
-      </div>
-      <p className="h-2 font-dm_mono text-[8px] font-[400] leading-[14px] tracking-[8%] text-red-500 md:text-[14px] md:leading-[16px]">
-        {errors.lockupDuration?.message}
-      </p>
+      <FormInput
+        title={title}
+        errorString={errors.lockupDuration?.message}
+        inputProps={{ ...register("lockupDuration") }}
+        onChange={(e) => handleLockUpDuration(undefined, e.target.value)}
+      />
       <div className="flex flex-wrap justify-around gap-2">
         <DurationButton
           duration="1 Week"
