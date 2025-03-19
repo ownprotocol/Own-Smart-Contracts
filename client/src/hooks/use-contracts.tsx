@@ -4,16 +4,17 @@ import {
   ownTokenABI,
   veOwnTokenABI,
 } from "@/constants/abi";
-import { getContractAddresses, MAIN_CHAIN } from "@/config/contracts";
 import { client } from "@/lib/client";
 import { getContract } from "thirdweb";
 import { type Abi } from "thirdweb/utils";
-import { useActiveWalletChain } from "thirdweb/react";
+import { useActiveChainWithDefault } from "./useChainWithDefault";
+import { useContractAddresses } from "./use-contract-addresses";
 
 export const useContracts = () => {
-  const chain = useActiveWalletChain() ?? MAIN_CHAIN;
+  const chain = useActiveChainWithDefault();
+  console.log(chain);
 
-  const contractAddresses = getContractAddresses();
+  const contractAddresses = useContractAddresses();
   const usdtContract = getContract({
     client,
     address: contractAddresses.usdtAddress,

@@ -22,8 +22,8 @@ import { stakingSchema, type StakingFormData } from "@/types/staking";
 import StakingLockupPeriod from "./staking-lockup-period";
 import StakingTokens from "./staking-tokens";
 import StakingSummary from "./staking-summary";
-import { getContractAddresses } from "@/config/contracts";
 import { allowance } from "thirdweb/extensions/erc20";
+import { useContractAddresses } from "@/hooks/use-contract-addresses";
 
 interface StakingProps {
   ownBalance: string;
@@ -50,7 +50,8 @@ function Staking({
   const { isValid } = useGetAuthUser();
   const activeAccount = useActiveAccount();
   const { stakeContract, ownTokenContract } = useContracts();
-  const { stakeAddress } = getContractAddresses();
+
+  const { stakeAddress } = useContractAddresses();
 
   const { mutateAsync: sendTxAsync, isPending: isPendingSendTx } =
     useSendTransaction();

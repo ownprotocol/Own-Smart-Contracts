@@ -12,6 +12,7 @@ export const useGetCurrentPresaleRound =
       contract: presaleContract,
       method: "getCurrentPresaleRoundDetails",
     });
+    console.log(data);
 
     if (isLoading || !data) return { isLoading: true };
 

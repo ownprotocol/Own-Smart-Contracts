@@ -1,19 +1,15 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { openWertWidget } from "@/config/wert-config";
-import { useGetAuthUser } from "@/query";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ConnectWalletButton } from "@/components";
+import { Drawer, DrawerContent, DrawerTrigger } from "../ui/drawer";
+import { BuyWithCryptoDrawer } from "./buy-with-crypto/buy-with-crypto-modal";
+import { useActiveAccount } from "thirdweb/react";
 
 function ActionButtons() {
-  const [authCheck, setAuthCheck] = useState(false);
-  const { isPending, isValid } = useGetAuthUser();
-
-  useEffect(() => {
-    if (!isPending) {
-      setAuthCheck(true);
-    }
-  }, [isPending]);
+  const account = useActiveAccount();
+  const [buyWithCryptoOpen, setBuyWithCryptoOpen] = useState(false);
 
   const buttonStyles =
     "font-funnel bg-[#C58BFF] px-8 py-6 text-[14px] font-medium leading-[14px] tracking-[0%] text-black hover:bg-[#E49048] md:text-[16px] md:leading-[16px]";
@@ -23,7 +19,7 @@ function ActionButtons() {
   return (
     <div className="mt-4 flex flex-col gap-3 p-4 md:flex-row md:justify-center md:gap-4">
       {/* Card payment button */}
-      {isValid && authCheck && (
+      {account && (
         <Button
           className={buttonStyles}
           onClick={() => {
@@ -34,41 +30,23 @@ function ActionButtons() {
           Buy with Card
         </Button>
       )}
-      {(!authCheck || isPending) && (
-        <Button className={buttonStyles} disabled>
-          Loading...
-        </Button>
-      )}
-      {!isValid && authCheck && !isPending && (
-        <ConnectWalletButton
-          title="Buy with Card"
-          bgColor="#C58BFF"
-          textColor="black"
-          isHoverable={false}
-          className="!font-funnel !cursor-pointer !font-semibold"
-        />
+
+      {account && (
+        <Drawer open={buyWithCryptoOpen} onOpenChange={setBuyWithCryptoOpen}>
+          <DrawerTrigger asChild>
+            <Button className={cryptoButtonStyles}>Buy with Crypto</Button>
+          </DrawerTrigger>
+          <DrawerContent className="h-[90vh] max-h-[90vh] px-[5%] md:px-[10%] xl:h-[90vh] xl:max-h-[90vh]">
+            <BuyWithCryptoDrawer
+              setIsOpen={setBuyWithCryptoOpen}
+              usdtBalance={0}
+            />
+          </DrawerContent>
+        </Drawer>
       )}
 
-      {/* Crypto payment button */}
-      {isValid && authCheck && (
-        <Button
-          className={cryptoButtonStyles}
-          onClick={() => {
-            // Handle crypto payment
-            console.log("Crypto payment clicked");
-          }}
-        >
-          Buy with Crypto
-        </Button>
-      )}
-      {(!authCheck || isPending) && (
-        <Button className={cryptoButtonStyles} disabled>
-          Loading...
-        </Button>
-      )}
-      {!isValid && authCheck && !isPending && (
+      {!account && (
         <ConnectWalletButton
-          title="Buy with Crypto"
           bgColor="black"
           textColor="white"
           isHoverable={false}

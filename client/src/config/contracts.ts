@@ -1,4 +1,3 @@
-import { type Network } from "@/types";
 import { sepolia } from "thirdweb/chains";
 
 export interface ContractAddresses {
@@ -9,10 +8,8 @@ export interface ContractAddresses {
   veOwnTokenAddress: string;
 }
 
-export const getContractAddresses = (): ContractAddresses => {
-  const network = process.env.NEXT_PUBLIC_NETWORK as Network;
-
-  if (network === "Localhost") {
+export const getContractAddresses = (networkId: number): ContractAddresses => {
+  if (networkId === 1337) {
     return {
       usdtAddress: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
       presaleAddress: "0x0165878A594ca255338adfa4d48449f69242Eb8F",
@@ -22,7 +19,7 @@ export const getContractAddresses = (): ContractAddresses => {
     };
   }
 
-  if (network === "Sepolia") {
+  if (networkId === 11155111) {
     return {
       usdtAddress: "0xBC4e5986e9d76C6f32CE37C4991dC4160f047D82",
       presaleAddress: "0x59dA58dcAA1FBc65D5efe4F67BC4A746807C8043",
@@ -32,7 +29,7 @@ export const getContractAddresses = (): ContractAddresses => {
     };
   }
 
-  throw new Error(`Unknown network: ${network}`);
+  throw new Error(`Unknown network: ${networkId}`);
 };
 
 // The default network we are using

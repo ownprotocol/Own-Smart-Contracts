@@ -11,14 +11,13 @@ import { prepareContractCall } from "thirdweb";
 
 interface BuyWithCryptoModalProps {
   usdtBalance: number;
-  onBuy: (amount: number) => void;
+  setIsOpen: (isOpen: boolean) => void;
 }
 
-export const BuyWithCryptoModal = ({
+export const BuyWithCryptoDrawer = ({
   usdtBalance,
-  onBuy,
 }: BuyWithCryptoModalProps) => {
-  const { presaleContract } = useContracts();
+  const { presaleContract, ownTokenContract } = useContracts();
 
   const {
     register,
@@ -62,17 +61,14 @@ export const BuyWithCryptoModal = ({
     }
 
     try {
+      // TODO: Check allowance
       const stakingTx = prepareContractCall({
         contract: presaleContract,
         method: "purchasePresaleTokens",
-        params: [amount, days * 7n],
+        // TODO: Fix
+        params: [1n, "0"],
       });
-
-      await sendTxAsync({
-        contract: ownTokenContract,
-        method: "approve",
-        params: ["presaleAddress", amount],
-      });
+      // TODO: Send transaction
 
       onBuy(amount);
     } catch (e) {
@@ -83,21 +79,7 @@ export const BuyWithCryptoModal = ({
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center space-y-4 rounded-lg bg-white p-4">
-    <div className="flex w-full flex-col gap-2">
-      <h1 className="font-dm_mono text-[10px] font-[400] leading-[14px] tracking-[8%] text-gray-500 md:text-[14px] md:leading-[16px]">
-        {title}
-      </h1>
-      <input
-        id="tokenAmount"
-        type="text"
-        placeholder="0.00"
-        className="block w-1/2 min-w-0 grow py-2 pl-4 pr-3 font-dm_sans text-[16px] leading-[20px] tracking-[0.5%] text-gray-900 text-primary placeholder:text-gray-400 focus:outline-none xl:py-4 xl:text-[20px] xl:leading-[24px]"
-        {...register("tokenAmount")}
-        onChange={handleInputToken}
-      />
-      <p className="h-2 font-dm_mono text-[8px] font-[400] leading-[14px] tracking-[8%] text-red-500 md:text-[14px] md:leading-[16px]">
-        {errors.tokenAmount?.message}
-      </p>
+      <div className="flex w-full flex-col gap-2"></div>
     </div>
   );
 };
