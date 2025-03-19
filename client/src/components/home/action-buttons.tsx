@@ -1,8 +1,10 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 
-function ActionButtons() {
+interface ActionButtonsProps {
+  disabled?: boolean;
+}
+
+function ActionButtons({ disabled }: ActionButtonsProps) {
   return (
     <div className="mt-4 flex flex-col gap-3 p-4 md:flex-row md:justify-center md:gap-4">
       <Button
@@ -11,6 +13,7 @@ function ActionButtons() {
           // Handle credit card payment
           console.log("Credit card payment clicked");
         }}
+        disabled={disabled}
       >
         Buy with Card
       </Button>
@@ -21,6 +24,7 @@ function ActionButtons() {
           // Handle crypto payment
           console.log("Crypto payment clicked");
         }}
+        disabled={disabled}
       >
         Buy with Crypto
       </Button>

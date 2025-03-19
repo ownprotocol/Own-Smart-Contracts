@@ -1,21 +1,19 @@
-"use client";
-
 import Image from "next/image";
 import { useTimer } from "react-timer-hook";
-import { PriceIncreaseTimerSkeleton } from "@/components";
-import { useGetCurrentPresaleRound } from "@/hooks";
 
-function PriceIncreaseTimer() {
-  const { presaleData, isLoading: isLoadingPresaleRound } =
-    useGetCurrentPresaleRound();
-  const expiryTimestamp = new Date(
-    Date.now() + (presaleData?.endTime ?? 0) * 1000,
-  );
-  const { days, hours, minutes, seconds } = useTimer({ expiryTimestamp });
+interface PriceIncreaseTimerProps {
+  endTime: number;
+}
 
-  if (isLoadingPresaleRound) {
-    return <PriceIncreaseTimerSkeleton />;
+function PriceIncreaseTimer({ endTime }: PriceIncreaseTimerProps) {
+  let timeDiff = endTime - Math.floor(Date.now() / 1000);
+  if (timeDiff <= 0) {
+    timeDiff = 0;
   }
+
+  const { days, hours, minutes, seconds } = useTimer({
+    expiryTimestamp: new Date(endTime * 1000),
+  });
 
   return (
     <div className="relative mt-4 flex min-h-[100px] justify-center md:mt-0">

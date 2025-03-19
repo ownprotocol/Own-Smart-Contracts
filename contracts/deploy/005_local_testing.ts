@@ -23,6 +23,8 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   await stake.write.startStakingNextWeek();
 
+  await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
   await own.write.transfer([stake.address, parseEther("1000000")]);
 
   await own.write.transfer([presale.address, parseEther("1000000")]);
@@ -41,8 +43,6 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   const currentTime = await getCurrentBlockTimestamp();
   await presale.write.setPresaleStartTime([BigInt(currentTime + 60)]);
-
-  await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
 };
 
 export default func;

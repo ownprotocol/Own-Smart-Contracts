@@ -1,22 +1,15 @@
 "use client";
 
-import { ProgressBar, RaiseStatsSkeleton } from "@/components";
+import { ProgressBar } from "@/components";
 import Image from "next/image";
-import { useGetBalanceUSDT, useGetCurrentPresaleRound } from "@/hooks";
-import { getContractAddresses } from "@/config/contracts";
+import { CurrentPresaleRoundDetails } from "@/types/presale";
 
-function RaiseStats() {
-  const { presaleAddress } = getContractAddresses();
-  const { usdtBalance, isLoading: isLoadingPresaleBalance } =
-    useGetBalanceUSDT(presaleAddress);
+interface RaiseStatsProps {
+  usdtBalance: number;
+  presaleData: CurrentPresaleRoundDetails;
+}
 
-  const { presaleData, isLoading: isLoadingPresaleRound } =
-    useGetCurrentPresaleRound();
-
-  if (isLoadingPresaleBalance || isLoadingPresaleRound || !presaleData) {
-    return <RaiseStatsSkeleton />;
-  }
-
+function RaiseStats({ usdtBalance, presaleData }: RaiseStatsProps) {
   const {
     roundDetails: { price, sales, allocation },
   } = presaleData;
@@ -43,10 +36,7 @@ function RaiseStats() {
         </div>
       </div>
       <div className="">
-        <ProgressBar
-          sales={sales ? sales : 12000}
-          allocation={allocation ? allocation : 30000}
-        />
+        <ProgressBar sales={sales} allocation={allocation} />
       </div>
       <div className="absolute left-[-15%] top-[-15%] -z-10 hidden md:block">
         <div className="relative">

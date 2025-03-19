@@ -11,6 +11,7 @@ import Image from "next/image";
 
 import StakingButton from "./staking-button";
 import { type StakingFormData } from "@/types/staking";
+import { FormInput } from "../ui/input";
 
 interface StakingTokensProps {
   title: string;
@@ -76,33 +77,21 @@ function StakingTokens({
   };
   return (
     <div className="flex w-full flex-col gap-2">
-      <h1 className="font-dm_mono text-[10px] font-[400] leading-[14px] tracking-[8%] text-gray-500 md:text-[14px] md:leading-[16px]">
-        {title}
-      </h1>
-      <div className="flex items-center border-2 border-gray-500/50 bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
-        <div className="shrink-0 select-none text-base text-gray-500 sm:text-sm/6">
-          <div className="rounded-full border-2 border-gray-500 px-2 py-1.5 text-gray-500 opacity-50">
-            <Image
-              src="/own-logo.svg"
-              alt="Own token"
-              width={20}
-              height={20}
-              className="text-primary invert xl:h-[25px] xl:w-[25px]"
-            />
-          </div>
-        </div>
-        <input
-          id="tokenAmount"
-          type="text"
-          placeholder="0.00"
-          className="block w-1/2 min-w-0 grow py-2 pl-4 pr-3 font-dm_sans text-[16px] leading-[20px] tracking-[0.5%] text-gray-900 text-primary placeholder:text-gray-400 focus:outline-none xl:py-4 xl:text-[20px] xl:leading-[24px]"
-          {...register("tokenAmount")}
-          onChange={handleInputToken}
-        />
-      </div>
-      <p className="h-2 font-dm_mono text-[8px] font-[400] leading-[14px] tracking-[8%] text-red-500 md:text-[14px] md:leading-[16px]">
-        {errors.tokenAmount?.message}
-      </p>
+      <FormInput
+        title={title}
+        onChange={handleInputToken}
+        errorString={errors.tokenAmount?.message}
+        inputProps={{ ...register("tokenAmount") }}
+        image={
+          <Image
+            src="/own-logo.svg"
+            alt="Own token"
+            width={20}
+            height={20}
+            className="text-primary invert xl:h-[25px] xl:w-[25px]"
+          />
+        }
+      />
       <div className="flex flex-wrap justify-around gap-2">
         <StakingButton
           label="25%"
