@@ -1,3 +1,5 @@
+// eslint-disable @typescript-eslint/no-explicit-any
+
 /// This method consumes multiple query hooks and returns a single object with a single isLoading state
 
 import { QueryHook } from "@/types/query";

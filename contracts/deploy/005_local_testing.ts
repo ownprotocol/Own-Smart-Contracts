@@ -33,14 +33,35 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   await presale.write.addPresaleRounds([
     [
       {
-        duration: 3600n,
+        duration: 86400n,
         price: parseEther("1.5"),
         allocation: parseEther("1000"),
         sales: 0n,
         claimTokensTimestamp: 0n,
       },
       {
-        duration: 3600n,
+        duration: 86400n,
+        price: parseEther("2.5"),
+        allocation: parseEther("1000"),
+        sales: 0n,
+        claimTokensTimestamp: 0n,
+      },
+      {
+        duration: 86400n,
+        price: parseEther("2.5"),
+        allocation: parseEther("1000"),
+        sales: 0n,
+        claimTokensTimestamp: 0n,
+      },
+      {
+        duration: 86400n,
+        price: parseEther("2.5"),
+        allocation: parseEther("1000"),
+        sales: 0n,
+        claimTokensTimestamp: 0n,
+      },
+      {
+        duration: 86400n,
         price: parseEther("2.5"),
         allocation: parseEther("1000"),
         sales: 0n,

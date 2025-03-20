@@ -20,11 +20,11 @@ export const useHomePresalePage = () => {
       {
         contract: ownTokenContract,
         method: "balanceOf",
-        params: [account?.address || ""],
+        params: [account?.address ?? ""],
       },
       (value) => Number(formatEther(value)),
     ),
-    usersUSDTBalance: useGetBalanceUSDT(account?.address || ""),
+    usersUSDTBalance: useGetBalanceUSDT(account?.address ?? ""),
     timestamp: useTestingSafeTimestamp(),
   });
 

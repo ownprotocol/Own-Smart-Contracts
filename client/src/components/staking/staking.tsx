@@ -5,13 +5,7 @@ import { type Dispatch, type SetStateAction } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
-import { type AbiFunction } from "thirdweb/utils";
-import {
-  prepareContractCall,
-  type PreparedTransaction,
-  type PrepareTransactionOptions,
-  toWei,
-} from "thirdweb";
+import { prepareContractCall, toWei } from "thirdweb";
 
 import { Button } from "../ui/button";
 import { useGetAuthUser } from "@/query";
@@ -88,6 +82,7 @@ function Staking({
             contract: ownTokenContract,
             method: "approve",
             params: [stakeAddress, amount],
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
           }) as any,
         );
       }
@@ -97,6 +92,7 @@ function Staking({
           contract: stakeContract,
           method: "stake",
           params: [amount, days * 7n],
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         }) as any,
       );
     } catch (error) {

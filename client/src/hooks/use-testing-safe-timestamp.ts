@@ -13,6 +13,7 @@ export const useTestingSafeTimestamp = (): QueryHook<number> => {
   const chain = useActiveChainWithDefault();
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
       if (chain.id === HARDHAT_CHAIN_ID) {
         const rpcClient = getRpcClient({ client, chain });

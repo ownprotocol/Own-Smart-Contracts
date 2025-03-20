@@ -8,6 +8,7 @@ export const useCheckAndSwitchToActiveChain = () => {
   const switchChain = useSwitchActiveWalletChain();
 
   const needsSwitch =
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     activeChain && SUPPORTED_NETWORKS.includes(activeChain?.name as any);
 
   const switchToCorrectChain = async () => {

@@ -8,11 +8,10 @@ export const useGetBalanceUSDT = (address: string): QueryHook<number> => {
 
   const { data, isLoading } = useReadContract({
     contract: usdtContract,
-    method: "function balanceOf(address account) returns (uint256)",
+    method: "balanceOf",
     params: [address],
   });
   if (isLoading || data === undefined) return { isLoading: true };
-  console.log(data);
 
   const usdtBalance = Number(toTokens(data, 18));
 

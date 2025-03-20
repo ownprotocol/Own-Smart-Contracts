@@ -59,6 +59,8 @@ export function useReadContractQueryHook<
   if (isLoading || data === undefined) return { isLoading: true };
 
   return {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     data: (parser ? parser(data) : data) as any,
     isLoading,
   };
