@@ -20,11 +20,13 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { own, stake, presale, mockUSDT } =
     await getContractInstancesFromDeployment(await hre.deployments.all());
 
-  await stake.write.setDailyRewardAmount([parseEther("1")]);
+  // await stake.write.setMaximumDailyRewardAmount([parseEther("100")]);
+  //
+  // await stake.write.setDailyRewardAmount([parseEther("1")]);
 
   await stake.write.startStakingNextWeek();
 
-  await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+  // await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
 
   await own.write.transfer([stake.address, parseEther("1000000")]);
 

@@ -1,5 +1,5 @@
 {
-  "address": "0x8AD9653999A93EE555094c24c4A98983aB1b5d33",
+  "address": "0xa8944326a931dE6634B120141115b9781090e909",
   "abi": [
     {
       "type": "constructor",
@@ -582,13 +582,13 @@
       "inputs": [
         {
           "type": "uint256",
-          "name": ""
+          "name": "day"
         }
       ],
       "outputs": [
         {
           "type": "uint256",
-          "name": ""
+          "name": "rewardValue"
         }
       ]
     },
@@ -1078,7 +1078,7 @@
       "inputs": [
         {
           "type": "uint256",
-          "name": ""
+          "name": "positionId"
         }
       ],
       "outputs": [
@@ -1169,7 +1169,7 @@
       "inputs": [
         {
           "type": "uint256",
-          "name": ""
+          "name": "week"
         }
       ],
       "outputs": [
@@ -1434,7 +1434,7 @@
       "inputs": [
         {
           "type": "address",
-          "name": ""
+          "name": "user"
         },
         {
           "type": "uint256",
@@ -1444,7 +1444,7 @@
       "outputs": [
         {
           "type": "uint256",
-          "name": ""
+          "name": "positionIds"
         }
       ]
     },
@@ -1457,13 +1457,13 @@
       "inputs": [
         {
           "type": "uint256",
-          "name": ""
+          "name": "day"
         }
       ],
       "outputs": [
         {
           "type": "uint256",
-          "name": ""
+          "name": "veOwnAddition"
         }
       ]
     },
@@ -1476,13 +1476,13 @@
       "inputs": [
         {
           "type": "uint256",
-          "name": ""
+          "name": "day"
         }
       ],
       "outputs": [
         {
           "type": "uint256",
-          "name": ""
+          "name": "veOwnSubtraction"
         }
       ]
     },
