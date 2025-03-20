@@ -1,13 +1,10 @@
-import hre from "hardhat";
-import { parseEther } from "ethers";
-import { getContractInstances } from "../helpers/testing-api";
 import { getCurrentBlockTimestamp, increaseTime } from "../helpers/evm";
 
-// npx hardhat run --network localhost scripts/evm.ts
+// npx hardhat run ./scripts/evm.ts --network localhost
 const main = async () => {
   const beforetime = await getCurrentBlockTimestamp();
 
-  await increaseTime(1000);
+  await increaseTime(3600);
 
   const currentTime = await getCurrentBlockTimestamp();
 

@@ -1,4 +1,5 @@
 import { MAIN_CHAIN } from "@/config/contracts";
+import { HARDHAT_CHAIN_ID } from "@/constants/network";
 import { type ChainOptions } from "thirdweb/chains";
 import { useActiveWalletChain } from "thirdweb/react";
 
@@ -10,9 +11,9 @@ export const useActiveChainWithDefault = (): Readonly<
   const activeChain = useActiveWalletChain();
 
   // Thirdweb gives us a different rpc for the hardhat chain, so overriding it here
-  if (activeChain?.id === 1337) {
+  if (activeChain?.id === HARDHAT_CHAIN_ID) {
     return {
-      id: 1337,
+      id: HARDHAT_CHAIN_ID,
       name: "Hardhat",
       rpc: "http://localhost:8545",
     };

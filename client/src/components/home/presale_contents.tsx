@@ -6,11 +6,11 @@ import PriceIncreaseTimer from "./price-increase-timer";
 import RaiseStats from "./raise-stats";
 import PriceIncreaseTimerSkeleton from "../ui/loading-skeletons/price-increase-timer-skeleton";
 import RaiseStatsSkeleton from "../ui/loading-skeletons/raise-stats-skeleton";
-import { usePresalePage } from "@/hooks/use-presale-page";
+import { useHomePresalePage } from "@/hooks/use-home-presale-page";
 import ConnectWalletButton from "../connect-wallet-button";
 
 export const PresalePageContents = () => {
-  const presalePageHook = usePresalePage();
+  const presalePageHook = useHomePresalePage();
 
   if (presalePageHook.isLoading) {
     return (
@@ -27,10 +27,13 @@ export const PresalePageContents = () => {
       </>
     );
   }
+  console.log(presalePageHook.data);
 
   return (
     <>
-      <PresaleBanner roundId={presalePageHook.data.presaleRound.roundId} />
+      <PresaleBanner
+        roundId={presalePageHook.data.presaleRound.roundDetails.roundId}
+      />
       {presalePageHook.data.presaleRound.roundsInProgress && (
         <>
           <RaiseStats
@@ -39,6 +42,7 @@ export const PresalePageContents = () => {
           />
           <PriceIncreaseTimer
             endTime={presalePageHook.data.presaleRound.endTime}
+            timestamp={presalePageHook.data.timestamp}
           />
           <ActionButtons
             usdtBalance={presalePageHook.data.usersUSDTBalance}

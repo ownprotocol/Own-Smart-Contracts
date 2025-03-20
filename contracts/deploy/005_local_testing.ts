@@ -39,11 +39,18 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
         sales: 0n,
         claimTokensTimestamp: 0n,
       },
+      {
+        duration: 3600n,
+        price: parseEther("2.5"),
+        allocation: parseEther("1000"),
+        sales: 0n,
+        claimTokensTimestamp: 0n,
+      },
     ],
   ]);
 
   const currentTime = await getCurrentBlockTimestamp();
-  await presale.write.setPresaleStartTime([BigInt(currentTime + 60)]);
+  await presale.write.setPresaleStartTime([BigInt(currentTime + 1)]);
 
   await mockUSDT.write.mint([deployer.address as any, parseEther("1000000")]);
 };

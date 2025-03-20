@@ -1,4 +1,5 @@
 export interface PresaleRoundDetails {
+  roundId: number;
   duration: number;
   price: number;
   allocation: number;
@@ -9,6 +10,15 @@ export interface PresaleRoundDetails {
 export interface CurrentPresaleRoundDetails {
   roundsInProgress: boolean;
   roundDetails: PresaleRoundDetails;
-  roundId: number;
   endTime: number;
+}
+
+export interface PresalePurchase {
+  roundId: number;
+  ownAmount: number;
+  usdtAmount: number;
+  receiver: string;
+  timestamp: Date;
+  claimStatus: "able-to-claim" | "claimed" | "not-ready-to-claim";
+  price: number;
 }

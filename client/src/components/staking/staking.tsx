@@ -75,51 +75,30 @@ function Staking({
       const amount = toWei(data.tokenAmount);
       const days = BigInt(data.lockupDuration);
 
-      const allowanceTx = await allowance({
+      const allowanceBalance = await allowance({
         contract: ownTokenContract,
         owner: activeAccount?.address ?? "",
         spender: stakeAddress,
       });
+
       // check if approval is needed
-      if (allowanceTx < amount) {
-        try {
-          const approvalTx = prepareContractCall({
+      if (allowanceBalance < amount) {
+        await sendTxAsync(
+          prepareContractCall({
             contract: ownTokenContract,
             method: "approve",
             params: [stakeAddress, amount],
-          });
-
-          await sendTxAsync(
-            approvalTx as PreparedTransaction<
-              [],
-              AbiFunction,
-              PrepareTransactionOptions
-            >,
-          );
-        } catch (approvalError) {
-          toast.error("Approval failed");
-          console.error("Approval error:", approvalError);
-          return;
-        }
+          }) as any,
+        );
       }
 
-      try {
-        const stakingTx = prepareContractCall({
+      await sendTxAsync(
+        prepareContractCall({
           contract: stakeContract,
           method: "stake",
           params: [amount, days * 7n],
-        });
-        await sendTxAsync(
-          stakingTx as PreparedTransaction<
-            [],
-            AbiFunction,
-            PrepareTransactionOptions
-          >,
-        );
-      } catch (stakingError) {
-        toast.error("Staking failed");
-        console.error("Staking error:", stakingError);
-      }
+        }) as any,
+      );
     } catch (error) {
       toast.error("Transaction failed");
       console.error("Transaction error:", error);

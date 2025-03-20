@@ -1,19 +1,42 @@
+"use client";
+
+import { Duration, intervalToDuration } from "date-fns";
 import Image from "next/image";
-import { useTimer } from "react-timer-hook";
+import { useEffect, useState } from "react";
 
 interface PriceIncreaseTimerProps {
   endTime: number;
+  timestamp: number;
 }
 
-function PriceIncreaseTimer({ endTime }: PriceIncreaseTimerProps) {
-  let timeDiff = endTime - Math.floor(Date.now() / 1000);
-  if (timeDiff <= 0) {
-    timeDiff = 0;
-  }
+interface TimerState {
+  offset: number;
+  duration: Duration;
+}
 
-  const { days, hours, minutes, seconds } = useTimer({
-    expiryTimestamp: new Date(endTime * 1000),
+function PriceIncreaseTimer({ endTime, timestamp }: PriceIncreaseTimerProps) {
+  const diff = endTime > timestamp ? endTime - timestamp : 0;
+  const [timerState, setTimerState] = useState<TimerState>({
+    offset: 0,
+    duration: intervalToDuration({ start: 0, end: diff * 1000 }),
   });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimerState((prevState) => {
+        const offset = prevState?.offset ? prevState.offset + 1 : 1;
+        return {
+          offset,
+          duration: intervalToDuration({
+            start: offset * 1000,
+            end: diff * 1000,
+          }),
+        };
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="relative mt-4 flex min-h-[100px] justify-center md:mt-0">
@@ -23,12 +46,12 @@ function PriceIncreaseTimer({ endTime }: PriceIncreaseTimerProps) {
         </h1>
         <div className="flex flex-col justify-center gap-4 md:flex-row">
           <div className="flex gap-4">
-            <TimerBox label="Days" value={days} />
-            <TimerBox label="Hours" value={hours} />
+            <TimerBox label="Days" value={timerState.duration.days} />
+            <TimerBox label="Hours" value={timerState.duration.hours} />
           </div>
           <div className="flex gap-4">
-            <TimerBox label="Minutes" value={minutes} />
-            <TimerBox label="Seconds" value={seconds} />
+            <TimerBox label="Minutes" value={timerState.duration.minutes} />
+            <TimerBox label="Seconds" value={timerState.duration.seconds} />
           </div>
         </div>
       </div>
@@ -63,11 +86,11 @@ function PriceIncreaseTimer({ endTime }: PriceIncreaseTimerProps) {
 
 type TimerBoxProps = {
   label: string;
-  value: number;
+  value: number | undefined;
 };
 
 function TimerBox({ label, value }: TimerBoxProps) {
-  const formattedValue = value.toString().padStart(2, "0");
+  const formattedValue = (value ?? 0).toString().padStart(2, "0");
   return (
     <div className="flex w-1/2 flex-col items-center rounded-md bg-black px-6 py-2 md:w-[120px]">
       <h1 className="font-funnel text-[14px] tracking-[-2.5%] text-[#A78BFA] md:text-[20px] lg:text-[24px]">

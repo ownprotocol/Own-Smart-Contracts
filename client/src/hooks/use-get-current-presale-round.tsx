@@ -12,7 +12,6 @@ export const useGetCurrentPresaleRound =
       contract: presaleContract,
       method: "getCurrentPresaleRoundDetails",
     });
-    console.log(data);
 
     if (isLoading || !data) return { isLoading: true };
 
@@ -25,8 +24,8 @@ export const useGetCurrentPresaleRound =
           allocation: Number(formatEther(data[1].allocation)),
           sales: Number(formatEther(data[1].sales)),
           claimTokensTimestamp: Number(data[1].claimTokensTimestamp),
+          roundId: Number(data[2]),
         },
-        roundId: Number(data[2]),
         endTime: Number(data[3]),
       },
       isLoading,

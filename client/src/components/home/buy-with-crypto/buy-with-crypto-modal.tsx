@@ -12,8 +12,9 @@ import Image from "next/image";
 import { SectionLabel } from "./label";
 import { FormInput } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { formatEther, parseEther } from "viem";
+import { parseEther } from "viem";
 import { allowance } from "thirdweb/extensions/erc20";
+import { useState } from "react";
 
 interface BuyWithCryptoModalProps {
   usdtBalance: number;
@@ -27,8 +28,10 @@ export const BuyWithCryptoDrawer = ({
   ownBalance,
   ownPrice,
 }: BuyWithCryptoModalProps) => {
-  const { presaleContract, ownTokenContract, usdtContract } = useContracts();
+  const { presaleContract, usdtContract } = useContracts();
   const account = useActiveAccount();
+
+  const [isSendingTxs, setIsSendingTxs] = useState(false);
 
   const {
     register,
@@ -43,8 +46,7 @@ export const BuyWithCryptoDrawer = ({
     },
   });
 
-  const { mutateAsync: sendTxAsync, isPending: isPendingSendTx } =
-    useSendTransaction();
+  const { mutateAsync: sendTxAsync } = useSendTransaction();
 
   const handleInputToken = (e: React.ChangeEvent<HTMLInputElement>) => {
     const amount = parseFloat(e.target.value);
@@ -73,51 +75,50 @@ export const BuyWithCryptoDrawer = ({
     if (!account?.address) {
       throw new Error("Can't submit with missing fields");
     }
-    const amount = parseFloat(data.tokenAmount);
 
-    if (amount > usdtBalance) {
-      toast.warning(
-        `You don't have enough balance to stake that amount. Max stake amount is ${usdtBalance.toFixed(2)}`,
-      );
-      return;
-    }
+    setIsSendingTxs(true);
+    try {
+      const amount = parseFloat(data.tokenAmount);
 
-    const parsedAmount = parseEther(data.tokenAmount);
-
-    const allowanceTx = await allowance({
-      contract: usdtContract,
-      owner: account.address,
-      spender: presaleContract.address,
-    });
-
-    if (allowanceTx < amount) {
-      try {
-        const approvalTx = prepareContractCall({
-          contract: usdtContract,
-          method: "approve",
-          params: [presaleContract.address, parsedAmount],
-        });
-
-        await sendTxAsync(approvalTx as any);
-      } catch (approvalError) {
-        toast.error("Approval failed");
-        console.error("Approval error:", approvalError);
+      if (amount > usdtBalance) {
+        toast.warning(
+          `You don't have enough balance to stake that amount. Max stake amount is ${usdtBalance.toFixed(2)}`,
+        );
         return;
       }
-    }
 
-    try {
-      const stakingTx = prepareContractCall({
-        contract: presaleContract,
-        method: "purchasePresaleTokens",
-        // TODO: Fix
-        params: [parseEther(data.tokenAmount), account.address],
+      const parsedAmount = parseEther(data.tokenAmount);
+
+      const allowanceTx = await allowance({
+        contract: usdtContract,
+        owner: account.address,
+        spender: presaleContract.address,
       });
-      // This library is stupid sometimes
-      await sendTxAsync(stakingTx as any);
-    } catch (e) {
-      console.error(e);
-      toast.error("An error occurred while trying to buy with crypto");
+
+      if (allowanceTx < amount) {
+        await sendTxAsync(
+          prepareContractCall({
+            contract: usdtContract,
+            method: "approve",
+            params: [presaleContract.address, parsedAmount],
+          }) as any, // Stupid type error, absolutely thirdwebs fault here
+        );
+      }
+
+      await sendTxAsync(
+        prepareContractCall({
+          contract: presaleContract,
+          method: "purchasePresaleTokens",
+          params: [parseEther(data.tokenAmount), account.address],
+        }) as any,
+      );
+
+      toast.success("Transaction successful");
+    } catch (error) {
+      toast.error("Transaction failed");
+      console.error("Transaction error:", error);
+    } finally {
+      setIsSendingTxs(false);
     }
   };
 
@@ -130,7 +131,7 @@ export const BuyWithCryptoDrawer = ({
     <div className="flex h-full w-full flex-col space-y-4 rounded-lg bg-white p-4">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex h-full w-full flex-col justify-evenly"
+        className="flex h-full w-full flex-col gap-6"
       >
         <div className="flex">
           <div className="flex flex-1 flex-col gap-3">
@@ -172,7 +173,7 @@ export const BuyWithCryptoDrawer = ({
             className="!flex-1"
           />
           <FormInput
-            title={"ENTER USDT AMOUNT TO SPEND"}
+            title={"$OWN YOU WILL RECEIVE"}
             onChange={handleInputToken}
             errorString={errors.tokenAmount?.message}
             inputProps={{
@@ -194,7 +195,7 @@ export const BuyWithCryptoDrawer = ({
             TETHER BALANCE: {usdtBalance.toLocaleString()} USDT
           </p>
         </div>
-        <div className="flex">
+        <div className="!mt-auto flex">
           <Button
             variant={"mainButton"}
             type="submit"

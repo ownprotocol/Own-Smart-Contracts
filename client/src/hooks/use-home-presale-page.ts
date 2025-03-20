@@ -6,8 +6,9 @@ import { useReadContractQueryHook } from "@/helpers/useReadContractWithParsing";
 import { useContracts } from "./use-contracts";
 import { useActiveAccount } from "thirdweb/react";
 import { formatEther } from "viem";
+import { useTestingSafeTimestamp } from "./use-testing-safe-timestamp";
 
-export const usePresalePage = () => {
+export const useHomePresalePage = () => {
   const { presaleAddress } = useContractAddresses();
   const { ownTokenContract } = useContracts();
   const account = useActiveAccount();
@@ -24,6 +25,7 @@ export const usePresalePage = () => {
       (value) => Number(formatEther(value)),
     ),
     usersUSDTBalance: useGetBalanceUSDT(account?.address || ""),
+    timestamp: useTestingSafeTimestamp(),
   });
 
   return presaleData;
