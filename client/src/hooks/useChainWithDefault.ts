@@ -9,6 +9,7 @@ export const useActiveChainWithDefault = (): Readonly<
 > => {
   const activeChain = useActiveWalletChain();
 
+  // Thirdweb gives us a different rpc for the hardhat chain, so overriding it here
   if (activeChain?.id === 1337) {
     return {
       id: 1337,

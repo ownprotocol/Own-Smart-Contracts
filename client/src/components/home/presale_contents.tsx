@@ -7,6 +7,7 @@ import RaiseStats from "./raise-stats";
 import PriceIncreaseTimerSkeleton from "../ui/loading-skeletons/price-increase-timer-skeleton";
 import RaiseStatsSkeleton from "../ui/loading-skeletons/raise-stats-skeleton";
 import { usePresalePage } from "@/hooks/use-presale-page";
+import ConnectWalletButton from "../connect-wallet-button";
 
 export const PresalePageContents = () => {
   const presalePageHook = usePresalePage();
@@ -17,7 +18,12 @@ export const PresalePageContents = () => {
         <PresaleBanner roundId={null} />
         <RaiseStatsSkeleton />
         <PriceIncreaseTimerSkeleton />
-        <ActionButtons />
+        <ConnectWalletButton
+          bgColor="black"
+          textColor="white"
+          isHoverable={false}
+          className="!font-funnel !mt-4 !cursor-pointer !font-semibold"
+        />
       </>
     );
   }
@@ -34,7 +40,11 @@ export const PresalePageContents = () => {
           <PriceIncreaseTimer
             endTime={presalePageHook.data.presaleRound.endTime}
           />
-          <ActionButtons />
+          <ActionButtons
+            usdtBalance={presalePageHook.data.usersUSDTBalance}
+            ownBalance={presalePageHook.data.usersOwnBalance}
+            ownPrice={presalePageHook.data.presaleRound.roundDetails.price}
+          />
         </>
       )}
       {!presalePageHook.data.presaleRound.roundsInProgress && (

@@ -12,13 +12,14 @@ import { useContractAddresses } from "./use-contract-addresses";
 
 export const useContracts = () => {
   const chain = useActiveChainWithDefault();
-  console.log(chain);
 
   const contractAddresses = useContractAddresses();
   const usdtContract = getContract({
     client,
     address: contractAddresses.usdtAddress,
     chain,
+    // This ABI is really just an ERC20 so we can use it here
+    abi: ownTokenABI,
   });
 
   const presaleContract = getContract({

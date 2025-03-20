@@ -15,9 +15,10 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   console.log("Setting up test environment");
 
-  const { own, stake, presale } = await getContractInstancesFromDeployment(
-    await hre.deployments.all()
-  );
+  const [deployer] = await hre.ethers.getSigners();
+
+  const { own, stake, presale, mockUSDT } =
+    await getContractInstancesFromDeployment(await hre.deployments.all());
 
   await stake.write.setDailyRewardAmount([parseEther("1")]);
 
@@ -43,6 +44,8 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   const currentTime = await getCurrentBlockTimestamp();
   await presale.write.setPresaleStartTime([BigInt(currentTime + 60)]);
+
+  await mockUSDT.write.mint([deployer.address as any, parseEther("1000000")]);
 };
 
 export default func;

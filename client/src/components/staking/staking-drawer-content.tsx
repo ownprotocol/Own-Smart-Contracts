@@ -1,6 +1,5 @@
 "use client";
 import { useActiveAccount } from "thirdweb/react";
-import { useRouter } from "next/navigation";
 
 import StakingDrawerHeader from "./staking-drawer-header";
 import Staking from "./staking";
@@ -19,7 +18,6 @@ interface StakingDrawerContentProps {
 }
 
 const StakingDrawerContent = ({ setIsOpen }: StakingDrawerContentProps) => {
-  const router = useRouter();
   const activeAccount = useActiveAccount();
 
   const [isStakingLoading, setIsStakingLoading] = useState(false);
@@ -35,8 +33,8 @@ const StakingDrawerContent = ({ setIsOpen }: StakingDrawerContentProps) => {
   } = useUserOwnBalance({
     userWalletAddress: activeAccount?.address ?? "",
   });
+
   const handleDialogClose = () => {
-    router.push("/staking");
     setIsOpen(false);
   };
 

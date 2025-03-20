@@ -53,9 +53,10 @@ export function useReadContractQueryHook<
     ? ReadContractResult<PreparedMethod<ParseMethod<TAbi, TMethod>>[2]>
     : V
 > {
-  const { isLoading, data } = useReadContract(options);
+  const { isLoading, data, error } = useReadContract(options);
+  if (error) console.error(error);
 
-  if (isLoading || !data) return { isLoading: true };
+  if (isLoading || data === undefined) return { isLoading: true };
 
   return {
     data: (parser ? parser(data) : data) as any,
