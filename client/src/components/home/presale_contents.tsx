@@ -57,7 +57,9 @@ export const PresalePageContents = () => {
         <div>Presale rounds have finished</div> // Lazy styling for now
       )}
       {presalePageHook.data.startPresaleTime >
-        presalePageHook.data.timestamp && <div>Presale hasn't started yet</div>}
+        presalePageHook.data.timestamp && (
+        <div>Presale hasn&apos;t started yet</div>
+      )}
     </>
   );
 };

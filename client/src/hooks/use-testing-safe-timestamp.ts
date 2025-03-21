@@ -5,7 +5,7 @@ import { useActiveChainWithDefault } from "./useChainWithDefault";
 import { HARDHAT_CHAIN_ID } from "@/constants/network";
 import { client } from "@/lib/client";
 import { eth_getBlockByNumber, getRpcClient } from "thirdweb";
-import { QueryHook } from "@/types/query";
+import { type QueryHook } from "@/types/query";
 
 // Not loving we need to do this, but we are unable to end-to-end test frontend flows without this
 export const useTestingSafeTimestamp = (): QueryHook<number> => {
@@ -24,6 +24,7 @@ export const useTestingSafeTimestamp = (): QueryHook<number> => {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     updateSafeDate();
   }, [chain]);
 

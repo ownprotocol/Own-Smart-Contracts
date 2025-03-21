@@ -1,13 +1,13 @@
 import { useReadContract } from "thirdweb/react";
-import { Abi, AbiFunction } from "viem";
-import { QueryHook } from "@/types/query";
-import { AbiOfLength } from "node_modules/thirdweb/dist/types/contract/types";
-import { ExtractAbiFunctionNames } from "abitype";
-import { WithPickedOnceQueryOptions } from "node_modules/thirdweb/dist/types/react/core/hooks/types";
-import { ReadContractOptions } from "thirdweb";
-import { ParseMethod } from "node_modules/thirdweb/dist/types/transaction/types";
-import { PreparedMethod } from "node_modules/thirdweb/dist/types/utils/abi/prepare-method";
-import { ReadContractResult } from "node_modules/thirdweb/dist/types/transaction/read-contract";
+import { type Abi, type AbiFunction } from "viem";
+import { type QueryHook } from "@/types/query";
+import { type AbiOfLength } from "node_modules/thirdweb/dist/types/contract/types";
+import { type ExtractAbiFunctionNames } from "abitype";
+import { type WithPickedOnceQueryOptions } from "node_modules/thirdweb/dist/types/react/core/hooks/types";
+import { type ReadContractOptions } from "thirdweb";
+import { type ParseMethod } from "node_modules/thirdweb/dist/types/transaction/types";
+import { type PreparedMethod } from "node_modules/thirdweb/dist/types/utils/abi/prepare-method";
+import { type ReadContractResult } from "node_modules/thirdweb/dist/types/transaction/read-contract";
 
 // This method really just converts the useReadContract response type into a QueryHook response type
 // For usage with the QueryHookUnifier
@@ -59,9 +59,11 @@ export function useReadContractQueryHook<
   if (isLoading || data === undefined) return { isLoading: true };
 
   return {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
     data: (parser ? parser(data) : data) as any,
     isLoading,
     refetch: async () => {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       refetch();
     },
   };

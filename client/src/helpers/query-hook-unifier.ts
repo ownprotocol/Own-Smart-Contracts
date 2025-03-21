@@ -1,8 +1,7 @@
-// eslint-disable @typescript-eslint/no-explicit-any
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // This method consumes multiple query hooks and returns a single object with a single isLoading state
 
-import { QueryHook } from "@/types/query";
+import { type QueryHook } from "@/types/query";
 
 /// This significantly improves usage of multiple hooks in a single component
 export const queryHookUnifier = <T extends Record<string, QueryHook<any>>>(
@@ -37,6 +36,7 @@ export const queryHookUnifier = <T extends Record<string, QueryHook<any>>>(
   for (const key in hooks) {
     if (Object.prototype.hasOwnProperty.call(hooks, key)) {
       const hook = hooks[key] as { isLoading: false; data: any };
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       data[key] = hook.data;
     }
   }
@@ -44,6 +44,7 @@ export const queryHookUnifier = <T extends Record<string, QueryHook<any>>>(
   const refetch = async () => {
     await Promise.all(
       Object.values(hooks).map((hook) => {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         if (!hook.isLoading) hook.refetch();
       }),
     );

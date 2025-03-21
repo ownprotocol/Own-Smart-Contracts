@@ -2,7 +2,7 @@ import { queryHookUnifier } from "@/helpers/query-hook-unifier";
 import { useReadContractQueryHook } from "@/helpers/useReadContractWithParsing";
 import { useContracts } from "./use-contracts";
 import { useActiveAccount } from "thirdweb/react";
-import { StakingPurchaseDetails } from "@/types";
+import { type StakingPurchaseDetails } from "@/types";
 import { formatEther } from "viem";
 
 export const useStakingPositionsPage = () => {
@@ -26,6 +26,7 @@ export const useStakingPositionsPage = () => {
             rewardsClaimed: Number(formatEther(row.rewardsClaimed)),
             veOwnAmount: Number(formatEther(row.veOwnAmount)),
             claimableRewards: Number(
+              // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
               formatEther(claimableRewards[idx] as bigint),
             ),
           }),
