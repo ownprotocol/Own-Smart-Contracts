@@ -28,7 +28,7 @@ describe("Stake - boost", async () => {
             multiplier: parseEther("20"),
           },
         ],
-      ]),
+      ])
     ).to.be.revertedWithCustomError(stake, "CannotSetBoostForWeekInPast");
   });
 
@@ -44,8 +44,8 @@ describe("Stake - boost", async () => {
             },
           ],
         ],
-        { account: signers[1].account },
-      ),
+        { account: signers[1].account }
+      )
     ).to.be.revertedWithCustomError(stake, "CallerIsNotTheAdmin");
   });
 
@@ -59,10 +59,10 @@ describe("Stake - boost", async () => {
             multiplier: parseEther("20"),
           },
         ],
-      ]),
+      ])
     ).to.be.revertedWithCustomError(
       stake,
-      "CannotSetDurationInWeeksForBoostToZero",
+      "CannotSetDurationInWeeksForBoostToZero"
     );
   });
 
@@ -167,5 +167,11 @@ describe("Stake - boost", async () => {
     ]);
 
     expect(await stake.read.finalBoostWeek()).to.equal(15);
+  });
+
+  it("Should not revert when getting the current boost multiplier before staking has started", async () => {
+    const boostMultiplier = await stake.read.getCurrentBoostMultiplier();
+
+    expect(boostMultiplier).to.equal(0);
   });
 });

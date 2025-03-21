@@ -42,7 +42,10 @@ export const StakingPageContent = () => {
   return (
     <div className="relative flex flex-col">
       <StakeOwnTokenBanner percentage={boost} />
-      <EarnAPYTimer percentage={stakingPageHook.data.boost} />
+      <EarnAPYTimer
+        percentage={stakingPageHook.data.boost}
+        timestamp={stakingPageHook.data.timestamp}
+      />
       <div className="mt-2 flex flex-col gap-3 p-4 sm:flex-row sm:justify-center sm:gap-4">
         <Drawer open={stakingDrawerOpen} onOpenChange={setStakingDrawerOpen}>
           <DrawerTrigger asChild>

@@ -1,16 +1,49 @@
 "use client";
 
+import { useMinimalCountdown } from "@/hooks/use-minimal-countdown";
+import { differenceInSeconds, nextSaturday } from "date-fns";
 import Image from "next/image";
-import { useTimer } from "react-timer-hook";
 
 interface EarnAPYTimerProps {
   percentage: number;
+  timestamp: number;
 }
 
-function EarnAPYTimer({ percentage }: EarnAPYTimerProps) {
-  const { days, hours, minutes, seconds } = useTimer({
-    expiryTimestamp: new Date(Date.now() + 1000 * 60 * 60 * 24),
-  });
+function getNextSaturdayUTC(date: Date) {
+  // Convert input date to UTC by removing timezone offset
+  const dateInUTC = new Date(
+    Date.UTC(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate(),
+      date.getUTCHours(),
+      date.getUTCMinutes(),
+      date.getUTCSeconds(),
+    ),
+  );
+
+  // Get the next Saturday
+  const nextSat = nextSaturday(dateInUTC);
+
+  // Set time to 00:00 UTC
+  return new Date(
+    Date.UTC(
+      nextSat.getUTCFullYear(),
+      nextSat.getUTCMonth(),
+      nextSat.getUTCDate(),
+      0,
+      0,
+      0,
+    ),
+  );
+}
+
+function EarnAPYTimer({ percentage, timestamp }: EarnAPYTimerProps) {
+  const timestampDate = new Date(timestamp * 1000);
+  const nextSaturdayUTC = getNextSaturdayUTC(timestampDate);
+  const diff = differenceInSeconds(nextSaturdayUTC, timestampDate);
+  console.log(diff);
+  const { days, hours, minutes, seconds } = useMinimalCountdown(diff);
 
   return (
     <div className="relative flex min-h-[100px] justify-center pt-4 md:pt-12">
@@ -74,11 +107,11 @@ function EarnAPYTimer({ percentage }: EarnAPYTimerProps) {
 }
 type TimerBoxProps = {
   label: string;
-  value: number;
+  value?: number;
 };
 
 function TimerBox({ label, value }: TimerBoxProps) {
-  const formattedValue = value.toString().padStart(2, "0");
+  const formattedValue = (value ?? 0).toString().padStart(2, "0");
   return (
     <div className="flex w-1/2 flex-col items-center rounded-md bg-black px-6 py-2 md:w-[120px]">
       <h1 className="font-funnel text-[14px] tracking-[-2.5%] text-[#A78BFA] md:text-[20px] lg:text-[24px]">

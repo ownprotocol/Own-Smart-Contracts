@@ -1,42 +1,16 @@
 "use client";
 
-import { Duration, intervalToDuration } from "date-fns";
+import { useMinimalCountdown } from "@/hooks/use-minimal-countdown";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 
 interface PriceIncreaseTimerProps {
   endTime: number;
   timestamp: number;
 }
 
-interface TimerState {
-  offset: number;
-  duration: Duration;
-}
-
 function PriceIncreaseTimer({ endTime, timestamp }: PriceIncreaseTimerProps) {
   const diff = endTime > timestamp ? endTime - timestamp : 0;
-  const [timerState, setTimerState] = useState<TimerState>({
-    offset: 0,
-    duration: intervalToDuration({ start: 0, end: diff * 1000 }),
-  });
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimerState((prevState) => {
-        const offset = prevState?.offset ? prevState.offset + 1 : 1;
-        return {
-          offset,
-          duration: intervalToDuration({
-            start: offset * 1000,
-            end: diff * 1000,
-          }),
-        };
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
+  const duration = useMinimalCountdown(diff);
 
   return (
     <div className="relative mt-4 flex min-h-[100px] justify-center md:mt-0">
@@ -46,12 +20,12 @@ function PriceIncreaseTimer({ endTime, timestamp }: PriceIncreaseTimerProps) {
         </h1>
         <div className="flex flex-col justify-center gap-4 md:flex-row">
           <div className="flex gap-4">
-            <TimerBox label="Days" value={timerState.duration.days} />
-            <TimerBox label="Hours" value={timerState.duration.hours} />
+            <TimerBox label="Days" value={duration.days} />
+            <TimerBox label="Hours" value={duration.hours} />
           </div>
           <div className="flex gap-4">
-            <TimerBox label="Minutes" value={timerState.duration.minutes} />
-            <TimerBox label="Seconds" value={timerState.duration.seconds} />
+            <TimerBox label="Minutes" value={duration.minutes} />
+            <TimerBox label="Seconds" value={duration.seconds} />
           </div>
         </div>
       </div>

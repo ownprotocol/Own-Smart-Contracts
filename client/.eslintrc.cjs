@@ -35,10 +35,10 @@ const config = {
         },
       },
     ],
-    // Look I know what you're thinking, I should be fired for this. But its 5pm and I just need this idiot to deploy Ill fix it later
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-unsafe-assignment": "off",
-    "@typescript-eslint/no-unsafe-argument": "off",
+    // // Look I know what you're thinking, I should be fired for this. But its 5pm and I just need this idiot to deploy Ill fix it later
+    // "@typescript-eslint/no-explicit-any": "off",
+    // "@typescript-eslint/no-unsafe-assignment": "off",
+    // "@typescript-eslint/no-unsafe-argument": "off",
   },
 };
 module.exports = config;

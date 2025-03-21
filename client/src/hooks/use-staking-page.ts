@@ -3,6 +3,7 @@ import { useReadContractQueryHook } from "@/helpers/useReadContractWithParsing";
 import { useContracts } from "./use-contracts";
 import { formatEther } from "viem";
 import { useActiveAccount } from "thirdweb/react";
+import { useTestingSafeTimestamp } from "./use-testing-safe-timestamp";
 
 export const useStakingPage = () => {
   const { stakeContract, ownTokenContract } = useContracts();
@@ -24,5 +25,6 @@ export const useStakingPage = () => {
       },
       (value) => Number(formatEther(value)),
     ),
+    timestamp: useTestingSafeTimestamp(),
   });
 };

@@ -62,6 +62,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       setIsLoading(true);
 
       try {
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await props.onClick(e);
 
         setIsLoading(false);
@@ -77,7 +78,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(buttonVariants({ variant, size, className }))}
         onClick={onClickHandler}
         ref={ref}
-        disabled={props.disabled || isLoading}
+        disabled={props.disabled ?? isLoading}
       >
         {isLoading ? <LoadingSpinner /> : props.children}
       </Comp>
