@@ -3,7 +3,6 @@
 import {
   StakeOwnTokenBanner,
   EarnAPYTimer,
-  MainNavigation,
   ConnectWalletButton,
 } from "@/components";
 import StakingDrawerContent from "@/components/staking/staking-drawer-content";
@@ -31,13 +30,18 @@ export const StakingPageContent = () => {
   }
 
   if (stakingPageHook.isLoading) {
-    // TODO: Skeletons etc
-    return <div>Loading...</div>;
+    return (
+      <div className="mx-auto w-full px-[0%] pt-0 md:px-[5%] md:pt-8">
+        Loading...
+      </div>
+    );
   }
+
+  const { ownBalance, boost } = stakingPageHook.data;
 
   return (
     <div className="relative flex flex-col">
-      <StakeOwnTokenBanner percentage={stakingPageHook.data.boost} />
+      <StakeOwnTokenBanner percentage={boost} />
       <EarnAPYTimer percentage={stakingPageHook.data.boost} />
       <div className="mt-2 flex flex-col gap-3 p-4 sm:flex-row sm:justify-center sm:gap-4">
         <Drawer open={stakingDrawerOpen} onOpenChange={setStakingDrawerOpen}>
@@ -45,7 +49,10 @@ export const StakingPageContent = () => {
             <Button className={buttonStyles}>Stake $Own</Button>
           </DrawerTrigger>
           <DrawerContent className="h-[90vh] max-h-[90vh] px-[5%] md:px-[10%] xl:h-[90vh] xl:max-h-[90vh]">
-            <StakingDrawerContent setIsOpen={setStakingDrawerOpen} />
+            <StakingDrawerContent
+              ownBalance={ownBalance}
+              setIsOpen={setStakingDrawerOpen}
+            />
           </DrawerContent>
         </Drawer>
         {!account && (

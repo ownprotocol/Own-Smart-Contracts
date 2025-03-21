@@ -6,9 +6,12 @@ interface StakingLoadingStateProps {
   lockupDuration: number;
 }
 
-const StakingLoadingState = ({ tokensToStake, lockupDuration }: StakingLoadingStateProps) => {
+const StakingLoadingState = ({
+  tokensToStake,
+  lockupDuration,
+}: StakingLoadingStateProps) => {
   return (
-    <div className="py-12 md:py-0 mx-auto flex flex-col gap-4 items-center justify-center text-center">
+    <div className="mx-auto flex flex-col items-center justify-center gap-4 py-12 text-center md:py-0">
       <DrawerHeader className="relative w-full">
         <DrawerClose className="absolute right-0 top-0">
           <span className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
@@ -60,3 +63,4 @@ const StakingLoadingState = ({ tokensToStake, lockupDuration }: StakingLoadingSt
 };
 
 export default StakingLoadingState;
+

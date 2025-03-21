@@ -7,17 +7,17 @@ import { usePathname } from "next/navigation";
 
 import { Button } from "./ui/button";
 import { icons } from "@/constants/icons";
-import { useGetAuthUser } from "@/query/get-user";
 import {
   ConnectWalletButton,
   DesktopNavbar,
   MobileSidebar,
 } from "@/components";
+import { useActiveAccount } from "thirdweb/react";
 
 const Navigation = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
-  const { isValid, address } = useGetAuthUser();
+  const account = useActiveAccount();
 
   return (
     <div className="mt-2 flex flex-row justify-between px-[5%] md:px-[10%]">
@@ -32,17 +32,12 @@ const Navigation = () => {
       <Link href="/" className="flex items-center justify-center">
         <Image src="/own-logo.svg" height={40} width={80} alt="logo" />
       </Link>
-      <DesktopNavbar
-        pathname={pathname}
-        isValid={isValid ?? false}
-        address={address ?? ""}
-      />
+      <DesktopNavbar pathname={pathname} address={account?.address ?? ""} />
       <MobileSidebar
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
         pathname={pathname}
-        isValid={isValid ?? false}
-        address={address ?? ""}
+        address={account?.address ?? ""}
       />
 
       <div className="flex items-center justify-center md:justify-end lg:w-48">

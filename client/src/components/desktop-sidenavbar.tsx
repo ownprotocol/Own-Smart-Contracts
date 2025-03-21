@@ -7,11 +7,9 @@ import { cn } from "@/lib/utils";
 
 const DesktopNavbar = ({
   pathname,
-  isValid,
   address,
 }: {
   pathname: string;
-  isValid: boolean;
   address: string | undefined;
 }) => {
   return (
@@ -30,58 +28,28 @@ const DesktopNavbar = ({
           {link.name}
         </Link>
       ))}
-      {!isValid && (
-        <>
-          <Link
-            href={`/unauthorized/user-stake/rewards`}
-            className={cn(
-              "tracking-normal transition-colors hover:text-gray-300",
-              pathname === `/unauthorized/user-stake/rewards`
-                ? "font-semibold underline underline-offset-4"
-                : "",
-            )}
-          >
-            Rewards
-          </Link>
-          <Link
-            href={`/unauthorized/user-stake/positions`}
-            className={cn(
-              "tracking-normal transition-colors hover:text-gray-300",
-              pathname === `/unauthorized/user-stake/positions`
-                ? "font-semibold underline underline-offset-4"
-                : "",
-            )}
-          >
-            Positions
-          </Link>
-        </>
-      )}
-      {isValid && (
-        <>
-          <Link
-            href={`/user-stake/${address}/rewards`}
-            className={cn(
-              "tracking-normal transition-colors hover:text-gray-300",
-              pathname === `/user-stake/${address}/rewards`
-                ? "font-semibold underline underline-offset-4"
-                : "",
-            )}
-          >
-            Rewards
-          </Link>
-          <Link
-            href={`/user-stake/${address}/positions`}
-            className={cn(
-              "tracking-normal transition-colors hover:text-gray-300",
-              pathname === `/user-stake/${address}/positions`
-                ? "font-semibold underline underline-offset-4"
-                : "",
-            )}
-          >
-            Positions
-          </Link>
-        </>
-      )}
+      <Link
+        href={`/user-stake/${address}/rewards`}
+        className={cn(
+          "tracking-normal transition-colors hover:text-gray-300",
+          pathname === `/user-stake/${address}/rewards`
+            ? "font-semibold underline underline-offset-4"
+            : "",
+        )}
+      >
+        Rewards
+      </Link>
+      <Link
+        href={`/user-stake/${address}/positions`}
+        className={cn(
+          "tracking-normal transition-colors hover:text-gray-300",
+          pathname === `/user-stake/${address}/positions`
+            ? "font-semibold underline underline-offset-4"
+            : "",
+        )}
+      >
+        Positions
+      </Link>
     </div>
   );
 };
