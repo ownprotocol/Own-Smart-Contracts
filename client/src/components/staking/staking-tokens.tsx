@@ -19,7 +19,6 @@ interface StakingTokensProps {
   setValue: UseFormSetValue<StakingFormData>;
   errors: FieldErrors<StakingFormData>;
   ownBalance: number;
-  setTokensToStake: (amount: number) => void;
 }
 
 function StakingTokens({
@@ -28,7 +27,6 @@ function StakingTokens({
   setValue,
   errors,
   ownBalance,
-  setTokensToStake,
 }: StakingTokensProps) {
   const [activePercentage, setActivePercentage] = useState<number | null>(null);
 
@@ -44,15 +42,13 @@ function StakingTokens({
         toast.warning(
           `You don't have enough balance to stake that amount. Max stake amount is ${maxTokenAmount.toFixed(2)}`,
         );
-        setValue("tokenAmount", maxTokenAmount.toString(), {
+        setValue("tokenAmount", maxTokenAmount, {
           shouldValidate: true,
         });
-        setTokensToStake(maxTokenAmount);
       } else {
-        setValue("tokenAmount", amount.toString(), {
+        setValue("tokenAmount", amount, {
           shouldValidate: true,
         });
-        setTokensToStake(amount);
       }
     };
 
@@ -65,13 +61,14 @@ function StakingTokens({
     if (e) {
       setActivePercentage(null);
       const inputValue = e.target.value;
-      setValue("tokenAmount", inputValue, { shouldValidate: true });
 
       if (/^\d+(\.\d+)?$/.test(inputValue)) {
         tokenAmountNumber = Number(inputValue);
         validateAndSetTokenAmount(tokenAmountNumber);
       } else {
-        setTokensToStake(0);
+        setValue("tokenAmount", 0, {
+          shouldValidate: true,
+        });
       }
     }
   };

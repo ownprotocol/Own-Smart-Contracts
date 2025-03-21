@@ -6,39 +6,59 @@ import PriceIncreaseTimer from "./price-increase-timer";
 import RaiseStats from "./raise-stats";
 import PriceIncreaseTimerSkeleton from "../ui/loading-skeletons/price-increase-timer-skeleton";
 import RaiseStatsSkeleton from "../ui/loading-skeletons/raise-stats-skeleton";
-import { usePresalePage } from "@/hooks/use-presale-page";
+import { useHomePresalePage } from "@/hooks/use-home-presale-page";
+import ConnectWalletButton from "../connect-wallet-button";
 
 export const PresalePageContents = () => {
-  const presalePageHook = usePresalePage();
+  const presalePageHook = useHomePresalePage();
 
   if (presalePageHook.isLoading) {
     return (
-      <>
+      <div className="flex flex-col items-center space-y-4">
         <PresaleBanner roundId={null} />
         <RaiseStatsSkeleton />
         <PriceIncreaseTimerSkeleton />
-        <ActionButtons />
-      </>
+        <ConnectWalletButton
+          bgColor="black"
+          textColor="white"
+          isHoverable={false}
+          className="!font-funnel !mt-4 !cursor-pointer !font-semibold"
+        />
+      </div>
     );
   }
 
   return (
     <>
-      <PresaleBanner roundId={presalePageHook.data.presaleRound.roundId} />
-      {presalePageHook.data.presaleRound.roundsInProgress && (
-        <>
-          <RaiseStats
-            usdtBalance={presalePageHook.data.usdtBalance}
-            presaleData={presalePageHook.data.presaleRound}
-          />
-          <PriceIncreaseTimer
-            endTime={presalePageHook.data.presaleRound.endTime}
-          />
-          <ActionButtons />
-        </>
-      )}
+      <PresaleBanner
+        roundId={presalePageHook.data.presaleRound.roundDetails.roundId}
+      />
+      {presalePageHook.data.presaleRound.roundsInProgress &&
+        presalePageHook.data.startPresaleTime <
+          presalePageHook.data.timestamp && (
+          <>
+            <RaiseStats
+              usdtBalance={presalePageHook.data.usdtBalance}
+              presaleData={presalePageHook.data.presaleRound}
+            />
+            <PriceIncreaseTimer
+              endTime={presalePageHook.data.presaleRound.endTime}
+              timestamp={presalePageHook.data.timestamp}
+            />
+            <ActionButtons
+              usdtBalance={presalePageHook.data.usersUSDTBalance}
+              ownBalance={presalePageHook.data.usersOwnBalance}
+              ownPrice={presalePageHook.data.presaleRound.roundDetails.price}
+              refetch={presalePageHook.refetch}
+            />
+          </>
+        )}
       {!presalePageHook.data.presaleRound.roundsInProgress && (
         <div>Presale rounds have finished</div> // Lazy styling for now
+      )}
+      {presalePageHook.data.startPresaleTime >
+        presalePageHook.data.timestamp && (
+        <div>Presale hasn&apos;t started yet</div>
       )}
     </>
   );

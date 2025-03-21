@@ -5,8 +5,7 @@ import { DrawerHeader } from "../ui/drawer";
 import Image from "next/image";
 
 interface StakingDrawerHeaderProps {
-  ownBalance: string;
-  ownTokenSymbol?: string;
+  ownBalance: number;
 }
 
 function StakingDrawerHeader({ ownBalance }: StakingDrawerHeaderProps) {
@@ -33,7 +32,7 @@ function StakingDrawerHeader({ ownBalance }: StakingDrawerHeaderProps) {
               height={15}
             />
             <p className="font-dm_mono text-[12px] font-[400] leading-[14px] tracking-[8%] text-black md:text-[14px] md:leading-[16px]">
-            {Number(ownBalance).toLocaleString()}
+              {ownBalance.toLocaleString()}
             </p>
           </div>
         </div>

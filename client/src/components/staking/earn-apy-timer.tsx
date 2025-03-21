@@ -1,17 +1,56 @@
 "use client";
 
+import { useMinimalCountdown } from "@/hooks/use-minimal-countdown";
+import { differenceInSeconds, nextSaturday } from "date-fns";
 import Image from "next/image";
-import { useTimer } from "react-timer-hook";
 
-function EarnAPYTimer() {
-  const { days, hours, minutes, seconds } = useTimer({
-    expiryTimestamp: new Date(Date.now() + 1000 * 60 * 60 * 24),
-  });
+interface EarnAPYTimerProps {
+  percentage: number;
+  timestamp: number;
+}
+
+function getNextSaturdayUTC(date: Date) {
+  // Convert input date to UTC by removing timezone offset
+  const dateInUTC = new Date(
+    Date.UTC(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate(),
+      date.getUTCHours(),
+      date.getUTCMinutes(),
+      date.getUTCSeconds(),
+    ),
+  );
+
+  // Get the next Saturday
+  const nextSat = nextSaturday(dateInUTC);
+
+  // Set time to 00:00 UTC
+  return new Date(
+    Date.UTC(
+      nextSat.getUTCFullYear(),
+      nextSat.getUTCMonth(),
+      nextSat.getUTCDate(),
+      0,
+      0,
+      0,
+    ),
+  );
+}
+
+function EarnAPYTimer({ percentage, timestamp }: EarnAPYTimerProps) {
+  const timestampDate = new Date(timestamp * 1000);
+  const nextSaturdayUTC = getNextSaturdayUTC(timestampDate);
+  const diff = differenceInSeconds(nextSaturdayUTC, timestampDate);
+  console.log(diff);
+  const { days, hours, minutes, seconds } = useMinimalCountdown(diff);
+
   return (
     <div className="relative flex min-h-[100px] justify-center pt-4 md:pt-12">
       <div className="flex flex-col gap-4">
         <h1 className="font-funnel px-4 py-2 text-center text-[14px] font-[500] leading-[14px] md:text-[16px] md:leading-[16px] lg:text-[20px] lg:leading-[20px]">
-          EARN <span className="text-orange-500">10X</span> APY FOR NEXT YEAR
+          EARN <span className="text-orange-500">{percentage}X</span> APY FOR
+          NEXT YEAR
         </h1>
         <div className="flex flex-col justify-center gap-4 md:flex-row">
           <div className="flex gap-4">
@@ -36,7 +75,7 @@ function EarnAPYTimer() {
       <div className="absolute inset-0 h-[580px] w-[100px] rotate-[24.3deg] rounded-full bg-[#E49048] opacity-10 blur-[200px]" />
 
       <div className="absolute right-[-15%] top-[-15%] -z-10 hidden md:block">
-      <div className="relative">
+        <div className="relative">
           <Image
             src="/home-page/hero/designed-dots.png"
             alt="Decorative dots"
@@ -44,13 +83,13 @@ function EarnAPYTimer() {
             height={75}
             priority
           />
-          <div className="animate-dot-pulse absolute left-[27%] top-[13%] h-[6px] w-[6px] rounded-full bg-[#ff844f] [animation-delay:0ms]" />
-          <div className="animate-dot-pulse absolute left-[67%] top-[27%] h-[6px] w-[6px] rounded-full bg-[#ff844f] [animation-delay:500ms]" />
-          <div className="animate-dot-pulse absolute left-[40%] top-[53%] h-[6px] w-[6px] rounded-full bg-[#ff844f] [animation-delay:1000ms]" />
+          <div className="absolute left-[27%] top-[13%] h-[6px] w-[6px] animate-dot-pulse rounded-full bg-[#ff844f] [animation-delay:0ms]" />
+          <div className="absolute left-[67%] top-[27%] h-[6px] w-[6px] animate-dot-pulse rounded-full bg-[#ff844f] [animation-delay:500ms]" />
+          <div className="absolute left-[40%] top-[53%] h-[6px] w-[6px] animate-dot-pulse rounded-full bg-[#ff844f] [animation-delay:1000ms]" />
         </div>
       </div>
       <div className="absolute left-[-15%] top-[-15%] -z-10 hidden md:block">
-      <div className="relative">
+        <div className="relative">
           <Image
             src="/home-page/hero/designed-dots.png"
             alt="Decorative dots"
@@ -58,9 +97,9 @@ function EarnAPYTimer() {
             height={75}
             priority
           />
-          <div className="animate-dot-pulse absolute left-[27%] top-[13%] h-[6px] w-[6px] rounded-full bg-[#ff844f] [animation-delay:0ms]" />
-          <div className="animate-dot-pulse absolute left-[67%] top-[27%] h-[6px] w-[6px] rounded-full bg-[#ff844f] [animation-delay:500ms]" />
-          <div className="animate-dot-pulse absolute left-[40%] top-[53%] h-[6px] w-[6px] rounded-full bg-[#ff844f] [animation-delay:1000ms]" />
+          <div className="absolute left-[27%] top-[13%] h-[6px] w-[6px] animate-dot-pulse rounded-full bg-[#ff844f] [animation-delay:0ms]" />
+          <div className="absolute left-[67%] top-[27%] h-[6px] w-[6px] animate-dot-pulse rounded-full bg-[#ff844f] [animation-delay:500ms]" />
+          <div className="absolute left-[40%] top-[53%] h-[6px] w-[6px] animate-dot-pulse rounded-full bg-[#ff844f] [animation-delay:1000ms]" />
         </div>
       </div>
     </div>
@@ -68,11 +107,11 @@ function EarnAPYTimer() {
 }
 type TimerBoxProps = {
   label: string;
-  value: number;
+  value?: number;
 };
 
 function TimerBox({ label, value }: TimerBoxProps) {
-  const formattedValue = value.toString().padStart(2, "0");
+  const formattedValue = (value ?? 0).toString().padStart(2, "0");
   return (
     <div className="flex w-1/2 flex-col items-center rounded-md bg-black px-6 py-2 md:w-[120px]">
       <h1 className="font-funnel text-[14px] tracking-[-2.5%] text-[#A78BFA] md:text-[20px] lg:text-[24px]">

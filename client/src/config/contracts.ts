@@ -1,3 +1,4 @@
+import { HARDHAT_CHAIN_ID } from "@/constants/network";
 import { sepolia } from "thirdweb/chains";
 
 export interface ContractAddresses {
@@ -9,7 +10,7 @@ export interface ContractAddresses {
 }
 
 export const getContractAddresses = (networkId: number): ContractAddresses => {
-  if (networkId === 1337) {
+  if (networkId === HARDHAT_CHAIN_ID) {
     return {
       usdtAddress: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
       presaleAddress: "0x0165878A594ca255338adfa4d48449f69242Eb8F",
@@ -21,11 +22,11 @@ export const getContractAddresses = (networkId: number): ContractAddresses => {
 
   if (networkId === 11155111) {
     return {
-      usdtAddress: "0xBC4e5986e9d76C6f32CE37C4991dC4160f047D82",
-      presaleAddress: "0x59dA58dcAA1FBc65D5efe4F67BC4A746807C8043",
-      stakeAddress: "0xb66dA146c4EeD81390815382Af5d259238347FA1",
-      ownTokenAddress: "0xBbB541c3cfB1093497cB2333B4fc01802c332f69",
-      veOwnTokenAddress: "0x31307591ab5b5fB4E604628B895a207E6125821F",
+      usdtAddress: "0x6DE70A1A954811a03963Aa843347488FE94D417f",
+      presaleAddress: "0x20D811217C46419909e8d3887C93A3A7E3Ba5ba7",
+      stakeAddress: "0xfA11095Eb3133C367Acc86F716675B6b6Bcf4905",
+      ownTokenAddress: "0x9F12BCfAEf51eC22d194bBecD271D8DA28774F80",
+      veOwnTokenAddress: "0xe5ACbB48c524bc1Dc30d526aF9f644a0443F5438",
     };
   }
 

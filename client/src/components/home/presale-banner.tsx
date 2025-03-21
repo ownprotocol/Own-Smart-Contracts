@@ -15,7 +15,7 @@ function PresaleBanner({ roundId }: PresaleBannerProps) {
         <div className="flex w-full justify-start md:w-1/4 md:justify-end">
           {roundId !== null && (
             <span className="rounded-full bg-[#C1691180] px-4 py-1.5 pt-2 text-sm font-normal uppercase tracking-wider text-[#F1AF6E] md:text-xs">
-              Phase {roundId}
+              Phase {roundId + 1}
             </span>
           )}
         </div>

@@ -1,5 +1,5 @@
 {
-  "address": "0xe2bCE27c43B242cD52dC747A6494F6843A62ED40",
+  "address": "0x34EecAb7b944A0E6E74a539F685ac058A76A9597",
   "abi": [
     {
       "type": "constructor",
@@ -29,7 +29,17 @@
     },
     {
       "type": "error",
+      "name": "CannotPurchase0PresaleTokens",
+      "inputs": []
+    },
+    {
+      "type": "error",
       "name": "CannotSetAddressToZero",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "CannotSetPresaleClaimTimestampToBeBeforeRoundEnd",
       "inputs": []
     },
     {
@@ -45,6 +55,11 @@
     {
       "type": "error",
       "name": "CannotSetPresaleRoundPriceToZero",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "CannotSetPresaleRoundSalesToNonZero",
       "inputs": []
     },
     {
@@ -157,6 +172,16 @@
     },
     {
       "type": "error",
+      "name": "SafeERC20FailedOperation",
+      "inputs": [
+        {
+          "type": "address",
+          "name": "token"
+        }
+      ]
+    },
+    {
+      "type": "error",
       "name": "UUPSUnauthorizedCallContext",
       "inputs": []
     },
@@ -208,6 +233,28 @@
           "type": "address",
           "name": "newOwner",
           "indexed": true
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "anonymous": false,
+      "name": "PresaleClaimTimestampUpdated",
+      "inputs": [
+        {
+          "type": "uint256",
+          "name": "roundId",
+          "indexed": false
+        },
+        {
+          "type": "uint256",
+          "name": "newClaimTimestamp",
+          "indexed": false
+        },
+        {
+          "type": "uint256",
+          "name": "oldClaimTimestamp",
+          "indexed": false
         }
       ]
     },
@@ -301,6 +348,10 @@
             {
               "type": "uint256",
               "name": "sales"
+            },
+            {
+              "type": "uint256",
+              "name": "claimTokensTimestamp"
             }
           ]
         }
@@ -459,6 +510,10 @@
             {
               "type": "uint256",
               "name": "sales"
+            },
+            {
+              "type": "uint256",
+              "name": "claimTokensTimestamp"
             }
           ]
         }
@@ -516,6 +571,10 @@
             {
               "type": "uint256",
               "name": "sales"
+            },
+            {
+              "type": "uint256",
+              "name": "claimTokensTimestamp"
             }
           ]
         }
@@ -552,12 +611,20 @@
             {
               "type": "uint256",
               "name": "sales"
+            },
+            {
+              "type": "uint256",
+              "name": "claimTokensTimestamp"
             }
           ]
         },
         {
           "type": "uint256",
           "name": "roundId"
+        },
+        {
+          "type": "uint256",
+          "name": "endTime"
         }
       ]
     },
@@ -576,7 +643,7 @@
       "outputs": [
         {
           "type": "tuple[]",
-          "name": "",
+          "name": "usersPurchases",
           "components": [
             {
               "type": "uint256",
@@ -736,6 +803,10 @@
         {
           "type": "uint256",
           "name": "sales"
+        },
+        {
+          "type": "uint256",
+          "name": "claimTokensTimestamp"
         }
       ]
     },
@@ -871,6 +942,23 @@
         {
           "type": "uint256",
           "name": "_newAllocation"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "updatePresaleRoundClaimTimestamp",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        {
+          "type": "uint256",
+          "name": "_roundId"
+        },
+        {
+          "type": "uint256",
+          "name": "_newClaimTimestamp"
         }
       ],
       "outputs": []

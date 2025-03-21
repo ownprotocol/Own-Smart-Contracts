@@ -8,17 +8,18 @@ import { client } from "@/lib/client";
 import { getContract } from "thirdweb";
 import { type Abi } from "thirdweb/utils";
 import { useActiveChainWithDefault } from "./useChainWithDefault";
-import { useContractAddresses } from "./use-contract-addresses";
+import { getContractAddresses } from "@/config/contracts";
 
 export const useContracts = () => {
   const chain = useActiveChainWithDefault();
-  console.log(chain);
 
-  const contractAddresses = useContractAddresses();
+  const contractAddresses = getContractAddresses(chain.id);
   const usdtContract = getContract({
     client,
     address: contractAddresses.usdtAddress,
     chain,
+    // This ABI is really just an ERC20 so we can use it here
+    abi: ownTokenABI,
   });
 
   const presaleContract = getContract({

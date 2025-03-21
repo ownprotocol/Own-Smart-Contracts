@@ -3,30 +3,20 @@
 import Image from "next/image";
 import { DrawerHeader, DrawerClose } from "../ui/drawer";
 import { Button } from "../ui/button";
-import { useRouter } from "next/navigation";
 
 interface StakingConfirmationProps {
   tokensToStake: number;
   lockupDuration: number;
-  setIsOpen?: (isOpen: boolean) => void;
+  setIsOpen: (isOpen: boolean) => void;
 }
 
-const StakingConfirmation = ({ 
-  tokensToStake, 
+const StakingConfirmation = ({
+  tokensToStake,
   lockupDuration,
-  setIsOpen 
+  setIsOpen,
 }: StakingConfirmationProps) => {
-  const router = useRouter();
-  
-  const handleGoToDashboard = () => {
-    if (setIsOpen) {
-      setIsOpen(false);
-    }
-    router.push("/dashboard");
-  };
-
   return (
-    <div className="py-12 md:py-0 mx-auto flex flex-col gap-4 items-center justify-center text-center">
+    <div className="mx-auto flex flex-col items-center justify-center gap-4 py-12 text-center md:py-0">
       <DrawerHeader className="relative w-full">
         <DrawerClose className="absolute right-0 top-0">
           <span className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
@@ -71,14 +61,14 @@ const StakingConfirmation = ({
             })
             .replace(/\//g, "/")}
         </p>
-        
+
         {/* Button at the end */}
         <div className="mt-8">
-          <Button 
-            onClick={handleGoToDashboard}
-            className="min-w-[200px] rounded-md bg-white text-gray-500 border border-gray-300 px-4 py-2 font-dm_sans text-sm font-medium hover:bg-primary/90"
+          <Button
+            onClick={() => setIsOpen(false)}
+            className="min-w-[200px] rounded-md border border-gray-300 bg-white px-4 py-2 font-dm_sans text-sm font-medium text-gray-500 hover:bg-primary/90"
           >
-            Go to Dashboard
+            Close
           </Button>
         </div>
       </div>
@@ -87,3 +77,4 @@ const StakingConfirmation = ({
 };
 
 export default StakingConfirmation;
+
