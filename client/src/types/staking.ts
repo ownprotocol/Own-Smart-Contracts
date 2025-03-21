@@ -10,3 +10,13 @@ export const stakingSchema = z.object({
 });
 
 export type StakingFormData = z.infer<typeof stakingSchema>;
+
+export type StakingPurchaseDetails = {
+  startDay: number;
+  finalDay: number;
+  ownAmount: number;
+  veOwnAmount: number;
+  lastWeekRewardsClaimed: number;
+  rewardsClaimed: number;
+  claimableRewards: number;
+};

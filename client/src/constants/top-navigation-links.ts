@@ -8,4 +8,9 @@ export const TOP_NAVIGATION_LINKS = [
     link: "/presale",
     icon: icons.GiReceiveMoney,
   },
+  {
+    name: "Positions",
+    link: "/positions",
+    icon: icons.GiReceiveMoney,
+  },
 ];

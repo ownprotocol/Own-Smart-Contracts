@@ -17,12 +17,10 @@ const MobileSidebar = ({
   sidebarOpen,
   setSidebarOpen,
   pathname,
-  address,
 }: {
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
   pathname: string;
-  address: string | undefined;
 }) => {
   return (
     <Dialog
@@ -90,40 +88,6 @@ const MobileSidebar = ({
                         </Link>
                       </li>
                     ))}
-                    <li className="">
-                      <Link
-                        onClick={() => setSidebarOpen(false)}
-                        href={`/user-stake/${address}/rewards`}
-                        className={cn(
-                          pathname === `/user-stake/${address}/rewards`
-                            ? "bg-gray-800 text-white"
-                            : "text-gray-400 hover:bg-gray-800 hover:text-white",
-                          "group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold",
-                        )}
-                      >
-                        <icons.RiAedLine
-                          aria-hidden="true"
-                          className="size-6 shrink-0"
-                        />
-                        <p>Rewards</p>
-                      </Link>
-                      <Link
-                        onClick={() => setSidebarOpen(false)}
-                        href={`/user-stake/${address}/positions`}
-                        className={cn(
-                          pathname === `/user-stake/${address}/positions`
-                            ? "bg-gray-800 text-white"
-                            : "text-gray-400 hover:bg-gray-800 hover:text-white",
-                          "group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold",
-                        )}
-                      >
-                        <icons.RiAddLargeLine
-                          aria-hidden="true"
-                          className="size-6 shrink-0"
-                        />
-                        <p>Positions</p>
-                      </Link>
-                    </li>
                   </ul>
                 </li>
               </ul>

@@ -9,7 +9,7 @@ export const useStakingPage = () => {
   const { stakeContract, ownTokenContract } = useContracts();
   const account = useActiveAccount();
 
-  return queryHookUnifier({
+  const mainContentQuery = queryHookUnifier({
     boost: useReadContractQueryHook(
       {
         contract: stakeContract,
@@ -27,4 +27,14 @@ export const useStakingPage = () => {
     ),
     timestamp: useTestingSafeTimestamp(),
   });
+
+  const hasStakingStartedQuery = useReadContractQueryHook({
+    contract: stakeContract,
+    method: "hasStakingStarted",
+  });
+
+  return {
+    mainContentQuery,
+    hasStakingStartedQuery,
+  };
 };

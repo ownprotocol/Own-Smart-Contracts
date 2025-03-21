@@ -16,7 +16,7 @@ const buttonStyles =
   "font-funnel hover:bg-[#D58BFF] !mx-auto !w-full !max-w-fit !bg-[#C58BFF] !px-8 !py-6 !text-[14px] !font-medium !leading-[14px] !tracking-[0%] !text-black !md:text-[16px] !md:leading-[16px]";
 
 export const StakingPageContent = () => {
-  const stakingPageHook = useStakingPage();
+  const { mainContentQuery, hasStakingStartedQuery } = useStakingPage();
   const account = useActiveAccount();
 
   const [stakingDrawerOpen, setStakingDrawerOpen] = useState(false);
@@ -29,7 +29,18 @@ export const StakingPageContent = () => {
     );
   }
 
-  if (stakingPageHook.isLoading) {
+  if (
+    !hasStakingStartedQuery.isLoading &&
+    hasStakingStartedQuery.data === false
+  ) {
+    return (
+      <div className="mx-auto w-full px-[0%] pt-0 md:px-[5%] md:pt-8">
+        Staking has not started yet
+      </div>
+    );
+  }
+
+  if (mainContentQuery.isLoading) {
     return (
       <div className="mx-auto w-full px-[0%] pt-0 md:px-[5%] md:pt-8">
         Loading...
@@ -37,15 +48,12 @@ export const StakingPageContent = () => {
     );
   }
 
-  const { ownBalance, boost } = stakingPageHook.data;
+  const { ownBalance, boost, timestamp } = mainContentQuery.data;
 
   return (
     <div className="relative flex flex-col">
       <StakeOwnTokenBanner percentage={boost} />
-      <EarnAPYTimer
-        percentage={stakingPageHook.data.boost}
-        timestamp={stakingPageHook.data.timestamp}
-      />
+      <EarnAPYTimer percentage={boost} timestamp={timestamp} />
       <div className="mt-2 flex flex-col gap-3 p-4 sm:flex-row sm:justify-center sm:gap-4">
         <Drawer open={stakingDrawerOpen} onOpenChange={setStakingDrawerOpen}>
           <DrawerTrigger asChild>

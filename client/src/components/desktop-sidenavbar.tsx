@@ -5,13 +5,7 @@ import Link from "next/link";
 import { TOP_NAVIGATION_LINKS } from "@/constants/top-navigation-links";
 import { cn } from "@/lib/utils";
 
-const DesktopNavbar = ({
-  pathname,
-  address,
-}: {
-  pathname: string;
-  address: string | undefined;
-}) => {
+const DesktopNavbar = ({ pathname }: { pathname: string }) => {
   return (
     <div className="hidden items-center justify-center gap-4 border-gray-500 font-dm_mono lg:flex lg:w-[500px] lg:flex-row">
       {TOP_NAVIGATION_LINKS.map((link) => (
@@ -28,28 +22,6 @@ const DesktopNavbar = ({
           {link.name}
         </Link>
       ))}
-      <Link
-        href={`/user-stake/${address}/rewards`}
-        className={cn(
-          "tracking-normal transition-colors hover:text-gray-300",
-          pathname === `/user-stake/${address}/rewards`
-            ? "font-semibold underline underline-offset-4"
-            : "",
-        )}
-      >
-        Rewards
-      </Link>
-      <Link
-        href={`/user-stake/${address}/positions`}
-        className={cn(
-          "tracking-normal transition-colors hover:text-gray-300",
-          pathname === `/user-stake/${address}/positions`
-            ? "font-semibold underline underline-offset-4"
-            : "",
-        )}
-      >
-        Positions
-      </Link>
     </div>
   );
 };
