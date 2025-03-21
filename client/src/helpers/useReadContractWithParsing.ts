@@ -53,15 +53,16 @@ export function useReadContractQueryHook<
     ? ReadContractResult<PreparedMethod<ParseMethod<TAbi, TMethod>>[2]>
     : V
 > {
-  const { isLoading, data, error } = useReadContract(options);
+  const { isLoading, data, error, refetch } = useReadContract(options);
   if (error) console.error(error);
 
   if (isLoading || data === undefined) return { isLoading: true };
 
   return {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     data: (parser ? parser(data) : data) as any,
     isLoading,
+    refetch: async () => {
+      refetch();
+    },
   };
 }

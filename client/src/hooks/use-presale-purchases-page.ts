@@ -96,6 +96,7 @@ export const usePresalePurchasesPage = (): QueryHook<{
 
   return {
     isLoading: false,
+    refetch: queryHooks.refetch,
     data: {
       presalePurchases: formattedPresalePurchases,
       hasRewardsToClaim,

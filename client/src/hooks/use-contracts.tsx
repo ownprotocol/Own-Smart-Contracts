@@ -8,12 +8,12 @@ import { client } from "@/lib/client";
 import { getContract } from "thirdweb";
 import { type Abi } from "thirdweb/utils";
 import { useActiveChainWithDefault } from "./useChainWithDefault";
-import { useContractAddresses } from "./use-contract-addresses";
+import { getContractAddresses } from "@/config/contracts";
 
 export const useContracts = () => {
   const chain = useActiveChainWithDefault();
 
-  const contractAddresses = useContractAddresses();
+  const contractAddresses = getContractAddresses(chain.id);
   const usdtContract = getContract({
     client,
     address: contractAddresses.usdtAddress,

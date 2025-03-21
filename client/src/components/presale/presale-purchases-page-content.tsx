@@ -4,28 +4,36 @@ import { usePresalePurchasesPage } from "@/hooks/use-presale-purchases-page";
 import PresalePurchasesTable from "./presale-purchases-table";
 import { Button } from "../ui/button";
 import { useContracts } from "@/hooks";
-import { useSendTransaction } from "thirdweb/react";
-import { prepareContractCall } from "thirdweb";
+import { useActiveAccount } from "thirdweb/react";
+import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
 import { toast } from "react-toastify";
 
 export const PresalePurchasesPageContent = () => {
   const presalePageHook = usePresalePurchasesPage();
   const { presaleContract } = useContracts();
-  const { mutateAsync: sendTxAsync } = useSendTransaction();
+  const account = useActiveAccount();
 
   if (presalePageHook.isLoading) {
     return <div>loading...</div>;
   }
 
   const claimRewards = async () => {
+    if (!account) {
+      console.error("Account not found");
+      return;
+    }
+
     try {
-      await sendTxAsync(
-        prepareContractCall({
+      await sendAndConfirmTransaction({
+        account,
+        transaction: prepareContractCall({
           contract: presaleContract,
           method: "claimPresaleRoundTokens",
           params: [],
-        }) as any, // Stupid type error, absolutely thirdwebs fault here
-      );
+        }),
+      });
+
+      await presalePageHook.refetch();
 
       toast.success("Rewards claimed successfully");
     } catch (e) {
@@ -41,6 +49,7 @@ export const PresalePurchasesPageContent = () => {
         variant={"mainButton"}
         disabled={!presalePageHook.data.hasRewardsToClaim}
         onClick={claimRewards}
+        useSpinner
       >
         Claim Rewards
       </Button>

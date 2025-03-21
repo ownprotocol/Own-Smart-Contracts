@@ -20,7 +20,7 @@ export const getWertOptions = (): Options => {
         commodity: "ETH",
         network: "sepolia",
       },
-      // Add $OWN token here when it's supported by Wert
+      // Add $USDT token here when it's supported by Wert
       // {
       //   commodity: "$OWN",
       //   network: "ethereum",

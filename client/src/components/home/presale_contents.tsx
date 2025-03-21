@@ -14,7 +14,7 @@ export const PresalePageContents = () => {
 
   if (presalePageHook.isLoading) {
     return (
-      <>
+      <div className="flex flex-col items-center space-y-4">
         <PresaleBanner roundId={null} />
         <RaiseStatsSkeleton />
         <PriceIncreaseTimerSkeleton />
@@ -24,36 +24,40 @@ export const PresalePageContents = () => {
           isHoverable={false}
           className="!font-funnel !mt-4 !cursor-pointer !font-semibold"
         />
-      </>
+      </div>
     );
   }
-  console.log(presalePageHook.data);
 
   return (
     <>
       <PresaleBanner
         roundId={presalePageHook.data.presaleRound.roundDetails.roundId}
       />
-      {presalePageHook.data.presaleRound.roundsInProgress && (
-        <>
-          <RaiseStats
-            usdtBalance={presalePageHook.data.usdtBalance}
-            presaleData={presalePageHook.data.presaleRound}
-          />
-          <PriceIncreaseTimer
-            endTime={presalePageHook.data.presaleRound.endTime}
-            timestamp={presalePageHook.data.timestamp}
-          />
-          <ActionButtons
-            usdtBalance={presalePageHook.data.usersUSDTBalance}
-            ownBalance={presalePageHook.data.usersOwnBalance}
-            ownPrice={presalePageHook.data.presaleRound.roundDetails.price}
-          />
-        </>
-      )}
+      {presalePageHook.data.presaleRound.roundsInProgress &&
+        presalePageHook.data.startPresaleTime <
+          presalePageHook.data.timestamp && (
+          <>
+            <RaiseStats
+              usdtBalance={presalePageHook.data.usdtBalance}
+              presaleData={presalePageHook.data.presaleRound}
+            />
+            <PriceIncreaseTimer
+              endTime={presalePageHook.data.presaleRound.endTime}
+              timestamp={presalePageHook.data.timestamp}
+            />
+            <ActionButtons
+              usdtBalance={presalePageHook.data.usersUSDTBalance}
+              ownBalance={presalePageHook.data.usersOwnBalance}
+              ownPrice={presalePageHook.data.presaleRound.roundDetails.price}
+              refetch={presalePageHook.refetch}
+            />
+          </>
+        )}
       {!presalePageHook.data.presaleRound.roundsInProgress && (
         <div>Presale rounds have finished</div> // Lazy styling for now
       )}
+      {presalePageHook.data.startPresaleTime >
+        presalePageHook.data.timestamp && <div>Presale hasn't started yet</div>}
     </>
   );
 };

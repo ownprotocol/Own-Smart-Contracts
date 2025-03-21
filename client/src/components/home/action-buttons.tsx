@@ -16,12 +16,14 @@ interface ActionButtonsProps {
   ownBalance: number;
   usdtBalance: number;
   ownPrice: number;
+  refetch: () => Promise<void>;
 }
 
 function ActionButtons({
   ownBalance,
   usdtBalance,
   ownPrice,
+  refetch,
 }: ActionButtonsProps) {
   const [buyWithCryptoOpen, setBuyWithCryptoOpen] = useState(false);
 
@@ -65,6 +67,7 @@ function ActionButtons({
             usdtBalance={usdtBalance}
             ownBalance={ownBalance}
             ownPrice={ownPrice}
+            refetch={refetch}
           />
         </DrawerContent>
       </Drawer>

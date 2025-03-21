@@ -4,7 +4,7 @@ import { getCurrentBlockTimestamp, increaseTime } from "../helpers/evm";
 const main = async () => {
   const beforetime = await getCurrentBlockTimestamp();
 
-  await increaseTime(3600);
+  await increaseTime(87400);
 
   const currentTime = await getCurrentBlockTimestamp();
 

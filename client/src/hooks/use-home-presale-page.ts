@@ -1,7 +1,6 @@
 import { useGetCurrentPresaleRound } from "./use-get-current-presale-round";
 import { useGetBalanceUSDT } from "./use-get-usdt-balance";
 import { queryHookUnifier } from "@/helpers/query-hook-unifier";
-import { useContractAddresses } from "./use-contract-addresses";
 import { useReadContractQueryHook } from "@/helpers/useReadContractWithParsing";
 import { useContracts } from "./use-contracts";
 import { useActiveAccount } from "thirdweb/react";
@@ -9,12 +8,11 @@ import { formatEther } from "viem";
 import { useTestingSafeTimestamp } from "./use-testing-safe-timestamp";
 
 export const useHomePresalePage = () => {
-  const { presaleAddress } = useContractAddresses();
-  const { ownTokenContract } = useContracts();
+  const { ownTokenContract, presaleContract } = useContracts();
   const account = useActiveAccount();
 
   const presaleData = queryHookUnifier({
-    usdtBalance: useGetBalanceUSDT(presaleAddress),
+    usdtBalance: useGetBalanceUSDT(presaleContract.address),
     presaleRound: useGetCurrentPresaleRound(),
     usersOwnBalance: useReadContractQueryHook(
       {
@@ -26,6 +24,10 @@ export const useHomePresalePage = () => {
     ),
     usersUSDTBalance: useGetBalanceUSDT(account?.address ?? ""),
     timestamp: useTestingSafeTimestamp(),
+    startPresaleTime: useReadContractQueryHook({
+      contract: presaleContract,
+      method: "startPresaleTime",
+    }),
   });
 
   return presaleData;

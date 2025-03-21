@@ -1,19 +1,17 @@
-import { useReadContract } from "thirdweb/react";
 import { toTokens } from "thirdweb/utils";
 import { useContracts } from "@/hooks";
 import { QueryHook } from "@/types/query";
+import { useReadContractQueryHook } from "@/helpers/useReadContractWithParsing";
 
 export const useGetBalanceUSDT = (address: string): QueryHook<number> => {
   const { usdtContract } = useContracts();
 
-  const { data, isLoading } = useReadContract({
-    contract: usdtContract,
-    method: "balanceOf",
-    params: [address],
-  });
-  if (isLoading || data === undefined) return { isLoading: true };
-
-  const usdtBalance = Number(toTokens(data, 18));
-
-  return { data: usdtBalance, isLoading };
+  return useReadContractQueryHook(
+    {
+      contract: usdtContract,
+      method: "balanceOf",
+      params: [address],
+    },
+    (value) => Number(toTokens(value, 18)),
+  );
 };

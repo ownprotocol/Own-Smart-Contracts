@@ -7,7 +7,7 @@ import {
 import { toast } from "react-toastify";
 import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { useContracts } from "@/hooks";
-import { prepareContractCall } from "thirdweb";
+import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
 import Image from "next/image";
 import { SectionLabel } from "./label";
 import { FormInput } from "@/components/ui/input";
@@ -21,12 +21,14 @@ interface BuyWithCryptoModalProps {
   ownBalance: number;
   ownPrice: number;
   setIsOpen: (isOpen: boolean) => void;
+  refetch: () => Promise<void>;
 }
 
 export const BuyWithCryptoDrawer = ({
   usdtBalance,
   ownBalance,
   ownPrice,
+  refetch,
 }: BuyWithCryptoModalProps) => {
   const { presaleContract, usdtContract } = useContracts();
   const account = useActiveAccount();
@@ -45,8 +47,6 @@ export const BuyWithCryptoDrawer = ({
       tokenAmount: "0",
     },
   });
-
-  const { mutateAsync: sendTxAsync } = useSendTransaction();
 
   const handleInputToken = (e: React.ChangeEvent<HTMLInputElement>) => {
     const amount = parseFloat(e.target.value);
@@ -71,10 +71,12 @@ export const BuyWithCryptoDrawer = ({
     });
   };
 
-  const onSubmit = async (data: BuyWithCryptoForm) => {
+  const onSubmit = async () => {
     if (!account?.address) {
       throw new Error("Can't submit with missing fields");
     }
+
+    const data = getValues();
 
     setIsSendingTxs(true);
     try {
@@ -95,23 +97,29 @@ export const BuyWithCryptoDrawer = ({
         spender: presaleContract.address,
       });
 
-      if (allowanceTx < amount) {
-        await sendTxAsync(
-          prepareContractCall({
+      if (allowanceTx < parsedAmount) {
+        await sendAndConfirmTransaction({
+          account,
+          transaction: prepareContractCall({
             contract: usdtContract,
             method: "approve",
             params: [presaleContract.address, parsedAmount],
-          }) as any, // Stupid type error, absolutely thirdwebs fault here
-        );
+          }),
+        });
+
+        toast.success("Approval successful");
       }
 
-      await sendTxAsync(
-        prepareContractCall({
+      await sendAndConfirmTransaction({
+        account,
+        transaction: prepareContractCall({
           contract: presaleContract,
           method: "purchasePresaleTokens",
           params: [parseEther(data.tokenAmount), account.address],
-        }) as any,
-      );
+        }),
+      });
+
+      await refetch();
 
       toast.success("Transaction successful");
     } catch (error) {
@@ -198,8 +206,9 @@ export const BuyWithCryptoDrawer = ({
         <div className="!mt-auto flex">
           <Button
             variant={"mainButton"}
-            type="submit"
+            useSpinner
             disabled={!amountToSpend}
+            onClick={onSubmit}
           >
             Buy {amountToSpend} $Own Tokens
           </Button>

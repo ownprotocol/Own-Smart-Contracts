@@ -1,3 +1,4 @@
+import { HARDHAT_CHAIN_ID } from "@/constants/network";
 import { sepolia } from "thirdweb/chains";
 
 export interface ContractAddresses {
@@ -9,7 +10,7 @@ export interface ContractAddresses {
 }
 
 export const getContractAddresses = (networkId: number): ContractAddresses => {
-  if (networkId === 1337) {
+  if (networkId === HARDHAT_CHAIN_ID) {
     return {
       usdtAddress: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
       presaleAddress: "0x0165878A594ca255338adfa4d48449f69242Eb8F",

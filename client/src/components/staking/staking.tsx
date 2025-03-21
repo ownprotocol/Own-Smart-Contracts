@@ -1,11 +1,19 @@
 "use client";
 
-import { useActiveAccount, useSendTransaction } from "thirdweb/react";
+import {
+  useActiveAccount,
+  useSendAndConfirmTransaction,
+  useSendTransaction,
+} from "thirdweb/react";
 import { type Dispatch, type SetStateAction } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
-import { prepareContractCall, toWei } from "thirdweb";
+import {
+  prepareContractCall,
+  sendAndConfirmTransaction,
+  toWei,
+} from "thirdweb";
 
 import { Button } from "../ui/button";
 import { useGetAuthUser } from "@/query";
@@ -47,9 +55,6 @@ function Staking({
 
   const { stakeAddress } = useContractAddresses();
 
-  const { mutateAsync: sendTxAsync, isPending: isPendingSendTx } =
-    useSendTransaction();
-
   const {
     register,
     handleSubmit,
@@ -64,6 +69,11 @@ function Staking({
   });
 
   const onSubmit = async (data: StakingFormData) => {
+    if (!activeAccount) {
+      console.error("No active account");
+      return;
+    }
+
     setIsStakingLoading(true);
     try {
       const amount = toWei(data.tokenAmount);
@@ -77,24 +87,26 @@ function Staking({
 
       // check if approval is needed
       if (allowanceBalance < amount) {
-        await sendTxAsync(
-          prepareContractCall({
+        await sendAndConfirmTransaction({
+          account: activeAccount,
+          transaction: prepareContractCall({
             contract: ownTokenContract,
             method: "approve",
             params: [stakeAddress, amount],
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          }) as any,
-        );
+          }),
+        });
+
+        toast.success("Approval successful");
       }
 
-      await sendTxAsync(
-        prepareContractCall({
+      await sendAndConfirmTransaction({
+        account: activeAccount,
+        transaction: prepareContractCall({
           contract: stakeContract,
           method: "stake",
           params: [amount, days * 7n],
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        }) as any,
-      );
+        }),
+      });
     } catch (error) {
       toast.error("Transaction failed");
       console.error("Transaction error:", error);
@@ -106,65 +118,62 @@ function Staking({
 
   return (
     <div className="px-4 py-2">
-      {!isPendingSendTx && (
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex flex-col gap-0 md:gap-4">
-            <div className="flex flex-col gap-4 md:flex-row">
-              <StakingTokens
-                title="Enter TOKENS TO STAKE"
-                register={register}
-                setValue={setValue}
-                errors={errors}
-                ownBalance={Number(ownBalance ?? 0)}
-                setTokensToStake={setTokensToStake}
-              />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex flex-col gap-0 md:gap-4">
+          <div className="flex flex-col gap-4 md:flex-row">
+            <StakingTokens
+              title="Enter TOKENS TO STAKE"
+              register={register}
+              setValue={setValue}
+              errors={errors}
+              ownBalance={Number(ownBalance ?? 0)}
+              setTokensToStake={setTokensToStake}
+            />
 
-              <StakingLockupPeriod
-                title="LOCK UP PERIOD"
-                setLockupDuration={setLockupDuration}
-                register={register}
-                setValue={setValue}
-                errors={errors}
-              />
-            </div>
-            <div className="w-full text-end font-dm_sans text-[10px] font-medium leading-[20px] text-orange-500 md:text-[16px] md:leading-[24px]">
-              MAX REWARD
-            </div>
-            <div className="flex flex-col gap-2 md:flex-row md:gap-4">
-              <div className="flex w-full flex-col gap-2">
-                <div className="w-full rounded-lg px-0 md:px-4">
-                  <StakingSummary
-                    tokensToStake={tokensToStake}
-                    lockupDuration={lockupDuration}
-                  />
-                </div>
-                <div className="w-full"></div>
-              </div>
-              <div className="w-full">
-                <RewardCard
+            <StakingLockupPeriod
+              title="LOCK UP PERIOD"
+              setLockupDuration={setLockupDuration}
+              register={register}
+              setValue={setValue}
+              errors={errors}
+            />
+          </div>
+          <div className="w-full text-end font-dm_sans text-[10px] font-medium leading-[20px] text-orange-500 md:text-[16px] md:leading-[24px]">
+            MAX REWARD
+          </div>
+          <div className="flex flex-col gap-2 md:flex-row md:gap-4">
+            <div className="flex w-full flex-col gap-2">
+              <div className="w-full rounded-lg px-0 md:px-4">
+                <StakingSummary
                   tokensToStake={tokensToStake}
                   lockupDuration={lockupDuration}
-                  factor={1}
                 />
               </div>
+              <div className="w-full"></div>
             </div>
-            <DrawerFooter className="flex justify-start">
-              <Button
-                disabled={
-                  !isValid ||
-                  tokensToStake === 0 ||
-                  needsSwitch ||
-                  lockupDuration === 0 ||
-                  isPendingSendTx
-                }
-                className="w-full rounded-lg bg-purple-700 px-4 py-2 font-dm_sans text-[14px] font-medium leading-[20px] text-white transition-colors hover:bg-purple-800 md:max-w-fit md:px-8 md:text-[18px] md:leading-[28px]"
-              >
-                Stake
-              </Button>
-            </DrawerFooter>
+            <div className="w-full">
+              <RewardCard
+                tokensToStake={tokensToStake}
+                lockupDuration={lockupDuration}
+                factor={1}
+              />
+            </div>
           </div>
-        </form>
-      )}
+          <DrawerFooter className="flex justify-start">
+            <Button
+              disabled={
+                !isValid ||
+                tokensToStake === 0 ||
+                needsSwitch ||
+                lockupDuration === 0
+              }
+              className="w-full rounded-lg bg-purple-700 px-4 py-2 font-dm_sans text-[14px] font-medium leading-[20px] text-white transition-colors hover:bg-purple-800 md:max-w-fit md:px-8 md:text-[18px] md:leading-[28px]"
+            >
+              Stake
+            </Button>
+          </DrawerFooter>
+        </div>
+      </form>
     </div>
   );
 }

@@ -1,22 +1,19 @@
-import { useReadContract } from "thirdweb/react";
 import { useContracts } from "@/hooks";
 import { formatEther } from "viem";
 import { CurrentPresaleRoundDetails } from "@/types/presale";
 import { QueryHook } from "@/types/query";
+import { useReadContractQueryHook } from "@/helpers/useReadContractWithParsing";
 
 export const useGetCurrentPresaleRound =
   (): QueryHook<CurrentPresaleRoundDetails> => {
     const { presaleContract } = useContracts();
 
-    const { data, isLoading } = useReadContract({
-      contract: presaleContract,
-      method: "getCurrentPresaleRoundDetails",
-    });
-
-    if (isLoading || !data) return { isLoading: true };
-
-    return {
-      data: {
+    return useReadContractQueryHook(
+      {
+        contract: presaleContract,
+        method: "getCurrentPresaleRoundDetails",
+      },
+      (data) => ({
         roundsInProgress: data[0],
         roundDetails: {
           duration: Number(data[1].duration),
@@ -27,7 +24,6 @@ export const useGetCurrentPresaleRound =
           roundId: Number(data[2]),
         },
         endTime: Number(data[3]),
-      },
-      isLoading,
-    };
+      }),
+    );
   };
