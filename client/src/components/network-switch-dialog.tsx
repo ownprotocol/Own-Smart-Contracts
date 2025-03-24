@@ -8,11 +8,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useRouter } from "next/navigation";
 
 interface NetworkSwitchDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSwitch: () => void;
+  onSwitch: () => Promise<void>;
   networkName?: string;
   title: string;
 }
@@ -23,9 +24,17 @@ function NetworkSwitchDialog({
   onSwitch,
   title,
 }: NetworkSwitchDialogProps) {
+  const router = useRouter();
+  const handleClose = () => {
+    router.push("/");
+    onClose();
+  };
   return (
     <div className="relative flex flex-col">
-      <Dialog defaultOpen={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <Dialog
+        defaultOpen={isOpen}
+        onOpenChange={(open) => !open && handleClose()}
+      >
         <DialogContent className="border-gray-800 bg-[#141019] backdrop-blur-2xl sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle className="text-center text-white">
@@ -34,7 +43,7 @@ function NetworkSwitchDialog({
           </DialogHeader>
           <div className="flex justify-center py-4">
             <Button
-              onClick={onSwitch}
+              onClick={async () => await onSwitch()}
               className="w-1/2 rounded-lg bg-[#9333EA] px-6 py-3 text-white transition-colors hover:bg-[#7E22CE]"
             >
               Switch

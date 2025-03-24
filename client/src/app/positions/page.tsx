@@ -6,16 +6,41 @@ import {
   BlurredStakingBoard,
   ConnectWalletDialog,
   MainNavigation,
+  NetworkSwitchDialog,
 } from "@/components";
 import { StakePageContent } from "@/components/user-stake/stake-page-content";
+import { useRouter } from "next/navigation";
+import { useChainSwitch } from "@/providers/network-switch-provider";
 
 function UserStakingPositionsPage() {
   const activeAccount = useActiveAccount();
+  const router = useRouter();
+  const { needsSwitch, switchToCorrectChain, currentAppChain } =
+    useChainSwitch();
+
+  const handleDialogClose = () => {
+    router.push("/");
+  };
 
   if (!activeAccount?.address) {
     return (
       <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
         <ConnectWalletDialog redirectTo={`/positions`} />
+        <BlurredStakingBoard />
+      </main>
+    );
+  }
+
+  if (needsSwitch) {
+    return (
+      <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
+        <NetworkSwitchDialog
+          title={`Switch to view your rewards on ${currentAppChain?.name}`}
+          isOpen={needsSwitch}
+          onClose={handleDialogClose}
+          onSwitch={switchToCorrectChain}
+          networkName={currentAppChain?.name ?? ""}
+        />
         <BlurredStakingBoard />
       </main>
     );

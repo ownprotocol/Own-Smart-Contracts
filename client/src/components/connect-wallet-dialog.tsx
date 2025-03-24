@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 
 interface ConnectWalletDialogProps {
-  redirectTo: string;
+  redirectTo: "/presale" | "/positions";
 }
 function ConnectWalletDialog({ redirectTo }: ConnectWalletDialogProps) {
   const router = useRouter();

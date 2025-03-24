@@ -5,16 +5,39 @@ import {
   BlurredStakingBoard,
   ConnectWalletDialog,
   MainNavigation,
+  NetworkSwitchDialog,
 } from "@/components";
 import { PresalePurchasesPageContent } from "@/components/presale/presale-purchases-page-content";
+import { useRouter } from "next/navigation";
+import { useChainSwitch } from "@/providers/network-switch-provider";
 
 function PresalePurchasesPage() {
   const activeAccount = useActiveAccount();
+  const router = useRouter();
+  const { needsSwitch, switchToCorrectChain, currentAppChain } =
+    useChainSwitch();
 
+  const handleDialogClose = () => {
+    router.push("/");
+  };
+  if (needsSwitch) {
+    return (
+      <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
+        <NetworkSwitchDialog
+          title={`Switch to view your rewards on ${currentAppChain?.name}`}
+          isOpen={needsSwitch}
+          onClose={handleDialogClose}
+          onSwitch={switchToCorrectChain}
+          networkName={currentAppChain?.name ?? ""}
+        />
+        <BlurredStakingBoard />
+      </main>
+    );
+  }
   if (!activeAccount?.address) {
     return (
       <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
-        <ConnectWalletDialog redirectTo={`/presale`} />
+        <ConnectWalletDialog redirectTo="/presale" />
         <BlurredStakingBoard />
       </main>
     );
