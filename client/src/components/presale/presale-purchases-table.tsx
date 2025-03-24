@@ -20,7 +20,6 @@ function PresalePurchasesTable({ rows }: PresaleTableProps) {
 
     return "Not Ready to Claim";
   };
-  console.log(rows);
   return (
     <div className="mt-1 md:mt-2">
       <div className="mx-auto max-w-7xl">
