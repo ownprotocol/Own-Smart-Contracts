@@ -8,7 +8,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useRouter } from "next/navigation";
 
 interface NetworkSwitchDialogProps {
   isOpen: boolean;
@@ -24,17 +23,9 @@ function NetworkSwitchDialog({
   onSwitch,
   title,
 }: NetworkSwitchDialogProps) {
-  const router = useRouter();
-  const handleClose = () => {
-    router.push("/");
-    onClose();
-  };
   return (
     <div className="relative flex flex-col">
-      <Dialog
-        defaultOpen={isOpen}
-        onOpenChange={(open) => !open && handleClose()}
-      >
+      <Dialog defaultOpen={isOpen} onOpenChange={(open) => !open && onClose()}>
         <DialogContent className="border-gray-800 bg-[#141019] backdrop-blur-2xl sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle className="text-center text-white">
