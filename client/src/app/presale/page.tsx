@@ -31,20 +31,6 @@ function PresalePurchasesPage() {
   const handleDialogClose = () => {
     router.push("/");
   };
-  if (needsSwitch) {
-    return (
-      <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
-        <NetworkSwitchDialog
-          title={`Switch to view your rewards on ${currentAppChain?.name}`}
-          isOpen={needsSwitch}
-          onClose={handleDialogClose}
-          onSwitch={switchToCorrectChain}
-          networkName={currentAppChain?.name ?? ""}
-        />
-        <BlurredStakingBoard />
-      </main>
-    );
-  }
 
   if (authUser.isLoading || presalePageHook.isLoading) {
     return (
@@ -58,6 +44,21 @@ function PresalePurchasesPage() {
             data-testid="loader"
           />
         </div>
+      </main>
+    );
+  }
+  
+  if (needsSwitch) {
+    return (
+      <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
+        <NetworkSwitchDialog
+          title={`Switch to view your rewards on ${currentAppChain?.name}`}
+          isOpen={needsSwitch}
+          onClose={handleDialogClose}
+          onSwitch={switchToCorrectChain}
+          networkName={currentAppChain?.name ?? ""}
+        />
+        <BlurredStakingBoard />
       </main>
     );
   }

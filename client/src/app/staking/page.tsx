@@ -7,10 +7,15 @@ import {
 } from "@/components";
 
 import { StakingPageContent } from "@/components/staking/staking-page-content";
+import { useStakingPage } from "@/hooks/use-staking-page";
 import { useChainSwitch } from "@/providers/network-switch-provider";
+import { useGetAuthUser } from "@/query";
 import { useRouter } from "next/navigation";
+import HashLoader from "react-spinners/HashLoader";
 
 function StakingPage() {
+  const authUser = useGetAuthUser();
+  const { mainContentQuery, hasStakingStartedQuery } = useStakingPage();
   const router = useRouter();
   const { needsSwitch, switchToCorrectChain, currentAppChain } =
     useChainSwitch();
@@ -18,7 +23,25 @@ function StakingPage() {
   const handleDialogClose = () => {
     router.push("/");
   };
-  
+
+  if (authUser.isLoading || mainContentQuery.isLoading || hasStakingStartedQuery.isLoading) {
+    return (
+      <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
+        <div className="flex h-[500px] w-full items-center justify-center">
+          <HashLoader
+            color={"#FFA500"}
+            loading={true}
+            size={150}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          />
+        </div>
+      </main>
+    );
+  }
+
+
+
   if (needsSwitch) {
     return (
       <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
@@ -40,7 +63,7 @@ function StakingPage() {
           Stake $Own Token
         </h1>
       </div>
-      <StakingPageContent />
+      <StakingPageContent mainContentQuery={mainContentQuery} hasStakingStartedQuery={hasStakingStartedQuery} />
       <MainNavigation />
     </main>
   );

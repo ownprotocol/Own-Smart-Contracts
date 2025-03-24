@@ -1,14 +1,17 @@
 "use client";
 
-import { useStakingPositionsPage } from "@/hooks/use-staking-positions-page";
+import { type useStakingPositionsPage } from "@/hooks/use-staking-positions-page";
 import StakingRewards from "./staking-rewards";
 import StakePositionsTable from "./positions/stake-positions-table";
+import Loading from "@/app/loading";
 
-export const StakePageContent = () => {
-  const queryHook = useStakingPositionsPage();
+interface StakePageContentProps {
+  queryHook: ReturnType<typeof useStakingPositionsPage>;
+}
 
+export const StakePageContent = ({ queryHook }: StakePageContentProps) => {
   if (queryHook.isLoading) {
-    return <div>loading...</div>;
+    return <Loading />;
   }
 
   return (

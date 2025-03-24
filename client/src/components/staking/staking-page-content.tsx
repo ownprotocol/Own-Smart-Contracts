@@ -8,15 +8,24 @@ import {
 import StakingDrawerContent from "@/components/staking/staking-drawer-content";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { useStakingPage } from "@/hooks/use-staking-page";
+import { type useStakingPage } from "@/hooks/use-staking-page";
 import { useActiveAccount } from "thirdweb/react";
 import { useState } from "react";
 
 const buttonStyles =
   "font-funnel hover:bg-[#D58BFF] !mx-auto !w-full !max-w-fit !bg-[#C58BFF] !px-8 !py-6 !text-[14px] !font-medium !leading-[14px] !tracking-[0%] !text-black !md:text-[16px] !md:leading-[16px]";
 
-export const StakingPageContent = () => {
-  const { mainContentQuery, hasStakingStartedQuery } = useStakingPage();
+interface StakingPageContentProps {
+  mainContentQuery: ReturnType<typeof useStakingPage>["mainContentQuery"];
+  hasStakingStartedQuery: ReturnType<
+    typeof useStakingPage
+  >["hasStakingStartedQuery"];
+}
+
+export const StakingPageContent = ({
+  mainContentQuery,
+  hasStakingStartedQuery,
+}: StakingPageContentProps) => {
   const account = useActiveAccount();
 
   const [stakingDrawerOpen, setStakingDrawerOpen] = useState(false);
@@ -26,20 +35,14 @@ export const StakingPageContent = () => {
     hasStakingStartedQuery.data === false
   ) {
     return (
-      <div className="mx-auto w-full px-[0%] pt-0 md:px-[5%] md:pt-8">
+      <div className="mx-auto flex h-[500px] w-full items-center justify-center px-[0%] pt-0 md:px-[5%] md:pt-8">
         Staking has not started yet
       </div>
     );
   }
 
   if (mainContentQuery.isLoading) {
-    return (
-      <div className="relative flex flex-col gap-8">
-        <StakeOwnTokenSkeleton height={150} />
-        <StakeOwnTokenSkeleton height={200} />
-        <div className="mx-auto h-[52px] w-full animate-pulse rounded bg-gray-100/50 sm:w-[200px] md:h-[56px]" />
-      </div>
-    );
+    return;
   }
 
   const { ownBalance, boost, timestamp } = mainContentQuery.data;

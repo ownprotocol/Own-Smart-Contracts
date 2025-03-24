@@ -4,28 +4,14 @@ import ActionButtons from "./action-buttons";
 import PresaleBanner from "./presale-banner";
 import PriceIncreaseTimer from "./price-increase-timer";
 import RaiseStats from "./raise-stats";
-import PriceIncreaseTimerSkeleton from "../ui/loading-skeletons/price-increase-timer-skeleton";
-import RaiseStatsSkeleton from "../ui/loading-skeletons/raise-stats-skeleton";
 import { useHomePresalePage } from "@/hooks/use-home-presale-page";
-import ConnectWalletButton from "../connect-wallet-button";
+import Loading from "@/app/loading";
 
 export const PresalePageContents = () => {
   const presalePageHook = useHomePresalePage();
 
   if (presalePageHook.isLoading) {
-    return (
-      <div className="flex flex-col items-center space-y-4">
-        <PresaleBanner roundId={null} />
-        <RaiseStatsSkeleton />
-        <PriceIncreaseTimerSkeleton />
-        <ConnectWalletButton
-          bgColor="black"
-          textColor="white"
-          isHoverable={false}
-          className="!font-funnel !mt-4 !cursor-pointer !font-semibold"
-        />
-      </div>
-    );
+    return <Loading />;
   }
 
   return (
