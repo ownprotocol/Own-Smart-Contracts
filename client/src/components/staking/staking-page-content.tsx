@@ -8,24 +8,22 @@ import {
 import StakingDrawerContent from "@/components/staking/staking-drawer-content";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { type useStakingPage } from "@/hooks/use-staking-page";
+import { useStakingPage } from "@/hooks/use-staking-page";
 import { useActiveAccount } from "thirdweb/react";
 import { useState } from "react";
+import HashLoader from "react-spinners/HashLoader";
 
 const buttonStyles =
   "font-funnel hover:bg-[#D58BFF] !mx-auto !w-full !max-w-fit !bg-[#C58BFF] !px-8 !py-6 !text-[14px] !font-medium !leading-[14px] !tracking-[0%] !text-black !md:text-[16px] !md:leading-[16px]";
 
 interface StakingPageContentProps {
-  mainContentQuery: ReturnType<typeof useStakingPage>["mainContentQuery"];
-  hasStakingStartedQuery: ReturnType<
-    typeof useStakingPage
-  >["hasStakingStartedQuery"];
+  authUserLoading: boolean;
 }
 
 export const StakingPageContent = ({
-  mainContentQuery,
-  hasStakingStartedQuery,
+  authUserLoading,
 }: StakingPageContentProps) => {
+  const { mainContentQuery, hasStakingStartedQuery } = useStakingPage();
   const account = useActiveAccount();
 
   const [stakingDrawerOpen, setStakingDrawerOpen] = useState(false);
@@ -35,14 +33,26 @@ export const StakingPageContent = ({
     hasStakingStartedQuery.data === false
   ) {
     return (
-      <div className="mx-auto flex h-[500px] w-full items-center justify-center px-[0%] pt-0 md:px-[5%] md:pt-8">
+      <div className="mx-auto w-full px-[0%] pt-0 md:px-[5%] md:pt-8">
         Staking has not started yet
       </div>
     );
   }
 
-  if (mainContentQuery.isLoading) {
-    return;
+  if (mainContentQuery.isLoading || authUserLoading) {
+    return (
+      <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
+        <div className="flex h-[500px] w-full items-center justify-center">
+          <HashLoader
+            color={"#FFA500"}
+            loading={true}
+            size={150}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          />
+        </div>
+      </main>
+    );
   }
 
   const { ownBalance, boost, timestamp } = mainContentQuery.data;
