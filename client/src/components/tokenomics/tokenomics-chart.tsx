@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { PieChart, Pie, Cell } from "recharts";
 import { tokenomicsData } from "@/constants";
+
 const TokenomicsChart = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isClient, setIsClient] = useState(false);
