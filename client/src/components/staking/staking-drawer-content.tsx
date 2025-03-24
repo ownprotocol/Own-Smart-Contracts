@@ -6,7 +6,7 @@ import { StakingConfirmation, StakingLoadingState } from "@/components";
 import { useState } from "react";
 import { useContracts } from "@/hooks";
 import { useForm } from "react-hook-form";
-import { StakingFormData, stakingSchema } from "@/types";
+import { type StakingFormData, stakingSchema } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useActiveAccount } from "thirdweb/react";
 import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";

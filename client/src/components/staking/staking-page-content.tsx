@@ -4,6 +4,7 @@ import {
   StakeOwnTokenBanner,
   EarnAPYTimer,
   ConnectWalletButton,
+  StakingLoading,
 } from "@/components";
 import StakingDrawerContent from "@/components/staking/staking-drawer-content";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
@@ -21,14 +22,6 @@ export const StakingPageContent = () => {
 
   const [stakingDrawerOpen, setStakingDrawerOpen] = useState(false);
 
-  if (!account) {
-    return (
-      <div className="flex items-center">
-        <ConnectWalletButton title="Stake $Own" />
-      </div>
-    );
-  }
-
   if (
     !hasStakingStartedQuery.isLoading &&
     hasStakingStartedQuery.data === false
@@ -41,11 +34,7 @@ export const StakingPageContent = () => {
   }
 
   if (mainContentQuery.isLoading) {
-    return (
-      <div className="mx-auto w-full px-[0%] pt-0 md:px-[5%] md:pt-8">
-        Loading...
-      </div>
-    );
+    return <StakingLoading />;
   }
 
   const { ownBalance, boost, timestamp } = mainContentQuery.data;
@@ -57,7 +46,7 @@ export const StakingPageContent = () => {
       <div className="mt-2 flex flex-col gap-3 p-4 sm:flex-row sm:justify-center sm:gap-4">
         <Drawer open={stakingDrawerOpen} onOpenChange={setStakingDrawerOpen}>
           <DrawerTrigger asChild>
-            <Button className={buttonStyles}>Stake $Own</Button>
+            {account && <Button className={buttonStyles}>Stake $Own</Button>}
           </DrawerTrigger>
           <DrawerContent className="h-[90vh] max-h-[90vh] px-[5%] md:px-[10%] xl:h-[90vh] xl:max-h-[90vh]">
             <StakingDrawerContent

@@ -3,43 +3,18 @@ import { useActiveAccount } from "thirdweb/react";
 
 import {
   BlurredStakingBoard,
-  ConnectWalletButton,
+  ConnectWalletDialog,
   MainNavigation,
 } from "@/components";
 import { PresalePurchasesPageContent } from "@/components/presale/presale-purchases-page-content";
-import {
-  DialogContent,
-  DialogTitle,
-  DialogHeader,
-} from "@/components/ui/dialog";
-import { Dialog } from "@/components/ui/dialog";
-import { useRouter } from "next/navigation";
 
 function PresalePurchasesPage() {
-  const router = useRouter();
   const activeAccount = useActiveAccount();
 
-  const handleDialogClose = () => {
-    router.push("/");
-  };
   if (!activeAccount?.address) {
     return (
       <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
-        <Dialog
-          defaultOpen
-          onOpenChange={(open) => !open && handleDialogClose()}
-        >
-          <DialogContent className="border-gray-800 bg-[#141019] backdrop-blur-2xl sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle className="text-center text-white">
-                Connect Wallet to View Rewards
-              </DialogTitle>
-            </DialogHeader>
-            <div className="flex justify-center py-4">
-              <ConnectWalletButton redirectTo={`/presale`} />
-            </div>
-          </DialogContent>
-        </Dialog>
+        <ConnectWalletDialog redirectTo={`/presale`} />
         <BlurredStakingBoard />
       </main>
     );
