@@ -18,6 +18,7 @@ function StakingPage() {
   const handleDialogClose = () => {
     router.push("/");
   };
+  
   if (needsSwitch) {
     return (
       <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
