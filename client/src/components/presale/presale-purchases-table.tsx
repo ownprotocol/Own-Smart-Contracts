@@ -1,4 +1,4 @@
-import { PresalePurchase } from "@/types/presale";
+import { type PresalePurchase } from "@/types/presale";
 import { TableHeader, TableRow } from "../table/table-common-components";
 import { format } from "date-fns";
 
@@ -20,8 +20,9 @@ function PresalePurchasesTable({ rows }: PresaleTableProps) {
 
     return "Not Ready to Claim";
   };
+  console.log(rows);
   return (
-    <div className="mt-4">
+    <div className="mt-1 md:mt-2">
       <div className="mx-auto max-w-7xl">
         <div className="py-10">
           <div className="px-4 md:px-6 lg:px-0">
@@ -32,7 +33,7 @@ function PresalePurchasesTable({ rows }: PresaleTableProps) {
                 </h1>
               </div>
             </div>
-            <div className="mt-8 flow-root">
+            <div className="mt-4 flow-root md:mt-8">
               <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                   <table className="min-w-full divide-y divide-gray-700">
@@ -45,30 +46,40 @@ function PresalePurchasesTable({ rows }: PresaleTableProps) {
                         <TableHeader>CLAIMABLE</TableHeader>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-800 font-dm_mono">
-                      {rows.map((presalePurchase) => (
-                        <tr key={presalePurchase.timestamp.toString()}>
-                          <TableRow>
-                            {format(
-                              presalePurchase.timestamp,
-                              "hh:mm dd/MM/yyyy",
-                            )}
-                          </TableRow>
-                          <TableRow>
-                            {presalePurchase.ownAmount.toFixed(2)}
-                          </TableRow>
-                          <TableRow>
-                            ${presalePurchase.usdtAmount.toFixed(2)}
-                          </TableRow>
-                          <TableRow>${presalePurchase.price}</TableRow>
-                          <TableRow>
-                            {getClaimStatusDescription(
-                              presalePurchase.claimStatus,
-                            )}
-                          </TableRow>
+                    {rows.length === 0 ? (
+                      <tbody className="divide-y divide-gray-800 font-dm_mono">
+                        <tr>
+                          <td colSpan={5} className="py-12 text-center">
+                            No presale purchases found
+                          </td>
                         </tr>
-                      ))}
-                    </tbody>
+                      </tbody>
+                    ) : (
+                      <tbody className="divide-y divide-gray-800 font-dm_mono">
+                        {rows.map((presalePurchase) => (
+                          <tr key={presalePurchase.timestamp.toString()}>
+                            <TableRow>
+                              {format(
+                                presalePurchase.timestamp,
+                                "hh:mm dd/MM/yyyy",
+                              )}
+                            </TableRow>
+                            <TableRow>
+                              {presalePurchase.ownAmount.toFixed(2)}
+                            </TableRow>
+                            <TableRow>
+                              ${presalePurchase.usdtAmount.toFixed(2)}
+                            </TableRow>
+                            <TableRow>${presalePurchase.price}</TableRow>
+                            <TableRow>
+                              {getClaimStatusDescription(
+                                presalePurchase.claimStatus,
+                              )}
+                            </TableRow>
+                          </tr>
+                        ))}
+                      </tbody>
+                    )}
                   </table>
                 </div>
               </div>
