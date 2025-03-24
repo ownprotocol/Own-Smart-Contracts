@@ -80,7 +80,7 @@ type StakeOwnTokenSkeletonProps = {
   height: number;
 };
 
-function StakeOwnTokenSkeleton({ height }: StakeOwnTokenSkeletonProps) {
+export function StakeOwnTokenSkeleton({ height }: StakeOwnTokenSkeletonProps) {
   return (
     <div className="container mx-auto">
       <div className="mx-auto flex w-full flex-col items-center justify-center md:w-[75%]">

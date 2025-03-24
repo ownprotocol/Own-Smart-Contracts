@@ -1,6 +1,6 @@
 "use client";
 
-import { usePresalePurchasesPage } from "@/hooks/use-presale-purchases-page";
+import { type usePresalePurchasesPage } from "@/hooks/use-presale-purchases-page";
 import PresalePurchasesTable from "./presale-purchases-table";
 import { Button } from "../ui/button";
 import { useContracts } from "@/hooks";
@@ -8,13 +8,19 @@ import { useActiveAccount } from "thirdweb/react";
 import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
 import { toast } from "react-toastify";
 
-export const PresalePurchasesPageContent = () => {
-  const presalePageHook = usePresalePurchasesPage();
+interface PresalePurchasesPageContentProps {
+  presalePageHook: ReturnType<typeof usePresalePurchasesPage>;
+}
+
+export const PresalePurchasesPageContent = ({
+  presalePageHook,
+}: PresalePurchasesPageContentProps) => {
+  
   const { presaleContract } = useContracts();
   const account = useActiveAccount();
 
   if (presalePageHook.isLoading) {
-    return <div>loading...</div>;
+    return;
   }
 
   const claimRewards = async () => {
