@@ -4,7 +4,6 @@ import {
   StakeOwnTokenBanner,
   EarnAPYTimer,
   ConnectWalletButton,
-  StakingLoading,
 } from "@/components";
 import StakingDrawerContent from "@/components/staking/staking-drawer-content";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
@@ -34,7 +33,13 @@ export const StakingPageContent = () => {
   }
 
   if (mainContentQuery.isLoading) {
-    return <StakingLoading />;
+    return (
+      <div className="relative flex flex-col gap-8">
+        <StakeOwnTokenSkeleton height={150} />
+        <StakeOwnTokenSkeleton height={200} />
+        <div className="mx-auto h-[52px] w-full animate-pulse rounded bg-gray-100/50 sm:w-[200px] md:h-[56px]" />
+      </div>
+    );
   }
 
   const { ownBalance, boost, timestamp } = mainContentQuery.data;
@@ -70,3 +75,19 @@ export const StakingPageContent = () => {
     </div>
   );
 };
+
+type StakeOwnTokenSkeletonProps = {
+  height: number;
+};
+
+function StakeOwnTokenSkeleton({ height }: StakeOwnTokenSkeletonProps) {
+  return (
+    <div className="container mx-auto">
+      <div className="mx-auto flex w-full flex-col items-center justify-center md:w-[75%]">
+        <div
+          className={`h-[${height}px] w-full animate-pulse rounded bg-gray-100/50 px-8 md:h-[${height}px] md:px-0`}
+        />
+      </div>
+    </div>
+  );
+}
