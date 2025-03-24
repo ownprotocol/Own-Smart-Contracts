@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
-  BuyWithCryptoForm,
+  type BuyWithCryptoForm,
   buyWithCryptoSchema,
 } from "./buy-with-crypto-modal.constants";
 import { toast } from "react-toastify";
