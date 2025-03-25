@@ -6,31 +6,6 @@ import {
 } from "@/components/table/table-common-components";
 import { type StakingPurchaseDetails } from "@/types";
 
-const stakePosition = [
-  {
-    id: 1,
-    date: "2024-01-01",
-    own_locked: "1000",
-    rewards: "100",
-    apr: "10",
-  },
-  {
-    id: 2,
-    date: "2024-01-01",
-    own_locked: "1000",
-    rewards: "100",
-    apr: "10",
-  },
-
-  {
-    id: 3,
-    date: "2024-01-01",
-    own_locked: "1000",
-    rewards: "100",
-    apr: "10",
-  },
-];
-
 interface StakePositionsTableProps {
   stakePositions: StakingPurchaseDetails[];
 }
@@ -59,31 +34,6 @@ function StakePositionsTable({ stakePositions }: StakePositionsTableProps) {
                   <table className="min-w-full divide-y divide-gray-700">
                     <thead>
                       <tr>
-                        {/* <th
-                          scope="col"
-                          className="px-3 py-3.5 text-left font-dm_mono text-sm font-semibold text-gray-400 sm:pl-0"
-                        >
-                          DATE
-                        </th>
-                        <th
-                          scope="col"
-                          className="py-3.5 pl-4 pr-3 text-left font-dm_mono text-sm font-semibold text-gray-400 sm:pl-0"
-                        >
-                          OWN LOCKED
-                        </th>
-
-                        <th
-                          scope="col"
-                          className="px-3 py-3.5 text-left font-dm_mono text-sm font-semibold text-gray-400 sm:pl-0"
-                        >
-                          REWARDS
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-3 py-3.5 text-left font-dm_mono text-sm font-semibold text-gray-400 sm:pl-0"
-                        >
-                          APR
-                        </th> */}
                         <TableHeader>DATE</TableHeader>
                         <TableHeader>OWN LOCKED</TableHeader>
                         <TableHeader>REWARDS</TableHeader>
@@ -93,7 +43,9 @@ function StakePositionsTable({ stakePositions }: StakePositionsTableProps) {
                     <tbody className="divide-y divide-gray-800 font-dm_mono">
                       {stakePositions.map((stakePosition, index) => (
                         <tr key={index}>
-                          <TableRow>{daysToDate(stakePosition.startDay)}</TableRow>
+                          <TableRow>
+                            {daysToDate(stakePosition.startDay)}
+                          </TableRow>
                           <TableRow>
                             {stakePosition.ownAmount.toLocaleString("en-US")}{" "}
                             Own
@@ -102,9 +54,7 @@ function StakePositionsTable({ stakePositions }: StakePositionsTableProps) {
                             {stakePosition.veOwnAmount.toLocaleString("en-US")}{" "}
                             Own
                           </TableRow>
-                          <TableRow className="text-[#F5841F]">
--
-                          </TableRow>
+                          <TableRow className="text-[#F5841F]">-</TableRow>
                         </tr>
                       ))}
                     </tbody>
