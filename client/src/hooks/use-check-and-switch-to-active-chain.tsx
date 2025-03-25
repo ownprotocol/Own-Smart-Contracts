@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { MAIN_CHAIN } from "@/config/contracts";
 import { SUPPORTED_NETWORK_IDS } from "@/types";
 import { useSwitchActiveWalletChain } from "thirdweb/react";
