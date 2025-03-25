@@ -46,13 +46,13 @@ describe("Stake - claimRewards", async () => {
     await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
 
     await expect(
-      stake.write.claimRewards([[BigInt(0)]], { account: alice.account }),
+      stake.write.claimRewards([[BigInt(0)]], { account: alice.account })
     ).to.be.revertedWithCustomError(stake, "CallerDoesNotOwnPosition");
   });
 
   it("Should revert if calling before staking starts", async () => {
     await expect(
-      stake.write.claimRewards([[BigInt(0)]]),
+      stake.write.claimRewards([[BigInt(0)]])
     ).to.be.revertedWithCustomError(stake, "StakingNotStarted");
   });
 
@@ -66,7 +66,7 @@ describe("Stake - claimRewards", async () => {
     await stake.write.claimRewards([[BigInt(0)]]);
 
     await expect(
-      stake.write.claimRewards([[BigInt(0)]]),
+      stake.write.claimRewards([[BigInt(0)]])
     ).to.be.revertedWithCustomError(stake, "NoRewardsToClaim");
   });
 
@@ -88,11 +88,11 @@ describe("Stake - claimRewards", async () => {
     await own.write.transfer([mockSablierLockup.address, expectedRewards]);
 
     expect(await own.read.balanceOf([stake.address])).to.lessThan(
-      expectedRewards,
+      expectedRewards
     );
 
     await expect(
-      stake.write.claimRewards([[BigInt(0)]]),
+      stake.write.claimRewards([[BigInt(0)]])
     ).to.changeTokenBalances(own, [signers[0].account], [expectedRewards]);
   });
 
@@ -103,10 +103,10 @@ describe("Stake - claimRewards", async () => {
     await stake.write.stake([parseEther("50"), duration]);
     await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
     await expect(
-      stake.write.claimRewards([[BigInt(0)]]),
+      stake.write.claimRewards([[BigInt(0)]])
     ).to.revertedWithCustomError(
       stake,
-      "NotEnoughFundsAcrossVestingContractForRewards",
+      "NotEnoughFundsAcrossVestingContractForRewards"
     );
   });
 
@@ -126,7 +126,7 @@ describe("Stake - claimRewards", async () => {
     await expect(stakeTx).to.changeTokenBalances(
       own,
       [signers[0].account],
-      [-amount],
+      [-amount]
     );
 
     await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
@@ -143,14 +143,14 @@ describe("Stake - claimRewards", async () => {
     await expect(claimRewardsTx).to.changeTokenBalances(
       own,
       [signers[0].account],
-      [totalRewards],
+      [totalRewards]
     );
 
     await expect(claimRewardsTx).to.emit(stake, "RewardsClaimed");
 
     expect(claimableRewards[0]).to.equal(totalRewards);
 
-    const [, , , , , lastWeekRewardsClaimed] = await stake.read.positions([
+    const [, , , , , , lastWeekRewardsClaimed] = await stake.read.positions([
       BigInt(0),
     ]);
 
@@ -183,16 +183,16 @@ describe("Stake - claimRewards", async () => {
     ]);
 
     await expect(
-      stake.write.claimRewards([[BigInt(0)]]),
+      stake.write.claimRewards([[BigInt(0)]])
     ).to.changeTokenBalances(
       own,
       [signers[0].account],
       // Staked for 7 days
-      [totalRewards],
+      [totalRewards]
     );
     expect(claimableRewards[0]).to.equal(totalRewards);
 
-    const [, , , , , , rewardsClaimed] = await stake.read.positions([
+    const [, , , , , , , rewardsClaimed] = await stake.read.positions([
       BigInt(0),
     ]);
 
@@ -230,12 +230,12 @@ describe("Stake - claimRewards", async () => {
     ]);
 
     await expect(
-      stake.write.claimRewards([[BigInt(0)]]),
+      stake.write.claimRewards([[BigInt(0)]])
     ).to.changeTokenBalances(
       own,
       [signers[0].account],
       // Staked for 7 days
-      [totalRewards],
+      [totalRewards]
     );
 
     expect(claimableRewards[0]).to.equal(totalRewards);
@@ -271,12 +271,12 @@ describe("Stake - claimRewards", async () => {
     ]);
 
     await expect(
-      stake.write.claimRewards([[BigInt(0)]]),
+      stake.write.claimRewards([[BigInt(0)]])
     ).to.changeTokenBalances(
       own,
       [signers[0].account],
       // Staked for 7 days
-      [firstWeekRewards + secondWeekRewards + amount],
+      [firstWeekRewards + secondWeekRewards + amount]
     );
 
     expect(claimableRewards[0]).to.equal(totalRewards);
@@ -308,7 +308,7 @@ describe("Stake - claimRewards", async () => {
       BigInt(1e18);
 
     await expect(
-      stake.write.claimRewards([[BigInt(0)]]),
+      stake.write.claimRewards([[BigInt(0)]])
     ).to.changeTokenBalances(own, [signers[0].account], [totalRewards]);
 
     expect(claimableRewards[0]).to.equal(totalRewards);
@@ -350,18 +350,18 @@ describe("Stake - claimRewards", async () => {
       await stake.read.getUsersPositionDetails([signers[0].account.address]);
 
     await expect(
-      stake.write.claimRewards([[BigInt(0)]]),
+      stake.write.claimRewards([[BigInt(0)]])
     ).to.changeTokenBalances(
       own,
       [signers[0].account],
-      [rewards + depositAmount],
+      [rewards + depositAmount]
     );
 
     expect(claimableRewards[0] + depositAmount).to.equal(
-      rewards + depositAmount,
+      rewards + depositAmount
     );
 
-    const [, , , , finalDay, lastWeekRewardsClaimed] =
+    const [, , , , , finalDay, lastWeekRewardsClaimed] =
       await stake.read.positions([BigInt(0)]);
 
     const finalWeek = Math.floor(Number(finalDay) / 7);
@@ -382,7 +382,7 @@ describe("Stake - claimRewards", async () => {
       stake_alice = await hre.viem.getContractAt(
         "Stake",
         stake.address as `0x${string}`,
-        { client: { wallet: alice } },
+        { client: { wallet: alice } }
       );
     });
 
@@ -414,7 +414,7 @@ describe("Stake - claimRewards", async () => {
       ]);
 
       await expect(
-        stake.write.claimRewards([[BigInt(0)]]),
+        stake.write.claimRewards([[BigInt(0)]])
       ).to.changeTokenBalances(own, [signers[0].account], [rewardsForDeployer]);
       expect(claimableRewards[0]).to.equal(rewardsForDeployer);
 
@@ -423,7 +423,7 @@ describe("Stake - claimRewards", async () => {
         await stake.read.getUsersPositionDetails([alice.account.address]);
 
       await expect(
-        stake_alice.write.claimRewards([[BigInt(1)]]),
+        stake_alice.write.claimRewards([[BigInt(1)]])
       ).to.changeTokenBalances(own, [alice.account], [rewardsForAlice]);
 
       expect(aliceClaimableRewards[0]).to.equal(rewardsForAlice);
@@ -472,11 +472,11 @@ describe("Stake - claimRewards", async () => {
         aliceRewardsInFirstWeek + aliceRewardsInSecondWeek;
 
       await expect(
-        stake_alice.write.claimRewards([[BigInt(1)]]),
+        stake_alice.write.claimRewards([[BigInt(1)]])
       ).to.changeTokenBalances(
         own,
         [alice.account],
-        [aliceTotalRewards + amount],
+        [aliceTotalRewards + amount]
       );
     });
   });

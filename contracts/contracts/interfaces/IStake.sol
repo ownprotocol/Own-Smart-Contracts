@@ -12,6 +12,7 @@ interface IStake {
     /**
      * @notice Represents a single staking position
      * @param owner Address of the position owner
+     * @param positionId Unique identifier for the stake position
      * @param ownAmount Number of OWN tokens staked
      * @param veOwnAmount Voting escrow OWN tokens generated
      * @param startDay First day of the staking position
@@ -21,6 +22,7 @@ interface IStake {
      */
     struct StakePosition {
         address owner;
+        uint256 positionId;
         uint256 ownAmount;
         uint256 veOwnAmount;
         uint256 startDay;

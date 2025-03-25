@@ -17,7 +17,7 @@ describe("Stake - stake", async () => {
 
   it("Should revert if trying to stake for 0 weeks", async () => {
     await expect(
-      stake.write.stake([BigInt(1), BigInt(0)]),
+      stake.write.stake([BigInt(1), BigInt(0)])
     ).to.be.revertedWithCustomError(stake, "InvalidLockPeriod");
   });
 
@@ -25,19 +25,19 @@ describe("Stake - stake", async () => {
     const maximumLockDays = await stake.read.maximumLockDays();
 
     await expect(
-      stake.write.stake([BigInt(1), maximumLockDays + BigInt(1)]),
+      stake.write.stake([BigInt(1), maximumLockDays + BigInt(1)])
     ).to.be.revertedWithCustomError(stake, "InvalidLockPeriod");
   });
 
   it("Should revert if trying to stake 0 tokens", async () => {
     await expect(
-      stake.write.stake([BigInt(0), BigInt(7)]),
+      stake.write.stake([BigInt(0), BigInt(7)])
     ).to.be.revertedWithCustomError(stake, "CannotStakeZeroAmount");
   });
 
   it("Should revert if staking hasn't started", async () => {
     await expect(
-      stake.write.stake([BigInt(1), BigInt(7)]),
+      stake.write.stake([BigInt(1), BigInt(7)])
     ).to.be.revertedWithCustomError(stake, "StakingNotStarted");
   });
 
@@ -62,13 +62,13 @@ describe("Stake - stake", async () => {
       await expect(stakeTx).to.changeTokenBalances(
         own,
         [signers[0].account.address, stake.address],
-        [-amount, amount],
+        [-amount, amount]
       );
 
       await expect(stakeTx).to.changeTokenBalances(
         veOwn,
         [signers[0].account.address],
-        [BigInt(5) * amount],
+        [BigInt(5) * amount]
       );
     });
 
@@ -88,6 +88,7 @@ describe("Stake - stake", async () => {
       expect(userPositions.length).to.equal(1);
       expect(userPositions).to.deep.equal([
         {
+          positionId: 0,
           owner: address,
           ownAmount: amount,
           veOwnAmount: amount,
@@ -102,12 +103,12 @@ describe("Stake - stake", async () => {
 
       expect(await stake.read.totalPositions()).to.equal(1);
       expect(
-        await stake.read.validVeOwnAdditionsInDay([BigInt(stakeStartDay)]),
+        await stake.read.validVeOwnAdditionsInDay([BigInt(stakeStartDay)])
       ).to.equal(amount);
       expect(
         await stake.read.validVeOwnSubtractionsInDay([
           BigInt(stakeFinalDay + 1),
-        ]),
+        ])
       ).to.equal(amount);
       expect(await stake.read.totalUsers()).to.equal(1);
     });
@@ -122,7 +123,7 @@ describe("Stake - stake", async () => {
       await expect(stakeTx).to.changeTokenBalances(
         veOwn,
         [signers[0].account.address],
-        [BigInt(numWeeks) * amount],
+        [BigInt(numWeeks) * amount]
       );
 
       const currentDay = Number(await stake.read.getCurrentDay());
@@ -137,7 +138,7 @@ describe("Stake - stake", async () => {
           currentDay + Number(stakeFor1Year),
           0,
           amount,
-          stakeFor1Year,
+          stakeFor1Year
         );
     });
   });

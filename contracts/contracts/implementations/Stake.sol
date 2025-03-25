@@ -12,8 +12,6 @@ import "../interfaces/IveOwn.sol";
 import "../interfaces/IOwn.sol";
 import "../interfaces/ISablierLockup.sol";
 
-import "hardhat/console.sol";
-
 contract Stake is
     Initializable,
     IStake,
@@ -135,6 +133,7 @@ contract Stake is
 
         // record their position
         positions[positionId] = StakePosition({
+            positionId: positionId,
             owner: msg.sender,
             ownAmount: _amount,
             veOwnAmount: veOwnAmount,
@@ -762,16 +761,13 @@ contract Stake is
     function getBoostMultiplierForWeekSinceStart(
         uint256 _weekSinceStart
     ) public view override returns (uint256) {
-        console.log("1");
         uint256 boostDetailsLength = boostDetails.length;
 
         if (boostDetailsLength == 0 || _weekSinceStart > finalBoostWeek) {
             return 1 ether;
         }
-        console.log("2");
 
         while (boostDetailsLength > 0) {
-            console.log("3");
             --boostDetailsLength;
 
             uint256 boostStartWeek = boostDetails[boostDetailsLength].startWeek;

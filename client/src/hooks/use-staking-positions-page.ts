@@ -29,6 +29,7 @@ export const useStakingPositionsPage = () => {
               // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
               formatEther(claimableRewards[idx] as bigint),
             ),
+            positionId: Number(row.positionId),
           }),
         ),
     ),
