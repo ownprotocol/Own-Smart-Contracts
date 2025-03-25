@@ -7,6 +7,7 @@ import RaiseStats from "./raise-stats";
 import { useHomePresalePage } from "@/hooks/use-home-presale-page";
 import Loading from "@/app/loading";
 import { useGetAuthUser } from "@/query";
+import HasPresaleConcluded from "./has-presale-concluded";
 
 export const PresalePageContents = () => {
   const presalePageHook = useHomePresalePage();
@@ -43,7 +44,9 @@ export const PresalePageContents = () => {
           </>
         )}
       {!presalePageHook.data.presaleRound.roundsInProgress && (
-        <div>Presale rounds have finished</div> // Lazy styling for now
+        <div>
+          <HasPresaleConcluded />
+        </div>
       )}
       {presalePageHook.data.startPresaleTime >
         presalePageHook.data.timestamp && (
