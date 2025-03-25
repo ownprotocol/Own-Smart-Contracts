@@ -8,9 +8,10 @@ interface RewardBoxProps {
   isClaimable?: boolean;
   showLogo?: boolean;
   onClaim?: () => void;
+  disabled?: boolean;
 }
 
-function RewardBox({ label, value, isClaimable, onClaim, showLogo }: RewardBoxProps) {
+function RewardBox({ label, value, isClaimable, onClaim, showLogo, disabled }: RewardBoxProps) {
   return (
     <div className="flex flex-col items-center space-y-1 md:space-y-0 md:items-start">
       <span className="w-full text-left uppercase text-gray-400 font-dm_mono text-[12px] leading-[12px] tracking-[8%] md:text-[14px] md:leading-[14px]">
@@ -33,7 +34,8 @@ function RewardBox({ label, value, isClaimable, onClaim, showLogo }: RewardBoxPr
           <Button
             variant="secondary"
             onClick={onClaim}
-            className=" pl-8 rounded-md bg-[#9333EA] px-4 py-1 text-sm text-white transition-colors hover:bg-[#7E22CE]"
+            className={` pl-8 rounded-md bg-[#9333EA] px-4 py-1 text-sm text-white transition-colors hover:bg-[#7E22CE] ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+            disabled={disabled}
           >
             Claim
           </Button>

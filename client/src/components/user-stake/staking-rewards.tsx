@@ -18,6 +18,9 @@ function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
 
   const { totalRewardsClaimed, totalClaimableRewards, claimablePositionIds } =
     calculateStakingStats(stakePositions);
+  const disabled =
+    totalClaimableRewards === 0 ||
+    totalClaimableRewards === totalRewardsClaimed;
 
   const claimRewards = async () => {
     if (!account) {
@@ -53,6 +56,7 @@ function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
         isClaimable
         showLogo
         onClaim={claimRewards}
+        disabled={disabled}
       />
     </div>
   );
