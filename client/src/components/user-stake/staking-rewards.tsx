@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 "use client";
 
 import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
