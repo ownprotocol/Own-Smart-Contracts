@@ -8,7 +8,7 @@ import { generatePayload, isLoggedIn, login, logout } from "@/actions/login";
 import { GetUserQueryKey } from "@/query/get-user";
 
 interface ConnectWalletButtonProps {
-  redirectTo?: string;
+  redirectTo?: "/presale" | "/positions" ;
   title?: string;
   bgColor?: string;
   textColor?: string;
@@ -68,10 +68,10 @@ function ConnectWalletButton({
           });
 
           if (redirectTo) {
-            if (redirectTo === "/user-stake/rewards") {
-              router.push(`/user-stake/${params.payload.address}/rewards`);
-            } else if (redirectTo === "/user-stake/positions") {
-              router.push(`/user-stake/${params.payload.address}/positions`);
+            if (redirectTo === "/presale") {
+              router.push(`/presale`);
+            } else if (redirectTo === "/positions") {
+              router.push(`/positions`);
             } else {
               router.push("/");
             }

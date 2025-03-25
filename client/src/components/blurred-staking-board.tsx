@@ -5,7 +5,7 @@ import RewardBox from "./reward-box";
 
 function BlurredStakingBoard() {
   return (
-    <div className="relative flex flex-col blur-sm">
+    <div className="relative flex flex-col blur-md">
     <h1 className="font-funnel flex py-8 text-center text-[32px] font-[400] leading-[36px] tracking-[-5%] md:py-4 md:text-[72px] md:leading-[72px]">
       Your Staking
     </h1>

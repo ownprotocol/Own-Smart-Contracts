@@ -12,6 +12,7 @@ import {
 import "@/styles/globals.css";
 import QueryProvider from "@/providers/query-client-provider";
 import { ChainConnector } from "@/providers/chain-connect-provider";
+import ChainSwitchProvider from "@/providers/network-switch-provider";
 
 const fun = Funnel_Sans({
   subsets: ["latin"],
@@ -56,7 +57,7 @@ export default async function RootLayout({
                 <HomeSeparator />
                 {hasPresaleConcluded && <HasPresaleConcluded />}
                 <ToastContainer />
-                {children}
+                <ChainSwitchProvider>{children}</ChainSwitchProvider>
               </ChainConnector>
             </ThirdwebProvider>
           </QueryProvider>

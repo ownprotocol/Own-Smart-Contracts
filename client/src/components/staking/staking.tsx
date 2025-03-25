@@ -1,6 +1,10 @@
 "use client";
 
-import { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import {
+  type FieldErrors,
+  type UseFormRegister,
+  type UseFormSetValue,
+} from "react-hook-form";
 import { Button } from "../ui/button";
 import { DrawerFooter } from "../ui/drawer";
 import RewardCard from "./reward-card";
@@ -27,7 +31,6 @@ function Staking({
   setValue,
   onClick,
 }: StakingProps) {
-  console.log(tokenAmount, lockupDurationWeeks);
   return (
     <div className="px-4 py-2">
       <form>

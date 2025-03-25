@@ -1,11 +1,17 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { queryHookUnifier } from "@/helpers/query-hook-unifier";
 import { useReadContractQueryHook } from "@/helpers/useReadContractWithParsing";
 import { useActiveAccount } from "thirdweb/react";
 import { useContracts } from "./use-contracts";
-import { PresalePurchase, PresaleRoundDetails } from "@/types/presale";
+import {
+  type PresalePurchase,
+  type PresaleRoundDetails,
+} from "@/types/presale";
 import { formatEther } from "viem";
 import keyBy from "lodash/keyBy";
-import { QueryHook } from "@/types/query";
+import { type QueryHook } from "@/types/query";
 import { orderBy } from "lodash";
 import { useGetCurrentPresaleRound } from "./use-get-current-presale-round";
 import { useTestingSafeTimestamp } from "./use-testing-safe-timestamp";

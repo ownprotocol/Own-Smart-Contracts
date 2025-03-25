@@ -1,6 +1,6 @@
 "use client";
 
-import { Duration, intervalToDuration } from "date-fns";
+import { type Duration, intervalToDuration } from "date-fns";
 import { useEffect, useState } from "react";
 
 interface TimerState {
@@ -33,7 +33,6 @@ export const useMinimalCountdown = (timerDurationSeconds: number) => {
 
     return () => clearInterval(interval);
   }, []);
-  console.log(timerState.duration);
 
   return timerState.duration;
 };

@@ -12,7 +12,7 @@ import {
 interface NetworkSwitchDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSwitch: () => void;
+  onSwitch: () => Promise<void>;
   networkName?: string;
   title: string;
 }

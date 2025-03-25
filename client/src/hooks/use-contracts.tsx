@@ -12,6 +12,7 @@ import { getContractAddresses } from "@/config/contracts";
 
 export const useContracts = () => {
   const chain = useActiveChainWithDefault();
+  
 
   const contractAddresses = getContractAddresses(chain.id);
   const usdtContract = getContract({

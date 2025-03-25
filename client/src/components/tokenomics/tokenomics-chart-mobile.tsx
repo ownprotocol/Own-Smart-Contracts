@@ -1,4 +1,3 @@
-
 "use client";
 
 import { PieChart, Pie, Cell } from "recharts";
@@ -29,7 +28,9 @@ const TokenomicsChartMobile = () => {
             <div
               key={`legend-${index}`}
               className="flex cursor-pointer items-center space-x-3 whitespace-nowrap"
-              onClick={() => handleLegendClick(index)}
+              onClick={() => {
+                handleLegendClick(index);
+              }}
               style={{
                 opacity:
                   activeIndex === null || activeIndex === index ? 1 : 0.5,
@@ -40,7 +41,7 @@ const TokenomicsChartMobile = () => {
                 style={{ backgroundColor: entry.color }}
               />
               <span className="text-xs text-gray-200">{entry.name}</span>
-              <span className="text-xs text-gray-400">24%</span>
+              <span className="text-xs text-gray-400">{entry.value}%</span>
             </div>
           ))}
         </div>
@@ -67,7 +68,9 @@ const TokenomicsChartMobile = () => {
               <span className="mt-1 text-4xl text-white">
                 {tokenomicsData[activeIndex]?.value}%
               </span>
-              <span className="text-lg">{tokenomicsData[activeIndex]?.name}</span>
+              <span className="text-lg">
+                {tokenomicsData[activeIndex]?.name}
+              </span>
             </div>
           ) : (
             "Allocation"

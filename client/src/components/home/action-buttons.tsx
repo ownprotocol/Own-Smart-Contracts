@@ -17,6 +17,7 @@ interface ActionButtonsProps {
   usdtBalance: number;
   ownPrice: number;
   refetch: () => Promise<void>;
+  authUserIsValid: boolean;
 }
 
 function ActionButtons({
@@ -24,6 +25,7 @@ function ActionButtons({
   usdtBalance,
   ownPrice,
   refetch,
+  authUserIsValid,
 }: ActionButtonsProps) {
   const [buyWithCryptoOpen, setBuyWithCryptoOpen] = useState(false);
 
@@ -34,10 +36,13 @@ function ActionButtons({
     <div className="mt-4 flex flex-col gap-3 p-4 md:flex-row md:justify-center md:gap-4">
       {/* Card payment button */}
       <Button
+        disabled={!authUserIsValid}
         variant="mainButton"
         onClick={() => {
-          console.log("Credit card payment clicked");
-          openWertWidget();
+          if (authUserIsValid) {
+            console.log("Credit card payment clicked");
+            openWertWidget();
+          }
         }}
       >
         Buy with Card
@@ -56,9 +61,12 @@ function ActionButtons({
             </DrawerClose>
             <DrawerTitle className="text-black">
               <div className="flex w-full flex-col justify-center gap-1 md:flex-row md:gap-4">
-                <div className="font-funnel w-full text-[24px] leading-[28px] tracking-[-5%] text-black lg:text-[32px] lg:leading-[38px] lg:tracking-[-5%] xl:text-[42px] xl:leading-[48px]">
+                <Button
+                  disabled={!authUserIsValid}
+                  className="font-funnel w-full text-[24px] leading-[28px] tracking-[-5%] text-black lg:text-[32px] lg:leading-[38px] lg:tracking-[-5%] xl:text-[42px] xl:leading-[48px]"
+                >
                   Buy with Crypto
-                </div>
+                </Button>
               </div>
             </DrawerTitle>
           </DrawerHeader>

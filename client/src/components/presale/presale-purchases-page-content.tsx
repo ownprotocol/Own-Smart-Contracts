@@ -1,20 +1,35 @@
 "use client";
 
-import { usePresalePurchasesPage } from "@/hooks/use-presale-purchases-page";
+import { type usePresalePurchasesPage } from "@/hooks/use-presale-purchases-page";
 import PresalePurchasesTable from "./presale-purchases-table";
 import { Button } from "../ui/button";
 import { useContracts } from "@/hooks";
 import { useActiveAccount } from "thirdweb/react";
 import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
 import { toast } from "react-toastify";
+import HashLoader from "react-spinners/HashLoader";
+interface PresalePurchasesPageContentProps {
+  presalePageHook: ReturnType<typeof usePresalePurchasesPage>;
+}
 
-export const PresalePurchasesPageContent = () => {
-  const presalePageHook = usePresalePurchasesPage();
+export const PresalePurchasesPageContent = ({
+  presalePageHook,
+}: PresalePurchasesPageContentProps) => {
   const { presaleContract } = useContracts();
   const account = useActiveAccount();
 
   if (presalePageHook.isLoading) {
-    return <div>loading...</div>;
+    return (
+      <div className="flex h-[500px] w-full items-center justify-center">
+        <HashLoader
+          color={"#FFA500"}
+          loading={true}
+          size={150}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        />
+      </div>
+    );
   }
 
   const claimRewards = async () => {
