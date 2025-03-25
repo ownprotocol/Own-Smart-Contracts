@@ -7,7 +7,10 @@ export const useCheckAndSwitchToActiveChain = () => {
   const activeChain = useActiveWalletChain();
   const switchChain = useSwitchActiveWalletChain();
 
-  const needsSwitch = activeChain && activeChain.name !== MAIN_CHAIN.name;
+  const needsSwitch =
+    activeChain?.id === 1337
+      ? false
+      : activeChain && activeChain.name !== MAIN_CHAIN.name;
 
   const switchToCorrectChain = async () => {
     if (needsSwitch) {
