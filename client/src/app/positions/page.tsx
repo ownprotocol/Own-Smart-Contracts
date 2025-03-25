@@ -11,27 +11,15 @@ import {
 } from "@/components";
 import { StakePageContent } from "@/components/user-stake/stake-page-content";
 import { useStakingPositionsPage } from "@/hooks/use-staking-positions-page";
-import HashLoader from "react-spinners/HashLoader";
 import { useGetAuthUser } from "@/query";
+import Loading from "../loading";
 function UserStakingPositionsPage() {
   const authUser = useGetAuthUser();
   const activeAccount = useActiveAccount();
   const queryHook = useStakingPositionsPage();
 
   if (authUser.isLoading || queryHook.isLoading) {
-    return (
-      <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
-        <div className="flex h-[500px] w-full items-center justify-center">
-          <HashLoader
-            color={"#FFA500"}
-            loading={true}
-            size={150}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-          />
-        </div>
-      </main>
-    );
+    return <Loading />;
   }
 
   if (!activeAccount) {
