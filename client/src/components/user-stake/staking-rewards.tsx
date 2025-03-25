@@ -1,17 +1,51 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 "use client";
 
+import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
 import { type StakingPurchaseDetails } from "@/types";
 import RewardBox from "../reward-box";
+import { useActiveAccount } from "thirdweb/react";
+import { useContracts } from "@/hooks/use-contracts";
+import { toast } from "react-toastify";
 
 interface StakingRewardsProps {
   stakePositions: StakingPurchaseDetails[];
+  refetch: () => void;
 }
 
-function StakingRewards({ stakePositions }: StakingRewardsProps) {
+function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
   console.log(stakePositions);
+  const account = useActiveAccount();
+  const { stakeContract } = useContracts();
 
-  const { totalRewardsClaimed, totalClaimableRewards } = calculateTotalRewards(stakePositions);
+  const { totalRewardsClaimed, totalClaimableRewards, claimablePositionIds } =
+    calculateStakingStats(stakePositions);
 
+  const claimRewards = async () => {
+    if (!account) {
+      console.error("Account not found");
+      return;
+    }
+
+    try {
+      await sendAndConfirmTransaction({
+        account,
+        transaction: prepareContractCall({
+          contract: stakeContract,
+          method: "claimRewards",
+          params: [claimablePositionIds.map((id) => BigInt(id))],
+        }),
+      });
+
+      refetch();
+
+      toast.success("Rewards claimed successfully");
+    } catch (e) {
+      console.error(e);
+      toast.error("Failed to claim rewards");
+    }
+  };
   return (
     <div className="mt-4 grid grid-cols-2 gap-6 rounded-xl bg-[#111111] md:mt-8 md:grid-cols-3 md:gap-12">
       {/* <RewardBox label="$OWN Received" value="10,000" /> */}
@@ -21,23 +55,28 @@ function StakingRewards({ stakePositions }: StakingRewardsProps) {
         value={totalClaimableRewards}
         isClaimable
         showLogo
-        onClaim={() => {
-          console.log("Claiming rewards");
-          //TODO: Implement claim logic here
-        }}
+        onClaim={claimRewards}
       />
     </div>
   );
 }
 
-function calculateTotalRewards(positions: StakingPurchaseDetails[]) {
+function calculateStakingStats(positions: StakingPurchaseDetails[]) {
   return positions.reduce(
-    (totals, position) => ({
-      totalRewardsClaimed: totals.totalRewardsClaimed + position.rewardsClaimed,
+    (stats, position) => ({
+      totalRewardsClaimed: stats.totalRewardsClaimed + position.rewardsClaimed,
       totalClaimableRewards:
-        totals.totalClaimableRewards + position.claimableRewards,
+        stats.totalClaimableRewards + position.claimableRewards,
+      claimablePositionIds:
+        position.claimableRewards > 0
+          ? [...stats.claimablePositionIds, position.positionId]
+          : stats.claimablePositionIds,
     }),
-    { totalRewardsClaimed: 0, totalClaimableRewards: 0 },
+    {
+      totalRewardsClaimed: 0,
+      totalClaimableRewards: 0,
+      claimablePositionIds: [] as number[],
+    },
   );
 }
 
