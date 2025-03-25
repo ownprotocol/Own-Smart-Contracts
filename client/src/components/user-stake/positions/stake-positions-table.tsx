@@ -1,6 +1,12 @@
 "use client";
 
-const stakePositions = [
+import {
+  TableHeader,
+  TableRow,
+} from "@/components/table/table-common-components";
+import { type StakingPurchaseDetails } from "@/types";
+
+const stakePosition = [
   {
     id: 1,
     date: "2024-01-01",
@@ -25,7 +31,11 @@ const stakePositions = [
   },
 ];
 
-function StakePositionsTable() {
+interface StakePositionsTableProps {
+  stakePositions: StakingPurchaseDetails[];
+}
+
+function StakePositionsTable({ stakePositions }: StakePositionsTableProps) {
   return (
     <div className="mt-4">
       <div className="mx-auto max-w-7xl">
@@ -49,7 +59,7 @@ function StakePositionsTable() {
                   <table className="min-w-full divide-y divide-gray-700">
                     <thead>
                       <tr>
-                        <th
+                        {/* <th
                           scope="col"
                           className="px-3 py-3.5 text-left font-dm_mono text-sm font-semibold text-gray-400 sm:pl-0"
                         >
@@ -73,24 +83,28 @@ function StakePositionsTable() {
                           className="px-3 py-3.5 text-left font-dm_mono text-sm font-semibold text-gray-400 sm:pl-0"
                         >
                           APR
-                        </th>
+                        </th> */}
+                        <TableHeader>DATE</TableHeader>
+                        <TableHeader>OWN LOCKED</TableHeader>
+                        <TableHeader>REWARDS</TableHeader>
+                        <TableHeader>APR</TableHeader>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-800 font-dm_mono">
-                      {stakePositions.map((stakePosition) => (
-                        <tr key={stakePosition.id}>
-                          <td className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left font-dm_sans text-sm font-semibold text-white sm:pl-0">
-                            {stakePosition.date}
-                          </td>
-                          <td className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left font-dm_sans text-sm font-semibold text-white sm:pl-0">
-                            {stakePosition.own_locked} Own
-                          </td>
-                          <td className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left font-dm_sans text-sm font-semibold text-white sm:pl-0">
-                            {stakePosition.rewards} Own
-                          </td>
-                          <td className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left font-dm_sans text-sm font-semibold text-[#F5841F] sm:pl-0">
-                            {stakePosition.rewards}
-                          </td>
+                      {stakePositions.map((stakePosition, index) => (
+                        <tr key={index}>
+                          <TableRow>{daysToDate(stakePosition.startDay)}</TableRow>
+                          <TableRow>
+                            {stakePosition.ownAmount.toLocaleString("en-US")}{" "}
+                            Own
+                          </TableRow>
+                          <TableRow>
+                            {stakePosition.veOwnAmount.toLocaleString("en-US")}{" "}
+                            Own
+                          </TableRow>
+                          <TableRow className="text-[#F5841F]">
+-
+                          </TableRow>
                         </tr>
                       ))}
                     </tbody>
@@ -103,6 +117,11 @@ function StakePositionsTable() {
       </div>
     </div>
   );
+}
+function daysToDate(days: number) {
+  const milliseconds = days * 86400000;
+  const date = new Date(milliseconds);
+  return date.toLocaleDateString();
 }
 
 export default StakePositionsTable;
