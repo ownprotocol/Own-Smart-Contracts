@@ -2,7 +2,6 @@
 
 import {
   useActiveAccount,
-  useActiveWalletConnectionStatus,
 } from "thirdweb/react";
 
 import {
