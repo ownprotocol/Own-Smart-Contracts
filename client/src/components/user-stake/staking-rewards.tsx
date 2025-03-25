@@ -13,7 +13,6 @@ interface StakingRewardsProps {
 }
 
 function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
-  console.log(stakePositions);
   const account = useActiveAccount();
   const { stakeContract } = useContracts();
 
