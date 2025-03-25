@@ -23,7 +23,7 @@ function StakePositionsTable({ stakePositions }: StakePositionsTableProps) {
                 </h1>
               </div>
               <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-                <h1 className="font-dm_mono text-[14px] font-[400] text-gray-400 md:text-[16px]">
+                <h1 className="hidden md:block font-dm_mono text-[14px] font-[400] text-gray-400 md:text-[16px]">
                   View Staking Positions
                 </h1>
               </div>

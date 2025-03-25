@@ -13,11 +13,11 @@ interface RewardBoxProps {
 
 function RewardBox({ label, value, isClaimable, onClaim, showLogo }: RewardBoxProps) {
   return (
-    <div className="flex flex-col items-center space-y-2 md:space-y-0 md:items-start">
+    <div className="flex flex-col items-center space-y-1 md:space-y-0 md:items-start">
       <span className="w-full text-left uppercase text-gray-400 font-dm_mono text-[12px] leading-[12px] tracking-[8%] md:text-[14px] md:leading-[14px]">
         {label}
       </span>
-      <div className="flex w-full items-center gap-2 pt-4 ">
+      <div className="flex w-full items-center gap-2 pt-2 md:pt-4 ">
         {showLogo && (
           <Image
             src="/own-logo.svg"
@@ -46,7 +46,7 @@ function RewardBox({ label, value, isClaimable, onClaim, showLogo }: RewardBoxPr
 
  function StakingRewards() {
   return (
-    <div className="mt-8 grid grid-cols-2 gap-8 rounded-xl bg-[#111111] md:grid-cols-3 md:gap-12">
+    <div className="mt-4 grid grid-cols-2 gap-6 rounded-xl bg-[#111111] md:mt-8 md:grid-cols-3 md:gap-12">
       <RewardBox label="$OWN Received" value="10,000" />
       <RewardBox label="Rewards Earned" value="100" />
       <RewardBox
