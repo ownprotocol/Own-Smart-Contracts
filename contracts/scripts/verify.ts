@@ -8,7 +8,7 @@ const getAddress = async (contractName: string) => {
     __dirname,
     "..",
     "deployments",
-    `${networkName}/${contractName}.json`,
+    `${networkName}/${contractName}.json`
   );
 
   const file = JSON.parse(fs.readFileSync(filePath, "utf-8"));
@@ -34,6 +34,11 @@ const main = async () => {
   const stakeAddress = await getAddress("StakeImplementation");
   console.log(formatCommand(stakeAddress));
 
+  if (networkName === "sepolia") {
+    const usdtAddress = await getAddress("mockUSDT");
+    console.log(formatCommand(usdtAddress));
+  }
+
   console.log("*** Etherscan links ***");
   const ownProxy = await getAddress("Own");
   const veOwnProxy = await getAddress("VeOwn");
@@ -42,13 +47,13 @@ const main = async () => {
 
   console.log(`Own: https://${networkName}.etherscan.io/address/${ownProxy}`);
   console.log(
-    `VeOwn: https://${networkName}.etherscan.io/address/${veOwnProxy}`,
+    `VeOwn: https://${networkName}.etherscan.io/address/${veOwnProxy}`
   );
   console.log(
-    `Presale: https://${networkName}.etherscan.io/address/${presaleProxy}`,
+    `Presale: https://${networkName}.etherscan.io/address/${presaleProxy}`
   );
   console.log(
-    `Stake: https://${networkName}.etherscan.io/address/${stakeProxy}`,
+    `Stake: https://${networkName}.etherscan.io/address/${stakeProxy}`
   );
 };
 
