@@ -30,8 +30,6 @@ const TokenomicsChartMobile = () => {
               className="flex cursor-pointer items-center space-x-3 whitespace-nowrap"
               onClick={() => {
                 handleLegendClick(index);
-                console.log("activeIndex", activeIndex);
-                console.log("entry", entry);
               }}
               style={{
                 opacity:
@@ -43,9 +41,7 @@ const TokenomicsChartMobile = () => {
                 style={{ backgroundColor: entry.color }}
               />
               <span className="text-xs text-gray-200">{entry.name}</span>
-              <span className="text-xs text-gray-400">
-                {entry.value}%
-              </span>
+              <span className="text-xs text-gray-400">{entry.value}%</span>
             </div>
           ))}
         </div>

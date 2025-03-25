@@ -34,7 +34,7 @@ function NetworkSwitchDialog({
           </DialogHeader>
           <div className="flex justify-center py-4">
             <Button
-              onClick={async () => await onSwitch()}
+              onClick={onSwitch}
               className="w-1/2 rounded-lg bg-[#9333EA] px-6 py-3 text-white transition-colors hover:bg-[#7E22CE]"
             >
               Switch

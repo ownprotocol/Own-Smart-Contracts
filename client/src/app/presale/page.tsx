@@ -1,36 +1,21 @@
 "use client";
-import {
-  useActiveAccount,
-  useActiveWalletConnectionStatus,
-} from "thirdweb/react";
-import { useRouter } from "next/navigation";
+import { useActiveAccount } from "thirdweb/react";
 import HashLoader from "react-spinners/HashLoader";
 
 import {
   BlurredStakingBoard,
   ConnectWalletDialog,
   MainNavigation,
-  NetworkSwitchDialog,
 } from "@/components";
 import { PresalePurchasesPageContent } from "@/components/presale/presale-purchases-page-content";
-import { useChainSwitch } from "@/providers/network-switch-provider";
 import { useGetAuthUser } from "@/query";
 import { usePresalePurchasesPage } from "@/hooks/use-presale-purchases-page";
 
 function PresalePurchasesPage() {
   const authUser = useGetAuthUser();
   const activeAccount = useActiveAccount();
-  const status = useActiveWalletConnectionStatus();
-  const router = useRouter();
 
   const presalePageHook = usePresalePurchasesPage();
-
-  const { needsSwitch, switchToCorrectChain, currentAppChain } =
-    useChainSwitch();
-
-  const handleDialogClose = () => {
-    router.push("/");
-  };
 
   if (authUser.isLoading || presalePageHook.isLoading) {
     return (
@@ -47,23 +32,8 @@ function PresalePurchasesPage() {
       </main>
     );
   }
-  
-  if (needsSwitch) {
-    return (
-      <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
-        <NetworkSwitchDialog
-          title={`Switch to view your rewards on ${currentAppChain?.name}`}
-          isOpen={needsSwitch}
-          onClose={handleDialogClose}
-          onSwitch={switchToCorrectChain}
-          networkName={currentAppChain?.name ?? ""}
-        />
-        <BlurredStakingBoard />
-      </main>
-    );
-  }
 
-  if (!activeAccount && status !== "connected") {
+  if (!activeAccount) {
     return (
       <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
         <ConnectWalletDialog redirectTo="/presale" />
