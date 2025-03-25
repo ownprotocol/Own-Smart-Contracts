@@ -5,7 +5,7 @@ import {
   buyWithCryptoSchema,
 } from "./buy-with-crypto-modal.constants";
 import { toast } from "react-toastify";
-import { useActiveAccount, useSendTransaction } from "thirdweb/react";
+import { useActiveAccount } from "thirdweb/react";
 import { useContracts } from "@/hooks";
 import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
 import Image from "next/image";
@@ -33,6 +33,7 @@ export const BuyWithCryptoDrawer = ({
   const { presaleContract, usdtContract } = useContracts();
   const account = useActiveAccount();
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isSendingTxs, setIsSendingTxs] = useState(false);
 
   const {
