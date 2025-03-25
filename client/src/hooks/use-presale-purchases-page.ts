@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { queryHookUnifier } from "@/helpers/query-hook-unifier";
 import { useReadContractQueryHook } from "@/helpers/useReadContractWithParsing";
 import { useActiveAccount } from "thirdweb/react";
