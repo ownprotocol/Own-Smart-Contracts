@@ -33,11 +33,8 @@ export const BuyWithCryptoDrawer = ({
   const { presaleContract, usdtContract } = useContracts();
   const account = useActiveAccount();
 
-  const [isSendingTxs, setIsSendingTxs] = useState(false);
-
   const {
     register,
-    handleSubmit,
     setValue,
     formState: { errors },
     getValues,
@@ -78,7 +75,6 @@ export const BuyWithCryptoDrawer = ({
 
     const data = getValues();
 
-    setIsSendingTxs(true);
     try {
       const amount = parseFloat(data.tokenAmount);
 
@@ -125,8 +121,6 @@ export const BuyWithCryptoDrawer = ({
     } catch (error) {
       toast.error("Transaction failed");
       console.error("Transaction error:", error);
-    } finally {
-      setIsSendingTxs(false);
     }
   };
 
@@ -138,7 +132,9 @@ export const BuyWithCryptoDrawer = ({
   return (
     <div className="flex h-full w-full flex-col space-y-4 rounded-lg bg-white p-4">
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
         className="flex h-full w-full flex-col gap-6"
       >
         <div className="flex">

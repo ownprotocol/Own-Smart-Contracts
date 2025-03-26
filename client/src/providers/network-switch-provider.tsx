@@ -33,7 +33,7 @@ export function ChainSwitchProvider({ children }: { children: ReactNode }) {
 
   return (
     <ChainSwitchContext.Provider value={value}>
-      {children}
+      {!needsSwitch && children}
       {needsSwitch && (
         <NetworkSwitchDialog
           title={`Switch to view your rewards on ${currentAppChain?.name}`}
