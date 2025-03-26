@@ -15,8 +15,6 @@ function BlurredStakingBoard() {
       <RewardBox
         label="Claimable Rewards"
         value="50"
-        isClaimable
-        showLogo
       />
     </div>
     <div className="mt-4">
