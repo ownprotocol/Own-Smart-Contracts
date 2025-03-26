@@ -49,7 +49,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   await presale.write.addPresaleRounds([rounds]);
 
   const currentTime = await getCurrentBlockTimestamp();
-  await presale.write.setPresaleStartTime([BigInt(currentTime + 60)]);
+  await presale.write.setPresaleStartTime([BigInt(currentTime + 2)]);
 
   await mockUSDT.write.mint([deployer.address as any, parseEther("1000000")]);
 

@@ -19,15 +19,20 @@ export const PresalePageContents = () => {
   if (presalePageHook.isLoading || presaleConcludedPageHook.isLoading) {
     return <Loading />;
   }
+  console.log(presalePageHook.data);
+  console.log(presalePageHook.data.presaleRound.roundsInProgress, presalePageHook.data.startPresaleTime <
+    presalePageHook.data.timestamp );
+
+    const hasPresaleRoundStarted = presalePageHook.data.presaleRound.roundsInProgress &&
+    presalePageHook.data.startPresaleTime <=
+      presalePageHook.data.timestamp;
 
   return (
     <>
-      {presalePageHook.data.presaleRound.roundsInProgress &&
-        presalePageHook.data.startPresaleTime <
-          presalePageHook.data.timestamp && (
-          <>
-            <PresaleBanner
-              roundId={presalePageHook.data.presaleRound.roundDetails.roundId}
+      {hasPresaleRoundStarted && (
+        <>
+          <PresaleBanner
+            roundId={presalePageHook.data.presaleRound.roundDetails.roundId}
             />
             <RaiseStats
               usdtBalance={presalePageHook.data.usdtBalance}
@@ -54,10 +59,6 @@ export const PresalePageContents = () => {
             hasRewardsToClaim={presaleConcludedPageHook.data.hasRewardsToClaim}
           />
         </div>
-      )}
-      {presalePageHook.data.startPresaleTime >
-        presalePageHook.data.timestamp && (
-        <div>Presale hasn&apos;t started yet</div>
       )}
     </>
   );
