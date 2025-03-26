@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 
 interface StakingRewardsProps {
   stakePositions: StakingPurchaseDetails[];
-  refetch: () => void;
+  refetch: () => Promise<void>;
 }
 
 function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
@@ -38,7 +38,7 @@ function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
         }),
       });
 
-      refetch();
+      await refetch();
 
       toast.success("Rewards claimed successfully");
     } catch (e) {
@@ -49,7 +49,10 @@ function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
   return (
     <div className="mt-4 grid grid-cols-2 gap-6 rounded-xl bg-[#111111] md:mt-8 md:grid-cols-3 md:gap-12">
       {/* <RewardBox label="$OWN Received" value="10,000" /> */}
-      <RewardBox label="Rewards Earned" value={totalRewardsClaimed} />
+      <RewardBox
+        label="Rewards Earned"
+        value={totalRewardsClaimed.toFixed(2)}
+      />
       <RewardBox
         label="Claimable Rewards"
         value={totalClaimableRewards.toFixed(2)}
@@ -64,15 +67,19 @@ function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
 
 function calculateStakingStats(positions: StakingPurchaseDetails[]) {
   return positions.reduce(
-    (stats, position) => ({
-      totalRewardsClaimed: stats.totalRewardsClaimed + position.rewardsClaimed,
-      totalClaimableRewards:
-        stats.totalClaimableRewards + position.claimableRewards,
-      claimablePositionIds:
-        position.claimableRewards > 0
-          ? [...stats.claimablePositionIds, position.positionId]
-          : stats.claimablePositionIds,
-    }),
+    (stats, position) => {
+      if (position.claimableRewards > 0) {
+        stats.claimablePositionIds.push(position.positionId);
+      }
+
+      return {
+        totalRewardsClaimed:
+          stats.totalRewardsClaimed + position.rewardsClaimed,
+        totalClaimableRewards:
+          stats.totalClaimableRewards + position.claimableRewards,
+        claimablePositionIds: stats.claimablePositionIds,
+      };
+    },
     {
       totalRewardsClaimed: 0,
       totalClaimableRewards: 0,

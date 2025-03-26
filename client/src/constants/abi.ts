@@ -1946,14 +1946,14 @@ export const stakeABI = [
       {
         components: [
           {
-            internalType: "uint256",
-            name: "positionId",
-            type: "uint256",
-          },
-          {
             internalType: "address",
             name: "owner",
             type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "positionId",
+            type: "uint256",
           },
           {
             internalType: "uint256",

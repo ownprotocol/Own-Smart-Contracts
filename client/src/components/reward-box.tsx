@@ -7,17 +7,24 @@ interface RewardBoxProps {
   value: string | number;
   isClaimable?: boolean;
   showLogo?: boolean;
-  onClaim?: () => void;
+  onClaim?: () => Promise<void>;
   disabled?: boolean;
 }
 
-function RewardBox({ label, value, isClaimable, onClaim, showLogo, disabled }: RewardBoxProps) {
+function RewardBox({
+  label,
+  value,
+  isClaimable,
+  onClaim,
+  showLogo,
+  disabled,
+}: RewardBoxProps) {
   return (
-    <div className="flex flex-col items-center space-y-1 md:space-y-0 md:items-start">
-      <span className="w-full text-left uppercase text-gray-400 font-dm_mono text-[12px] leading-[12px] tracking-[8%] md:text-[14px] md:leading-[14px]">
+    <div className="flex flex-col items-center space-y-1 md:items-start md:space-y-0">
+      <span className="w-full text-left font-dm_mono text-[12px] uppercase leading-[12px] tracking-[8%] text-gray-400 md:text-[14px] md:leading-[14px]">
         {label}
       </span>
-      <div className="flex w-full items-center gap-2 pt-2 md:pt-4 ">
+      <div className="flex w-full items-center gap-2 pt-2 md:pt-4">
         {showLogo && (
           <Image
             src="/own-logo.svg"
@@ -27,15 +34,18 @@ function RewardBox({ label, value, isClaimable, onClaim, showLogo, disabled }: R
             className="rounded-full"
           />
         )}
-        <span className={`font-dm_sans text-right text-[22px] leading-[22px] tracking-[2%] font-[500] text-white md:text-[32px] md:leading-[32px] ${showLogo ? "px-4 md:px-12" : ""}`}>
+        <span
+          className={`text-right font-dm_sans text-[22px] font-[500] leading-[22px] tracking-[2%] text-white md:text-[32px] md:leading-[32px] ${showLogo ? "px-4 md:px-12" : ""}`}
+        >
           {value}
         </span>
         {isClaimable && (
           <Button
             variant="secondary"
             onClick={onClaim}
-            className={` pl-8 rounded-md bg-[#9333EA] px-4 py-1 text-sm text-white transition-colors hover:bg-[#7E22CE] ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+            className={`rounded-md bg-[#9333EA] px-4 py-1 pl-8 text-sm text-white transition-colors hover:bg-[#7E22CE] ${disabled ? "cursor-not-allowed opacity-50" : ""}`}
             disabled={disabled}
+            useSpinner
           >
             Claim
           </Button>
