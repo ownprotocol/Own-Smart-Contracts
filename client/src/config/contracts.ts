@@ -22,11 +22,11 @@ export const getContractAddresses = (networkId: number): ContractAddresses => {
 
   if (networkId === 11155111) {
     return {
-      usdtAddress: "0x6DE70A1A954811a03963Aa843347488FE94D417f",
-      presaleAddress: "0x20D811217C46419909e8d3887C93A3A7E3Ba5ba7",
-      stakeAddress: "0xfA11095Eb3133C367Acc86F716675B6b6Bcf4905",
-      ownTokenAddress: "0x9F12BCfAEf51eC22d194bBecD271D8DA28774F80",
-      veOwnTokenAddress: "0xe5ACbB48c524bc1Dc30d526aF9f644a0443F5438",
+      usdtAddress: "0xD870f592AAeB2F3DA261a8e822F6Cf24196E4277",
+      presaleAddress: "0xd020E4743c6fe4DC47ed7E1AA6766B1F24C0Ad7a",
+      stakeAddress: "0x7c04235999699AaBbf6eF0063B386BA9BE6aa67e",
+      ownTokenAddress: "0xA9811778255599459638e32992550CDE9C83C208",
+      veOwnTokenAddress: "0xd0c1F09267b4cB7f4823F1873d40A724FcB0443b",
     };
   }
 

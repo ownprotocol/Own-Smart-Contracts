@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
 
 import ActionButtons from "./action-buttons";
@@ -7,24 +8,27 @@ import RaiseStats from "./raise-stats";
 import { useHomePresalePage } from "@/hooks/use-home-presale-page";
 import Loading from "@/app/loading";
 import { useGetAuthUser } from "@/query";
+import HasPresaleConcluded from "./has-presale-concluded";
+import { usePresalePurchasesPage } from "@/hooks/use-presale-purchases-page";
 
 export const PresalePageContents = () => {
   const presalePageHook = useHomePresalePage();
+  const presaleConcludedPageHook = usePresalePurchasesPage();
   const authUser = useGetAuthUser();
 
-  if (presalePageHook.isLoading) {
+  if (presalePageHook.isLoading || presaleConcludedPageHook.isLoading) {
     return <Loading />;
   }
 
   return (
     <>
-      <PresaleBanner
-        roundId={presalePageHook.data.presaleRound.roundDetails.roundId}
-      />
       {presalePageHook.data.presaleRound.roundsInProgress &&
         presalePageHook.data.startPresaleTime <
           presalePageHook.data.timestamp && (
           <>
+            <PresaleBanner
+              roundId={presalePageHook.data.presaleRound.roundDetails.roundId}
+            />
             <RaiseStats
               usdtBalance={presalePageHook.data.usdtBalance}
               presaleData={presalePageHook.data.presaleRound}
@@ -43,7 +47,13 @@ export const PresalePageContents = () => {
           </>
         )}
       {!presalePageHook.data.presaleRound.roundsInProgress && (
-        <div>Presale rounds have finished</div> // Lazy styling for now
+        <div>
+          <HasPresaleConcluded
+            presalePurchases={presaleConcludedPageHook.data.presalePurchases}
+            refetch={presaleConcludedPageHook.refetch}
+            hasRewardsToClaim={presaleConcludedPageHook.data.hasRewardsToClaim}
+          />
+        </div>
       )}
       {presalePageHook.data.startPresaleTime >
         presalePageHook.data.timestamp && (

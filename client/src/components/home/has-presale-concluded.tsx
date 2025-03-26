@@ -1,35 +1,65 @@
 "use client";
-import { PillarBackgrounds, SquareDots } from "@/components";
+
 import Image from "next/image";
+import { useMemo, useState } from "react";
+
+import { SquareDots } from "@/components";
 import { Button } from "../ui/button";
-import { useState, useEffect } from "react";
-import HasPresaleConcludedSkeleton from "@/components/ui/loading-skeletons/has-presale-concluded-skeleton"; 
+import { cn } from "@/lib/utils";
+import PresalePurchasesTable from "../presale/presale-purchases-table";
+import { type PresalePurchase } from "@/types/presale";
+import { useClaimRewards } from "@/hooks/use-presale-claim-rewards";
+import { useActiveAccount } from "thirdweb/react";
+import { useContracts } from "@/hooks";
+import { orderBy, uniqBy } from "lodash";
 
-function HasPresaleConcluded() {
-  const [isLoading, setIsLoading] = useState(false);
+interface HasPresaleConcludedProps {
+  presalePurchases: PresalePurchase[];
+  refetch: () => Promise<void>;
+  hasRewardsToClaim: boolean;
+}
 
-  useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 5000);
+function HasPresaleConcluded({
+  presalePurchases,
+  refetch,
+  hasRewardsToClaim,
+}: HasPresaleConcludedProps) {
+  const account = useActiveAccount();
+  const [activeRound, setActiveRound] = useState<number | null>(null);
+  const { claimRewards, isLoading: isClaimLoading } = useClaimRewards(refetch);
+  const { presaleContract } = useContracts();
+  const uniqueRounds = orderBy(
+    uniqBy(presalePurchases, (value) => value.roundId),
+    "roundId",
+    "asc",
+  );
 
-    return () => clearTimeout(timer);
-  }, []);
+  const filteredPurchases = useMemo(() => {
+    if (activeRound === null) {
+      return presalePurchases;
+    }
 
-  if (isLoading) {
-    return <HasPresaleConcludedSkeleton />;
-  }
+    return presalePurchases.filter(
+      (purchase) => purchase.roundId === activeRound,
+    );
+  }, [presalePurchases, activeRound]);
+
+  const handleSetRoundOnClick = (roundId: number) => {
+    if (roundId === activeRound) {
+      setActiveRound(null);
+    } else {
+      setActiveRound(roundId);
+    }
+  };
 
   return (
     <div className="relative h-screen w-full">
-      <PillarBackgrounds />
       <SquareDots />
       <div className="container mx-auto max-w-[1000px]">
-        <h1 className="font-funnel mt-[10%] flex max-w-[750px] items-center gap-3 px-8 text-[52px] font-[400] leading-[52px] tracking-[-5%] md:px-0 md:text-[72px] md:leading-[72px] min-h-[200px]">
+        <h1 className="font-funnel flex max-w-[750px] items-center px-8 pb-2 text-[32px] font-[400] leading-[42px] tracking-[-5%] md:px-0 md:pb-8 md:text-[72px] md:leading-[72px]">
           $Own Token Presale Concluded
         </h1>
-        <p className="mt-4 px-8 font-['DM_Sans'] text-[20px] font-[400] leading-[32px] text-[#B4B4B4] md:px-0 md:text-[32px] md:leading-[42px] min-h-[00px] md:min-h-[100px]">
+        <p className="mt-4 min-h-[100px] px-8 font-['DM_Sans'] text-[20px] font-[400] leading-[32px] text-[#B4B4B4] md:min-h-[100px] md:px-0 md:text-[32px] md:leading-[42px]">
           Thanks for participating! You can claim your $Own after TGE and will
           be able to stake them to earn rewards.
         </p>
@@ -52,35 +82,48 @@ function HasPresaleConcluded() {
                 </p>
               </div>
             </div>
-
             <div>
               <p className="pt-2 font-dm_mono text-[12px] font-[400] uppercase leading-[12px] tracking-[0.08em] text-[#B4B4B4] md:text-[14px] md:leading-[14px]">
                 CONTRACT ADDRESS FOR $OWN
               </p>
-              <p className="font-dm_mono text-[24px] font-[400] text-white md:text-[32px]">
-                0X23EF85AC3C3D34324532
+              <p className="font-dm_mono text-[20px] font-[400] text-white md:text-[32px]">
+                {presaleContract.address}
               </p>
             </div>
           </div>
+          <div className="mt-8 sm:flex sm:items-center">
+            <div className="sm:flex-auto">
+              <div className="flex flex-wrap gap-2 pt-4 text-xs md:flex-row md:flex-wrap md:gap-2 md:text-base">
+                {uniqueRounds.map((round) => (
+                  <button
+                    type="button"
+                    key={round.roundId}
+                    className={cn(
+                      "cursor-pointer rounded-full px-4 py-1 text-white",
+                      activeRound === round.roundId
+                        ? "cursor-pointer bg-orange-500"
+                        : "bg-[#C1691180] text-[#F1AF6E]",
+                    )}
+                    onClick={() => {
+                      handleSetRoundOnClick(round.roundId);
+                    }}
+                  >
+                    Round {round.roundId + 1}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <PresalePurchasesTable rows={filteredPurchases} />
           <div className="mt-4 flex flex-col gap-3 py-4 sm:flex-row md:justify-start md:gap-4">
             <Button
               className="font-funnel bg-[#C58BFF] px-8 py-6 text-[14px] font-medium leading-[14px] tracking-[0%] text-black hover:bg-[#E49048] md:text-[16px] md:leading-[16px]"
-              onClick={() => {
-                // Handle credit card payment
-                console.log("Credit card payment clicked");
-              }}
+              onClick={claimRewards}
+              disabled={isClaimLoading || !account || !hasRewardsToClaim}
+              useSpinner
             >
               Claim Now
-            </Button>
-
-            <Button
-              className="font-funnel bg-black px-8 py-6 text-[14px] leading-[14px] tracking-[0%] text-white hover:bg-gray-900 md:text-[16px] md:leading-[16px]"
-              onClick={() => {
-                // Handle crypto payment
-                console.log("Crypto payment clicked");
-              }}
-            >
-              Buy more in MEXC
             </Button>
           </div>
         </div>
@@ -90,3 +133,12 @@ function HasPresaleConcluded() {
 }
 
 export default HasPresaleConcluded;
+
+// <Button
+//   className="font-funnel bg-black px-8 py-6 text-[14px] leading-[14px] tracking-[0%] text-white hover:bg-gray-900 md:text-[16px] md:leading-[16px]"
+//   onClick={() => {
+//     console.log("Buy more in MEXC");
+//   }}
+// >
+//   Buy more in MEXC
+// </Button>;

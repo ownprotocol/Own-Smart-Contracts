@@ -1,6 +1,5 @@
 "use client";
 import { useActiveAccount } from "thirdweb/react";
-import HashLoader from "react-spinners/HashLoader";
 
 import {
   BlurredStakingBoard,
@@ -10,6 +9,7 @@ import {
 import { PresalePurchasesPageContent } from "@/components/presale/presale-purchases-page-content";
 import { useGetAuthUser } from "@/query";
 import { usePresalePurchasesPage } from "@/hooks/use-presale-purchases-page";
+import Loading from "../loading";
 
 function PresalePurchasesPage() {
   const authUser = useGetAuthUser();
@@ -18,19 +18,7 @@ function PresalePurchasesPage() {
   const presalePageHook = usePresalePurchasesPage();
 
   if (authUser.isLoading || presalePageHook.isLoading) {
-    return (
-      <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
-        <div className="flex h-[500px] w-full items-center justify-center">
-          <HashLoader
-            color={"#FFA500"}
-            loading={true}
-            size={150}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-          />
-        </div>
-      </main>
-    );
+    return <Loading />;
   }
 
   if (!activeAccount) {

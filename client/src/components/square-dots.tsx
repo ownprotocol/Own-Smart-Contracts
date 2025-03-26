@@ -1,7 +1,7 @@
 
 function SquareDots() {
   return (
-    <div className="absolute inset-0">
+    <div className="">
       <div className="absolute left-[15%] top-[10%] h-1 w-1 bg-[#C58BFF]" />
       <div className="absolute right-[20%] top-[25%] h-1 w-1 bg-[#C58BFF]" />
       <div className="absolute left-[30%] top-[40%] h-1 w-1 bg-[#C58BFF]" />

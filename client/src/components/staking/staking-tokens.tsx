@@ -40,7 +40,7 @@ function StakingTokens({
     const validateAndSetTokenAmount = (amount: number) => {
       if (amount > maxTokenAmount) {
         toast.warning(
-          `You don't have enough balance to stake that amount. Max stake amount is ${maxTokenAmount.toFixed(2)}`,
+          `You don't have enough balance to stake that amount.`,
         );
         setValue("tokenAmount", maxTokenAmount, {
           shouldValidate: true,

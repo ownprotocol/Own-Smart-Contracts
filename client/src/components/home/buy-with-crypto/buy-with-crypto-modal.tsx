@@ -5,7 +5,7 @@ import {
   buyWithCryptoSchema,
 } from "./buy-with-crypto-modal.constants";
 import { toast } from "react-toastify";
-import { useActiveAccount, useSendTransaction } from "thirdweb/react";
+import { useActiveAccount } from "thirdweb/react";
 import { useContracts } from "@/hooks";
 import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
 import Image from "next/image";

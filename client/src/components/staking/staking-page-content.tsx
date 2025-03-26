@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useStakingPage } from "@/hooks/use-staking-page";
 import { useActiveAccount } from "thirdweb/react";
 import { useState } from "react";
-import HashLoader from "react-spinners/HashLoader";
+import Loading from "@/app/loading";
 
 const buttonStyles =
   "font-funnel hover:bg-[#D58BFF] !mx-auto !w-full !max-w-fit !bg-[#C58BFF] !px-8 !py-6 !text-[14px] !font-medium !leading-[14px] !tracking-[0%] !text-black !md:text-[16px] !md:leading-[16px]";
@@ -40,19 +40,7 @@ export const StakingPageContent = ({
   }
 
   if (mainContentQuery.isLoading || authUserLoading) {
-    return (
-      <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
-        <div className="flex h-[500px] w-full items-center justify-center">
-          <HashLoader
-            color={"#FFA500"}
-            loading={true}
-            size={150}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-          />
-        </div>
-      </main>
-    );
+    return <Loading />;
   }
 
   const { ownBalance, boost, timestamp } = mainContentQuery.data;

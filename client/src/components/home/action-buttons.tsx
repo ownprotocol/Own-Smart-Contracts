@@ -50,7 +50,9 @@ function ActionButtons({
 
       <Drawer open={buyWithCryptoOpen} onOpenChange={setBuyWithCryptoOpen}>
         <DrawerTrigger asChild>
-          <Button className={cryptoButtonStyles}>Buy with Crypto</Button>
+          <Button disabled={!authUserIsValid} className={cryptoButtonStyles}>
+            Buy with Crypto
+          </Button>
         </DrawerTrigger>
         <DrawerContent className="h-[90vh] max-h-[90vh] px-[5%] md:px-[10%] xl:h-[90vh] xl:max-h-[90vh]">
           <DrawerHeader className="relative">
@@ -61,12 +63,9 @@ function ActionButtons({
             </DrawerClose>
             <DrawerTitle className="text-black">
               <div className="flex w-full flex-col justify-center gap-1 md:flex-row md:gap-4">
-                <Button
-                  disabled={!authUserIsValid}
-                  className="font-funnel w-full text-[24px] leading-[28px] tracking-[-5%] text-black lg:text-[32px] lg:leading-[38px] lg:tracking-[-5%] xl:text-[42px] xl:leading-[48px]"
-                >
-                  Buy with Crypto
-                </Button>
+                <span className="font-funnel text-[32px] leading-[40px] tracking-[-0.05em] md:text-[64px] md:leading-[72px]">
+                  Buy with Cryptos
+                </span>
               </div>
             </DrawerTitle>
           </DrawerHeader>
