@@ -42,7 +42,7 @@ export default async function RootLayout({
       className={`${fun.variable} ${dmSans.variable} ${dmMono.variable}`}
     >
       <body className="flex flex-col bg-[linear-gradient(to_bottom,#141019_48%,#E49048_48%,#E49048_48%,#141019_48%)] text-white">
-        <div className="container relative mx-auto flex flex-col border-x border-gray-500/30">
+        <div className="container relative mx-auto flex flex-col border-x border-gray-500/30 max-w-7xl">
           <QueryProvider>
             <ThirdwebProvider>
               <ChainConnector>
