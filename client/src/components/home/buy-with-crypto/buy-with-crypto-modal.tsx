@@ -33,12 +33,8 @@ export const BuyWithCryptoDrawer = ({
   const { presaleContract, usdtContract } = useContracts();
   const account = useActiveAccount();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isSendingTxs, setIsSendingTxs] = useState(false);
-
   const {
     register,
-    handleSubmit,
     setValue,
     formState: { errors },
     getValues,
@@ -79,7 +75,6 @@ export const BuyWithCryptoDrawer = ({
 
     const data = getValues();
 
-    setIsSendingTxs(true);
     try {
       const amount = parseFloat(data.tokenAmount);
 
@@ -126,8 +121,6 @@ export const BuyWithCryptoDrawer = ({
     } catch (error) {
       toast.error("Transaction failed");
       console.error("Transaction error:", error);
-    } finally {
-      setIsSendingTxs(false);
     }
   };
 
