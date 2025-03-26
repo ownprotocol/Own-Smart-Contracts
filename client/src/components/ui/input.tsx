@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { DetailedHTMLProps, InputHTMLAttributes } from "react";
+import { type DetailedHTMLProps, type InputHTMLAttributes } from "react";
 
 interface FormInputProps<
   InputProps extends DetailedHTMLProps<

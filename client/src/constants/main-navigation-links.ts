@@ -1,7 +1,6 @@
 export const ECOSYSTEM_DROPDOWN = [
   { name: "Partner", link: "https://www.iown.xyz/partners" },
   { name: "Grants", link: "https://www.iown.xyz/grants" },
-  { name: "Blog", link: "https://mirror.xyz/iown.eth" },
 ] as const;
 
 export const FOOTER_LINKS = {

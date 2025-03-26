@@ -6,7 +6,7 @@ import { icons } from "@/constants/icons";
 //TODO add footer links
 const Footer = () => {
   return (
-    <footer className="mt-auto flex flex-row items-center justify-between border-t-2 border-gray-500/30 px-[10%] py-10 text-sm text-gray-400">
+    <footer className="mt-auto flex flex-row items-center justify-between border-t-2 border-gray-500/30 px-[15%] py-10 text-sm text-gray-400">
       <div className="font-dmMono text-[10px] leading-[10px] tracking-[0.08em] md:text-xs md:leading-3 md:tracking-[0.08em]">
         COPYRIGHT BY FASSET.COM {new Date().getFullYear()}
       </div>

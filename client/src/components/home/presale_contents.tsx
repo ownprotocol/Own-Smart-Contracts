@@ -48,7 +48,11 @@ export const PresalePageContents = () => {
         )}
       {!presalePageHook.data.presaleRound.roundsInProgress && (
         <div>
-          <HasPresaleConcluded presalePurchases={presaleConcludedPageHook.data.presalePurchases} isLoading={presaleConcludedPageHook.isLoading} refetch={presaleConcludedPageHook.refetch}/>
+          <HasPresaleConcluded
+            presalePurchases={presaleConcludedPageHook.data.presalePurchases}
+            isLoading={presaleConcludedPageHook.isLoading}
+            refetch={presaleConcludedPageHook.refetch}
+          />
         </div>
       )}
       {presalePageHook.data.startPresaleTime >
