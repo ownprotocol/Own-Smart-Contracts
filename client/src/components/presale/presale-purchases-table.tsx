@@ -38,7 +38,7 @@ function PresalePurchasesTable({ rows }: PresaleTableProps) {
                   <table className="min-w-full divide-y divide-gray-700">
                     <thead>
                       <tr>
-                        <TableHeader>PURCHASED ON</TableHeader>
+                        <TableHeader>DATE</TableHeader>
                         <TableHeader>OWN AMOUNT</TableHeader>
                         <TableHeader>USDT SPENT</TableHeader>
                         <TableHeader>PRICE</TableHeader>

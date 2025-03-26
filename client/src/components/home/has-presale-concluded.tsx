@@ -1,26 +1,48 @@
 "use client";
 
-import { format } from "date-fns";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 
 import { SquareDots } from "@/components";
-import Image from "next/image";
 import { Button } from "../ui/button";
-import { useState } from "react";
-import { TableHeader, TableRow } from "../table/table-common-components";
 import { cn } from "@/lib/utils";
+import Loading from "@/app/loading";
+import PresalePurchasesTable from "../presale/presale-purchases-table";
+import { type PresalePurchase } from "@/types/presale";
+import { useClaimRewards } from "@/hooks/use-presale-claim-rewards";
+import { useActiveAccount } from "thirdweb/react";
 
-const rounds = [1, 2, 3, 4, 5, 6];
-const rows = [
-  {
-    timestamp: new Date(),
-    ownAmount: 100,
-    usdtAmount: 100,
-  },
-];
+interface HasPresaleConcludedProps {
+  presalePurchases: PresalePurchase[];
+  refetch: () => Promise<void>;
+  isLoading: boolean;
+}
 
-function HasPresaleConcluded() {
-  const [activeRound, setActiveRound] = useState(1);
-  console.log("activeRound", activeRound);
+function HasPresaleConcluded({
+  presalePurchases,
+  isLoading,
+  refetch,
+}: HasPresaleConcludedProps) {
+  const account = useActiveAccount();
+  const [activeRound, setActiveRound] = useState(0);
+  const [filteredPurchases, setFilteredPurchases] = useState<PresalePurchase[]>(
+    [],
+  );
+  const { claimRewards, isLoading: isClaimLoading } = useClaimRewards(refetch);
+  const roundSet = new Set(
+    presalePurchases.map((purchase) => purchase.roundId),
+  );
+
+  useEffect(() => {
+    const filteredPurchases = presalePurchases.filter(
+      (purchase) => purchase.roundId === activeRound,
+    );
+    setFilteredPurchases(filteredPurchases);
+  }, [presalePurchases, activeRound]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="relative h-screen w-full">
@@ -67,14 +89,14 @@ function HasPresaleConcluded() {
                 Your Presale Purchases
               </h1>
               <div className="flex flex-wrap gap-2 pt-4 text-xs md:flex-row md:flex-wrap md:gap-2 md:text-base">
-                {rounds.map((round) => (
+                {Array.from(roundSet).map((round) => (
                   <button
                     type="button"
                     key={round}
                     className={cn(
                       "cursor-pointer rounded-full px-4 py-1 text-white",
                       activeRound === round
-                        ? "bg-orange-500 cursor-pointer"
+                        ? "cursor-pointer bg-orange-500"
                         : "bg-[#C1691180] text-[#F1AF6E]",
                     )}
                     onClick={() => {
@@ -82,65 +104,25 @@ function HasPresaleConcluded() {
                       console.log("clicked");
                     }}
                   >
-                    Round {round}
+                    Round {round + 1}
                   </button>
                 ))}
               </div>
             </div>
           </div>
-          <div className="mt-4 flow-root md:mt-8">
-            <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-              <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                <table className="min-w-full divide-y divide-gray-700">
-                  <thead>
-                    <tr>
-                      <TableHeader>DATE</TableHeader>
-                      <TableHeader>OWN AMOUNT</TableHeader>
-                      <TableHeader>USDT SPENT</TableHeader>
-                      <TableHeader>PRICE</TableHeader>
-                      <TableHeader>CLAIMABLE</TableHeader>
-                    </tr>
-                  </thead>
-                  {rows.length === 0 ? (
-                    <tbody className="divide-y divide-gray-800 font-dm_mono">
-                      <tr>
-                        <td colSpan={4} className="py-12 text-center">
-                          No presale purchases found
-                        </td>
-                      </tr>
-                    </tbody>
-                  ) : (
-                    <tbody className="divide-y divide-gray-800 font-dm_mono">
-                      {rows.map((presalePurchase) => (
-                        <tr key={presalePurchase.timestamp.toString()}>
-                          <TableRow>
-                            {format(
-                              presalePurchase.timestamp,
-                              "hh:mm dd/MM/yyyy",
-                            )}
-                          </TableRow>
-                          <TableRow>
-                            {presalePurchase.ownAmount.toFixed(2)}
-                          </TableRow>
-                          <TableRow>
-                            ${presalePurchase.usdtAmount.toFixed(2)}
-                          </TableRow>
-                          <TableRow>$100</TableRow>
-                          <TableRow>something</TableRow>
-                        </tr>
-                      ))}
-                    </tbody>
-                  )}
-                </table>
-              </div>
-            </div>
-          </div>
+
+          <PresalePurchasesTable rows={filteredPurchases} />
           <div className="mt-4 flex flex-col gap-3 py-4 sm:flex-row md:justify-start md:gap-4">
             <Button
               className="font-funnel bg-[#C58BFF] px-8 py-6 text-[14px] font-medium leading-[14px] tracking-[0%] text-black hover:bg-[#E49048] md:text-[16px] md:leading-[16px]"
-              onClick={() => {
-                console.log("CLAIM NOW");
-              }}
+              onClick={claimRewards}
+              disabled={
+                isClaimLoading ||
+                !filteredPurchases.length ||
+                !account ||
+                isLoading
+              }
+              useSpinner={isClaimLoading}
             >
               Claim Now
             </Button>
