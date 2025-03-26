@@ -3,12 +3,7 @@ import { type Metadata } from "next";
 import { ToastContainer } from "react-toastify";
 import { ThirdwebProvider } from "thirdweb/react";
 
-import {
-  Footer,
-  HasPresaleConcluded,
-  HomeSeparator,
-  Navigation,
-} from "@/components";
+import { Footer, HomeSeparator, Navigation } from "@/components";
 import "@/styles/globals.css";
 import QueryProvider from "@/providers/query-client-provider";
 import { ChainConnector } from "@/providers/chain-connect-provider";
@@ -41,8 +36,6 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const hasPresaleConcluded = false;
-
   return (
     <html
       lang="en"
@@ -55,7 +48,6 @@ export default async function RootLayout({
               <ChainConnector>
                 <Navigation />
                 <HomeSeparator />
-                {hasPresaleConcluded && <HasPresaleConcluded />}
                 <ToastContainer />
                 <ChainSwitchProvider>{children}</ChainSwitchProvider>
               </ChainConnector>

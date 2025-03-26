@@ -1,48 +1,56 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { SquareDots } from "@/components";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
-import Loading from "@/app/loading";
 import PresalePurchasesTable from "../presale/presale-purchases-table";
 import { type PresalePurchase } from "@/types/presale";
 import { useClaimRewards } from "@/hooks/use-presale-claim-rewards";
 import { useActiveAccount } from "thirdweb/react";
+import { useContracts } from "@/hooks";
+import { orderBy, uniqBy } from "lodash";
 
 interface HasPresaleConcludedProps {
   presalePurchases: PresalePurchase[];
   refetch: () => Promise<void>;
-  isLoading: boolean;
+  hasRewardsToClaim: boolean;
 }
 
 function HasPresaleConcluded({
   presalePurchases,
-  isLoading,
   refetch,
+  hasRewardsToClaim,
 }: HasPresaleConcludedProps) {
   const account = useActiveAccount();
-  const [activeRound, setActiveRound] = useState(0);
-  const [filteredPurchases, setFilteredPurchases] = useState<PresalePurchase[]>(
-    [],
-  );
+  const [activeRound, setActiveRound] = useState<number | null>(null);
   const { claimRewards, isLoading: isClaimLoading } = useClaimRewards(refetch);
-  const roundSet = new Set(
-    presalePurchases.map((purchase) => purchase.roundId),
+  const { presaleContract } = useContracts();
+  const uniqueRounds = orderBy(
+    uniqBy(presalePurchases, (value) => value.roundId),
+    "roundId",
+    "asc",
   );
 
-  useEffect(() => {
-    const filteredPurchases = presalePurchases.filter(
+  const filteredPurchases = useMemo(() => {
+    if (activeRound === null) {
+      return presalePurchases;
+    }
+
+    return presalePurchases.filter(
       (purchase) => purchase.roundId === activeRound,
     );
-    setFilteredPurchases(filteredPurchases);
   }, [presalePurchases, activeRound]);
 
-  if (isLoading) {
-    return <Loading />;
-  }
+  const handleSetRoundOnClick = (roundId: number) => {
+    if (roundId === activeRound) {
+      setActiveRound(null);
+    } else {
+      setActiveRound(roundId);
+    }
+  };
 
   return (
     <div className="relative h-screen w-full">
@@ -79,32 +87,28 @@ function HasPresaleConcluded({
                 CONTRACT ADDRESS FOR $OWN
               </p>
               <p className="font-dm_mono text-[20px] font-[400] text-white md:text-[32px]">
-                0X23EF85AC3C3D34324532
+                {presaleContract.address}
               </p>
             </div>
           </div>
           <div className="mt-8 sm:flex sm:items-center">
             <div className="sm:flex-auto">
-              <h1 className="font-dm_mono text-[14px] font-[400] text-white md:text-[16px]">
-                Your Presale Purchases
-              </h1>
               <div className="flex flex-wrap gap-2 pt-4 text-xs md:flex-row md:flex-wrap md:gap-2 md:text-base">
-                {Array.from(roundSet).map((round) => (
+                {uniqueRounds.map((round) => (
                   <button
                     type="button"
-                    key={round}
+                    key={round.roundId}
                     className={cn(
                       "cursor-pointer rounded-full px-4 py-1 text-white",
-                      activeRound === round
+                      activeRound === round.roundId
                         ? "cursor-pointer bg-orange-500"
                         : "bg-[#C1691180] text-[#F1AF6E]",
                     )}
                     onClick={() => {
-                      setActiveRound(round);
-                      console.log("clicked");
+                      handleSetRoundOnClick(round.roundId);
                     }}
                   >
-                    Round {round + 1}
+                    Round {round.roundId + 1}
                   </button>
                 ))}
               </div>
@@ -116,24 +120,10 @@ function HasPresaleConcluded({
             <Button
               className="font-funnel bg-[#C58BFF] px-8 py-6 text-[14px] font-medium leading-[14px] tracking-[0%] text-black hover:bg-[#E49048] md:text-[16px] md:leading-[16px]"
               onClick={claimRewards}
-              disabled={
-                isClaimLoading ||
-                !filteredPurchases.length ||
-                !account ||
-                isLoading
-              }
-              useSpinner={isClaimLoading}
+              disabled={isClaimLoading || !account || !hasRewardsToClaim}
+              useSpinner
             >
               Claim Now
-            </Button>
-
-            <Button
-              className="font-funnel bg-black px-8 py-6 text-[14px] leading-[14px] tracking-[0%] text-white hover:bg-gray-900 md:text-[16px] md:leading-[16px]"
-              onClick={() => {
-                console.log("Buy more in MEXC");
-              }}
-            >
-              Buy more in MEXC
             </Button>
           </div>
         </div>
@@ -143,3 +133,12 @@ function HasPresaleConcluded({
 }
 
 export default HasPresaleConcluded;
+
+// <Button
+//   className="font-funnel bg-black px-8 py-6 text-[14px] leading-[14px] tracking-[0%] text-white hover:bg-gray-900 md:text-[16px] md:leading-[16px]"
+//   onClick={() => {
+//     console.log("Buy more in MEXC");
+//   }}
+// >
+//   Buy more in MEXC
+// </Button>;

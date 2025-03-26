@@ -139,7 +139,9 @@ export const BuyWithCryptoDrawer = ({
   return (
     <div className="flex h-full w-full flex-col space-y-4 rounded-lg bg-white p-4">
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
         className="flex h-full w-full flex-col gap-6"
       >
         <div className="flex">

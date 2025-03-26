@@ -22,13 +22,13 @@ export const PresalePageContents = () => {
 
   return (
     <>
-      <PresaleBanner
-        roundId={presalePageHook.data.presaleRound.roundDetails.roundId}
-      />
       {presalePageHook.data.presaleRound.roundsInProgress &&
         presalePageHook.data.startPresaleTime <
           presalePageHook.data.timestamp && (
           <>
+            <PresaleBanner
+              roundId={presalePageHook.data.presaleRound.roundDetails.roundId}
+            />
             <RaiseStats
               usdtBalance={presalePageHook.data.usdtBalance}
               presaleData={presalePageHook.data.presaleRound}
@@ -50,8 +50,8 @@ export const PresalePageContents = () => {
         <div>
           <HasPresaleConcluded
             presalePurchases={presaleConcludedPageHook.data.presalePurchases}
-            isLoading={presaleConcludedPageHook.isLoading}
             refetch={presaleConcludedPageHook.refetch}
+            hasRewardsToClaim={presaleConcludedPageHook.data.hasRewardsToClaim}
           />
         </div>
       )}
