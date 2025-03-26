@@ -123,7 +123,7 @@ function ClaimableRewardBox({
           <Button
             variant="secondary"
             onClick={onClaim}
-            className={`rounded-md border border-[#7E22CE] bg-[#141019] px-2 py-0.5 md:px-4 md:py-2 text-xs md:text-sm text-[#7E22CE] transition-colors hover:border-[#9333EA] hover:bg-opacity-80 hover:text-[#9333EA] ${
+            className={`rounded-md border border-[#7E22CE] bg-[#141019] px-2 py-0 md:px-4 md:py-2 text-xs md:text-sm text-[#7E22CE] transition-colors hover:border-[#9333EA] hover:bg-opacity-80 hover:text-[#9333EA] ${
               disabled ? "cursor-not-allowed opacity-50" : ""
             }`}
             disabled={disabled}
