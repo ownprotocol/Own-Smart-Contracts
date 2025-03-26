@@ -37,7 +37,7 @@ function StakePositionsTable({ stakePositions }: StakePositionsTableProps) {
                         <TableHeader>DATE</TableHeader>
                         <TableHeader>OWN LOCKED</TableHeader>
                         <TableHeader>REWARDS</TableHeader>
-                        <TableHeader>APR</TableHeader>
+                        <TableHeader>CLAIMABLE</TableHeader>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-800 font-dm_mono">
@@ -54,7 +54,7 @@ function StakePositionsTable({ stakePositions }: StakePositionsTableProps) {
                             {stakePosition.veOwnAmount.toLocaleString("en-US")}{" "}
                             Own
                           </TableRow>
-                          <TableRow className="text-[#F5841F]">-</TableRow>
+                          <TableRow className="text-[#F5841F]">{stakePosition.claimableRewards.toLocaleString("en-US")} Own</TableRow>
                         </tr>
                       ))}
                     </tbody>
