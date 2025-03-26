@@ -52,7 +52,7 @@ function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
       <RewardBox label="Rewards Earned" value={totalRewardsClaimed} />
       <RewardBox
         label="Claimable Rewards"
-        value={totalClaimableRewards}
+        value={totalClaimableRewards.toFixed(2)}
         isClaimable
         showLogo
         onClaim={claimRewards}
