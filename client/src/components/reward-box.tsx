@@ -43,7 +43,7 @@ function RewardBox({
           <Button
             variant="secondary"
             onClick={onClaim}
-            className={`rounded-md bg-[#9333EA] px-4 py-1 pl-8 text-sm text-white transition-colors hover:bg-[#7E22CE] ${disabled ? "cursor-not-allowed opacity-50" : ""}`}
+            className={`rounded-md bg-[#9333EA] px-4 py-1 text-sm text-white transition-colors hover:bg-[#7E22CE] ${disabled ? "cursor-not-allowed opacity-50" : ""}`}
             disabled={disabled}
             useSpinner
           >
