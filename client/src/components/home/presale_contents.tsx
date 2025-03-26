@@ -52,7 +52,7 @@ export const PresalePageContents = () => {
           </>
         )}
       {!presalePageHook.data.presaleRound.roundsInProgress && (
-        <div>
+        <div className="py-12">
           <HasPresaleConcluded
             presalePurchases={presaleConcludedPageHook.data.presalePurchases}
             refetch={presaleConcludedPageHook.refetch}
