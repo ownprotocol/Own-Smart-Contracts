@@ -14,7 +14,7 @@ function StakePositionsTable({ stakePositions }: StakePositionsTableProps) {
   return (
     <div className="mt-4">
       <div className="mx-auto max-w-7xl">
-        <div className="py-10">
+        <div className="py-10 md:py-6">
           <div className="px-4 md:px-6 lg:px-0">
             <div className="sm:flex sm:items-center">
               <div className="sm:flex-auto">
@@ -40,9 +40,18 @@ function StakePositionsTable({ stakePositions }: StakePositionsTableProps) {
                         <TableHeader>CLAIMABLE</TableHeader>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-800 font-dm_mono">
-                      {stakePositions.map((stakePosition, index) => (
-                        <tr key={index}>
+                    {stakePositions.length === 0 ? (
+                      <tbody className="divide-y divide-gray-800 font-dm_mono">
+                        <tr>
+                          <td colSpan={4} className="py-12 text-center">
+                            No staking positions found
+                          </td> 
+                        </tr>
+                      </tbody>
+                    ) : (
+                      <tbody className="divide-y divide-gray-800 font-dm_mono">
+                        {stakePositions.map((stakePosition, index) => (
+                          <tr key={index}>
                           <TableRow>
                             {daysToDate(stakePosition.startDay)}
                           </TableRow>
@@ -56,8 +65,9 @@ function StakePositionsTable({ stakePositions }: StakePositionsTableProps) {
                           </TableRow>
                           <TableRow className="text-[#F5841F]">{stakePosition.claimableRewards.toLocaleString("en-US")} Own</TableRow>
                         </tr>
-                      ))}
-                    </tbody>
+                        ))}
+                      </tbody>
+                    )}
                   </table>
                 </div>
               </div>
