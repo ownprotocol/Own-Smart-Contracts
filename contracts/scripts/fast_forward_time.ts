@@ -1,7 +1,7 @@
-import { SECONDS_IN_A_DAY, SECONDS_IN_A_WEEK } from "../constants/duration";
+import { SECONDS_IN_A_WEEK } from "../constants/duration";
 import { getCurrentBlockTimestamp, increaseTime } from "../helpers/evm";
 
-// npx hardhat run ./scripts/evm.ts --network localhost
+// npx hardhat run ./scripts/fast_forward_time.ts --network localhost
 const main = async () => {
   const beforetime = await getCurrentBlockTimestamp();
 
