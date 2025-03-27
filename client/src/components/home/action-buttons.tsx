@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { openWertWidget } from "@/config/wert-config";
+import { buildWertOptions } from "@/config/wert-config";
 import { useState } from "react";
 import {
   Drawer,
@@ -11,6 +11,12 @@ import {
   DrawerTrigger,
 } from "../ui/drawer";
 import { BuyWithCryptoDrawer } from "./buy-with-crypto/buy-with-crypto-modal";
+import { presaleABI } from "@/constants/abi";
+import { encodeFunctionData, parseEther } from "viem";
+import { useActiveAccount } from "thirdweb/react";
+import WertWidget from "@wert-io/widget-initializer";
+import { useContracts } from "@/hooks";
+import { useActiveChainWithDefault } from "@/hooks/useChainWithDefault";
 
 interface ActionButtonsProps {
   ownBalance: number;
@@ -28,9 +34,27 @@ function ActionButtons({
   authUserIsValid,
 }: ActionButtonsProps) {
   const [buyWithCryptoOpen, setBuyWithCryptoOpen] = useState(false);
+  const account = useActiveAccount();
+  const { presaleContract } = useContracts();
+  const chain = useActiveChainWithDefault();
 
   const cryptoButtonStyles =
     "font-funnel bg-black px-8 py-6 text-[14px] leading-[14px] tracking-[0%] text-white hover:bg-gray-900 md:text-[16px] md:leading-[16px]";
+
+  const openWertWidgetHandler = (amount: number) => {
+    if (!account) return;
+
+    const data = encodeFunctionData({
+      abi: presaleABI,
+      functionName: "purchasePresaleTokens",
+      args: [parseEther(amount.toString()), account.address],
+    });
+
+    const wertWidget = new WertWidget(
+      buildWertOptions(amount, presaleContract.address, data, chain.id),
+    );
+    wertWidget.open();
+  };
 
   return (
     <div className="mt-4 flex flex-col gap-3 p-4 md:flex-row md:justify-center md:gap-4">
@@ -38,12 +62,7 @@ function ActionButtons({
       <Button
         disabled={!authUserIsValid}
         variant="mainButton"
-        onClick={() => {
-          if (authUserIsValid) {
-            console.log("Credit card payment clicked");
-            openWertWidget();
-          }
-        }}
+        onClick={() => openWertWidgetHandler(1)}
       >
         Buy with Card
       </Button>

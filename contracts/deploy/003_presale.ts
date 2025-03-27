@@ -55,7 +55,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   // Get the implementation address
   const implementationAddress = await upgrades.erc1967.getImplementationAddress(
-    await PresaleDeployment.getAddress(),
+    await PresaleDeployment.getAddress()
   );
 
   // You can also save the implementation separately if needed
