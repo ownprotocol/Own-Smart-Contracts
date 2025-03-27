@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   title: "Fasset",
   description: "Fasset Presale & Staking",
   // TODO get favicon from client
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: [{ rel: "icon", url: "/own-logo.svg" }],
 };
 
 export default async function RootLayout({
