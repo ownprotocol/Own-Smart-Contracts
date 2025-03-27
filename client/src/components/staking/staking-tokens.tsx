@@ -89,7 +89,7 @@ function StakingTokens({
           />
         }
       />
-      <div className="flex flex-wrap justify-around gap-2">
+      <div className="flex flex-wrap justify-start gap-6">
         <StakingButton
           label="25%"
           isSelected={activePercentage === 25}
