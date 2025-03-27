@@ -104,8 +104,8 @@ const TokenomicsChart = () => {
             fontSize: "32px",
             lineHeight: "32px",
             letterSpacing: "-5%",
-            left: "45%",
-            top: "57%",
+            left: "42%",
+            top: "58%",
           }}
         >
           {activeIndex !== null ? (
