@@ -29,6 +29,7 @@ function ProgressBar({
   easing = "easeInOut",
 }: ProgressBarProps) {
   const progress = (sales / allocation) * 100;
+
   console.log(progress);
 
   // Create motion values for animating the numbers
@@ -99,7 +100,7 @@ function ProgressBar({
         className="absolute inset-y-0 left-0 bg-gradient-to-r from-purple-600 to-amber-400"
         style={{
           width: `${progress}%`,
-          clipPath: `polygon(0 0, ${progress === 100 ? 100 : 80}% 0, calc(${progress === 100 ? 100 : 80}% + 20px) 50%, ${progress === 100 ? 100 : 80}% 100%, 0 100%)`,
+          clipPath: `polygon(0 0, ${progress === 100 ? 100 : progress >= 95 ? 95 : 80}% 0, calc(${progress === 100 ? 100 : progress >= 95 ? 95 : 80}% + 20px) 50%, ${progress === 100 ? 100 : progress >= 95 ? 95 : 80}% 100%, 0 100%)`,
         }}
       />
 
@@ -118,7 +119,7 @@ function ProgressBar({
             filter: "blur(16px) brightness(1.2)",
           }}
         />
-        {(progress < 95 && progress > 0) && <ProgressDots />}
+        {progress < 95 && progress > 0 && <ProgressDots progress={progress} />}
       </motion.div>
 
       <div className="relative flex h-full items-center justify-between px-4 font-medium text-white">
@@ -143,23 +144,107 @@ function ProgressBar({
   );
 }
 
-function ProgressDots() {
+interface ProgressDotsProps {
+  progress: number;
+}
+
+function ProgressDots({ progress }: ProgressDotsProps) {
   return (
     <>
-      <div className="absolute left-[90%] top-[15%] flex -translate-y-1/2 gap-1 md:left-[85%]">
-        <div className="h-2 w-2 animate-pulse rounded-full bg-orange-300">1</div>
+      <div
+        className="absolute top-[15%] flex -translate-y-1/2 gap-1"
+        style={{
+          left:
+            progress <= 5
+              ? "150%"
+              : progress < 30
+                ? "95%"
+                : progress < 50
+                  ? "85%"
+                  : progress < 70
+                    ? "85%"
+                    : progress < 90
+                      ? "85%"
+                      : "85%",
+        }}
+      >
+        <div className="h-2 w-2 animate-pulse rounded-full bg-orange-300"></div>
       </div>
-      <div className="absolute left-[95%] top-[38%] flex -translate-y-1/2 gap-1 md:left-[85%]">
-        <div className="h-1 w-1 animate-pulse rounded-full bg-orange-300 delay-75">2</div>
+      <div
+        className={`absolute left-[95%] top-[38%] flex -translate-y-1/2 gap-1 md:left-[${progress < 30 ? "98%" : "95%"}]`}
+        style={{
+          left:
+            progress <= 5
+              ? "150%"
+              : progress < 30
+                ? "105%"
+                : progress < 50
+                  ? "95%"
+                  : progress < 70
+                    ? "85%"
+                    : progress < 90
+                      ? "90%"
+                      : "90%",
+        }}
+      >
+        <div className="h-1 w-1 animate-pulse rounded-full bg-orange-300 delay-75"></div>
       </div>
-      <div className="absolute left-[98%] top-[52%] flex -translate-y-1/2 gap-1 md:left-[88%]">
-        <div className="h-3 w-3 animate-pulse rounded-full bg-orange-300 delay-150">3</div>
+      <div
+        className={`absolute left-[98%] top-[52%] flex -translate-y-1/2 gap-1 md:left-[${progress < 30 ? "100%" : "88%"}]`}
+        style={{
+          left:
+            progress <= 5
+              ? "150%"
+              : progress < 30
+                ? "105%"
+                : progress < 50
+                  ? "95%"
+                  : progress < 70
+                    ? "90%"
+                    : progress < 90
+                      ? "90%"
+                      : "85%",
+        }}
+      >
+        <div className="h-3 w-3 animate-pulse rounded-full bg-orange-300 delay-150"></div>
       </div>
-      <div className="absolute left-[94%] top-[72%] flex -translate-y-1/2 gap-1 md:left-[84%]">
-        <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-orange-300 delay-300">4</div>
+      <div
+        className={`absolute left-[94%] top-[72%] flex -translate-y-1/2 gap-1 md:left-[${progress < 30 ? "97%" : "94%"}]`}
+        style={{
+          left:
+            progress <= 5
+              ? "150%"
+              : progress < 30
+                ? "115%"
+                : progress < 50
+                  ? "90%"
+                  : progress < 70
+                    ? "85%"
+                    : progress < 90
+                      ? "86%"
+                      : "95%",
+        }}
+      >
+        <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-orange-300 delay-300"></div>
       </div>
-      <div className="absolute left-[90%] top-[85%] flex -translate-y-1/2 gap-1 md:left-[86%]">
-        <div className="h-2 w-2 animate-pulse rounded-full bg-orange-300 delay-500">5</div>
+      <div
+        className={`absolute left-[90%] top-[85%] flex -translate-y-1/2 gap-1 md:left-[${progress < 30 ? "96%" : "94%"}]`}
+        style={{
+          left:
+            progress <= 5
+              ? "150%"
+              : progress < 30
+                ? "105%"
+                : progress < 50
+                  ? "85%"
+                  : progress < 70
+                    ? "85%"
+                    : progress < 90
+                      ? "85%"
+                      : "85%",
+        }}
+      >
+        <div className="h-2 w-2 animate-pulse rounded-full bg-orange-300 delay-500"></div>
       </div>
     </>
   );
