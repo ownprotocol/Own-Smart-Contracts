@@ -191,7 +191,8 @@ export const BuyWithCryptoDrawer = ({
             onChange={handleInputToken}
             errorString={errors.tokenAmount?.message}
             inputProps={{ ...register("tokenAmount"), placeholder: "0" }}
-            className="!flex-1"
+            className="!flex-1 !text-gray-400"
+            prefix="$"
           />
           <FormInput
             title={"$OWN YOU WILL RECEIVE"}
@@ -203,6 +204,7 @@ export const BuyWithCryptoDrawer = ({
               value: amountToSpend,
             }}
             className="!flex-1"
+            imageEnd={<Image width={20} height={20} src="/metamask-logo.png" alt="metamask" className="w-4 h-4" />}
           />
         </div>
         <div className="flex items-center gap-1">
