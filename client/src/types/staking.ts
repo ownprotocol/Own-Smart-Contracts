@@ -1,15 +1,19 @@
 import { z } from "zod";
 
-export const stakingSchema = z.object({
-  tokenAmount: z
-    .number()
-    .min(1, { message: "Token amount must be more than 0 to stake." }),
-  lockupDurationWeeks: z
-    .number()
-    .min(1, { message: "Lockup duration must be at least 1 week." }),
-});
+export const stakingSchema = (maxAllocation: number) =>
+  z.object({
+    tokenAmount: z
+      .number()
+      .min(1, { message: "Token amount must be more than 0 to stake." })
+      .max(maxAllocation, {
+        message: `Maximum allocation is ${maxAllocation}`,
+      }),
+    lockupDurationWeeks: z
+      .number()
+      .min(1, { message: "Lockup duration must be at least 1 week." }),
+  });
 
-export type StakingFormData = z.infer<typeof stakingSchema>;
+export type StakingFormData = z.infer<ReturnType<typeof stakingSchema>>;
 
 export type StakingPurchaseDetails = {
   positionId: number;

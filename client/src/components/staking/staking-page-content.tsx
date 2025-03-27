@@ -12,6 +12,7 @@ import { useStakingPage } from "@/hooks/use-staking-page";
 import { useActiveAccount } from "thirdweb/react";
 import { useState } from "react";
 import Loading from "@/app/loading";
+import { useHomePresalePage } from "@/hooks/use-home-presale-page";
 
 const buttonStyles =
   "font-funnel hover:bg-[#D58BFF] !mx-auto !w-full !max-w-fit !bg-[#C58BFF] !px-8 !py-6 !text-[14px] !font-medium !leading-[14px] !tracking-[0%] !text-black !md:text-[16px] !md:leading-[16px]";
@@ -25,6 +26,7 @@ export const StakingPageContent = ({
 }: StakingPageContentProps) => {
   const { mainContentQuery, hasStakingStartedQuery } = useStakingPage();
   const account = useActiveAccount();
+  const presalePageHook = useHomePresalePage();
 
   const [stakingDrawerOpen, setStakingDrawerOpen] = useState(false);
 
@@ -39,7 +41,11 @@ export const StakingPageContent = ({
     );
   }
 
-  if (mainContentQuery.isLoading || authUserLoading) {
+  if (
+    mainContentQuery.isLoading ||
+    authUserLoading ||
+    presalePageHook.isLoading
+  ) {
     return <Loading />;
   }
 
@@ -57,6 +63,8 @@ export const StakingPageContent = ({
           <DrawerContent className="h-[90vh] max-h-[90vh] px-[5%] md:px-[10%] xl:h-[90vh] xl:max-h-[90vh]">
             <StakingDrawerContent
               ownBalance={ownBalance}
+              presaleAllocation={presalePageHook.data.presaleRound.roundDetails.allocation}
+              preSaleSold={presalePageHook.data.presaleRound.roundDetails.sales}
               setIsOpen={setStakingDrawerOpen}
             />
           </DrawerContent>
