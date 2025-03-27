@@ -46,7 +46,7 @@ function StakingLockupPeriod({
         inputProps={{ ...register("lockupDurationWeeks") }}
         onChange={(e) => handleLockUpDuration(e.target.value)}
       />
-      <div className="flex flex-wrap justify-around gap-2">
+      <div className="flex flex-wrap justify-start gap-6">
         <DurationButton
           duration="1 Week"
           isSelected={lockupDuration === 1}
