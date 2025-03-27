@@ -2,7 +2,7 @@ import PresalePurchasesPageContent from "@/components/presale/presale-client";
 import { type Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Presale",
+  title: "Fasset",
   description: "View and manage your Fasset presale token purchases",
   icons: [{ rel: "icon", url: "/own-favicon.png" }],
 
