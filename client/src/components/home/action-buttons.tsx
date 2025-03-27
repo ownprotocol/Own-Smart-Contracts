@@ -45,7 +45,6 @@ function ActionButtons({
         variant="mainButton"
         onClick={() => {
           if (authUserIsValid) {
-            console.log("Credit card payment clicked");
             openWertWidget();
           }
         }}

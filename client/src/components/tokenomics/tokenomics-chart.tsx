@@ -129,9 +129,6 @@ const TokenomicsChart = () => {
               outerRadius={220}
               paddingAngle={0}
               dataKey="value"
-              onClick={() => {
-                console.log("clicked");
-              }}
               onMouseEnter={(_, index) => handleLegendHover(index)}
               onMouseLeave={handleLegendLeave}
             >

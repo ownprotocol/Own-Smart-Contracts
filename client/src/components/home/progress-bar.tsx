@@ -30,8 +30,6 @@ function ProgressBar({
 }: ProgressBarProps) {
   const progress = (sales / allocation) * 100;
 
-  console.log(progress);
-
   // Create motion values for animating the numbers
   const soldCount = useMotionValue(0);
   const capCount = useMotionValue(0);
