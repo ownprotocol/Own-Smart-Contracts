@@ -20,4 +20,5 @@ export type StakingPurchaseDetails = {
   lastWeekRewardsClaimed: number;
   rewardsClaimed: number;
   claimableRewards: number;
+  status: "in-progress" | "finished" | "complete";
 };
