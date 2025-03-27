@@ -32,6 +32,8 @@ export const PresalePageContents = () => {
         <>
           <PresaleBanner
             roundId={presalePageHook.data.presaleRound.roundDetails.roundId}
+            presaleAllocation={presalePageHook.data.presaleRound.roundDetails.allocation}
+            preSaleSold={presalePageHook.data.presaleRound.roundDetails.sales}
             />
             <RaiseStats
               usdtBalance={presalePageHook.data.usdtBalance}

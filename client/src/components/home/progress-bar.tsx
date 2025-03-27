@@ -29,6 +29,7 @@ function ProgressBar({
   easing = "easeInOut",
 }: ProgressBarProps) {
   const progress = (sales / allocation) * 100;
+  console.log(progress);
 
   // Create motion values for animating the numbers
   const soldCount = useMotionValue(0);
@@ -36,7 +37,7 @@ function ProgressBar({
 
   // Transform the motion values to formatted strings
   const displaySold = useTransform(soldCount, (value: number) =>
-    Math.round(value).toLocaleString(),
+    value.toFixed(2).toLocaleString(),
   );
   const displayCap = useTransform(capCount, (value: number) =>
     Math.round(value).toLocaleString(),
@@ -98,8 +99,7 @@ function ProgressBar({
         className="absolute inset-y-0 left-0 bg-gradient-to-r from-purple-600 to-amber-400"
         style={{
           width: `${progress}%`,
-          clipPath:
-            "polygon(0 0, 80% 0, calc(80% + 20px) 50%, 80% 100%, 0 100%)",
+          clipPath: `polygon(0 0, ${progress === 100 ? 100 : 80}% 0, calc(${progress === 100 ? 100 : 80}% + 20px) 50%, ${progress === 100 ? 100 : 80}% 100%, 0 100%)`,
         }}
       />
 
@@ -118,8 +118,7 @@ function ProgressBar({
             filter: "blur(16px) brightness(1.2)",
           }}
         />
-
-        <ProgressDots />
+        {(progress < 95 && progress > 0) && <ProgressDots />}
       </motion.div>
 
       <div className="relative flex h-full items-center justify-between px-4 font-medium text-white">
@@ -148,19 +147,19 @@ function ProgressDots() {
   return (
     <>
       <div className="absolute left-[90%] top-[15%] flex -translate-y-1/2 gap-1 md:left-[85%]">
-        <div className="h-2 w-2 animate-pulse rounded-full bg-orange-300"></div>
+        <div className="h-2 w-2 animate-pulse rounded-full bg-orange-300">1</div>
       </div>
       <div className="absolute left-[95%] top-[38%] flex -translate-y-1/2 gap-1 md:left-[85%]">
-        <div className="h-1 w-1 animate-pulse rounded-full bg-orange-300 delay-75"></div>
+        <div className="h-1 w-1 animate-pulse rounded-full bg-orange-300 delay-75">2</div>
       </div>
       <div className="absolute left-[98%] top-[52%] flex -translate-y-1/2 gap-1 md:left-[88%]">
-        <div className="h-3 w-3 animate-pulse rounded-full bg-orange-300 delay-150"></div>
+        <div className="h-3 w-3 animate-pulse rounded-full bg-orange-300 delay-150">3</div>
       </div>
       <div className="absolute left-[94%] top-[72%] flex -translate-y-1/2 gap-1 md:left-[84%]">
-        <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-orange-300 delay-300"></div>
+        <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-orange-300 delay-300">4</div>
       </div>
       <div className="absolute left-[90%] top-[85%] flex -translate-y-1/2 gap-1 md:left-[86%]">
-        <div className="h-2 w-2 animate-pulse rounded-full bg-orange-300 delay-500"></div>
+        <div className="h-2 w-2 animate-pulse rounded-full bg-orange-300 delay-500">5</div>
       </div>
     </>
   );
