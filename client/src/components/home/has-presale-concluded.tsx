@@ -74,7 +74,7 @@ function HasPresaleConcluded({
               </p>
               <div className="flex items-center gap-2">
                 <Image
-                  src="/home-page/hero/subtract.png"
+                  src="/own-dark.png"
                   alt="Subtract icon"
                   width={10}
                   height={10}
@@ -134,7 +134,7 @@ function HasPresaleConcluded({
             <Button
               className="font-funnel bg-white px-8 py-6 text-[14px] leading-[14px] tracking-[0%] text-black hover:bg-gray-900 md:text-[16px] md:leading-[16px]"
               onClick={() => {
-                console.log("Buy more in MEXC");
+                window.open("https://play.google.com/store/apps/details?id=com.mexcpro.client&pcampaignid=web_share&pli=1", "_blank");
               }}
             >
               Buy more in MEXC
