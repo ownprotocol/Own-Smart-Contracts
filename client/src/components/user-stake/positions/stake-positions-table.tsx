@@ -14,7 +14,7 @@ function StakePositionsTable({ stakePositions }: StakePositionsTableProps) {
   return (
     <div className="mt-4">
       <div className="mx-auto max-w-7xl">
-        <div className="py-10 md:py-6">
+        <div className="py-4 md:py-6">
           <div className="px-4 md:px-6 lg:px-0">
             <div className="sm:flex sm:items-center">
               <div className="sm:flex-auto">

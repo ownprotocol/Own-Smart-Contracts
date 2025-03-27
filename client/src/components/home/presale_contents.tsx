@@ -10,13 +10,15 @@ import Loading from "@/app/loading";
 import { useGetAuthUser } from "@/query";
 import HasPresaleConcluded from "./has-presale-concluded";
 import { usePresalePurchasesPage } from "@/hooks/use-presale-purchases-page";
+import { useStakingPage } from "@/hooks/use-staking-page";
 
 export const PresalePageContents = () => {
   const presalePageHook = useHomePresalePage();
   const presaleConcludedPageHook = usePresalePurchasesPage();
+  const { mainContentQuery } = useStakingPage();
   const authUser = useGetAuthUser();
 
-  if (presalePageHook.isLoading || presaleConcludedPageHook.isLoading) {
+  if (presalePageHook.isLoading || presaleConcludedPageHook.isLoading || mainContentQuery.isLoading) {
     return <Loading />;
   }
   console.log(presalePageHook.data);
@@ -52,11 +54,12 @@ export const PresalePageContents = () => {
           </>
         )}
       {!presalePageHook.data.presaleRound.roundsInProgress && (
-        <div className="py-12">
+        <div className="py-1 md:py-4 -mb-2">
           <HasPresaleConcluded
             presalePurchases={presaleConcludedPageHook.data.presalePurchases}
             refetch={presaleConcludedPageHook.refetch}
             hasRewardsToClaim={presaleConcludedPageHook.data.hasRewardsToClaim}
+            ownBalance={mainContentQuery.data.ownBalance}
           />
         </div>
       )}

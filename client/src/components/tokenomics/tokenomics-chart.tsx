@@ -123,7 +123,7 @@ const TokenomicsChart = () => {
           <PieChart width={500} height={500}>
             <Pie
               data={tokenomicsData}
-              cx={220}
+              cx={215}
               cy={250}
               innerRadius={180}
               outerRadius={220}
