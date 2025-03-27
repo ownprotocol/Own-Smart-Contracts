@@ -12,8 +12,7 @@ import { useClaimRewards } from "@/hooks/use-presale-claim-rewards";
 import { useActiveAccount } from "thirdweb/react";
 import { useContracts } from "@/hooks";
 import { orderBy, uniqBy } from "lodash";
-import { useStakingPage } from "@/hooks/use-staking-page";
-import Loading from "@/app/loading";
+
 
 interface HasPresaleConcludedProps {
   presalePurchases: PresalePurchase[];
