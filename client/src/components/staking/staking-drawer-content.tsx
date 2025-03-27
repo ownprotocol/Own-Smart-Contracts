@@ -13,6 +13,7 @@ import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
 import { parseEther } from "viem";
 import { allowance } from "thirdweb/extensions/erc20";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 interface StakingDrawerContentProps {
   ownBalance: number;
@@ -25,10 +26,11 @@ const StakingDrawerContent = ({
   ownBalance,
   setIsOpen,
 }: StakingDrawerContentProps) => {
-  const [stakingState, setStakingState] = useState<StakingState>("setup");
-
-  const { stakeContract, ownTokenContract } = useContracts();
+  const router = useRouter();
   const activeAccount = useActiveAccount();
+
+  const [stakingState, setStakingState] = useState<StakingState>("setup");
+  const { stakeContract, ownTokenContract } = useContracts();
 
   const {
     register,
@@ -89,6 +91,10 @@ const StakingDrawerContent = ({
       setStakingState("confirmed");
 
       toast.success("Transaction successful");
+      setTimeout(() => {
+        setIsOpen(false);
+        router.push("/positions");
+      }, 1000);
     } catch (error) {
       toast.error("Transaction failed");
       console.error("Transaction error:", error);

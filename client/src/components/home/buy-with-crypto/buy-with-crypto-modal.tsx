@@ -134,7 +134,7 @@ export const BuyWithCryptoDrawer = ({
       setTimeout(() => {
         setIsOpen(false);
         router.push("/presale");
-      }, 500);
+      }, 1000);
     } catch (error) {
       toast.error("Transaction failed");
       console.error("Transaction error:", error);
