@@ -5,7 +5,7 @@ import {
   buyWithCryptoSchema,
 } from "./buy-with-crypto-modal.constants";
 import { toast } from "react-toastify";
-import { useActiveAccount } from "thirdweb/react";
+import { useActiveAccount, useActiveWallet, useWalletImage } from "thirdweb/react";
 import { useContracts } from "@/hooks";
 import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
 import Image from "next/image";
@@ -33,6 +33,8 @@ export const BuyWithCryptoDrawer = ({
   maxAllocation,
   setIsOpen,
 }: BuyWithCryptoModalProps) => {
+  const wallet = useActiveWallet();
+  const { data: walletImage } = useWalletImage(wallet?.id);
   const { presaleContract, usdtContract } = useContracts();
   const account = useActiveAccount();
   const router = useRouter();
@@ -204,7 +206,7 @@ export const BuyWithCryptoDrawer = ({
               value: amountToSpend,
             }}
             className="!flex-1"
-            imageEnd={<Image width={20} height={20} src="/metamask-logo.png" alt="metamask" className="w-4 h-4" />}
+            imageEnd={<Image width={20} height={20} src={walletImage??""} alt="metamask" className="w-8 h-8" />}
           />
         </div>
         <div className="flex items-center gap-1">
