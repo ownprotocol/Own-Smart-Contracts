@@ -81,11 +81,11 @@ function StakingTokens({
         inputProps={{ ...register("tokenAmount") }}
         image={
           <Image
-            src="/own-logo.svg"
+            src="/own-light.png"
             alt="Own token"
             width={20}
             height={20}
-            className="text-primary invert xl:h-[25px] xl:w-[25px]"
+            className="text-primary  xl:h-[25px] xl:w-[25px]"
           />
         }
       />
