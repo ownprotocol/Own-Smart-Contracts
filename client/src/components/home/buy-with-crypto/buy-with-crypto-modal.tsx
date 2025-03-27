@@ -31,6 +31,7 @@ export const BuyWithCryptoDrawer = ({
   ownPrice,
   refetch,
   maxAllocation,
+  setIsOpen,
 }: BuyWithCryptoModalProps) => {
   const { presaleContract, usdtContract } = useContracts();
   const account = useActiveAccount();
@@ -131,6 +132,7 @@ export const BuyWithCryptoDrawer = ({
 
       toast.success("Transaction successful");
       setTimeout(() => {
+        setIsOpen(false);
         router.push("/presale");
       }, 500);
     } catch (error) {
