@@ -11,6 +11,7 @@ import {
   DrawerTrigger,
 } from "../ui/drawer";
 import { BuyWithCryptoDrawer } from "./buy-with-crypto/buy-with-crypto-modal";
+import { type CurrentPresaleRoundDetails } from "@/types/presale";
 
 interface ActionButtonsProps {
   ownBalance: number;
@@ -18,6 +19,8 @@ interface ActionButtonsProps {
   ownPrice: number;
   refetch: () => Promise<void>;
   authUserIsValid: boolean;
+  presaleAllocation: CurrentPresaleRoundDetails["roundDetails"]["allocation"];
+  preSaleSold: CurrentPresaleRoundDetails["roundDetails"]["sales"];
 }
 
 function ActionButtons({
@@ -26,9 +29,11 @@ function ActionButtons({
   ownPrice,
   refetch,
   authUserIsValid,
+  presaleAllocation,
+  preSaleSold,
 }: ActionButtonsProps) {
   const [buyWithCryptoOpen, setBuyWithCryptoOpen] = useState(false);
-
+  const maxAllocation = presaleAllocation - preSaleSold;
   const cryptoButtonStyles =
     "font-funnel bg-black px-8 py-6 text-[14px] leading-[14px] tracking-[0%] text-white hover:bg-gray-900 md:text-[16px] md:leading-[16px]";
 
@@ -75,6 +80,7 @@ function ActionButtons({
             ownBalance={ownBalance}
             ownPrice={ownPrice}
             refetch={refetch}
+            maxAllocation={maxAllocation}
           />
         </DrawerContent>
       </Drawer>

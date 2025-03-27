@@ -14,7 +14,7 @@ import { FormInput } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { parseEther } from "viem";
 import { allowance } from "thirdweb/extensions/erc20";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface BuyWithCryptoModalProps {
   usdtBalance: number;
@@ -22,6 +22,7 @@ interface BuyWithCryptoModalProps {
   ownPrice: number;
   setIsOpen: (isOpen: boolean) => void;
   refetch: () => Promise<void>;
+  maxAllocation: number;
 }
 
 export const BuyWithCryptoDrawer = ({
@@ -29,17 +30,18 @@ export const BuyWithCryptoDrawer = ({
   ownBalance,
   ownPrice,
   refetch,
+  maxAllocation,
 }: BuyWithCryptoModalProps) => {
   const { presaleContract, usdtContract } = useContracts();
   const account = useActiveAccount();
-
+  const router = useRouter();
   const {
     register,
     setValue,
-    formState: { errors },
+    formState: { errors },trigger,
     getValues,
   } = useForm<BuyWithCryptoForm>({
-    resolver: zodResolver(buyWithCryptoSchema),
+    resolver: zodResolver(buyWithCryptoSchema(maxAllocation)),
     defaultValues: {
       tokenAmount: "0",
     },
@@ -74,6 +76,16 @@ export const BuyWithCryptoDrawer = ({
     }
 
     const data = getValues();
+    
+    if (parseFloat(data.tokenAmount) > maxAllocation) {
+      toast.error(
+        `Not enough allocation. Maximum allocation is ${maxAllocation}`,
+      );
+      setValue("tokenAmount", maxAllocation.toString());
+      await trigger(["tokenAmount"], { shouldFocus: true });
+
+      return;
+    }
 
     try {
       const amount = parseFloat(data.tokenAmount);
@@ -118,6 +130,9 @@ export const BuyWithCryptoDrawer = ({
       await refetch();
 
       toast.success("Transaction successful");
+      setTimeout(() => {
+        router.push("/presale");
+      }, 500);
     } catch (error) {
       toast.error("Transaction failed");
       console.error("Transaction error:", error);

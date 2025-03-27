@@ -13,12 +13,9 @@ import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
 import { parseEther } from "viem";
 import { allowance } from "thirdweb/extensions/erc20";
 import { toast } from "react-toastify";
-import { type CurrentPresaleRoundDetails } from "@/types/presale";
 
 interface StakingDrawerContentProps {
   ownBalance: number;
-  presaleAllocation: CurrentPresaleRoundDetails["roundDetails"]["allocation"];
-  preSaleSold: CurrentPresaleRoundDetails["roundDetails"]["sales"];
   setIsOpen: (isOpen: boolean) => void;
 }
 
@@ -27,24 +24,19 @@ type StakingState = "setup" | "awaiting" | "confirmed";
 const StakingDrawerContent = ({
   ownBalance,
   setIsOpen,
-  presaleAllocation,
-  preSaleSold,
 }: StakingDrawerContentProps) => {
-  const activeAccount = useActiveAccount();
   const [stakingState, setStakingState] = useState<StakingState>("setup");
-  const { stakeContract, ownTokenContract } = useContracts();
 
-  const allocation = presaleAllocation ?? 0;
-  const maxAllocation = allocation - preSaleSold;
+  const { stakeContract, ownTokenContract } = useContracts();
+  const activeAccount = useActiveAccount();
 
   const {
     register,
     setValue,
     getValues,
-    trigger,
     formState: { errors },
   } = useForm<StakingFormData>({
-    resolver: zodResolver(stakingSchema(maxAllocation)),
+    resolver: zodResolver(stakingSchema),
     defaultValues: {
       tokenAmount: 0,
       lockupDurationWeeks: 1,
@@ -57,24 +49,13 @@ const StakingDrawerContent = ({
       return;
     }
 
-    const data = getValues();
-    const { tokenAmount, lockupDurationWeeks } = data;
-
-    if (tokenAmount > maxAllocation) {
-      toast.error(
-        `Not enough allocation. Maximum allocation is ${maxAllocation}`,
-      );
-      setValue("tokenAmount", maxAllocation);
-      await trigger(["tokenAmount"], { shouldFocus: true });
-
-      return;
-    }
-
     setStakingState("awaiting");
 
+    const data = getValues();
+
     try {
-      const amount = parseEther(tokenAmount.toString());
-      const days = BigInt(lockupDurationWeeks);
+      const amount = parseEther(data.tokenAmount.toString());
+      const days = BigInt(data.lockupDurationWeeks);
 
       const allowanceBalance = await allowance({
         contract: ownTokenContract,

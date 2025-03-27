@@ -21,9 +21,6 @@ export const PresalePageContents = () => {
   if (presalePageHook.isLoading || presaleConcludedPageHook.isLoading || mainContentQuery.isLoading) {
     return <Loading />;
   }
-  console.log(presalePageHook.data);
-  console.log(presalePageHook.data.presaleRound.roundsInProgress, presalePageHook.data.startPresaleTime <
-    presalePageHook.data.timestamp );
 
     const hasPresaleRoundStarted = presalePageHook.data.presaleRound.roundsInProgress &&
     presalePageHook.data.startPresaleTime <=
@@ -50,6 +47,9 @@ export const PresalePageContents = () => {
               ownPrice={presalePageHook.data.presaleRound.roundDetails.price}
               refetch={presalePageHook.refetch}
               authUserIsValid={authUser.isValid ?? false}
+              presaleAllocation={presalePageHook.data.presaleRound.roundDetails.allocation}
+              preSaleSold={presalePageHook.data.presaleRound.roundDetails.sales}
+              
             />
           </>
         )}
