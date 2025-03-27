@@ -6,11 +6,11 @@ export const TOP_NAVIGATION_LINKS = [
   {
     name: "Presale",
     link: "/presale",
-    icon: icons.GiReceiveMoney,
+    icon: icons.FaArchive,
   },
   {
     name: "Positions",
     link: "/positions",
-    icon: icons.GiReceiveMoney,
+    icon: icons.FaAdjust,
   },
 ];
