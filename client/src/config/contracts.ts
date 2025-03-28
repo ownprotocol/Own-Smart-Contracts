@@ -20,7 +20,7 @@ export const getContractAddresses = (networkId: number): ContractAddresses => {
     };
   }
 
-  if (networkId === 11155111) {
+  if (networkId === sepolia.id) {
     return {
       usdtAddress: "0xD870f592AAeB2F3DA261a8e822F6Cf24196E4277",
       presaleAddress: "0xd020E4743c6fe4DC47ed7E1AA6766B1F24C0Ad7a",

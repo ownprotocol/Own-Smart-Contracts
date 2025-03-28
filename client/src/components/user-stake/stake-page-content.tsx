@@ -13,10 +13,13 @@ export const StakePageContent = ({ queryHook }: StakePageContentProps) => {
   if (queryHook.isLoading) {
     return <Loading />;
   }
-  const { stakingPositions } = queryHook.data;
+  const stakingPositions = queryHook.data;
   return (
     <>
-      <StakingRewards stakePositions={stakingPositions}  refetch={queryHook.refetch}/>
+      <StakingRewards
+        stakePositions={stakingPositions}
+        refetch={queryHook.refetch}
+      />
       <StakePositionsTable stakePositions={stakingPositions} />
     </>
   );
