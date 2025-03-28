@@ -1,6 +1,5 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { buildWertOptions } from "@/config/wert-config";
 import { useState } from "react";
 import {
   Drawer,
@@ -11,12 +10,12 @@ import {
   DrawerTrigger,
 } from "../ui/drawer";
 import { BuyWithCryptoDrawer } from "./buy-with-crypto/buy-with-crypto-modal";
-import { presaleABI } from "@/constants/abi";
-import { encodeFunctionData, parseEther } from "viem";
 import { useActiveAccount } from "thirdweb/react";
 import WertWidget from "@wert-io/widget-initializer";
-import { useContracts } from "@/hooks";
 import { useActiveChainWithDefault } from "@/hooks/useChainWithDefault";
+import axios from "axios";
+import { signSmartContractData } from "@wert-io/widget-sc-signer";
+import { buildWertOptions } from "@/config/wert-config";
 
 interface ActionButtonsProps {
   ownBalance: number;
@@ -35,24 +34,26 @@ function ActionButtons({
 }: ActionButtonsProps) {
   const [buyWithCryptoOpen, setBuyWithCryptoOpen] = useState(false);
   const account = useActiveAccount();
-  const { presaleContract } = useContracts();
   const chain = useActiveChainWithDefault();
 
   const cryptoButtonStyles =
     "font-funnel bg-black px-8 py-6 text-[14px] leading-[14px] tracking-[0%] text-white hover:bg-gray-900 md:text-[16px] md:leading-[16px]";
 
-  const openWertWidgetHandler = (amount: number) => {
+  const openWertWidgetHandler = async (amount: number) => {
     if (!account) return;
 
-    const data = encodeFunctionData({
-      abi: presaleABI,
-      functionName: "purchasePresaleTokens",
-      args: [parseEther(amount.toString()), account.address],
+    const signedData = await axios.post<
+      ReturnType<typeof signSmartContractData>
+    >("/api/contracts/get-signed-presale-args", {
+      amount,
+      address: account.address,
+      networkId: chain.id,
     });
 
-    const wertWidget = new WertWidget(
-      buildWertOptions(amount, presaleContract.address, data, chain.id),
-    );
+    const wertWidget = new WertWidget({
+      ...signedData.data,
+      ...buildWertOptions(),
+    });
     wertWidget.open();
   };
 
