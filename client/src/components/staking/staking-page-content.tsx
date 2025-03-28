@@ -25,7 +25,6 @@ export const StakingPageContent = ({
 }: StakingPageContentProps) => {
   const { mainContentQuery, hasStakingStartedQuery } = useStakingPage();
   const account = useActiveAccount();
-
   const [stakingDrawerOpen, setStakingDrawerOpen] = useState(false);
 
   if (

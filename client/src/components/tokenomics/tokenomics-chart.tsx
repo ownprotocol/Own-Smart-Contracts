@@ -104,8 +104,8 @@ const TokenomicsChart = () => {
             fontSize: "32px",
             lineHeight: "32px",
             letterSpacing: "-5%",
-            left: "45%",
-            top: "57%",
+            left: "42%",
+            top: "58%",
           }}
         >
           {activeIndex !== null ? (
@@ -123,15 +123,12 @@ const TokenomicsChart = () => {
           <PieChart width={500} height={500}>
             <Pie
               data={tokenomicsData}
-              cx={220}
+              cx={215}
               cy={250}
               innerRadius={180}
               outerRadius={220}
               paddingAngle={0}
               dataKey="value"
-              onClick={() => {
-                console.log("clicked");
-              }}
               onMouseEnter={(_, index) => handleLegendHover(index)}
               onMouseLeave={handleLegendLeave}
             >

@@ -10,6 +10,7 @@ import {
   DrawerTrigger,
 } from "../ui/drawer";
 import { BuyWithCryptoDrawer } from "./buy-with-crypto/buy-with-crypto-modal";
+import { type CurrentPresaleRoundDetails } from "@/types/presale";
 import { useActiveAccount } from "thirdweb/react";
 import WertWidget from "@wert-io/widget-initializer";
 import { useActiveChainWithDefault } from "@/hooks/useChainWithDefault";
@@ -23,6 +24,8 @@ interface ActionButtonsProps {
   ownPrice: number;
   refetch: () => Promise<void>;
   authUserIsValid: boolean;
+  presaleAllocation: CurrentPresaleRoundDetails["roundDetails"]["allocation"];
+  preSaleSold: CurrentPresaleRoundDetails["roundDetails"]["sales"];
 }
 
 function ActionButtons({
@@ -31,8 +34,12 @@ function ActionButtons({
   ownPrice,
   refetch,
   authUserIsValid,
+  presaleAllocation,
+  preSaleSold,
 }: ActionButtonsProps) {
   const [buyWithCryptoOpen, setBuyWithCryptoOpen] = useState(false);
+
+  const maxAllocation = presaleAllocation - preSaleSold;
   const account = useActiveAccount();
   const chain = useActiveChainWithDefault();
 
@@ -95,6 +102,7 @@ function ActionButtons({
             ownBalance={ownBalance}
             ownPrice={ownPrice}
             refetch={refetch}
+            maxAllocation={maxAllocation}
           />
         </DrawerContent>
       </Drawer>

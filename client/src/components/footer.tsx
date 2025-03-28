@@ -13,7 +13,7 @@ const Footer = () => {
 
       <div className="flex justify-between gap-8 items-end">
         <h1 className="font-dmMono text-[12px] leading-[12px] tracking-[0.08em] md:text-xs md:leading-3 md:tracking-[0.08em]">
-          Follow us
+          FOLLOW US
         </h1>
         <div className="flex gap-2">
           <Link

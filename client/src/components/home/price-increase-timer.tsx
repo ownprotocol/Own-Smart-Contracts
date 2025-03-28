@@ -15,8 +15,8 @@ function PriceIncreaseTimer({ endTime, timestamp }: PriceIncreaseTimerProps) {
   return (
     <div className="relative mt-4 flex min-h-[100px] justify-center md:mt-0">
       <div className="flex flex-col gap-4">
-        <h1 className="font-funnel px-4 py-2 text-center text-[14px] font-medium leading-[14px] md:text-[16px] md:leading-[16px] lg:text-[18px] lg:leading-[18px]">
-          Price Increase Timer
+        <h1 className="font-funnel px-4 py-2 text-center text-[14px] font-normal leading-[14px] md:text-[16px] md:leading-[16px] lg:text-[18px] lg:leading-[18px]">
+          PRICE INCREASE IN
         </h1>
         <div className="flex flex-col justify-center gap-4 md:flex-row">
           <div className="flex gap-4">

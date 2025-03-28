@@ -5,7 +5,7 @@ import {
   buyWithCryptoSchema,
 } from "./buy-with-crypto-modal.constants";
 import { toast } from "react-toastify";
-import { useActiveAccount } from "thirdweb/react";
+import { useActiveAccount, useActiveWallet, useWalletImage } from "thirdweb/react";
 import { useContracts } from "@/hooks";
 import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
 import Image from "next/image";
@@ -14,7 +14,7 @@ import { FormInput } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { parseEther } from "viem";
 import { allowance } from "thirdweb/extensions/erc20";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface BuyWithCryptoModalProps {
   usdtBalance: number;
@@ -22,6 +22,7 @@ interface BuyWithCryptoModalProps {
   ownPrice: number;
   setIsOpen: (isOpen: boolean) => void;
   refetch: () => Promise<void>;
+  maxAllocation: number;
 }
 
 export const BuyWithCryptoDrawer = ({
@@ -29,17 +30,21 @@ export const BuyWithCryptoDrawer = ({
   ownBalance,
   ownPrice,
   refetch,
+  maxAllocation,
+  setIsOpen,
 }: BuyWithCryptoModalProps) => {
+  const wallet = useActiveWallet();
+  const { data: walletImage } = useWalletImage(wallet?.id);
   const { presaleContract, usdtContract } = useContracts();
   const account = useActiveAccount();
-
+  const router = useRouter();
   const {
     register,
     setValue,
-    formState: { errors },
+    formState: { errors },trigger,
     getValues,
   } = useForm<BuyWithCryptoForm>({
-    resolver: zodResolver(buyWithCryptoSchema),
+    resolver: zodResolver(buyWithCryptoSchema(maxAllocation)),
     defaultValues: {
       tokenAmount: "0",
     },
@@ -74,6 +79,16 @@ export const BuyWithCryptoDrawer = ({
     }
 
     const data = getValues();
+    
+    if (parseFloat(data.tokenAmount) > maxAllocation) {
+      toast.error(
+        `Not enough allocation. Maximum allocation is ${maxAllocation}`,
+      );
+      setValue("tokenAmount", maxAllocation.toString());
+      await trigger(["tokenAmount"], { shouldFocus: true });
+
+      return;
+    }
 
     try {
       const amount = parseFloat(data.tokenAmount);
@@ -118,6 +133,10 @@ export const BuyWithCryptoDrawer = ({
       await refetch();
 
       toast.success("Transaction successful");
+      setTimeout(() => {
+        setIsOpen(false);
+        router.push("/presale");
+      }, 1000);
     } catch (error) {
       toast.error("Transaction failed");
       console.error("Transaction error:", error);
@@ -174,7 +193,8 @@ export const BuyWithCryptoDrawer = ({
             onChange={handleInputToken}
             errorString={errors.tokenAmount?.message}
             inputProps={{ ...register("tokenAmount"), placeholder: "0" }}
-            className="!flex-1"
+            className="!flex-1 !text-gray-400"
+            prefix="$"
           />
           <FormInput
             title={"$OWN YOU WILL RECEIVE"}
@@ -186,6 +206,7 @@ export const BuyWithCryptoDrawer = ({
               value: amountToSpend,
             }}
             className="!flex-1"
+            imageEnd={<Image width={20} height={20} src={walletImage??""} alt="metamask" className="w-8 h-8" />}
           />
         </div>
         <div className="flex items-center gap-1">

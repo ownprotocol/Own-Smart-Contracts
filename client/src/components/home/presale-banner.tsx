@@ -1,8 +1,11 @@
 interface PresaleBannerProps {
-  roundId: number | null;
+  roundId: number | null; 
+  presaleAllocation: number;
+  preSaleSold: number;
 }
 
-function PresaleBanner({ roundId }: PresaleBannerProps) {
+function PresaleBanner({ roundId, presaleAllocation, preSaleSold }: PresaleBannerProps) {
+  const soldout = presaleAllocation === preSaleSold;
   return (
     <div className="relative min-h-[200px]">
       {/* Glow effect */}
@@ -14,8 +17,8 @@ function PresaleBanner({ roundId }: PresaleBannerProps) {
         </h1>
         <div className="flex w-full justify-start md:w-1/4 md:justify-end">
           {roundId !== null && (
-            <span className="rounded-full bg-[#C1691180] px-4 py-1.5 pt-2 text-sm font-normal uppercase tracking-wider text-[#F1AF6E] md:text-xs">
-              Phase {roundId + 1}
+            <span className="rounded-full bg-[#C1691180] px-4 py-1.5 pt-2 text-sm font-fun uppercase tracking-wider text-[#F1AF6E] md:text-xs">
+              {soldout ? "Sold Out" : `Phase ${roundId + 1}`}
             </span>
           )}
         </div>

@@ -9,6 +9,8 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { RiAddLargeLine } from "react-icons/ri";
 import { RiAedLine } from "react-icons/ri";
 import { GoQuestion } from "react-icons/go";
+import { FaArchive } from "react-icons/fa";
+import { FaAdjust } from "react-icons/fa";
 
 export const icons = {
   AiOutlineReddit,
@@ -22,4 +24,6 @@ export const icons = {
   RiAddLargeLine,
   RiAedLine,
   GoQuestion,
+  FaArchive,
+  FaAdjust,
 };

@@ -81,15 +81,15 @@ function StakingTokens({
         inputProps={{ ...register("tokenAmount") }}
         image={
           <Image
-            src="/own-logo.svg"
+            src="/own-light.png"
             alt="Own token"
             width={20}
             height={20}
-            className="text-primary invert xl:h-[25px] xl:w-[25px]"
+            className="text-primary  xl:h-[25px] xl:w-[25px]"
           />
         }
       />
-      <div className="flex flex-wrap justify-around gap-2">
+      <div className="flex flex-wrap justify-start gap-6">
         <StakingButton
           label="25%"
           isSelected={activePercentage === 25}
