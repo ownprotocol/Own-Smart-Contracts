@@ -24,14 +24,23 @@ const config: HardhatUserConfig = {
   },
   networks: {
     sepolia: {
-      url: `https://sepolia.infura.io/v3/${infuraApiKey}`,
+      // url: `https://sepolia.infura.io/v3/${infuraApiKey}`,
+      url: "https://eth-sepolia.g.alchemy.com/v2/zx94JoDycwkHW4L0z0N7IkJVuowZT82j",
       chainId: 11155111,
       accounts: {
         mnemonic,
       },
+      // forking: {
+      //   url: "https://eth-sepolia.g.alchemy.com/v2/zx94JoDycwkHW4L0z0N7IkJVuowZT82j",
+      //   blockNumber: 8017735,
+      // },
     },
     hardhat: {
       chainId: 1337,
+      forking: {
+        url: "https://eth-sepolia.g.alchemy.com/v2/zx94JoDycwkHW4L0z0N7IkJVuowZT82j",
+        blockNumber: 8017905,
+      },
     },
   },
   etherscan: {

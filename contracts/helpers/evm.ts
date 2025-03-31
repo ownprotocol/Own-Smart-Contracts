@@ -1,5 +1,7 @@
 import hre from "hardhat";
 import { addDays } from "date-fns";
+import path from "path";
+import fs from "fs";
 
 export const increaseTime = async (seconds: number) => {
   await hre.ethers.provider.send("evm_increaseTime", [seconds]);
@@ -49,7 +51,7 @@ export const setDayOfWeekInHardhatNode = async (dayOfWeek: DayOfWeek) => {
 
 export const setNextDayOfWeekAtMidnightUTC = (
   date: Date,
-  targetDay: number,
+  targetDay: number
 ): Date => {
   let currentDay = getDayStakingCorrected(date);
 
@@ -70,7 +72,23 @@ export const setNextDayOfWeekAtMidnightUTC = (
       0,
       0,
       0,
-      0,
-    ),
+      0
+    )
   );
+};
+
+export const getLocalAddress = async (
+  contractName: string,
+  networkName: string
+) => {
+  const filePath = path.join(
+    __dirname,
+    "..",
+    "deployments",
+    `${networkName}/${contractName}.json`
+  );
+
+  const file = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+
+  return file.address;
 };

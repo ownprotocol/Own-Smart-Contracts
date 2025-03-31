@@ -5,7 +5,11 @@ import {
   buyWithCryptoSchema,
 } from "./buy-with-crypto-modal.constants";
 import { toast } from "react-toastify";
-import { useActiveAccount, useActiveWallet, useWalletImage } from "thirdweb/react";
+import {
+  useActiveAccount,
+  useActiveWallet,
+  useWalletImage,
+} from "thirdweb/react";
 import { useContracts } from "@/hooks";
 import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
 import Image from "next/image";
@@ -41,7 +45,8 @@ export const BuyWithCryptoDrawer = ({
   const {
     register,
     setValue,
-    formState: { errors },trigger,
+    formState: { errors },
+    trigger,
     getValues,
   } = useForm<BuyWithCryptoForm>({
     resolver: zodResolver(buyWithCryptoSchema(maxAllocation)),
@@ -79,7 +84,7 @@ export const BuyWithCryptoDrawer = ({
     }
 
     const data = getValues();
-    
+
     if (parseFloat(data.tokenAmount) > maxAllocation) {
       toast.error(
         `Not enough allocation. Maximum allocation is ${maxAllocation}`,
@@ -145,7 +150,7 @@ export const BuyWithCryptoDrawer = ({
 
   const amountToSpend = (() => {
     const tokenAmount = getValues("tokenAmount");
-    return (ownPrice * parseFloat(tokenAmount)).toFixed(2);
+    return (parseFloat(tokenAmount) / ownPrice).toFixed(2);
   })();
 
   return (
@@ -206,7 +211,15 @@ export const BuyWithCryptoDrawer = ({
               value: amountToSpend,
             }}
             className="!flex-1"
-            imageEnd={<Image width={20} height={20} src={walletImage??""} alt="metamask" className="w-8 h-8" />}
+            imageEnd={
+              <Image
+                width={20}
+                height={20}
+                src={walletImage ?? ""}
+                alt="metamask"
+                className="h-8 w-8"
+              />
+            }
           />
         </div>
         <div className="flex items-center gap-1">
