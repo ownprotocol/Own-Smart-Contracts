@@ -59,7 +59,7 @@ function StakePositionsTable({ stakePositions }: StakePositionsTableProps) {
                     {stakePositions.length === 0 ? (
                       <tbody className="divide-y divide-gray-800 font-dm_mono">
                         <tr>
-                          <td colSpan={4} className="py-12 text-center">
+                          <td colSpan={6} className="py-12 text-center">
                             No staking positions found
                           </td>
                         </tr>
