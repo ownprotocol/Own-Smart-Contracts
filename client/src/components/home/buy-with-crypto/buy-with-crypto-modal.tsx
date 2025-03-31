@@ -1,24 +1,25 @@
+import { parseEther } from "viem";
+import { allowance } from "thirdweb/extensions/erc20";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import {
-  type BuyWithCryptoForm,
-  buyWithCryptoSchema,
-} from "./buy-with-crypto-modal.constants";
+import { useContracts } from "@/hooks";
+import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
 import { toast } from "react-toastify";
 import {
   useActiveAccount,
   useActiveWallet,
   useWalletImage,
 } from "thirdweb/react";
-import { useContracts } from "@/hooks";
-import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
 import Image from "next/image";
+
+import {
+  type BuyWithCryptoForm,
+  buyWithCryptoSchema,
+} from "./buy-with-crypto-modal.constants";
 import { SectionLabel } from "./label";
 import { FormInput } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { parseEther } from "viem";
-import { allowance } from "thirdweb/extensions/erc20";
-import { useRouter } from "next/navigation";
 
 interface BuyWithCryptoModalProps {
   usdtBalance: number;
