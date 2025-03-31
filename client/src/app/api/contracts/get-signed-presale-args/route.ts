@@ -29,7 +29,7 @@ export async function POST(req: Request) {
   const signedData = signSmartContractData(
     {
       address,
-      commodity: networkId === 1 ? "USDT" : "ETH",
+      commodity: networkId === 1 ? "USDT" : "TT",
       network: networkId === 1 ? "ethereum" : "sepolia",
       commodity_amount: amount,
       sc_address: presaleAddress,
