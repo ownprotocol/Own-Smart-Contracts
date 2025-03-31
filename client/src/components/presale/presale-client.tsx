@@ -1,16 +1,11 @@
 "use client";
 import { useActiveAccount } from "thirdweb/react";
 
-import {
-  BlurredStakingBoard,
-  ConnectWalletDialog,
-  MainNavigation,
-} from "@/components";
+import { ConnectWalletDialog, MainNavigation } from "@/components";
 import { PresalePurchasesPageContent } from "@/components/presale/presale-purchases-page-content";
 import { useGetAuthUser } from "@/query";
 import { usePresalePurchasesPage } from "@/hooks/use-presale-purchases-page";
 import Loading from "@/app/loading";
-
 
 function PresalePurchasesPage() {
   const authUser = useGetAuthUser();
@@ -26,7 +21,6 @@ function PresalePurchasesPage() {
     return (
       <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
         <ConnectWalletDialog redirectTo="/presale" />
-        <BlurredStakingBoard />
       </main>
     );
   }
