@@ -11,7 +11,6 @@ import {
   useActiveWallet,
   useWalletImage,
 } from "thirdweb/react";
-import Image from "next/image";
 
 import {
   type BuyWithCryptoForm,
