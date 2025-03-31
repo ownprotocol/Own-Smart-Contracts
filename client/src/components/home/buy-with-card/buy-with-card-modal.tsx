@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 import WertWidget from "@wert-io/widget-initializer";
 import axios from "axios";
 import { type signSmartContractData } from "@wert-io/widget-sc-signer";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
   useActiveAccount,
@@ -44,7 +43,6 @@ export const BuyWithCardDrawer = ({
   const { data: walletImage } = useWalletImage(wallet?.id);
   const account = useActiveAccount();
   const chain = useActiveChainWithDefault();
-  const router = useRouter();
   const {
     register,
     setValue,
@@ -109,14 +107,8 @@ export const BuyWithCardDrawer = ({
 
     try {
       const amount = parseFloat(data.tokenAmount);
+      setIsOpen(false);
       await openWertWidgetHandler(amount);
-      await refetch();
-
-      toast.success("Transaction successful");
-      setTimeout(() => {
-        setIsOpen(false);
-        router.push("/presale");
-      }, 1000);
     } catch (error) {
       toast.error("Transaction failed");
       console.error("Transaction error:", error);
@@ -125,7 +117,7 @@ export const BuyWithCardDrawer = ({
 
   const amountToSpend = (() => {
     const tokenAmount = getValues("tokenAmount");
-    return (ownPrice * parseFloat(tokenAmount)).toFixed(2);
+    return (parseFloat(tokenAmount) / ownPrice).toFixed(2);
   })();
 
   return (
