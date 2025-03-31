@@ -1,11 +1,8 @@
 "use client";
 
-import {
-  useActiveAccount,
-} from "thirdweb/react";
+import { useActiveAccount } from "thirdweb/react";
 
 import {
-  BlurredStakingBoard,
   ConnectWalletDialog,
   MainNavigation,
 } from "@/components";
@@ -27,7 +24,6 @@ function UserStakingPositionsPage() {
     return (
       <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
         <ConnectWalletDialog redirectTo={`/positions`} />
-        <BlurredStakingBoard />
       </main>
     );
   }
