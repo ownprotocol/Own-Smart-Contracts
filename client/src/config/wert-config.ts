@@ -23,10 +23,11 @@ export const getCommodityForNetworkId = (networkId: number): string => {
  * @returns Wert widget options
  */
 export const buildWertOptions = (): Options => {
-  const origin =
-    process.env.NODE_ENV === "development"
-      ? "https://sandbox.wert.io"
-      : undefined;
+  // const origin =
+  //   process.env.NODE_ENV === "development"
+  //     ? "https://sandbox.wert.io"
+  //     : undefined;
+  const origin = "https://sandbox.wert.io";
 
   return {
     partner_id: process.env.NEXT_PUBLIC_WERT_PARTNER_ID!,
