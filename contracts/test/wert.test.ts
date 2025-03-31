@@ -1,11 +1,12 @@
 import hre from "hardhat";
 import { getLocalAddress } from "../helpers/evm";
 
+// ! Test case is simply to test Wert integration
 const WERT_TOKEN_ADDRESS = "0x42D8BCf255125BB186459AF66bB74EEF8b8cC391";
 
 const WERT_TEST_TOKEN_WHALE = "0x12296d8c1d0a1ef544ec86d5e3c6a005ee23ab95";
 
-describe.only("Wert", async () => {
+describe.skip("Wert", async () => {
   it("should have the correct max supply minted on deployment", async () => {
     const deployedPresaleContract = await getLocalAddress("presale", "sepolia");
     const presaleContract = await hre.viem.getContractAt(
