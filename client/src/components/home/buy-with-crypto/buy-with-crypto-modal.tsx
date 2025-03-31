@@ -11,12 +11,12 @@ import {
   useActiveWallet,
   useWalletImage,
 } from "thirdweb/react";
-import Image from "next/image";
 
 import {
   type BuyWithCryptoForm,
   buyWithCryptoSchema,
 } from "./buy-with-crypto-modal.constants";
+import Image from "next/image";
 import { SectionLabel } from "./label";
 import { FormInput } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -150,7 +150,7 @@ export const BuyWithCryptoDrawer = ({
 
   const amountToSpend = (() => {
     const tokenAmount = getValues("tokenAmount");
-    return (ownPrice * parseFloat(tokenAmount)).toFixed(2);
+    return (parseFloat(tokenAmount) / ownPrice).toFixed(2);
   })();
 
   return (

@@ -1,49 +1,44 @@
-import path from "path";
-import fs from "fs";
+import { getLocalAddress } from "../helpers/evm";
 
 const networkName = "sepolia";
-
-const getAddress = async (contractName: string) => {
-  const filePath = path.join(
-    __dirname,
-    "..",
-    "deployments",
-    `${networkName}/${contractName}.json`
-  );
-
-  const file = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-
-  return file.address;
-};
 
 const formatCommand = (address: string) => {
   return `npx hardhat verify --network ${networkName} ${address}`;
 };
 
 const main = async () => {
-  const ownAddress = await getAddress("OwnImplementation");
+  const ownAddress = await getLocalAddress("OwnImplementation", networkName);
   console.log("*** Commands to run ***");
   console.log(formatCommand(ownAddress));
 
-  const veOwnAddress = await getAddress("VeOwnImplementation");
+  const veOwnAddress = await getLocalAddress(
+    "VeOwnImplementation",
+    networkName
+  );
   console.log(formatCommand(veOwnAddress));
 
-  const presaleAddress = await getAddress("PresaleImplementation");
+  const presaleAddress = await getLocalAddress(
+    "PresaleImplementation",
+    networkName
+  );
   console.log(formatCommand(presaleAddress));
 
-  const stakeAddress = await getAddress("StakeImplementation");
+  const stakeAddress = await getLocalAddress(
+    "StakeImplementation",
+    networkName
+  );
   console.log(formatCommand(stakeAddress));
 
   if (networkName === "sepolia") {
-    const usdtAddress = await getAddress("mockUSDT");
+    const usdtAddress = await getLocalAddress("mockUSDT", networkName);
     console.log(formatCommand(usdtAddress));
   }
 
   console.log("*** Etherscan links ***");
-  const ownProxy = await getAddress("Own");
-  const veOwnProxy = await getAddress("VeOwn");
-  const presaleProxy = await getAddress("Presale");
-  const stakeProxy = await getAddress("Stake");
+  const ownProxy = await getLocalAddress("Own", networkName);
+  const veOwnProxy = await getLocalAddress("VeOwn", networkName);
+  const presaleProxy = await getLocalAddress("Presale", networkName);
+  const stakeProxy = await getLocalAddress("Stake", networkName);
 
   console.log(`Own: https://${networkName}.etherscan.io/address/${ownProxy}`);
   console.log(
