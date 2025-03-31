@@ -28,7 +28,6 @@ export const buildWertOptions = (): Options => {
       ? "https://sandbox.wert.io"
       : undefined;
 
-  console.log("origin", origin);
   return {
     partner_id: process.env.NEXT_PUBLIC_WERT_PARTNER_ID!,
     click_id: uuidv4(),

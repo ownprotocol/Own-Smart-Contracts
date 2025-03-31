@@ -1,28 +1,29 @@
-import { parseEther } from "viem";
-import { allowance } from "thirdweb/extensions/erc20";
-import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useContracts } from "@/hooks";
-import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
 import { toast } from "react-toastify";
+import WertWidget from "@wert-io/widget-initializer";
+import axios from "axios";
+import { type signSmartContractData } from "@wert-io/widget-sc-signer";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 import {
   useActiveAccount,
   useActiveWallet,
   useWalletImage,
 } from "thirdweb/react";
-import Image from "next/image";
 
 import {
-  type BuyWithCryptoForm,
-  buyWithCryptoSchema,
-} from "./buy-with-crypto-modal.constants";
-import Image from "next/image";
+  type BuyWithCardForm,
+  buyWithCardSchema,
+} from "./buy-with-card-modal.constants";
+
 import { SectionLabel } from "./label";
 import { FormInput } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { buildWertOptions } from "@/config/wert-config";
+import { useActiveChainWithDefault } from "@/hooks/useChainWithDefault";
 
-interface BuyWithCryptoModalProps {
+interface BuyWithCardModalProps {
   usdtBalance: number;
   ownBalance: number;
   ownPrice: number;
@@ -31,18 +32,18 @@ interface BuyWithCryptoModalProps {
   maxAllocation: number;
 }
 
-export const BuyWithCryptoDrawer = ({
+export const BuyWithCardDrawer = ({
   usdtBalance,
   ownBalance,
   ownPrice,
   refetch,
   maxAllocation,
   setIsOpen,
-}: BuyWithCryptoModalProps) => {
+}: BuyWithCardModalProps) => {
   const wallet = useActiveWallet();
   const { data: walletImage } = useWalletImage(wallet?.id);
-  const { presaleContract, usdtContract } = useContracts();
   const account = useActiveAccount();
+  const chain = useActiveChainWithDefault();
   const router = useRouter();
   const {
     register,
@@ -50,12 +51,30 @@ export const BuyWithCryptoDrawer = ({
     formState: { errors },
     trigger,
     getValues,
-  } = useForm<BuyWithCryptoForm>({
-    resolver: zodResolver(buyWithCryptoSchema(maxAllocation)),
+  } = useForm<BuyWithCardForm>({
+    resolver: zodResolver(buyWithCardSchema(maxAllocation)),
     defaultValues: {
       tokenAmount: "0",
     },
   });
+
+  const openWertWidgetHandler = async (amount: number) => {
+    if (!account) return;
+
+    const signedData = await axios.post<
+      ReturnType<typeof signSmartContractData>
+    >("/api/contracts/get-signed-presale-args", {
+      amount,
+      address: account.address,
+      networkId: chain.id,
+    });
+
+    const wertWidget = new WertWidget({
+      ...signedData.data,
+      ...buildWertOptions(),
+    });
+    wertWidget.open();
+  };
 
   const handleInputToken = (e: React.ChangeEvent<HTMLInputElement>) => {
     const amount = parseFloat(e.target.value);
@@ -67,15 +86,7 @@ export const BuyWithCryptoDrawer = ({
       return;
     }
 
-    if (amount > usdtBalance) {
-      toast.warning(
-        `You don't have enough balance to stake that amount. Max stake amount is ${usdtBalance.toFixed(2)}`,
-      );
-    }
-
-    const amountToSet = Math.min(amount, usdtBalance);
-
-    setValue("tokenAmount", amountToSet.toString(), {
+    setValue("tokenAmount", amount.toString(), {
       shouldValidate: true,
     });
   };
@@ -98,44 +109,7 @@ export const BuyWithCryptoDrawer = ({
 
     try {
       const amount = parseFloat(data.tokenAmount);
-
-      if (amount > usdtBalance) {
-        toast.warning(
-          `You don't have enough balance to stake that amount. Max stake amount is ${usdtBalance.toFixed(2)}`,
-        );
-        return;
-      }
-
-      const parsedAmount = parseEther(data.tokenAmount);
-
-      const allowanceTx = await allowance({
-        contract: usdtContract,
-        owner: account.address,
-        spender: presaleContract.address,
-      });
-
-      if (allowanceTx < parsedAmount) {
-        await sendAndConfirmTransaction({
-          account,
-          transaction: prepareContractCall({
-            contract: usdtContract,
-            method: "approve",
-            params: [presaleContract.address, parsedAmount],
-          }),
-        });
-
-        toast.success("Approval successful");
-      }
-
-      await sendAndConfirmTransaction({
-        account,
-        transaction: prepareContractCall({
-          contract: presaleContract,
-          method: "purchasePresaleTokens",
-          params: [parseEther(data.tokenAmount), account.address],
-        }),
-      });
-
+      await openWertWidgetHandler(amount);
       await refetch();
 
       toast.success("Transaction successful");
@@ -151,7 +125,7 @@ export const BuyWithCryptoDrawer = ({
 
   const amountToSpend = (() => {
     const tokenAmount = getValues("tokenAmount");
-    return (parseFloat(tokenAmount) / ownPrice).toFixed(2);
+    return (ownPrice * parseFloat(tokenAmount)).toFixed(2);
   })();
 
   return (
