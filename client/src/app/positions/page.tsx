@@ -13,6 +13,7 @@ import { StakePageContent } from "@/components/user-stake/stake-page-content";
 import { useStakingPositionsPage } from "@/hooks/use-staking-positions-page";
 import { useGetAuthUser } from "@/query";
 import Loading from "../loading";
+
 function UserStakingPositionsPage() {
   const authUser = useGetAuthUser();
   const activeAccount = useActiveAccount();

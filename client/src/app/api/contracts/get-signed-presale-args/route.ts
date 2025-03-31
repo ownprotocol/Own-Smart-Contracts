@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { signSmartContractData } from "@wert-io/widget-sc-signer";
 import { z } from "zod";
 import { encodeFunctionData, parseEther } from "viem";

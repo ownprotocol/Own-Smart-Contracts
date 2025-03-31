@@ -27,6 +27,7 @@
     "@tanstack/react-query": "^5.67.1",
     "@types/lodash": "^4.17.16",
     "@wert-io/widget-initializer": "^6.7.1",
+    "@wert-io/widget-sc-signer": "^2.0.1",
     "abitype": "^1.0.8",
     "axios": "^1.8.1",
     "class-variance-authority": "^0.7.1",
@@ -74,5 +75,6 @@
   },
   "ct3aMetadata": {
     "initVersion": "7.38.1"
-  }
+  },
+  "packageManager": "yarn@4.7.0+sha512.5a0afa1d4c1d844b3447ee3319633797bcd6385d9a44be07993ae52ff4facabccafb4af5dcd1c2f9a94ac113e5e9ff56f6130431905884414229e284e37bb7c9"
 }
