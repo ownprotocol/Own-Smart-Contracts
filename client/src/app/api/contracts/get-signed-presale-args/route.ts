@@ -24,8 +24,6 @@ export async function POST(req: Request) {
 
   const { presaleAddress } = getContractAddresses(networkId);
 
-  console.log(privateKey);
-
   const signedData = signSmartContractData(
     {
       address,
