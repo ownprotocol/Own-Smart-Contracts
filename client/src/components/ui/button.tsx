@@ -71,14 +71,25 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         throw e;
       }
     };
+    console.log("Disabled", props.disabled);
+
+    const isDisabled = props.disabled ?? isLoading;
+    console.log("isDisabled", isDisabled);
 
     return (
       <Comp
         {...props}
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(
+          buttonVariants({
+            variant,
+            size,
+            className,
+          }),
+          isDisabled && "!bg-gray-500",
+        )}
         onClick={onClickHandler}
         ref={ref}
-        disabled={props.disabled ?? isLoading}
+        disabled={isDisabled}
       >
         {isLoading ? <LoadingSpinner /> : props.children}
       </Comp>
