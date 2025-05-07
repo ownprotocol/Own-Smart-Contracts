@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # fasset
 
 I am using bun as it's fast, but we can probably host this in vercel with pnpm.
@@ -17,6 +16,6 @@ This is a hardhat project that contains the contracts related to:
 There is also a client requirement of using sablier to vest, however, at the time of writing this is still being decided. The client has been informed of this, and there will be more info soon.
 
 So far at the time of writing this, a user can stake their tokens, but the rewards calculation for a given users stake is not yet complete. You can find more specification on how this is meant to function [here](https://www.notion.so/labrys/Staking-Scoping-Notes-17bced2a7e1380f4af67cc2ef2423a77):
-=======
+
 # Own-Smart-Contracts
->>>>>>> ca75ba841fd8990c3641a714c4b494b5f9827624
+ca75ba841fd8990c3641a714c4b494b5f9827624
