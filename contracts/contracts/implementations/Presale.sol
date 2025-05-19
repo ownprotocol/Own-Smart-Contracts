@@ -31,6 +31,7 @@ contract Presale is
     uint256 public startPresaleTime;
 
     uint256 public totalSales;
+    uint256 public totalClaims;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -131,10 +132,13 @@ contract Presale is
         }
 
         IOwn ownCache = own;
-        uint256 ownBalance = ownCache.balanceOf(address(this));
-        ownCache.safeTransfer(msg.sender, ownBalance);
 
-        emit PresaleTokensClaimedBack(owner(), ownBalance);
+        uint256 claimableAmount = ownCache.balanceOf(address(this)) -
+            (totalSales - totalClaims);
+
+        ownCache.safeTransfer(msg.sender, claimableAmount);
+
+        emit PresaleTokensClaimedBack(owner(), claimableAmount);
     }
 
     function setPresaleStartTime(
@@ -366,7 +370,10 @@ contract Presale is
         );
     }
 
-    function claimPresaleRoundTokens() external override {
+    function claimPresaleRoundTokens(
+        uint256 _from,
+        uint256 _to
+    ) external override {
         (
             bool presaleHasStarted,
             bool roundsInProgress,
@@ -379,8 +386,13 @@ contract Presale is
 
         uint256 totalTokens;
 
-        uint256 presalePurchaseLength = presalePurchases[msg.sender].length;
-        for (uint256 i = 0; i < presalePurchaseLength; ++i) {
+        uint256 usersPresalePurchasesLength = presalePurchases[msg.sender]
+            .length;
+        uint256 to = _to > usersPresalePurchasesLength
+            ? usersPresalePurchasesLength
+            : _to;
+
+        for (uint256 i = _from; i < to; ++i) {
             if (!presalePurchases[msg.sender][i].claimed) {
                 uint256 purchasedInPresaleRoundId = presalePurchases[
                     msg.sender
@@ -406,6 +418,8 @@ contract Presale is
         if (totalTokens == 0) {
             revert NoPresaleTokensToClaim();
         }
+
+        totalClaims += totalTokens;
 
         own.transfer(msg.sender, totalTokens);
 

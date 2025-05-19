@@ -45,7 +45,7 @@ describe("Presale - claimPresaleRoundTokens", async () => {
     ]);
 
     await expect(
-      presale.write.claimPresaleRoundTokens()
+      presale.write.claimPresaleRoundTokens([0n, 1n])
     ).to.revertedWithCustomError(presale, "NoPresaleTokensToClaim");
   });
 
@@ -58,7 +58,7 @@ describe("Presale - claimPresaleRoundTokens", async () => {
     await increaseTime(50);
 
     await expect(
-      presale.write.claimPresaleRoundTokens()
+      presale.write.claimPresaleRoundTokens([0n, 1n])
     ).to.changeTokenBalances(
       own,
       [presale.address, signers[0].account.address],
@@ -99,7 +99,7 @@ describe("Presale - claimPresaleRoundTokens", async () => {
       BigInt(1000) + (BigInt(1000) * BigInt(1e18)) / BigInt(1.5e18);
 
     await expect(
-      presale.write.claimPresaleRoundTokens()
+      presale.write.claimPresaleRoundTokens([0n, 500n])
     ).to.changeTokenBalances(own, [signers[0].account.address], [totalTokens]);
   });
 });
