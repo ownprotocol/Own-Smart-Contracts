@@ -176,7 +176,7 @@ interface IStake {
     error CannotSetDailyRewardAmountToZero();
 
     /// @notice Thrown when attempting to set boost for a week in the past
-    error CannotSetBoostForWeekInPast();
+    error CannotSetBoostForCurrentOrPastWeek();
 
     /// @notice Thrown when attempting to set boost duration to zero
     error CannotSetDurationInWeeksForBoostToZero();

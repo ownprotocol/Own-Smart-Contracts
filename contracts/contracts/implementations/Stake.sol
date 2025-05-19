@@ -812,10 +812,11 @@ contract Stake is
         for (uint256 i; i < _boostDetails.length; ++i) {
             // If staking has started and trying to update a boost that has already started, revert
             if (
+                stakingStartWeekCache != 0 &&
                 currentWeek >= stakingStartWeekCache &&
-                _boostDetails[i].startWeek < weeksSinceStakingStarted
+                _boostDetails[i].startWeek <= weeksSinceStakingStarted
             ) {
-                revert CannotSetBoostForWeekInPast();
+                revert CannotSetBoostForCurrentOrPastWeek();
             }
 
             if (_boostDetails[i].durationInWeeks == 0) {

@@ -29,7 +29,30 @@ describe("Stake - boost", async () => {
           },
         ],
       ])
-    ).to.be.revertedWithCustomError(stake, "CannotSetBoostForWeekInPast");
+    ).to.be.revertedWithCustomError(
+      stake,
+      "CannotSetBoostForCurrentOrPastWeek"
+    );
+  });
+
+  it("Should revert when trying to set boost details for the current week", async () => {
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
+    await expect(
+      stake.write.addBoostDetails([
+        [
+          {
+            startWeek: BigInt(1),
+            durationInWeeks: BigInt(1),
+            multiplier: parseEther("20"),
+          },
+        ],
+      ])
+    ).to.be.revertedWithCustomError(
+      stake,
+      "CannotSetBoostForCurrentOrPastWeek"
+    );
   });
 
   it("Should revert when trying to set the boost details from a non-admin account", async () => {
