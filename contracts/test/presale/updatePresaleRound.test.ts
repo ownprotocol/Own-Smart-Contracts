@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { OwnContract, PresaleContract, Signers } from "../../types";
 import { getContractInstances } from "../../helpers/testing-api";
 import hre from "hardhat";
-import { getCurrentBlockTimestamp } from "../../helpers/evm";
+import { getCurrentBlockTimestamp, increaseTime } from "../../helpers/evm";
 
 const updateMethods = [
   {
@@ -33,6 +33,7 @@ describe("Presale - update presale round", async () => {
   let presaleNonOwner: PresaleContract;
 
   const ALLOCATION = BigInt(1000);
+  const startTimeOffset = 50;
 
   beforeEach(async () => {
     ({ presale, own, signers } = await getContractInstances());
@@ -42,7 +43,6 @@ describe("Presale - update presale round", async () => {
     });
 
     const currentTime = await getCurrentBlockTimestamp();
-
 
     await own.write.transfer([presale.address, ALLOCATION]);
 
@@ -65,70 +65,101 @@ describe("Presale - update presale round", async () => {
       ],
     ]);
 
-    await presale.write.setPresaleStartTime([BigInt(currentTime + 5)]);
+    await presale.write.setPresaleStartTime([
+      BigInt(currentTime + startTimeOffset),
+    ]);
   });
 
   updateMethods.forEach(
     ({ eventName, methodName, zeroValueErrorName, fieldNameIndex }) => {
       describe(methodName, async () => {
-        it("Should revert if the caller is not the owner", async () => {
-          await expect(
-            presaleNonOwner.write[methodName]([
-              BigInt(1),
-              BigInt(1),
-            ]),
-          ).to.be.revertedWithCustomError(
-            presale,
-            "OwnableUnauthorizedAccount",
-          );
-        });
-
-        it("Should revert when trying to update a presale round in progress", async () => {
-          await expect(
-            presale.write[methodName]([BigInt(0), BigInt(1)]),
-          ).to.be.revertedWithCustomError(
-            presale,
-            "CannotUpdatePresaleRoundThatHasEndedOrInProgress",
-          );
-        });
-
-        it("Should revert if the presale round index is out of bounds", async () => {
-          await expect(
-            presale.write[methodName]([BigInt(2), BigInt(1)]),
-          ).to.be.revertedWithCustomError(
-            presale,
-            "PresaleRoundIndexOutOfBounds",
-          );
-        });
-
-          it("Should revert when setting the value to 0", async () => {
-            await expect(
-              presale.write[methodName]([BigInt(1), BigInt(0)]),
-            ).to.be.revertedWithCustomError(presale, zeroValueErrorName);
-          });
-
-        it("Should revert when there are no more presale rounds", async () => {
-          await hre.ethers.provider.send("evm_increaseTime", [200]);
-
-          await expect(
-            presale.write[methodName]([BigInt(1), BigInt(1)]),
-          ).to.be.revertedWithCustomError(presale, "AllPresaleRoundsHaveEnded");
-        });
-
-        it("Should update the presale round correctly", async () => {
-          const previousRound = await presale.read.presaleRounds([BigInt(1)]);
+        it("Should let you update the first round before the presale starts", async () => {
+          const previousRound = await presale.read.presaleRounds([BigInt(0)]);
           const previousValue = previousRound[fieldNameIndex];
 
           const newValue = BigInt(10);
-          await expect(presale.write[methodName]([BigInt(1), newValue]))
+          await expect(presale.write[methodName]([BigInt(0), newValue]))
             .to.emit(presale, eventName)
-            .withArgs(BigInt(1), newValue, previousValue);
+            .withArgs(BigInt(0), newValue, previousValue);
 
-          const round = await presale.read.presaleRounds([BigInt(1)]);
+          const round = await presale.read.presaleRounds([BigInt(0)]);
 
           expect(round[fieldNameIndex]).to.equal(newValue);
         });
+
+        describe("after the presale has started", async () => {
+          beforeEach(async () => {
+            await increaseTime(Number(50));
+          });
+
+          it("Should revert if the caller is not the owner", async () => {
+            await expect(
+              presaleNonOwner.write[methodName]([BigInt(1), BigInt(1)])
+            ).to.be.revertedWithCustomError(
+              presale,
+              "OwnableUnauthorizedAccount"
+            );
+          });
+
+          it("Should revert when trying to update a presale round in progress", async () => {
+            await expect(
+              presale.write[methodName]([BigInt(0), BigInt(1)])
+            ).to.be.revertedWithCustomError(
+              presale,
+              "CannotUpdatePresaleRoundThatHasEndedOrInProgress"
+            );
+          });
+
+          it("Should revert if the presale round index is out of bounds", async () => {
+            await expect(
+              presale.write[methodName]([BigInt(2), BigInt(1)])
+            ).to.be.revertedWithCustomError(
+              presale,
+              "PresaleRoundIndexOutOfBounds"
+            );
+          });
+
+          it("Should revert when setting the value to 0", async () => {
+            await expect(
+              presale.write[methodName]([BigInt(1), BigInt(0)])
+            ).to.be.revertedWithCustomError(presale, zeroValueErrorName);
+          });
+
+          it("Should revert when there are no more presale rounds", async () => {
+            await hre.ethers.provider.send("evm_increaseTime", [200]);
+
+            await expect(
+              presale.write[methodName]([BigInt(1), BigInt(1)])
+            ).to.be.revertedWithCustomError(
+              presale,
+              "AllPresaleRoundsHaveEnded"
+            );
+          });
+
+          it("Should update the presale round correctly", async () => {
+            const previousRound = await presale.read.presaleRounds([BigInt(1)]);
+            const previousValue = previousRound[fieldNameIndex];
+
+            const newValue = BigInt(10);
+            await expect(presale.write[methodName]([BigInt(1), newValue]))
+              .to.emit(presale, eventName)
+              .withArgs(BigInt(1), newValue, previousValue);
+
+            const round = await presale.read.presaleRounds([BigInt(1)]);
+
+            expect(round[fieldNameIndex]).to.equal(newValue);
+          });
+        });
       });
-    },
+    }
   );
+
+  it("Should revert when setting the presale round allocation to a value greater than the balance of the contract", async () => {
+    await expect(
+      presale.write.updatePresaleRoundAllocation([BigInt(0), ALLOCATION])
+    ).to.be.revertedWithCustomError(
+      presale,
+      "InsufficientOwnBalanceForPresaleRounds"
+    );
+  });
 });

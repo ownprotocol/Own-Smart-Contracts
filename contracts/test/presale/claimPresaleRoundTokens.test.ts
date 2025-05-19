@@ -6,7 +6,7 @@ import {
   Signers,
 } from "../../types";
 import { getContractInstances } from "../../helpers/testing-api";
-import { parseEther, ripemd160 } from "viem";
+import { parseEther } from "viem";
 import { getCurrentBlockTimestamp, increaseTime } from "../../helpers/evm";
 
 describe("Presale - claimPresaleRoundTokens", async () => {
@@ -45,7 +45,7 @@ describe("Presale - claimPresaleRoundTokens", async () => {
     ]);
 
     await expect(
-      presale.write.claimPresaleRoundTokens(),
+      presale.write.claimPresaleRoundTokens()
     ).to.revertedWithCustomError(presale, "NoPresaleTokensToClaim");
   });
 
@@ -58,11 +58,11 @@ describe("Presale - claimPresaleRoundTokens", async () => {
     await increaseTime(50);
 
     await expect(
-      presale.write.claimPresaleRoundTokens(),
+      presale.write.claimPresaleRoundTokens()
     ).to.changeTokenBalances(
       own,
       [presale.address, signers[0].account.address],
-      [-BigInt(1000), BigInt(1000)],
+      [-BigInt(1000), BigInt(1000)]
     );
   });
 
@@ -99,7 +99,7 @@ describe("Presale - claimPresaleRoundTokens", async () => {
       BigInt(1000) + (BigInt(1000) * BigInt(1e18)) / BigInt(1.5e18);
 
     await expect(
-      presale.write.claimPresaleRoundTokens(),
+      presale.write.claimPresaleRoundTokens()
     ).to.changeTokenBalances(own, [signers[0].account.address], [totalTokens]);
   });
 });
