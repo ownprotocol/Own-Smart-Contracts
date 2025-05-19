@@ -208,6 +208,11 @@ interface IStake {
      */
     function claimRewards(uint256[] calldata _positionIds) external;
 
+    /**
+     *@notice Allows for the weekly rewards values cache to be updated
+     **/
+    function updateWeeklyRewardValuesCache() external;
+
     // Admin Functions
 
     /**

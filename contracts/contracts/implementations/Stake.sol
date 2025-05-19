@@ -350,6 +350,14 @@ contract Stake is
             stakingStartWeekCache <= getCurrentWeek();
     }
 
+    function updateWeeklyRewardValuesCache() external override {
+        if (!hasStakingStarted()) {
+            revert StakingNotStarted();
+        }
+
+        _updateWeeklyRewardValuesCache();
+    }
+
     // **** Admin functions ****
 
     function setSablierStreamId(
