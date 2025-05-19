@@ -38,6 +38,10 @@ contract Presale is
     }
 
     function initialize(IOwn _own, IERC20 _usdt) public initializer {
+        if (address(_usdt) == address(0) || address(_usdt) == address(this)) {
+            revert CannotSetAddressToZero();
+        }
+
         __Ownable_init(_msgSender());
         __UUPSUpgradeable_init();
 
