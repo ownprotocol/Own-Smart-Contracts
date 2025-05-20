@@ -54,7 +54,10 @@ export function useReadContractQueryHook<
     : V
 > {
   const { isLoading, data, error, refetch } = useReadContract(options);
-  if (error) console.error(error);
+  if (error) {
+    console.error("Error in useReadContractQueryHook: ", options.method);
+    console.error(error);
+  }
 
   if (isLoading || data === undefined) return { isLoading: true };
 

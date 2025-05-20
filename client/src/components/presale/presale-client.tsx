@@ -1,19 +1,15 @@
 "use client";
+
 import { useActiveAccount } from "thirdweb/react";
 
 import { ConnectWalletDialog } from "@/components";
 import { PresalePurchasesPageContent } from "@/components/presale/presale-purchases-page-content";
 import { usePresalePurchasesPage } from "@/hooks/use-presale-purchases-page";
-import Loading from "@/app/loading";
 
 function PresalePurchasesPage() {
   const activeAccount = useActiveAccount();
 
   const presalePageHook = usePresalePurchasesPage();
-
-  if (presalePageHook.isLoading) {
-    return <Loading />;
-  }
 
   if (!activeAccount) {
     return (
@@ -22,6 +18,7 @@ function PresalePurchasesPage() {
       </main>
     );
   }
+
   return (
     <main className="min-h-screen px-[5%] pt-4 md:px-[10%] md:pt-8">
       <div className="mx-auto flex w-full flex-col items-center justify-center">

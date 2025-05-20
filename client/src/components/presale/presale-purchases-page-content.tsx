@@ -8,6 +8,7 @@ import { useActiveAccount } from "thirdweb/react";
 import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
 import { toast } from "react-toastify";
 import HashLoader from "react-spinners/HashLoader";
+
 interface PresalePurchasesPageContentProps {
   presalePageHook: ReturnType<typeof usePresalePurchasesPage>;
 }

@@ -264,6 +264,10 @@ contract Stake is
             uint256[] memory claimableRewardsPerPosition
         )
     {
+        if (!hasStakingStarted()) {
+            return (userPositions, claimableRewardsPerPosition);
+        }
+
         uint256 usersTotalPositions = usersPositions[_user].length;
 
         userPositions = new StakePosition[](usersTotalPositions);
