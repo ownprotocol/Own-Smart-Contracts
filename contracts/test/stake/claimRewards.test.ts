@@ -280,6 +280,63 @@ describe("Stake - claimRewards", async () => {
     );
 
     expect(claimableRewards[0]).to.equal(totalRewards);
+
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
+    // Ensure they can't reclaim again
+    await expect(
+      stake.write.claimRewards([[BigInt(0)]])
+    ).to.revertedWithCustomError(stake, "NoRewardsToClaim");
+  });
+
+  it("Should allow claiming of all rewards, even when the user claims on the final week and has to reclaim the final week afterwards", async () => {
+    // Skip to start of staking
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
+    await setDayOfWeekInHardhatNode(DayOfWeek.Wednesday);
+
+    const amount = parseEther("50");
+
+    await stake.write.stake([amount, BigInt(7)]);
+
+    const firstWeekRewards =
+      ((dailyRewardAmount * (await stake.read.getCurrentBoostMultiplier())) /
+        BigInt(1e18)) *
+      BigInt(2);
+
+    // Skip to the final week and claim rewards
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+    // await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
+    const secondWeekRewards =
+      ((dailyRewardAmount * (await stake.read.getCurrentBoostMultiplier())) /
+        BigInt(1e18)) *
+      BigInt(5);
+
+    await expect(
+      stake.write.claimRewards([[BigInt(0)]])
+    ).to.changeTokenBalances(
+      own,
+      [signers[0].account],
+      // Staked for 7 days
+      [firstWeekRewards]
+    );
+
+    console.log("First week rewards", firstWeekRewards);
+    console.log("Second week rewards", secondWeekRewards);
+    console.log("Amount", amount);
+
+    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+    // await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+
+    await expect(
+      stake.write.claimRewards([[BigInt(0)]])
+    ).to.changeTokenBalances(
+      own,
+      [signers[0].account],
+      [secondWeekRewards + amount]
+    );
   });
 
   it("Should increase the rewards for the user when the daily reward amount is increased", async () => {
@@ -337,7 +394,7 @@ describe("Stake - claimRewards", async () => {
       await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
     };
 
-    for (let i = 0; i < weeks - 1; ++i) {
+    for (let i = 0; i < weeks; ++i) {
       await skipWeekAndAddToRewards();
     }
 
@@ -366,7 +423,7 @@ describe("Stake - claimRewards", async () => {
 
     const finalWeek = Math.floor(Number(finalDay) / 7);
 
-    expect(lastWeekRewardsClaimed).to.equal(finalWeek);
+    expect(lastWeekRewardsClaimed).to.equal(finalWeek + 1);
   });
 
   describe("2 users", async () => {

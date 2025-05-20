@@ -183,7 +183,13 @@ contract Stake is
             uint256 positionLastWeekRewardsClaimed = positions[positionId]
                 .lastWeekRewardsClaimed;
 
-            if (currentWeek == positionLastWeekRewardsClaimed) {
+            // The first week after which rewards can no longer be claimed (exclusive upper bound)
+            uint256 lastClaimWeek = positions[positionId].finalDay / 7 + 1;
+
+            if (
+                positionLastWeekRewardsClaimed == currentWeek ||
+                positionLastWeekRewardsClaimed == lastClaimWeek
+            ) {
                 continue;
             }
 
@@ -196,9 +202,8 @@ contract Stake is
             rewardPerPosition[i] = reward;
             positions[positionId].rewardsClaimed += reward;
 
-            uint256 finalWeek = positions[positionId].finalDay / 7;
-            if (currentWeek > finalWeek) {
-                positions[positionId].lastWeekRewardsClaimed = finalWeek;
+            if (currentWeek >= lastClaimWeek) {
+                positions[positionId].lastWeekRewardsClaimed = lastClaimWeek;
 
                 uint256 ownAmount = positions[positionId].ownAmount;
 
@@ -249,6 +254,62 @@ contract Stake is
             _positionIds,
             rewardPerPosition,
             totalReward
+        );
+    }
+
+    function emergencyWithdrawStakePrinciple(
+        uint256[] calldata _positionIds
+    ) external override {
+        if (!hasStakingStarted()) {
+            revert StakingNotStarted();
+        }
+
+        uint256 totalClaimAmount;
+
+        uint256 currentWeek = getCurrentWeek();
+
+        for (uint256 i = 0; i < _positionIds.length; ++i) {
+            uint256 positionId = _positionIds[i];
+
+            if (msg.sender != positions[positionId].owner) {
+                revert CallerDoesNotOwnPosition();
+            }
+
+            uint256 positionLastWeekRewardsClaimed = positions[positionId]
+                .lastWeekRewardsClaimed;
+
+            uint256 finalWeek = positions[positionId].finalDay / 7;
+
+            // The first week after which rewards can no longer be claimed (exclusive upper bound)
+            uint256 lastClaimWeek = finalWeek + 1;
+
+            if (
+                positionLastWeekRewardsClaimed == currentWeek ||
+                positionLastWeekRewardsClaimed == lastClaimWeek ||
+                lastClaimWeek > currentWeek
+            ) {
+                continue;
+            }
+
+            positions[positionId].lastWeekRewardsClaimed = lastClaimWeek;
+
+            uint256 ownAmount = positions[positionId].ownAmount;
+
+            totalClaimAmount += ownAmount;
+        }
+
+        if (totalClaimAmount == 0) {
+            revert NoEmergencyPrincipleToWithdraw();
+        }
+
+        totalStaked -= totalClaimAmount;
+
+        ownToken.safeTransfer(msg.sender, totalClaimAmount);
+
+        emit EmergencyWithdrawStakePrinciple(
+            msg.sender,
+            _positionIds,
+            totalClaimAmount
         );
     }
 
@@ -645,13 +706,14 @@ contract Stake is
         uint256 currentWeek = getCurrentWeek();
 
         uint256 finalWeek = positions[_positionId].finalDay / 7;
+        uint256 lastClaimWeek = finalWeek + 1;
 
         uint256 positionLastWeekRewardsClaimed = positions[_positionId]
             .lastWeekRewardsClaimed;
 
         if (
             positionLastWeekRewardsClaimed == currentWeek ||
-            positionLastWeekRewardsClaimed == finalWeek
+            positionLastWeekRewardsClaimed == lastClaimWeek
         ) {
             return 0;
         }
@@ -691,7 +753,7 @@ contract Stake is
                 ++startWeekToIterateFrom;
             }
 
-            uint256 finalWeekToIterateTo = currentWeek;
+            uint256 finalWeekToIterateTo = currentWeek - 1;
             if (currentWeek > finalWeek) {
                 if (finalDayEndOfWeek) {
                     finalWeekToIterateTo = finalWeek;
@@ -703,7 +765,7 @@ contract Stake is
             // Iterate over every week, using the cached value for efficiency
             for (
                 uint256 week = startWeekToIterateFrom;
-                week < finalWeekToIterateTo;
+                week <= finalWeekToIterateTo;
                 ++week
             ) {
                 RewardValuesWeeklyCache
@@ -719,7 +781,8 @@ contract Stake is
 
         // Add rewards for the last week they stake for
         if (
-            finalWeek > positionLastWeekRewardsClaimed &&
+            // We can safely use greater than or equal to here, because in the above function we validate that they aren't trying to re-claim rewards for the same week
+            finalWeek >= positionLastWeekRewardsClaimed &&
             currentWeek > finalWeek &&
             // This condition ensures that we use the more efficient weekly calculation above instead of the daily calculation here
             !finalDayEndOfWeek
