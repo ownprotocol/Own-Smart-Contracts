@@ -33,6 +33,4 @@ export const getContractAddresses = (networkId: number): ContractAddresses => {
   throw new Error(`Unknown network: ${networkId}`);
 };
 
-// The default network we are using
-// TODO: Change to mainnet for deployment
 export const MAIN_CHAIN = sepolia;

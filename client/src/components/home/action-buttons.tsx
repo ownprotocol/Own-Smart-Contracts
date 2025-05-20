@@ -20,7 +20,6 @@ interface ActionButtonsProps {
   usdtBalance: number;
   ownPrice: number;
   refetch: () => Promise<void>;
-  authUserIsValid: boolean;
   presaleAllocation: CurrentPresaleRoundDetails["roundDetails"]["allocation"];
   preSaleSold: CurrentPresaleRoundDetails["roundDetails"]["sales"];
 }
@@ -30,7 +29,6 @@ function ActionButtons({
   usdtBalance,
   ownPrice,
   refetch,
-  authUserIsValid,
   presaleAllocation,
   preSaleSold,
 }: ActionButtonsProps) {
@@ -48,9 +46,7 @@ function ActionButtons({
 
       <Drawer open={buyWithCardOpen} onOpenChange={setBuyWithCardOpen}>
         <DrawerTrigger asChild>
-          <Button variant="mainButton" disabled={!authUserIsValid}>
-            Buy with Card
-          </Button>
+          <Button variant="mainButton">Buy with Card</Button>
         </DrawerTrigger>
         <DrawerContent className="h-[90vh] max-h-[90vh] px-[5%] md:px-[10%] xl:h-[90vh] xl:max-h-[90vh]">
           <DrawerHeader className="relative">

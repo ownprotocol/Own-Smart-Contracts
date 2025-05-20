@@ -2,21 +2,16 @@
 
 import { useActiveAccount } from "thirdweb/react";
 
-import {
-  ConnectWalletDialog,
-  MainNavigation,
-} from "@/components";
+import { ConnectWalletDialog, MainNavigation } from "@/components";
 import { StakePageContent } from "@/components/user-stake/stake-page-content";
 import { useStakingPositionsPage } from "@/hooks/use-staking-positions-page";
-import { useGetAuthUser } from "@/query";
 import Loading from "../loading";
 
 function UserStakingPositionsPage() {
-  const authUser = useGetAuthUser();
   const activeAccount = useActiveAccount();
   const queryHook = useStakingPositionsPage();
 
-  if (authUser.isLoading || queryHook.isLoading) {
+  if (queryHook.isLoading) {
     return <Loading />;
   }
 

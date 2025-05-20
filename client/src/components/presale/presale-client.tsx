@@ -3,17 +3,15 @@ import { useActiveAccount } from "thirdweb/react";
 
 import { ConnectWalletDialog, MainNavigation } from "@/components";
 import { PresalePurchasesPageContent } from "@/components/presale/presale-purchases-page-content";
-import { useGetAuthUser } from "@/query";
 import { usePresalePurchasesPage } from "@/hooks/use-presale-purchases-page";
 import Loading from "@/app/loading";
 
 function PresalePurchasesPage() {
-  const authUser = useGetAuthUser();
   const activeAccount = useActiveAccount();
 
   const presalePageHook = usePresalePurchasesPage();
 
-  if (authUser.isLoading || presalePageHook.isLoading) {
+  if (presalePageHook.isLoading) {
     return <Loading />;
   }
 
