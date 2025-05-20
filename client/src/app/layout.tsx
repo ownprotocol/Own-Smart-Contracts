@@ -46,8 +46,10 @@ export default async function RootLayout({
               <Header />
               <HomeSeparator />
               <ToastContainer />
-              {children}
-              <MainNavigation />
+              <div className="w-full pb-24 pt-12">
+                {children}
+                <MainNavigation />
+              </div>
             </ThirdwebProvider>
           </QueryProvider>
         </div>

@@ -4,7 +4,7 @@ import { icons } from "@/constants/icons";
 
 const Footer = () => {
   return (
-    <footer className="fixed bottom-0 mt-auto flex w-screen flex-col items-center justify-between text-sm text-gray-400">
+    <footer className="fixed bottom-0 z-50 mt-auto flex w-screen flex-col items-center justify-between bg-background text-sm text-gray-400">
       <div className="flex w-full flex-row items-center justify-between border-t-2 border-gray-500/30 px-[15%] py-10">
         <div className="font-dmMono text-[10px] leading-[10px] tracking-[0.08em] md:text-xs md:leading-3 md:tracking-[0.08em]">
           COPYRIGHT BY FASSET.COM {new Date().getFullYear()}

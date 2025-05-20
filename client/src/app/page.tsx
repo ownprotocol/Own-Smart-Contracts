@@ -1,9 +1,4 @@
-import {
-  FAQPage,
-  MainNavigation,
-  TokenomicsChart,
-  TokenomicsChartMobile,
-} from "@/components";
+import { FAQPage, TokenomicsChart, TokenomicsChartMobile } from "@/components";
 import { PresalePageContents } from "@/components/home/presale_contents";
 
 export default async function HomePage() {
@@ -14,7 +9,6 @@ export default async function HomePage() {
         <TokenomicsChart />
         <TokenomicsChartMobile />
         <FAQPage />
-        <MainNavigation />
       </div>
     </main>
   );

@@ -1,7 +1,7 @@
 "use client";
 import { useActiveAccount } from "thirdweb/react";
 
-import { ConnectWalletDialog, MainNavigation } from "@/components";
+import { ConnectWalletDialog } from "@/components";
 import { PresalePurchasesPageContent } from "@/components/presale/presale-purchases-page-content";
 import { usePresalePurchasesPage } from "@/hooks/use-presale-purchases-page";
 import Loading from "@/app/loading";
@@ -30,7 +30,6 @@ function PresalePurchasesPage() {
         </h1>
       </div>
       <PresalePurchasesPageContent presalePageHook={presalePageHook} />
-      <MainNavigation />
     </main>
   );
 }

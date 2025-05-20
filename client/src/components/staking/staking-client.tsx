@@ -1,6 +1,5 @@
 "use client";
 
-import { MainNavigation } from "@/components";
 import { StakingPageContent } from "@/components/staking/staking-page-content";
 
 function StakingPageClient() {
@@ -12,7 +11,6 @@ function StakingPageClient() {
         </h1>
       </div>
       <StakingPageContent />
-      <MainNavigation />
     </main>
   );
 }

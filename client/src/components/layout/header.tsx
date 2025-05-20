@@ -18,7 +18,7 @@ const Header = () => {
   const pathname = usePathname();
 
   return (
-    <div className="fixed mt-2 flex w-full flex-row justify-between px-[5%] md:px-[10%]">
+    <div className="fixed z-50 flex w-full flex-row justify-between bg-background px-[5%] md:px-[10%]">
       <Button
         variant="ghost"
         className="lg:hidden"

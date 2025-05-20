@@ -4271,4 +4271,4 @@ export const veOwnTokenABI = [
     stateMutability: "payable",
     type: "function",
   },
-];
+] as const;

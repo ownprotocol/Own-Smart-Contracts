@@ -21,7 +21,7 @@ function MainNavigation() {
           width={100}
           height={100}
           priority
-          className="object-contain"
+          className="min-w-8 object-contain"
           style={{ width: "auto", height: "auto" }}
         />
       </div>
