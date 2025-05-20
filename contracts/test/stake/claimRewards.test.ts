@@ -281,9 +281,6 @@ describe("Stake - claimRewards", async () => {
 
     expect(claimableRewards[0]).to.equal(totalRewards);
 
-    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
-    await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
-
     // Ensure they can't reclaim again
     await expect(
       stake.write.claimRewards([[BigInt(0)]])
