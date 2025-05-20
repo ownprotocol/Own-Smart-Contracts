@@ -76,6 +76,14 @@ contract Stake is
         IveOwn _veOWN,
         ISablierLockup _sablierLockup
     ) public initializer {
+        if (
+            address(_ownToken) == address(0) ||
+            address(_veOWN) == address(0) ||
+            address(_sablierLockup) == address(0)
+        ) {
+            revert CannotSetAddressToZero();
+        }
+
         __AccessControlEnumerable_init();
         __ReentrancyGuard_init();
         __UUPSUpgradeable_init();

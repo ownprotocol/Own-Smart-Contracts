@@ -10,8 +10,6 @@ import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/U
 import "../interfaces/IPresale.sol";
 import "../interfaces/IOwn.sol";
 
-import "hardhat/console.sol";
-
 contract Presale is
     Initializable,
     IPresale,
@@ -39,7 +37,7 @@ contract Presale is
     }
 
     function initialize(IOwn _own, IERC20 _usdt) public initializer {
-        if (address(_usdt) == address(0) || address(_usdt) == address(this)) {
+        if (address(_usdt) == address(0) || address(_usdt) == address(0)) {
             revert CannotSetAddressToZero();
         }
 
@@ -459,9 +457,6 @@ contract Presale is
             bool roundsInProgress,
             uint256 currentPresaleRoundId
         ) = _getCurrentPresaleRoundId();
-        console.log("currentPresaleRoundId", currentPresaleRoundId);
-        console.log("Rounds in progress", roundsInProgress);
-        console.log("Presale has started", presaleHasStarted);
 
         if (!roundsInProgress || !presaleHasStarted) {
             return (false, PresaleRound(0, 0, 0, 0, 0), 0, 0);

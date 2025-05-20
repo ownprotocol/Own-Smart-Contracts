@@ -320,10 +320,6 @@ describe("Stake - claimRewards", async () => {
       [firstWeekRewards]
     );
 
-    console.log("First week rewards", firstWeekRewards);
-    console.log("Second week rewards", secondWeekRewards);
-    console.log("Amount", amount);
-
     await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
     // await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
 
