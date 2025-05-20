@@ -3,11 +3,9 @@ import { type Metadata } from "next";
 import { ToastContainer } from "react-toastify";
 import { ThirdwebProvider } from "thirdweb/react";
 
-import { Footer, HomeSeparator, Navigation } from "@/components";
+import { Footer, Header, HomeSeparator, MainNavigation } from "@/components";
 import "@/styles/globals.css";
 import QueryProvider from "@/providers/query-client-provider";
-import { ChainConnector } from "@/providers/chain-connect-provider";
-import ChainSwitchProvider from "@/providers/network-switch-provider";
 
 const fun = Funnel_Sans({
   subsets: ["latin"],
@@ -42,15 +40,14 @@ export default async function RootLayout({
       className={`${fun.variable} ${dmSans.variable} ${dmMono.variable}`}
     >
       <body className="flex flex-col bg-[linear-gradient(to_bottom,#141019_48%,#E49048_48%,#E49048_48%,#141019_48%)] text-white">
-        <div className="container relative mx-auto flex flex-col border-x border-gray-500/30 max-w-7xl">
+        <div className="container relative mx-auto flex max-w-7xl flex-col border-x border-gray-500/30">
           <QueryProvider>
             <ThirdwebProvider>
-              <ChainConnector>
-                <Navigation />
-                <HomeSeparator />
-                <ToastContainer />
-                <ChainSwitchProvider>{children}</ChainSwitchProvider>
-              </ChainConnector>
+              <Header />
+              <HomeSeparator />
+              <ToastContainer />
+              {children}
+              <MainNavigation />
             </ThirdwebProvider>
           </QueryProvider>
         </div>

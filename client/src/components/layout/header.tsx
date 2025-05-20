@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { icons } from "@/constants/icons";
 import {
   ConnectWalletButton,
@@ -13,12 +13,12 @@ import {
   MobileSidebar,
 } from "@/components";
 
-const Navigation = () => {
+const Header = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
 
   return (
-    <div className="mt-2 flex flex-row justify-between px-[5%] md:px-[10%]">
+    <div className="fixed mt-2 flex w-full flex-row justify-between px-[5%] md:px-[10%]">
       <Button
         variant="ghost"
         className="lg:hidden"
@@ -44,4 +44,4 @@ const Navigation = () => {
   );
 };
 
-export default Navigation;
+export default Header;

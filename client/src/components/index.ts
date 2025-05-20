@@ -1,5 +1,5 @@
-export { default as Footer } from "./footer";
-export { default as Navigation } from "./navigation";
+export { default as Footer } from "./layout/footer";
+export { default as Header } from "./layout/header";
 export { default as RaiseStats } from "./home/raise-stats";
 export { default as PriceIncreaseTimer } from "./home/price-increase-timer";
 export { default as ProgressBar } from "./home/progress-bar";
@@ -7,7 +7,6 @@ export { default as PresaleBanner } from "./home/presale-banner";
 export { default as ActionButtons } from "./home/action-buttons";
 export { default as TokenomicsChart } from "./tokenomics/tokenomics-chart";
 export { default as TokenomicsChartMobile } from "./tokenomics/tokenomics-chart-mobile";
-export { default as MainNavigation } from "./main-navigation";
 export { default as HomeSeparator } from "./home/home-separator";
 export { default as HasPresaleConcluded } from "./home/has-presale-concluded";
 export { default as SquareDots } from "./square-dots";
@@ -17,7 +16,6 @@ export { default as PriceIncreaseTimerSkeleton } from "./ui/loading-skeletons/pr
 export { default as ActionButtonsSkeleton } from "./ui/loading-skeletons/action-buttons-skeleton";
 export { default as TokenomicsChartSkeleton } from "./ui/loading-skeletons/tokenomics-chart-skeleton";
 export { default as TokenomicsChartMobileSkeleton } from "./ui/loading-skeletons/tokenomics-chart-mobile-skeleton";
-export { default as MainNavigationSkeleton } from "./ui/loading-skeletons/main-navigation-skeleton";
 export { default as HasPresaleConcludedSkeleton } from "./ui/loading-skeletons/has-presale-concluded-skeleton";
 export { default as StakeOwnTokenBanner } from "./staking/stake-own-token-banner";
 export { default as EarnAPYTimer } from "./staking/earn-apy-timer";
@@ -43,5 +41,4 @@ export { default as MobileSidebar } from "./mobile-sidebar";
 export { default as StakingLoadingState } from "./staking/staking-loading";
 export { default as StakingConfirmation } from "./staking/staking-confirmation";
 export { default as ConnectWalletDialog } from "./connect-wallet-dialog";
-
-
+export * from "./layout";

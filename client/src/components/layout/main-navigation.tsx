@@ -13,7 +13,7 @@ import {
 
 function MainNavigation() {
   return (
-    <div className="mb-[10%] mt-[30%] flex min-h-[100px] w-full justify-between md:mt-16">
+    <div className="mb-[10%] mt-[30%] flex min-h-[100px] w-full justify-between px-[15%] md:mt-16">
       <div className="relative h-[100px] w-1/3 md:w-1/2">
         <Image
           src="/own-logo.svg"

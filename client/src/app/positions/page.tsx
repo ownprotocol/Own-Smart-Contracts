@@ -2,7 +2,7 @@
 
 import { useActiveAccount } from "thirdweb/react";
 
-import { ConnectWalletDialog, MainNavigation } from "@/components";
+import { ConnectWalletDialog } from "@/components";
 import { StakePageContent } from "@/components/user-stake/stake-page-content";
 import { useStakingPositionsPage } from "@/hooks/use-staking-positions-page";
 import Loading from "../loading";
@@ -30,7 +30,6 @@ function UserStakingPositionsPage() {
         </h1>
         <StakePageContent queryHook={queryHook} />
       </div>
-      <MainNavigation />
     </main>
   );
 }
