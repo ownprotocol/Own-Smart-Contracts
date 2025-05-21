@@ -30,6 +30,13 @@ export const useStakingPage = () => {
       contract: stakeContract,
       method: "hasStakingStarted",
     }),
+    stakingStartWeek: useReadContractQueryHook(
+      {
+        contract: stakeContract,
+        method: "stakingStartWeek",
+      },
+      (value) => Number(value),
+    ),
   });
 
   return mainContentQuery;

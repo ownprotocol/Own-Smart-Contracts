@@ -2,13 +2,14 @@
 
 import ActionButtons from "./action-buttons";
 import PresaleBanner from "./presale-banner";
-import CountdownTimer from "./price-increase-timer";
+import PriceIncreaseTimer from "./price-increase-timer";
 import RaiseStats from "./raise-stats";
 import { useHomePresalePage } from "@/hooks/use-home-presale-page";
 import Loading from "@/app/loading";
 import PresaleConcluded from "./has-presale-concluded";
 import { usePresalePurchasesPage } from "@/hooks/use-presale-purchases-page";
 import { useStakingPage } from "@/hooks/use-staking-page";
+import { TimerCountdown } from "../timer-countdown";
 
 export const PresalePageContents = () => {
   const presalePageHook = useHomePresalePage();
@@ -39,9 +40,9 @@ export const PresalePageContents = () => {
     <>
       {!presaleRound.hasPresaleStarted && (
         <>
-          <h1 className="header">Presale Will Start In</h1>
+          <h1 className="header">Presale Starts In</h1>
 
-          <CountdownTimer duration={timestamp - startPresaleTime} label="" />
+          <TimerCountdown duration={timestamp - startPresaleTime} />
         </>
       )}
       {hasPresaleRoundStarted && (
@@ -52,7 +53,7 @@ export const PresalePageContents = () => {
             preSaleSold={presaleRound.roundDetails.sales}
           />
           <RaiseStats usdtBalance={usdtBalance} presaleData={presaleRound} />
-          <CountdownTimer
+          <PriceIncreaseTimer
             duration={
               presaleRound.endTime > timestamp
                 ? presaleRound.endTime - timestamp

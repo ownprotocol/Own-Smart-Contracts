@@ -1,7 +1,7 @@
 export { default as Footer } from "./layout/footer";
 export { default as Header } from "./layout/header";
 export { default as RaiseStats } from "./home/raise-stats";
-export { default as CountdownTimer } from "./home/price-increase-timer";
+export { default as PriceIncreaseTimer } from "./home/price-increase-timer";
 export { default as ProgressBar } from "./home/progress-bar";
 export { default as PresaleBanner } from "./home/presale-banner";
 export { default as ActionButtons } from "./home/action-buttons";

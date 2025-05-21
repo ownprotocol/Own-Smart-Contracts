@@ -12,6 +12,9 @@ import { useStakingPage } from "@/hooks/use-staking-page";
 import { useActiveAccount } from "thirdweb/react";
 import { useState } from "react";
 import Loading from "@/app/loading";
+import { convertStakeWeekToUnixTime } from "@/lib/staking";
+import { TimerCountdown } from "../timer-countdown";
+import { CustomDrawer } from "../drawer";
 
 const buttonStyles =
   "font-funnel hover:bg-[#D58BFF] !mx-auto !w-full !max-w-fit !bg-[#C58BFF] !px-8 !py-6 !text-[14px] !font-medium !leading-[14px] !tracking-[0%] !text-black !md:text-[16px] !md:leading-[16px]";
@@ -29,38 +32,37 @@ export const StakingPageContent = () => {
     mainContentQuery.data;
 
   if (!hasStakingStarted) {
-    // const currentDate =
-    return <div className="mx-auto w-full">Staking has not started yet</div>;
+    const unixStakingStartTime = convertStakeWeekToUnixTime(
+      mainContentQuery.data.stakingStartWeek,
+    );
+
+    return (
+      <div className="flex flex-col items-center">
+        <h1 className="header">Staking will start in</h1>
+        <TimerCountdown duration={unixStakingStartTime - timestamp} />
+      </div>
+    );
   }
 
   return (
-    <div className="relative flex flex-col">
+    <div className="relative flex flex-col items-center gap-8">
+      <h1 className="header">Stake $Own Token</h1>
       <StakeOwnTokenBanner percentage={boost} />
       <EarnAPYTimer percentage={boost} timestamp={timestamp} />
-      <div className="mt-2 flex flex-col gap-3 p-4 sm:flex-row sm:justify-center sm:gap-4">
-        <Drawer open={stakingDrawerOpen} onOpenChange={setStakingDrawerOpen}>
-          <DrawerTrigger asChild>
-            {account && <Button className={buttonStyles}>Stake $Own</Button>}
-          </DrawerTrigger>
-          <DrawerContent className="h-[90vh] max-h-[90vh] px-[5%] md:px-[10%] xl:h-[90vh] xl:max-h-[90vh]">
-            <StakingDrawerContent
-              ownBalance={ownBalance}
-              setIsOpen={setStakingDrawerOpen}
-            />
-          </DrawerContent>
-        </Drawer>
-        {!account && (
-          <ConnectWalletButton
-            title="Stake $Own"
-            bgColor="#C58BFF"
-            textColor="black"
-            isHoverable={false}
-            className={
-              "!md:text-[20px] !md:leading-[20px] !font-funnel !cursor-pointer !font-semibold"
-            }
-          />
-        )}
-      </div>
+      <CustomDrawer
+        isOpen={stakingDrawerOpen}
+        onOpenChange={setStakingDrawerOpen}
+        button={
+          <Button className={buttonStyles} disabled={!account}>
+            Stake $Own
+          </Button>
+        }
+      >
+        <StakingDrawerContent
+          ownBalance={ownBalance}
+          setIsOpen={setStakingDrawerOpen}
+        />
+      </CustomDrawer>
     </div>
   );
 };

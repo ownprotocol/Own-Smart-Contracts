@@ -63,4 +63,3 @@ const StakingLoadingState = ({
 };
 
 export default StakingLoadingState;
-

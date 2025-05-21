@@ -106,7 +106,7 @@ const StakingDrawerContent = ({
   const { tokenAmount, lockupDurationWeeks } = getValues();
 
   return (
-    <div className="mx-auto w-full px-[0%] pt-0 md:px-[5%] md:pt-8">
+    <div className="mx-auto w-full bg-white">
       {stakingState === "setup" && (
         <>
           <StakingDrawerHeader ownBalance={ownBalance} />

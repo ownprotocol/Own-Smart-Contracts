@@ -1,19 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 "use client";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "../ui/drawer";
 import { BuyWithCryptoDrawer } from "./buy-with-crypto/buy-with-crypto-modal";
 import { type CurrentPresaleRoundDetails } from "@/types/presale";
 import { BuyWithCardDrawer } from "./buy-with-card/buy-with-card-modal";
+import { CustomDrawer } from "../drawer";
 
 interface ActionButtonsProps {
   ownBalance: number;
@@ -44,66 +36,36 @@ function ActionButtons({
     <div className="mt-4 flex flex-col gap-3 p-4 md:flex-row md:justify-center md:gap-4">
       {/* Card payment button */}
 
-      <Drawer open={buyWithCardOpen} onOpenChange={setBuyWithCardOpen}>
-        <DrawerTrigger asChild>
-          <Button variant="mainButton">Buy with Card</Button>
-        </DrawerTrigger>
-        <DrawerContent className="h-[90vh] max-h-[90vh] px-[5%] md:px-[10%] xl:h-[90vh] xl:max-h-[90vh]">
-          <DrawerHeader className="relative">
-            <DrawerClose className="absolute right-0 top-0">
-              <span className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
-                Close
-              </span>
-            </DrawerClose>
-            <DrawerTitle className="text-black">
-              <div className="flex w-full flex-col justify-center gap-1 md:flex-row md:gap-4">
-                <span className="font-funnel text-[32px] leading-[40px] tracking-[-0.05em] md:text-[64px] md:leading-[72px]">
-                  Buy with Card
-                </span>
-              </div>
-            </DrawerTitle>
-          </DrawerHeader>
-          <BuyWithCardDrawer
-            setIsOpen={setBuyWithCardOpen}
-            usdtBalance={usdtBalance}
-            ownBalance={ownBalance}
-            ownPrice={ownPrice}
-            refetch={refetch}
-            maxAllocation={maxAllocation}
-          />
-        </DrawerContent>
-      </Drawer>
-      <Drawer open={buyWithCryptoOpen} onOpenChange={setBuyWithCryptoOpen}>
-        <DrawerTrigger asChild>
-          <Button disabled={!authUserIsValid} className={cryptoButtonStyles}>
-            Buy with Crypto
-          </Button>
-        </DrawerTrigger>
-        <DrawerContent className="h-[90vh] max-h-[90vh] px-[5%] md:px-[10%] xl:h-[90vh] xl:max-h-[90vh]">
-          <DrawerHeader className="relative">
-            <DrawerClose className="absolute right-0 top-0">
-              <span className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
-                Close
-              </span>
-            </DrawerClose>
-            <DrawerTitle className="text-black">
-              <div className="flex w-full flex-col justify-center gap-1 md:flex-row md:gap-4">
-                <span className="font-funnel text-[32px] leading-[40px] tracking-[-0.05em] md:text-[64px] md:leading-[72px]">
-                  Buy with Cryptos
-                </span>
-              </div>
-            </DrawerTitle>
-          </DrawerHeader>
-          <BuyWithCryptoDrawer
-            setIsOpen={setBuyWithCryptoOpen}
-            usdtBalance={usdtBalance}
-            ownBalance={ownBalance}
-            ownPrice={ownPrice}
-            refetch={refetch}
-            maxAllocation={maxAllocation}
-          />
-        </DrawerContent>
-      </Drawer>
+      <CustomDrawer
+        button={<Button variant="mainButton">Buy with Card</Button>}
+        title="Buy with Credit Card"
+        isOpen={buyWithCardOpen}
+        onOpenChange={setBuyWithCardOpen}
+      >
+        <BuyWithCardDrawer
+          setIsOpen={setBuyWithCardOpen}
+          usdtBalance={usdtBalance}
+          ownBalance={ownBalance}
+          ownPrice={ownPrice}
+          refetch={refetch}
+          maxAllocation={maxAllocation}
+        />
+      </CustomDrawer>
+      <CustomDrawer
+        button={<Button className={cryptoButtonStyles}>Buy with Crypto</Button>}
+        title="Buy with Crypto"
+        isOpen={buyWithCryptoOpen}
+        onOpenChange={setBuyWithCryptoOpen}
+      >
+        <BuyWithCryptoDrawer
+          setIsOpen={setBuyWithCryptoOpen}
+          usdtBalance={usdtBalance}
+          ownBalance={ownBalance}
+          ownPrice={ownPrice}
+          refetch={refetch}
+          maxAllocation={maxAllocation}
+        />
+      </CustomDrawer>
     </div>
   );
 }
