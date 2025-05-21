@@ -13,19 +13,19 @@ import { useActiveAccount } from "thirdweb/react";
 import { useContracts } from "@/hooks";
 import { orderBy, uniqBy } from "lodash";
 
-interface HasPresaleConcludedProps {
+interface PresaleConcludedProps {
   presalePurchases: PresalePurchase[];
   refetch: () => Promise<void>;
   hasRewardsToClaim: boolean;
   ownBalance: number;
 }
 
-function HasPresaleConcluded({
+function PresaleConcluded({
   presalePurchases,
   refetch,
   hasRewardsToClaim,
   ownBalance,
-}: HasPresaleConcludedProps) {
+}: PresaleConcludedProps) {
   const account = useActiveAccount();
   const [activeRound, setActiveRound] = useState<number | null>(null);
   const { claimRewards, isLoading: isClaimLoading } = useClaimRewards(refetch);
@@ -146,4 +146,4 @@ function HasPresaleConcluded({
   );
 }
 
-export default HasPresaleConcluded;
+export default PresaleConcluded;

@@ -6,7 +6,7 @@ import PriceIncreaseTimer from "./price-increase-timer";
 import RaiseStats from "./raise-stats";
 import { useHomePresalePage } from "@/hooks/use-home-presale-page";
 import Loading from "@/app/loading";
-import HasPresaleConcluded from "./has-presale-concluded";
+import PresaleConcluded from "./has-presale-concluded";
 import { usePresalePurchasesPage } from "@/hooks/use-presale-purchases-page";
 import { useStakingPage } from "@/hooks/use-staking-page";
 
@@ -59,14 +59,12 @@ export const PresalePageContents = () => {
         </>
       )}
       {!presalePageHook.data.presaleRound.roundsInProgress && (
-        <div className="-mb-2 py-1 md:py-4">
-          <HasPresaleConcluded
-            presalePurchases={presaleConcludedPageHook.data.presalePurchases}
-            refetch={presaleConcludedPageHook.refetch}
-            hasRewardsToClaim={presaleConcludedPageHook.data.hasRewardsToClaim}
-            ownBalance={mainContentQuery.data.ownBalance}
-          />
-        </div>
+        <PresaleConcluded
+          presalePurchases={presaleConcludedPageHook.data.presalePurchases}
+          refetch={presaleConcludedPageHook.refetch}
+          hasRewardsToClaim={presaleConcludedPageHook.data.hasRewardsToClaim}
+          ownBalance={mainContentQuery.data.ownBalance}
+        />
       )}
     </>
   );

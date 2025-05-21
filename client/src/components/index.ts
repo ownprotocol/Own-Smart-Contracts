@@ -8,7 +8,7 @@ export { default as ActionButtons } from "./home/action-buttons";
 export { default as TokenomicsChart } from "./tokenomics/tokenomics-chart";
 export { default as TokenomicsChartMobile } from "./tokenomics/tokenomics-chart-mobile";
 export { default as HomeSeparator } from "./home/home-separator";
-export { default as HasPresaleConcluded } from "./home/has-presale-concluded";
+export { default as PresaleConcluded } from "./home/has-presale-concluded";
 export { default as SquareDots } from "./square-dots";
 export { default as PillarBackgrounds } from "./pillar-backgrounds";
 export { default as RaiseStatsSkeleton } from "./ui/loading-skeletons/raise-stats-skeleton";
