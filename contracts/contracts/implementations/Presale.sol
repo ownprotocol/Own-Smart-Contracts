@@ -446,7 +446,8 @@ contract Presale is
         view
         override
         returns (
-            bool success,
+            bool hasPresaleStart,
+            bool hasRoundsInProgress,
             PresaleRound memory,
             uint256 roundId,
             uint256 endTime
@@ -459,7 +460,13 @@ contract Presale is
         ) = _getCurrentPresaleRoundId();
 
         if (!roundsInProgress || !presaleHasStarted) {
-            return (false, PresaleRound(0, 0, 0, 0, 0), 0, 0);
+            return (
+                presaleHasStarted,
+                roundsInProgress,
+                PresaleRound(0, 0, 0, 0, 0),
+                0,
+                0
+            );
         }
 
         uint256 endTimeForPresaleRound = startPresaleTime;
@@ -469,6 +476,7 @@ contract Presale is
         }
 
         return (
+            true,
             true,
             presaleRounds[currentPresaleRoundId],
             currentPresaleRoundId,

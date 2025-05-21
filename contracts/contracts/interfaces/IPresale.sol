@@ -370,7 +370,8 @@ interface IPresale {
     /**
      * @notice Gets details of the current active presale round
      * @dev Returns false and zero values if no rounds are in progress
-     * @return success Boolean indicating if a round is currently active
+     * @return hasPresaleStart Boolean indicating if the presale has started
+     * @return hasRoundsInProgress Boolean indicating if any presale rounds are in progress
      * @return round Details of the current presale round
      * @return roundId ID of the current presale round
      * @return endTime Timestamp when the current round ends
@@ -379,7 +380,8 @@ interface IPresale {
         external
         view
         returns (
-            bool success,
+            bool hasPresaleStart,
+            bool hasRoundsInProgress,
             PresaleRound memory round,
             uint256 roundId,
             uint256 endTime
