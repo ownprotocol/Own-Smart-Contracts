@@ -45,8 +45,8 @@ export const StakingPageContent = () => {
   }
 
   return (
-    <div className="relative flex flex-col items-center gap-8">
-      <h1 className="header">Stake $Own Token</h1>
+    <div className="relative flex flex-col items-center">
+      <h1 className="header !pt-8">Stake $Own Token</h1>
       <StakeOwnTokenBanner percentage={boost} />
       <EarnAPYTimer percentage={boost} timestamp={timestamp} />
       <CustomDrawer

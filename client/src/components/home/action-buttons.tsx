@@ -88,7 +88,6 @@ function ActionButtons({
     toast.success("Transaction successful");
     setTimeout(() => {
       setBuyWithCryptoOpen(false);
-      router.push("/presale");
     }, 1000);
   };
 

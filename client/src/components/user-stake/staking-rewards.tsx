@@ -49,7 +49,7 @@ function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
     }
   };
   return (
-    <div className="mt-4 grid grid-cols-2 gap-6 rounded-xl bg-[#111111] md:mt-8 md:grid-cols-3 md:gap-12">
+    <div className="mt-4 grid grid-cols-2 gap-6 rounded-xl md:mt-8 md:grid-cols-3 md:gap-12">
       {/* <RewardBox label="$OWN Received" value="10,000" /> */}
       <RewardBox
         label="Rewards Earned"
@@ -106,7 +106,7 @@ function ClaimableRewardBox({
       <span className="w-full text-left font-dm_mono text-[12px] uppercase leading-[12px] tracking-[8%] text-gray-400 md:text-[14px] md:leading-[14px]">
         {label}
       </span>
-      <div className="flex  w-full items-center gap-2 pt-2 md:pt-4">
+      <div className="flex w-full items-center gap-2 pt-2 md:pt-4">
         <div className="flex items-center gap-2">
           <Image
             src="/own-logo.svg"
@@ -123,7 +123,7 @@ function ClaimableRewardBox({
           <Button
             variant="secondary"
             onClick={onClaim}
-            className={`rounded-md border border-[#7E22CE] bg-[#141019] px-2 py-0 md:px-4 md:py-2 text-xs md:text-sm text-[#7E22CE] transition-colors hover:border-[#9333EA] hover:bg-opacity-80 hover:text-[#9333EA] ${
+            className={`rounded-md border border-[#7E22CE] bg-[#141019] px-2 py-0 text-xs text-[#7E22CE] transition-colors hover:border-[#9333EA] hover:bg-opacity-80 hover:text-[#9333EA] md:px-4 md:py-2 md:text-sm ${
               disabled ? "cursor-not-allowed opacity-50" : ""
             }`}
             disabled={disabled}
