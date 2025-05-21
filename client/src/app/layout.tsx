@@ -46,15 +46,14 @@ export default async function RootLayout({
               <Header />
               <HomeSeparator />
               <ToastContainer />
-              <div className="w-full pb-24 pt-12">
+              <div className="flex min-h-screen w-full flex-col justify-between px-8 pb-24 pt-24">
                 {children}
                 <MainNavigation />
               </div>
+              <Footer />
             </ThirdwebProvider>
           </QueryProvider>
         </div>
-
-        <Footer />
       </body>
     </html>
   );

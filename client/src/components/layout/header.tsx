@@ -12,13 +12,14 @@ import {
   DesktopNavbar,
   MobileSidebar,
 } from "@/components";
+import { FooterHeaderWrapper } from "./wrapper";
 
 const Header = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
 
   return (
-    <div className="fixed z-50 flex w-full flex-row justify-between bg-background px-[5%] md:px-[10%]">
+    <FooterHeaderWrapper className="top-0">
       <Button
         variant="ghost"
         className="lg:hidden"
@@ -40,7 +41,7 @@ const Header = () => {
       <div className="flex items-center justify-center md:justify-end lg:w-48">
         <ConnectWalletButton isHoverable={true} />
       </div>
-    </div>
+    </FooterHeaderWrapper>
   );
 };
 

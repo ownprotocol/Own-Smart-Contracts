@@ -3,13 +3,11 @@ import { PresalePageContents } from "@/components/home/presale_contents";
 
 export default async function HomePage() {
   return (
-    <main className="min-h-screen px-[5%] pt-[10%] md:px-[10%] md:pt-[3%]">
-      <div className="relative flex flex-col">
-        <PresalePageContents />
-        <TokenomicsChart />
-        <TokenomicsChartMobile />
-        <FAQPage />
-      </div>
-    </main>
+    <div className="relative flex flex-col">
+      <PresalePageContents />
+      <TokenomicsChart />
+      <TokenomicsChartMobile />
+      <FAQPage />
+    </div>
   );
 }
