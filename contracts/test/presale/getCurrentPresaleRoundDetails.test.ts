@@ -44,10 +44,15 @@ describe("Presale - getCurrentPresaleRoundDetails", async () => {
   });
 
   it("Should return no presale round details if presale has not started", async () => {
-    const [success, presaleRoundDetails, roundId] =
-      await presale.read.getCurrentPresaleRoundDetails();
+    const [
+      hasPresaleStarted,
+      hasRoundsInProgress,
+      presaleRoundDetails,
+      roundId,
+    ] = await presale.read.getCurrentPresaleRoundDetails();
 
-    expect(success).to.be.false;
+    expect(hasPresaleStarted).to.be.false;
+    expect(hasRoundsInProgress).to.be.false;
     expect(roundId).to.equal(BigInt(0));
     expect(presaleRoundDetails.duration).to.equal(BigInt(0));
     expect(presaleRoundDetails.price).to.equal(BigInt(0));
@@ -57,10 +62,15 @@ describe("Presale - getCurrentPresaleRoundDetails", async () => {
   it("Should return the correct presale round details for the first presale round", async () => {
     await increaseTime(Number(startTimeOffset));
 
-    const [success, presaleRoundDetails, roundId] =
-      await presale.read.getCurrentPresaleRoundDetails();
+    const [
+      hasPresaleStarted,
+      hasRoundsInProgress,
+      presaleRoundDetails,
+      roundId,
+    ] = await presale.read.getCurrentPresaleRoundDetails();
 
-    expect(success).to.be.true;
+    expect(hasPresaleStarted).to.be.true;
+    expect(hasRoundsInProgress).to.be.true;
     expect(roundId).to.equal(BigInt(0));
     expect(presaleRoundDetails.duration).to.equal(firstPresaleRoundDuration);
     expect(presaleRoundDetails.price).to.equal(BigInt(1));
@@ -71,10 +81,15 @@ describe("Presale - getCurrentPresaleRoundDetails", async () => {
   it("Should return the correct presale round details for the second presale round", async () => {
     await increaseTime(Number(firstPresaleRoundDuration) + 10);
 
-    const [success, presaleRoundDetails, roundId] =
-      await presale.read.getCurrentPresaleRoundDetails();
+    const [
+      hasPresaleStarted,
+      hasRoundsInProgress,
+      presaleRoundDetails,
+      roundId,
+    ] = await presale.read.getCurrentPresaleRoundDetails();
 
-    expect(success).to.be.true;
+    expect(hasPresaleStarted).to.be.true;
+    expect(hasRoundsInProgress).to.be.true;
     expect(roundId).to.equal(BigInt(1));
     expect(presaleRoundDetails.duration).to.equal(secondPresaleRoundDuration);
     expect(presaleRoundDetails.price).to.equal(BigInt(2));
@@ -87,10 +102,15 @@ describe("Presale - getCurrentPresaleRoundDetails", async () => {
       Number(firstPresaleRoundDuration + secondPresaleRoundDuration) + 10
     );
 
-    const [success, presaleRoundDetails, roundId] =
-      await presale.read.getCurrentPresaleRoundDetails();
+    const [
+      hasPresaleStarted,
+      hasRoundsInProgress,
+      presaleRoundDetails,
+      roundId,
+    ] = await presale.read.getCurrentPresaleRoundDetails();
 
-    expect(success).to.be.false;
+    expect(hasPresaleStarted).to.be.true;
+    expect(hasRoundsInProgress).to.be.false;
     expect(roundId).to.equal(BigInt(0));
     expect(presaleRoundDetails.duration).to.equal(BigInt(0));
     expect(presaleRoundDetails.price).to.equal(BigInt(0));
