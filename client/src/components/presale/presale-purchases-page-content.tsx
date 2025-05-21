@@ -45,7 +45,8 @@ export const PresalePurchasesPageContent = ({
         transaction: prepareContractCall({
           contract: presaleContract,
           method: "claimPresaleRoundTokens",
-          params: [],
+          // Pass the entire list of presale purchases
+          params: [0n, BigInt(presalePageHook.data.presalePurchases.length)],
         }),
       });
 

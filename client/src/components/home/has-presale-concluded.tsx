@@ -56,9 +56,7 @@ function PresaleConcluded({
   return (
     <div className="relative w-full">
       <SquareDots />
-      <h1 className="font-funnel flex max-w-[750px] items-center pb-2 text-[32px] font-[400] leading-[42px] tracking-[-5%] md:pb-8 md:text-[72px] md:leading-[72px]">
-        $Own Token Presale Concluded
-      </h1>
+      <h1 className="header">$Own Token Presale Concluded</h1>
       <p className="mt-2 min-h-[100px] font-['DM_Sans'] text-[20px] font-[400] leading-[24px] text-[#B4B4B4] md:mt-0 md:min-h-[100px] md:text-[32px] md:leading-[42px]">
         Thanks for participating! You can claim your $Own after TGE and will be
         able to stake them to earn rewards.

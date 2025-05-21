@@ -14,16 +14,17 @@ export const useGetCurrentPresaleRound =
         method: "getCurrentPresaleRoundDetails",
       },
       (data) => ({
-        roundsInProgress: data[0],
+        hasPresaleStarted: data[0],
+        roundsInProgress: data[1],
         roundDetails: {
-          duration: Number(data[1].duration),
-          price: Number(formatEther(data[1].price)),
-          allocation: Number(formatEther(data[1].allocation)),
-          sales: Number(formatEther(data[1].sales)),
-          claimTokensTimestamp: Number(data[1].claimTokensTimestamp),
-          roundId: Number(data[2]),
+          duration: Number(data[2].duration),
+          price: Number(formatEther(data[2].price)),
+          allocation: Number(formatEther(data[2].allocation)),
+          sales: Number(formatEther(data[2].sales)),
+          claimTokensTimestamp: Number(data[2].claimTokensTimestamp),
+          roundId: Number(data[3]),
         },
-        endTime: Number(data[3]),
+        endTime: Number(data[4]),
       }),
     );
   };

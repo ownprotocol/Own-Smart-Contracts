@@ -93,9 +93,7 @@ const TokenomicsChart = () => {
   return (
     <div className="z-20 mt-[10%] hidden min-h-[500px] w-full rounded-lg lg:flex">
       <div className="relative flex-1">
-        <h2 className="font-funnel mb-8 text-[32px] leading-[32px] tracking-[-5%] text-gray-200 md:text-[72px] md:leading-[72px]">
-          Tokenomics
-        </h2>
+        <h2 className="header">Tokenomics</h2>
         <div
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform text-center text-gray-600"
           style={{

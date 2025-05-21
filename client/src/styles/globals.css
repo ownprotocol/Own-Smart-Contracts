@@ -70,3 +70,6 @@
   }
 }
 
+.header {
+  @apply flex items-center pb-2 text-[32px] font-[400] leading-[42px] tracking-[-5%] md:pb-8 md:text-[55px] md:leading-[72px] text-center;
+}

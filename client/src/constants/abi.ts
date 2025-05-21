@@ -27,6 +27,11 @@ export const presaleABI = [
   },
   {
     inputs: [],
+    name: "CannotPurchase0PresaleTokens",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "CannotSetAddressToZero",
     type: "error",
   },
@@ -48,6 +53,11 @@ export const presaleABI = [
   {
     inputs: [],
     name: "CannotSetPresaleRoundPriceToZero",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "CannotSetPresaleRoundSalesToNonZero",
     type: "error",
   },
   {
@@ -163,6 +173,17 @@ export const presaleABI = [
   {
     inputs: [],
     name: "PresaleRoundIndexOutOfBounds",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
+    name: "SafeERC20FailedOperation",
     type: "error",
   },
   {
@@ -554,7 +575,18 @@ export const presaleABI = [
     type: "function",
   },
   {
-    inputs: [],
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_from",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_to",
+        type: "uint256",
+      },
+    ],
     name: "claimPresaleRoundTokens",
     outputs: [],
     stateMutability: "nonpayable",
@@ -613,7 +645,12 @@ export const presaleABI = [
     outputs: [
       {
         internalType: "bool",
-        name: "success",
+        name: "hasPresaleStart",
+        type: "bool",
+      },
+      {
+        internalType: "bool",
+        name: "hasRoundsInProgress",
         type: "bool",
       },
       {
@@ -706,7 +743,7 @@ export const presaleABI = [
           },
         ],
         internalType: "struct IPresale.PresalePurchase[]",
-        name: "",
+        name: "usersPurchases",
         type: "tuple[]",
       },
     ],
@@ -950,6 +987,19 @@ export const presaleABI = [
   },
   {
     inputs: [],
+    name: "totalClaims",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "totalSales",
     outputs: [
       {
@@ -1133,7 +1183,7 @@ export const stakeABI = [
   },
   {
     inputs: [],
-    name: "CannotSetBoostForWeekInPast",
+    name: "CannotSetBoostForCurrentOrPastWeek",
     type: "error",
   },
   {
@@ -1206,6 +1256,11 @@ export const stakeABI = [
   {
     inputs: [],
     name: "InvalidLockPeriod",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NoEmergencyPrincipleToWithdraw",
     type: "error",
   },
   {
@@ -1328,6 +1383,31 @@ export const stakeABI = [
       },
     ],
     name: "DailyRewardAmountSet",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "claimer",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256[]",
+        name: "positionIds",
+        type: "uint256[]",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "EmergencyWithdrawStakePrinciple",
     type: "event",
   },
   {
@@ -1704,7 +1784,7 @@ export const stakeABI = [
     inputs: [
       {
         internalType: "uint256",
-        name: "",
+        name: "day",
         type: "uint256",
       },
     ],
@@ -1712,11 +1792,24 @@ export const stakeABI = [
     outputs: [
       {
         internalType: "uint256",
-        name: "",
+        name: "rewardValue",
         type: "uint256",
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256[]",
+        name: "_positionIds",
+        type: "uint256[]",
+      },
+    ],
+    name: "emergencyWithdrawStakePrinciple",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -2018,6 +2111,11 @@ export const stakeABI = [
           },
           {
             internalType: "uint256",
+            name: "positionId",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
             name: "ownAmount",
             type: "uint256",
           },
@@ -2215,7 +2313,7 @@ export const stakeABI = [
     inputs: [
       {
         internalType: "uint256",
-        name: "",
+        name: "positionId",
         type: "uint256",
       },
     ],
@@ -2225,6 +2323,11 @@ export const stakeABI = [
         internalType: "address",
         name: "owner",
         type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "positionId",
+        type: "uint256",
       },
       {
         internalType: "uint256",
@@ -2313,7 +2416,7 @@ export const stakeABI = [
     inputs: [
       {
         internalType: "uint256",
-        name: "",
+        name: "week",
         type: "uint256",
       },
     ],
@@ -2552,6 +2655,13 @@ export const stakeABI = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "updateWeeklyRewardValuesCache",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -2573,7 +2683,7 @@ export const stakeABI = [
     inputs: [
       {
         internalType: "address",
-        name: "",
+        name: "user",
         type: "address",
       },
       {
@@ -2586,7 +2696,7 @@ export const stakeABI = [
     outputs: [
       {
         internalType: "uint256",
-        name: "",
+        name: "positionIds",
         type: "uint256",
       },
     ],
@@ -2597,7 +2707,7 @@ export const stakeABI = [
     inputs: [
       {
         internalType: "uint256",
-        name: "",
+        name: "day",
         type: "uint256",
       },
     ],
@@ -2605,7 +2715,7 @@ export const stakeABI = [
     outputs: [
       {
         internalType: "uint256",
-        name: "",
+        name: "veOwnAddition",
         type: "uint256",
       },
     ],
@@ -2616,7 +2726,7 @@ export const stakeABI = [
     inputs: [
       {
         internalType: "uint256",
-        name: "",
+        name: "day",
         type: "uint256",
       },
     ],
@@ -2624,7 +2734,7 @@ export const stakeABI = [
     outputs: [
       {
         internalType: "uint256",
-        name: "",
+        name: "veOwnSubtraction",
         type: "uint256",
       },
     ],
@@ -2681,6 +2791,11 @@ export const ownTokenABI = [
       },
     ],
     name: "AddressEmptyCode",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "CannotSetAddressToZero",
     type: "error",
   },
   {

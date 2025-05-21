@@ -17,26 +17,21 @@ const buttonStyles =
   "font-funnel hover:bg-[#D58BFF] !mx-auto !w-full !max-w-fit !bg-[#C58BFF] !px-8 !py-6 !text-[14px] !font-medium !leading-[14px] !tracking-[0%] !text-black !md:text-[16px] !md:leading-[16px]";
 
 export const StakingPageContent = () => {
-  const { mainContentQuery, hasStakingStartedQuery } = useStakingPage();
+  const mainContentQuery = useStakingPage();
   const account = useActiveAccount();
   const [stakingDrawerOpen, setStakingDrawerOpen] = useState(false);
-
-  if (
-    !hasStakingStartedQuery.isLoading &&
-    hasStakingStartedQuery.data === false
-  ) {
-    return (
-      <div className="mx-auto w-full px-[0%] pt-0 md:px-[5%] md:pt-8">
-        Staking has not started yet
-      </div>
-    );
-  }
 
   if (mainContentQuery.isLoading) {
     return <Loading />;
   }
 
-  const { ownBalance, boost, timestamp } = mainContentQuery.data;
+  const { ownBalance, boost, timestamp, hasStakingStarted } =
+    mainContentQuery.data;
+
+  if (!hasStakingStarted) {
+    // const currentDate =
+    return <div className="mx-auto w-full">Staking has not started yet</div>;
+  }
 
   return (
     <div className="relative flex flex-col">

@@ -2,7 +2,7 @@
 
 import ActionButtons from "./action-buttons";
 import PresaleBanner from "./presale-banner";
-import PriceIncreaseTimer from "./price-increase-timer";
+import CountdownTimer from "./price-increase-timer";
 import RaiseStats from "./raise-stats";
 import { useHomePresalePage } from "@/hooks/use-home-presale-page";
 import Loading from "@/app/loading";
@@ -13,7 +13,7 @@ import { useStakingPage } from "@/hooks/use-staking-page";
 export const PresalePageContents = () => {
   const presalePageHook = useHomePresalePage();
   const presaleConcludedPageHook = usePresalePurchasesPage();
-  const { mainContentQuery } = useStakingPage();
+  const mainContentQuery = useStakingPage();
 
   if (
     presalePageHook.isLoading ||
@@ -23,42 +23,54 @@ export const PresalePageContents = () => {
     return <Loading />;
   }
 
+  const {
+    presaleRound,
+    timestamp,
+    usdtBalance,
+    usersOwnBalance,
+    startPresaleTime,
+    usersUSDTBalance,
+  } = presalePageHook.data;
+
   const hasPresaleRoundStarted =
-    presalePageHook.data.presaleRound.roundsInProgress &&
-    presalePageHook.data.startPresaleTime <= presalePageHook.data.timestamp;
+    presaleRound.roundsInProgress && presaleRound.hasPresaleStarted;
 
   return (
     <>
+      {!presaleRound.hasPresaleStarted && (
+        <>
+          <h1 className="header">Presale Will Start In</h1>
+
+          <CountdownTimer duration={timestamp - startPresaleTime} label="" />
+        </>
+      )}
       {hasPresaleRoundStarted && (
         <>
           <PresaleBanner
-            roundId={presalePageHook.data.presaleRound.roundDetails.roundId}
-            presaleAllocation={
-              presalePageHook.data.presaleRound.roundDetails.allocation
+            roundId={presaleRound.roundDetails.roundId}
+            presaleAllocation={presaleRound.roundDetails.allocation}
+            preSaleSold={presaleRound.roundDetails.sales}
+          />
+          <RaiseStats usdtBalance={usdtBalance} presaleData={presaleRound} />
+          <CountdownTimer
+            duration={
+              presaleRound.endTime > timestamp
+                ? presaleRound.endTime - timestamp
+                : 0
             }
-            preSaleSold={presalePageHook.data.presaleRound.roundDetails.sales}
-          />
-          <RaiseStats
-            usdtBalance={presalePageHook.data.usdtBalance}
-            presaleData={presalePageHook.data.presaleRound}
-          />
-          <PriceIncreaseTimer
-            endTime={presalePageHook.data.presaleRound.endTime}
-            timestamp={presalePageHook.data.timestamp}
+            label="PRICE INCREASE IN"
           />
           <ActionButtons
-            usdtBalance={presalePageHook.data.usersUSDTBalance}
-            ownBalance={presalePageHook.data.usersOwnBalance}
-            ownPrice={presalePageHook.data.presaleRound.roundDetails.price}
+            usdtBalance={usersUSDTBalance}
+            ownBalance={usersOwnBalance}
+            ownPrice={presaleRound.roundDetails.price}
             refetch={presalePageHook.refetch}
-            presaleAllocation={
-              presalePageHook.data.presaleRound.roundDetails.allocation
-            }
-            preSaleSold={presalePageHook.data.presaleRound.roundDetails.sales}
+            presaleAllocation={presaleRound.roundDetails.allocation}
+            preSaleSold={presaleRound.roundDetails.sales}
           />
         </>
       )}
-      {!presalePageHook.data.presaleRound.roundsInProgress && (
+      {!presaleRound.roundsInProgress && presaleRound.hasPresaleStarted && (
         <PresaleConcluded
           presalePurchases={presaleConcludedPageHook.data.presalePurchases}
           refetch={presaleConcludedPageHook.refetch}

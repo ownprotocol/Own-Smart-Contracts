@@ -13,7 +13,7 @@ const DesktopNavbar = ({ pathname }: { pathname: string }) => {
           key={link.name}
           href={link.link}
           className={cn(
-            "tracking-normal transition-colors hover:text-gray-300",
+            "!text-md font-bold tracking-normal text-gray-100 transition-colors hover:text-gray-300",
             pathname === link.link
               ? "font-semibold underline underline-offset-4"
               : "",

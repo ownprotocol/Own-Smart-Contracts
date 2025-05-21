@@ -3,20 +3,19 @@
 import { useMinimalCountdown } from "@/hooks/use-minimal-countdown";
 import Image from "next/image";
 
-interface PriceIncreaseTimerProps {
-  endTime: number;
-  timestamp: number;
+interface CountdownTimerProps {
+  duration: number;
+  label: string;
 }
 
-function PriceIncreaseTimer({ endTime, timestamp }: PriceIncreaseTimerProps) {
-  const diff = endTime > timestamp ? endTime - timestamp : 0;
-  const duration = useMinimalCountdown(diff);
+function CountdownTimer(props: CountdownTimerProps) {
+  const duration = useMinimalCountdown(props.duration);
 
   return (
     <div className="relative mt-4 flex min-h-[100px] justify-center md:mt-0">
       <div className="flex flex-col gap-4">
         <h1 className="font-funnel px-4 py-2 text-center text-[14px] font-normal leading-[14px] md:text-[16px] md:leading-[16px] lg:text-[18px] lg:leading-[18px]">
-          PRICE INCREASE IN
+          {props.label}
         </h1>
         <div className="flex flex-col justify-center gap-4 md:flex-row">
           <div className="flex gap-4">
@@ -89,4 +88,4 @@ function TimerBox({ label, value }: TimerBoxProps) {
 //   );
 // };
 
-export default PriceIncreaseTimer;
+export default CountdownTimer;

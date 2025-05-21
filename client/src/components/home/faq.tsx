@@ -8,12 +8,10 @@ import {
 
 function FAQPage() {
   return (
-    <main className="mt-16">
-      <h1 className="mb-2 text-left font-sans text-[32px] font-[400] leading-[32px] tracking-[-0.05em] md:mb-8 md:text-[72px] md:leading-[72px]">
-        Have Questions?
-      </h1>
+    <main className="mt-16 w-full">
+      <h1 className="header">Have Questions?</h1>
 
-      <Accordion type="single" collapsible >
+      <Accordion type="single" collapsible>
         <AccordionItem value="item-1" className="border-b border-gray-800">
           <AccordionTrigger>
             <h2 className="text-left font-['DM_Sans'] text-xl leading-6 text-slate-300 md:text-2xl md:leading-8">
@@ -40,11 +38,12 @@ function FAQPage() {
           </AccordionTrigger>
           <AccordionContent>
             <p className="text-left font-['DM_Sans'] text-base leading-6 text-[#B4B4B4] md:text-xl md:leading-8">
-              To participate in a quest, simply log in to the Fasset app and visit
-              the Rewards Center. Choose from the list of available quests,
-              complete the specified tasks (such as referring friends, making
-              deposits, or engaging in the community), and earn points that will
-              be converted to Own tokens during the Token Generation Event (TGE).
+              To participate in a quest, simply log in to the Fasset app and
+              visit the Rewards Center. Choose from the list of available
+              quests, complete the specified tasks (such as referring friends,
+              making deposits, or engaging in the community), and earn points
+              that will be converted to Own tokens during the Token Generation
+              Event (TGE).
             </p>
           </AccordionContent>
         </AccordionItem>
@@ -73,11 +72,12 @@ function FAQPage() {
           </AccordionTrigger>
           <AccordionContent>
             <p className="text-left font-['DM_Sans'] text-base leading-6 text-[#B4B4B4] md:text-xl md:leading-8">
-              The Fasset app serves as the gateway to the Own ecosystem, allowing
-              you to participate in quests, earn rewards, and manage your points.
-              Additionally, the app offers seamless access to tokenized real-world
-              assets, staking opportunities, and governance features, ensuring an
-              all-in-one solution for financial empowerment and engagement.
+              The Fasset app serves as the gateway to the Own ecosystem,
+              allowing you to participate in quests, earn rewards, and manage
+              your points. Additionally, the app offers seamless access to
+              tokenized real-world assets, staking opportunities, and governance
+              features, ensuring an all-in-one solution for financial
+              empowerment and engagement.
             </p>
           </AccordionContent>
         </AccordionItem>

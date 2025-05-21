@@ -8,6 +8,7 @@ export interface PresaleRoundDetails {
 }
 
 export interface CurrentPresaleRoundDetails {
+  hasPresaleStarted: boolean;
   roundsInProgress: boolean;
   roundDetails: PresaleRoundDetails;
   endTime: number;

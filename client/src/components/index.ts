@@ -1,7 +1,7 @@
 export { default as Footer } from "./layout/footer";
 export { default as Header } from "./layout/header";
 export { default as RaiseStats } from "./home/raise-stats";
-export { default as PriceIncreaseTimer } from "./home/price-increase-timer";
+export { default as CountdownTimer } from "./home/price-increase-timer";
 export { default as ProgressBar } from "./home/progress-bar";
 export { default as PresaleBanner } from "./home/presale-banner";
 export { default as ActionButtons } from "./home/action-buttons";
@@ -28,7 +28,6 @@ export { default as StakingButton } from "./staking/staking-button";
 export { default as DurationButton } from "./staking/duration-button";
 export { default as NetworkSwitchDialog } from "./network-switch-dialog";
 export { default as RewardBox } from "./reward-box";
-export { default as BlurredStakingBoard } from "./blurred-staking-board";
 export { default as FAQPage } from "./home/faq";
 export { default as StakingDrawerHeaderLoading } from "./ui/loading-skeletons/staking-drawer-header.loading";
 export { default as StakingLoading } from "./ui/loading-skeletons/staking-loading";
