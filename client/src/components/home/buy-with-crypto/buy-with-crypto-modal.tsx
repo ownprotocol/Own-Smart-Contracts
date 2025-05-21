@@ -1,10 +1,5 @@
-import { parseEther } from "viem";
-import { allowance } from "thirdweb/extensions/erc20";
-import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useContracts } from "@/hooks";
-import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
 import { toast } from "react-toastify";
 import {
   useActiveAccount,
@@ -26,7 +21,7 @@ interface BuyWithCryptoModalProps {
   ownBalance: number;
   ownPrice: number;
   setIsOpen: (isOpen: boolean) => void;
-  refetch: () => Promise<void>;
+  submit: (amount: number) => Promise<void>;
   maxAllocation: number;
 }
 
@@ -34,15 +29,12 @@ export const BuyWithCryptoDrawer = ({
   usdtBalance,
   ownBalance,
   ownPrice,
-  refetch,
   maxAllocation,
-  setIsOpen,
+  submit,
 }: BuyWithCryptoModalProps) => {
   const wallet = useActiveWallet();
   const { data: walletImage } = useWalletImage(wallet?.id);
-  const { presaleContract, usdtContract } = useContracts();
   const account = useActiveAccount();
-  const router = useRouter();
   const {
     register,
     setValue,
@@ -105,43 +97,7 @@ export const BuyWithCryptoDrawer = ({
         return;
       }
 
-      const parsedAmount = parseEther(data.tokenAmount);
-
-      const allowanceTx = await allowance({
-        contract: usdtContract,
-        owner: account.address,
-        spender: presaleContract.address,
-      });
-
-      if (allowanceTx < parsedAmount) {
-        await sendAndConfirmTransaction({
-          account,
-          transaction: prepareContractCall({
-            contract: usdtContract,
-            method: "approve",
-            params: [presaleContract.address, parsedAmount],
-          }),
-        });
-
-        toast.success("Approval successful");
-      }
-
-      await sendAndConfirmTransaction({
-        account,
-        transaction: prepareContractCall({
-          contract: presaleContract,
-          method: "purchasePresaleTokens",
-          params: [parseEther(data.tokenAmount), account.address],
-        }),
-      });
-
-      await refetch();
-
-      toast.success("Transaction successful");
-      setTimeout(() => {
-        setIsOpen(false);
-        router.push("/presale");
-      }, 1000);
+      await submit(parseFloat(data.tokenAmount));
     } catch (error) {
       toast.error("Transaction failed");
       console.error("Transaction error:", error);
@@ -192,7 +148,7 @@ export const BuyWithCryptoDrawer = ({
             </div>
           </div>
         </div>
-        <div className="flex">
+        <div className="flex flex-col gap-4 md:flex-row">
           <FormInput
             title={"ENTER USDT AMOUNT TO SPEND"}
             onChange={handleInputToken}

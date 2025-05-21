@@ -25,7 +25,7 @@ export const CustomDrawer = ({
   return (
     <Drawer open={isOpen} onOpenChange={onOpenChange}>
       <DrawerTrigger asChild>{button}</DrawerTrigger>
-      <DrawerContent className="mx-auto w-full bg-white px-2 md:px-8">
+      <DrawerContent className="mx-auto w-full bg-white px-2 py-8 md:px-8">
         <div className="mx-auto w-full max-w-7xl">
           <DrawerHeader className="relative">
             <DrawerClose className="absolute right-0 top-0">
@@ -35,7 +35,7 @@ export const CustomDrawer = ({
             </DrawerClose>
             {title && (
               <DrawerTitle className="text-black">
-                <span className="header">{title}</span>
+                <span className="header !pb-0">{title}</span>
               </DrawerTitle>
             )}
           </DrawerHeader>

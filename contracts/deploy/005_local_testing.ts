@@ -20,8 +20,6 @@ const ADDRESSES_TO_ISSUE_SEPOLIA_TEST_TOKENS = [
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   if (!isTesting) return;
 
-  console.log("Setting up test environment");
-
   const [deployer] = await hre.ethers.getSigners();
 
   const { own, stake, presale, mockUSDT } =
@@ -38,6 +36,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   await own.write.transfer([stake.address, parseEther("1000000")]);
 
   await own.write.transfer([presale.address, parseEther("1000000")]);
+  console.log("DEPLOYER:", deployer.address);
 
   const rounds = Array.from({ length: 30 }, (_, i) => i).map(() => ({
     duration: 86400n,
