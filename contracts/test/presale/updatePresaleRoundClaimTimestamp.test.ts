@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { OwnContract, PresaleContract, Signers } from "../../types";
 import { getContractInstances } from "../../helpers/testing-api";
 import hre from "hardhat";
-import { getCurrentBlockTimestamp } from "../../helpers/evm";
+import { getCurrentBlockTimestamp, increaseTime } from "../../helpers/evm";
 
 describe("Presale - update presale round claim timestamp", async () => {
   let presale: PresaleContract;
@@ -47,29 +47,27 @@ describe("Presale - update presale round claim timestamp", async () => {
       presaleNonOwner.write.updatePresaleRoundClaimTimestamp([
         BigInt(1),
         BigInt(1),
-      ]),
-    ).to.be.revertedWithCustomError(
-      presale,
-      "OwnableUnauthorizedAccount",
-    );
+      ])
+    ).to.be.revertedWithCustomError(presale, "OwnableUnauthorizedAccount");
   });
 
   it("Should revert when trying to update a presale round in progress", async () => {
+    const currentTime = await getCurrentBlockTimestamp();
+    await presale.write.setPresaleStartTime([BigInt(currentTime + 5)]);
+    await increaseTime(5);
+
     await expect(
-      presale.write.updatePresaleRoundClaimTimestamp([BigInt(0), BigInt(1)]),
+      presale.write.updatePresaleRoundClaimTimestamp([BigInt(0), BigInt(1)])
     ).to.be.revertedWithCustomError(
       presale,
-      "CannotUpdatePresaleRoundThatHasEndedOrInProgress",
+      "CannotUpdatePresaleRoundThatHasEndedOrInProgress"
     );
   });
 
   it("Should revert if the presale round index is out of bounds", async () => {
     await expect(
-      presale.write.updatePresaleRoundClaimTimestamp([BigInt(2), BigInt(1)]),
-    ).to.be.revertedWithCustomError(
-      presale,
-      "PresaleRoundIndexOutOfBounds",
-    );
+      presale.write.updatePresaleRoundClaimTimestamp([BigInt(2), BigInt(1)])
+    ).to.be.revertedWithCustomError(presale, "PresaleRoundIndexOutOfBounds");
   });
 
   it("Should revert when there are no more presale rounds", async () => {
@@ -79,13 +77,16 @@ describe("Presale - update presale round claim timestamp", async () => {
     await hre.ethers.provider.send("evm_increaseTime", [200]);
 
     await expect(
-      presale.write.updatePresaleRoundClaimTimestamp([BigInt(1), BigInt(1)]),
+      presale.write.updatePresaleRoundClaimTimestamp([BigInt(1), BigInt(1)])
     ).to.be.revertedWithCustomError(presale, "AllPresaleRoundsHaveEnded");
   });
 
   it("Should update the presale round claim timestamp correctly", async () => {
     const startTime = BigInt(550);
-    await presale.write.updatePresaleRoundClaimTimestamp([BigInt(1), startTime]);
+    await presale.write.updatePresaleRoundClaimTimestamp([
+      BigInt(1),
+      startTime,
+    ]);
 
     const round = await presale.read.presaleRounds([BigInt(1)]);
 
@@ -97,10 +98,13 @@ describe("Presale - update presale round claim timestamp", async () => {
     await presale.write.setPresaleStartTime([BigInt(currentTime + 5)]);
 
     await expect(
-      presale.write.updatePresaleRoundClaimTimestamp([BigInt(1), BigInt(currentTime + 50)]),
+      presale.write.updatePresaleRoundClaimTimestamp([
+        BigInt(1),
+        BigInt(currentTime + 50),
+      ])
     ).to.be.revertedWithCustomError(
       presale,
-      "CannotSetPresaleClaimTimestampToBeBeforeRoundEnd",
+      "CannotSetPresaleClaimTimestampToBeBeforeRoundEnd"
     );
   });
 });

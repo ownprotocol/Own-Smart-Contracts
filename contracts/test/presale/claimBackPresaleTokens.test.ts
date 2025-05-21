@@ -15,10 +15,13 @@ describe("Presale - claimBackPresaleTokens", async () => {
   let mockUSDT: MockUSDTContract;
   let signers: Signers;
 
+  const purchaseAmount = 1000n;
+  const presaleAmount = 1000000n;
+
   beforeEach(async () => {
     ({ presale, own, mockUSDT, signers } = await getContractInstances());
 
-    await own.write.transfer([presale.address, BigInt(1000000)]);
+    await own.write.transfer([presale.address, presaleAmount]);
     await mockUSDT.write.mint([signers[0].account.address, parseEther("1000")]);
     await mockUSDT.write.approve([presale.address, parseEther("1000")]);
 
@@ -39,17 +42,17 @@ describe("Presale - claimBackPresaleTokens", async () => {
     await increaseTime(10);
 
     await presale.write.purchasePresaleTokens([
-      BigInt(1000),
+      purchaseAmount,
       signers[0].account.address,
     ]);
   });
 
   it("Should revert when trying to claim back presale tokens while the presale is still ongoing", async () => {
     await expect(
-      presale.write.claimBackPresaleTokens(),
+      presale.write.claimBackPresaleTokens()
     ).to.be.revertedWithCustomError(
       presale,
-      "CannotClaimBackPresaleTokensWhilePresaleIsInProgress",
+      "CannotClaimBackPresaleTokensWhilePresaleIsInProgress"
     );
   });
 
@@ -57,7 +60,7 @@ describe("Presale - claimBackPresaleTokens", async () => {
     await expect(
       presale.write.claimBackPresaleTokens({
         account: signers[1].account,
-      }),
+      })
     ).to.be.revertedWithCustomError(presale, "OwnableUnauthorizedAccount");
   });
 
@@ -67,7 +70,7 @@ describe("Presale - claimBackPresaleTokens", async () => {
     await expect(presale.write.claimBackPresaleTokens()).to.changeTokenBalances(
       own,
       [presale.address, signers[0].account.address],
-      [-BigInt(1000000), BigInt(1000000)],
+      [-(presaleAmount - purchaseAmount), presaleAmount - purchaseAmount]
     );
   });
 });

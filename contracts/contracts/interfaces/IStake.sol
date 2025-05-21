@@ -90,6 +90,18 @@ interface IStake {
     );
 
     /**
+     * @notice Emitted when the principle is emergency withdrawn
+     * @param claimer Address of the claimer
+     * @param positionIds Array of stake position IDs
+     * @param amount Amount of tokens withdrawn
+     */
+    event EmergencyWithdrawStakePrinciple(
+        address indexed claimer,
+        uint256[] positionIds,
+        uint256 amount
+    );
+
+    /**
      * @notice Emitted when Sablier stream ID is set
      * @param streamId ID of the Sablier stream
      */
@@ -159,6 +171,9 @@ interface IStake {
     /// @notice Thrown when there are no rewards to claim
     error NoRewardsToClaim();
 
+    /// @notice Thrown when the user tries to emergency withdraw their stake but there is nothing to claim
+    error NoEmergencyPrincipleToWithdraw();
+
     /// @notice Thrown when there are insufficient funds for rewards
     error NotEnoughFundsAcrossVestingContractForRewards(
         uint256 totalReward,
@@ -176,7 +191,7 @@ interface IStake {
     error CannotSetDailyRewardAmountToZero();
 
     /// @notice Thrown when attempting to set boost for a week in the past
-    error CannotSetBoostForWeekInPast();
+    error CannotSetBoostForCurrentOrPastWeek();
 
     /// @notice Thrown when attempting to set boost duration to zero
     error CannotSetDurationInWeeksForBoostToZero();
@@ -207,6 +222,20 @@ interface IStake {
      * @param _positionIds Array of stake position IDs to claim rewards for
      */
     function claimRewards(uint256[] calldata _positionIds) external;
+
+    /**
+     * @notice Allows users to emergency withdraw their staked tokens
+     * @notice This foregoes any pending rewards and just withdraws the principle
+     * @param _positionIds Array of stake position IDs to withdraw from
+     */
+    function emergencyWithdrawStakePrinciple(
+        uint256[] calldata _positionIds
+    ) external;
+
+    /**
+     *@notice Allows for the weekly rewards values cache to be updated
+     **/
+    function updateWeeklyRewardValuesCache() external;
 
     // Admin Functions
 

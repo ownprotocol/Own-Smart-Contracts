@@ -315,10 +315,12 @@ interface IPresale {
 
     /**
      * @notice Allows users to claim their presale tokens
-     * @dev Iterates through user's unclaimed purchases and transfers tokens for rounds that have ended
+     * @dev Starting from the provided 'from' presale purchase ID to the 'to' ID
      * @dev Reverts if no tokens are available for claiming
+     * @param from Starting presale purchase ID
+     * @param to Ending presale purchase ID
      */
-    function claimPresaleRoundTokens() external;
+    function claimPresaleRoundTokens(uint256 from, uint256 to) external;
 
     /**
      * @notice Allows the owner to claim back unsold presale tokens
