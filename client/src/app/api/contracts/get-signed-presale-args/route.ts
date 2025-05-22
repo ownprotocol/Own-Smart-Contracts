@@ -15,7 +15,7 @@ const bodySchema = z.object({
   networkId: z.literal(sepolia.id),
 });
 
-const privateKey = env.WERT_PRIVATE_KEY!;
+const privateKey = env.WERT_PRIVATE_KEY;
 
 export async function POST(req: Request) {
   const { address, amount, networkId } = bodySchema.parse(await req.json());

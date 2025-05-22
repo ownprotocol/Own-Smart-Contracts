@@ -1,7 +1,5 @@
 import type { Options } from "@wert-io/widget-initializer/types";
 import { v4 as uuidv4 } from "uuid";
-import { MAIN_CHAIN } from "./contracts";
-import { sepolia } from "thirdweb/chains";
 import { env } from "@/env";
 
 /**
@@ -17,7 +15,7 @@ export const buildWertOptions = (): Options => {
   const origin = "https://sandbox.wert.io";
 
   return {
-    partner_id: env.NEXT_PUBLIC_WERT_PARTNER_ID!,
+    partner_id: env.NEXT_PUBLIC_WERT_PARTNER_ID,
     click_id: uuidv4(),
     origin,
   };
