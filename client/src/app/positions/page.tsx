@@ -2,25 +2,20 @@
 
 import { useActiveAccount } from "thirdweb/react";
 
-import { ConnectWalletDialog } from "@/components";
 import { StakePageContent } from "@/components/user-stake/stake-page-content";
 import { useStakingPositionsPage } from "@/hooks/use-staking-positions-page";
 import Loading from "../loading";
+import { useRouter } from "next/navigation";
 
 function UserStakingPositionsPage() {
   const activeAccount = useActiveAccount();
   const queryHook = useStakingPositionsPage();
+  const router = useRouter();
 
   if (!activeAccount) {
-    return (
-      <>
-        <Loading />
-        <ConnectWalletDialog
-          redirectTo={`/positions`}
-          text="Connect wallet to see your staking positions"
-        />
-      </>
-    );
+    router.push("/");
+
+    return <Loading />;
   }
 
   return (
