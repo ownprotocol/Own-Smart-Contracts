@@ -8,6 +8,7 @@ import { useActiveAccount } from "thirdweb/react";
 import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
 import { toast } from "react-toastify";
 import HashLoader from "react-spinners/HashLoader";
+
 interface PresalePurchasesPageContentProps {
   presalePageHook: ReturnType<typeof usePresalePurchasesPage>;
 }
@@ -44,7 +45,8 @@ export const PresalePurchasesPageContent = ({
         transaction: prepareContractCall({
           contract: presaleContract,
           method: "claimPresaleRoundTokens",
-          params: [],
+          // Pass the entire list of presale purchases
+          params: [0n, BigInt(presalePageHook.data.presalePurchases.length)],
         }),
       });
 
@@ -63,6 +65,7 @@ export const PresalePurchasesPageContent = ({
       <Button
         variant={"mainButton"}
         disabled={!presalePageHook.data.hasRewardsToClaim}
+        size="lg"
         onClick={claimRewards}
         useSpinner
       >

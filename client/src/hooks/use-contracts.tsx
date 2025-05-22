@@ -6,15 +6,18 @@ import {
 } from "@/constants/abi";
 import { client } from "@/lib/client";
 import { getContract } from "thirdweb";
-import { type Abi } from "thirdweb/utils";
 import { useActiveChainWithDefault } from "./useChainWithDefault";
-import { getContractAddresses } from "@/config/contracts";
+import {
+  getContractAddresses,
+  type SupportedNetworkIds,
+} from "@fasset/contracts";
 
 export const useContracts = () => {
   const chain = useActiveChainWithDefault();
-  
 
-  const contractAddresses = getContractAddresses(chain.id);
+  const contractAddresses = getContractAddresses(
+    chain.id as SupportedNetworkIds,
+  );
   const usdtContract = getContract({
     client,
     address: contractAddresses.usdtAddress,
@@ -48,7 +51,7 @@ export const useContracts = () => {
     client,
     address: contractAddresses.veOwnTokenAddress,
     chain,
-    abi: veOwnTokenABI as Abi,
+    abi: veOwnTokenABI,
   });
   return {
     usdtContract,

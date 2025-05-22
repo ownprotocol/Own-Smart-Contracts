@@ -87,7 +87,7 @@ function ProgressBar({
   return (
     <div
       className={cn(
-        "relative h-[75px] w-full overflow-hidden rounded-lg bg-purple-950 pt-4 md:h-[105px]",
+        "relative h-[75px] w-full overflow-hidden rounded-lg bg-purple-950 md:h-[105px]",
         className,
       )}
     >

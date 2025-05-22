@@ -5,20 +5,21 @@ import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { icons } from "@/constants/icons";
 import {
   ConnectWalletButton,
   DesktopNavbar,
   MobileSidebar,
 } from "@/components";
+import { FooterHeaderWrapper } from "./wrapper";
 
-const Navigation = () => {
+const Header = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
 
   return (
-    <div className="mt-2 flex flex-row justify-between px-[5%] md:px-[10%]">
+    <FooterHeaderWrapper className="top-0 pt-2">
       <Button
         variant="ghost"
         className="lg:hidden"
@@ -40,8 +41,8 @@ const Navigation = () => {
       <div className="flex items-center justify-center md:justify-end lg:w-48">
         <ConnectWalletButton isHoverable={true} />
       </div>
-    </div>
+    </FooterHeaderWrapper>
   );
 };
 
-export default Navigation;
+export default Header;

@@ -1,5 +1,5 @@
 import { type Metadata } from "next";
-import StakingPageClient from "@/components/staking/staking-client";
+import { StakingPageContent } from "@/components/staking/staking-page-content";
 
 export const metadata: Metadata = {
   title: "Fasset",
@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function StakingPage() {
-  return <StakingPageClient />;
+  return <StakingPageContent />;
 }

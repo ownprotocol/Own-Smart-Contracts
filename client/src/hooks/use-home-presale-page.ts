@@ -24,10 +24,13 @@ export const useHomePresalePage = () => {
     ),
     usersUSDTBalance: useGetBalanceUSDT(account?.address ?? ""),
     timestamp: useTestingSafeTimestamp(),
-    startPresaleTime: useReadContractQueryHook({
-      contract: presaleContract,
-      method: "startPresaleTime",
-    }),
+    startPresaleTime: useReadContractQueryHook(
+      {
+        contract: presaleContract,
+        method: "startPresaleTime",
+      },
+      (value) => Number(value),
+    ),
   });
 
   return presaleData;

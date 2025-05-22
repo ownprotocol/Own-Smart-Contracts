@@ -9,22 +9,27 @@ import {
   DialogContent,
   Dialog,
 } from "@/components/ui/dialog";
+import { useEffect } from "react";
 
 interface ConnectWalletDialogProps {
+  text: string;
   redirectTo: "/presale" | "/positions";
 }
-function ConnectWalletDialog({ redirectTo }: ConnectWalletDialogProps) {
+function ConnectWalletDialog({ redirectTo, text }: ConnectWalletDialogProps) {
   const router = useRouter();
   const handleDialogClose = () => {
     router.push("/");
   };
+
+  useEffect(() => {
+    return () => handleDialogClose();
+  }, []);
+
   return (
     <Dialog defaultOpen onOpenChange={(open) => !open && handleDialogClose()}>
       <DialogContent className="border-gray-800 bg-[#141019] backdrop-blur-2xl sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle className="text-center text-white">
-            Connect Wallet to View Rewards
-          </DialogTitle>
+          <DialogTitle className="text-center text-white">{text}</DialogTitle>
         </DialogHeader>
         <div className="flex justify-center py-4">
           <ConnectWalletButton redirectTo={redirectTo} />

@@ -17,7 +17,7 @@ function RaiseStats({ usdtBalance, presaleData }: RaiseStatsProps) {
   };
 
   return (
-    <div className="relative flex flex-col gap-4 md:mt-1 md:min-h-[200px]">
+    <div className="relative flex w-full max-w-4xl flex-col gap-4 md:mt-1 md:min-h-[200px]">
       <div className="flex w-full flex-row">
         <div className="flex w-1/2 flex-col">
           <h5 className="font-dmMono mb-2 text-[14px] font-normal leading-[14px] text-[#808080]">
@@ -40,21 +40,6 @@ function RaiseStats({ usdtBalance, presaleData }: RaiseStatsProps) {
       <div className="">
         <ProgressBar sales={sales} allocation={allocation} />
       </div>
-      <div className="absolute left-[-15%] top-[-15%] -z-10 hidden md:block">
-        <div className="relative">
-          <Image
-            src="/home-page/hero/designed-dots.png"
-            alt="Decorative dots"
-            width={75}
-            height={75}
-            priority
-          />
-          <div className="absolute left-[27%] top-[13%] h-[6px] w-[6px] animate-dot-pulse rounded-full bg-[#ff844f] [animation-delay:0ms]" />
-          <div className="absolute left-[67%] top-[27%] h-[6px] w-[6px] animate-dot-pulse rounded-full bg-[#ff844f] [animation-delay:500ms]" />
-          <div className="absolute left-[40%] top-[53%] h-[6px] w-[6px] animate-dot-pulse rounded-full bg-[#ff844f] [animation-delay:1000ms]" />
-        </div>
-      </div>
-      <div className="absolute left-0 top-0 h-[580px] w-[200px] rotate-[24.3deg] rounded-full bg-[#E49048] opacity-10 blur-[200px]" />
     </div>
   );
 }

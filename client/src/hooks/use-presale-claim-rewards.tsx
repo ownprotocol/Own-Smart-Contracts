@@ -23,7 +23,7 @@ export const useClaimRewards = (refetchFn?: () => Promise<void>) => {
         transaction: prepareContractCall({
           contract: presaleContract,
           method: "claimPresaleRoundTokens",
-          params: [],
+          params: [0n, 100n],
         }),
       });
 

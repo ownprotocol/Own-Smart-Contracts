@@ -32,8 +32,6 @@ export const buildWertOptions = (): Options => {
   return {
     partner_id: process.env.NEXT_PUBLIC_WERT_PARTNER_ID!,
     click_id: uuidv4(),
-    color_buttons: "#C58BFF",
-    color_buttons_text: "#000000",
     origin,
   };
 };

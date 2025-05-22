@@ -52,7 +52,7 @@ function Staking({
               errors={errors}
             />
           </div>
-          <div className="w-full text-end font-dm_sans text-[10px] font-medium leading-[20px] text-orange-500 md:text-[16px] md:leading-[24px] pr-12 md:pr-40">
+          <div className="w-full pr-12 text-end font-dm_sans text-[10px] font-medium leading-[20px] text-orange-500 md:pr-40 md:text-[16px] md:leading-[24px]">
             MAX REWARD
           </div>
           <div className="flex flex-col gap-2 md:flex-row md:gap-4">
@@ -76,7 +76,9 @@ function Staking({
           <DrawerFooter className="flex justify-start">
             <Button
               disabled={tokenAmount === 0 || lockupDurationWeeks === 0}
-              className="w-full rounded-lg bg-purple-700 px-4 py-2 font-dm_sans text-[14px] font-medium leading-[20px] text-white transition-colors hover:bg-purple-800 md:max-w-fit md:px-8 md:text-[18px] md:leading-[28px]"
+              variant="mainButton"
+              className="max-w-32"
+              size="lg"
               onClick={onClick}
               useSpinner
             >

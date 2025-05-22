@@ -29,6 +29,7 @@ contract Presale is
     uint256 public startPresaleTime;
 
     uint256 public totalSales;
+    uint256 public totalClaims;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -36,6 +37,10 @@ contract Presale is
     }
 
     function initialize(IOwn _own, IERC20 _usdt) public initializer {
+        if (address(_usdt) == address(0) || address(_usdt) == address(0)) {
+            revert CannotSetAddressToZero();
+        }
+
         __Ownable_init(_msgSender());
         __UUPSUpgradeable_init();
 
@@ -118,17 +123,20 @@ contract Presale is
     }
 
     function claimBackPresaleTokens() external override onlyOwner {
-        (bool roundsInProgress, ) = _getCurrentPresaleRoundId();
+        (, bool roundsInProgress, ) = _getCurrentPresaleRoundId();
 
         if (roundsInProgress) {
             revert CannotClaimBackPresaleTokensWhilePresaleIsInProgress();
         }
 
         IOwn ownCache = own;
-        uint256 ownBalance = ownCache.balanceOf(address(this));
-        ownCache.safeTransfer(msg.sender, ownBalance);
 
-        emit PresaleTokensClaimedBack(owner(), ownBalance);
+        uint256 claimableAmount = ownCache.balanceOf(address(this)) -
+            (totalSales - totalClaims);
+
+        ownCache.safeTransfer(msg.sender, claimableAmount);
+
+        emit PresaleTokensClaimedBack(owner(), claimableAmount);
     }
 
     function setPresaleStartTime(
@@ -156,15 +164,16 @@ contract Presale is
 
     modifier updatePresaleRound(uint256 _roundId) {
         (
+            bool presaleHasStarted,
             bool roundsInProgress,
             uint256 currentRoundId
         ) = _getCurrentPresaleRoundId();
 
-        if (!roundsInProgress) {
+        if (presaleHasStarted && !roundsInProgress) {
             revert AllPresaleRoundsHaveEnded();
         }
 
-        if (currentRoundId >= _roundId) {
+        if (presaleHasStarted && currentRoundId >= _roundId) {
             revert CannotUpdatePresaleRoundThatHasEndedOrInProgress();
         }
 
@@ -209,6 +218,29 @@ contract Presale is
     ) external override onlyOwner updatePresaleRound(_roundId) {
         if (_newAllocation == 0) {
             revert CannotSetPresaleRoundAllocationToZero();
+        }
+
+        uint256 allowableAllocation;
+
+        // Intentionally include all presale rounds in this calculation
+        for (uint256 i = 0; i < presaleRounds.length; ++i) {
+            if (i == _roundId) {
+                allowableAllocation += _newAllocation - presaleRounds[i].sales;
+
+                continue;
+            }
+
+            allowableAllocation +=
+                presaleRounds[i].allocation -
+                presaleRounds[i].sales;
+        }
+
+        uint256 ownBalance = own.balanceOf(address(this));
+        if (allowableAllocation > ownBalance) {
+            revert InsufficientOwnBalanceForPresaleRounds(
+                ownBalance,
+                allowableAllocation
+            );
         }
 
         uint256 oldAllocation = presaleRounds[_roundId].allocation;
@@ -277,14 +309,15 @@ contract Presale is
         uint256 _usdtAmount,
         address _receiver
     ) external override {
-        if (!hasPresaleStarted()) {
-            revert PresaleHasNotStarted();
-        }
-
         (
+            bool presaleHasStarted,
             bool roundsInProgress,
             uint256 currentRoundId
         ) = _getCurrentPresaleRoundId();
+
+        if (!presaleHasStarted) {
+            revert PresaleHasNotStarted();
+        }
 
         if (!roundsInProgress) {
             revert AllPresaleRoundsHaveEnded();
@@ -335,16 +368,29 @@ contract Presale is
         );
     }
 
-    function claimPresaleRoundTokens() external override {
+    function claimPresaleRoundTokens(
+        uint256 _from,
+        uint256 _to
+    ) external override {
         (
+            bool presaleHasStarted,
             bool roundsInProgress,
             uint256 currentRoundId
         ) = _getCurrentPresaleRoundId();
 
+        if (!presaleHasStarted) {
+            revert PresaleHasNotStarted();
+        }
+
         uint256 totalTokens;
 
-        uint256 presalePurchaseLength = presalePurchases[msg.sender].length;
-        for (uint256 i = 0; i < presalePurchaseLength; ++i) {
+        uint256 usersPresalePurchasesLength = presalePurchases[msg.sender]
+            .length;
+        uint256 to = _to > usersPresalePurchasesLength
+            ? usersPresalePurchasesLength
+            : _to;
+
+        for (uint256 i = _from; i < to; ++i) {
             if (!presalePurchases[msg.sender][i].claimed) {
                 uint256 purchasedInPresaleRoundId = presalePurchases[
                     msg.sender
@@ -370,6 +416,8 @@ contract Presale is
         if (totalTokens == 0) {
             revert NoPresaleTokensToClaim();
         }
+
+        totalClaims += totalTokens;
 
         own.transfer(msg.sender, totalTokens);
 
@@ -398,19 +446,27 @@ contract Presale is
         view
         override
         returns (
-            bool success,
+            bool hasPresaleStart,
+            bool hasRoundsInProgress,
             PresaleRound memory,
             uint256 roundId,
             uint256 endTime
         )
     {
         (
+            bool presaleHasStarted,
             bool roundsInProgress,
             uint256 currentPresaleRoundId
         ) = _getCurrentPresaleRoundId();
 
-        if (!roundsInProgress) {
-            return (false, PresaleRound(0, 0, 0, 0, 0), 0, 0);
+        if (!roundsInProgress || !presaleHasStarted) {
+            return (
+                presaleHasStarted,
+                roundsInProgress,
+                PresaleRound(0, 0, 0, 0, 0),
+                0,
+                0
+            );
         }
 
         uint256 endTimeForPresaleRound = startPresaleTime;
@@ -420,6 +476,7 @@ contract Presale is
         }
 
         return (
+            true,
             true,
             presaleRounds[currentPresaleRoundId],
             currentPresaleRoundId,
@@ -436,23 +493,24 @@ contract Presale is
     function _getCurrentPresaleRoundId()
         internal
         view
-        returns (bool roundsInProgress, uint256 roundId)
+        returns (bool presaleHasStarted, bool roundsInProgress, uint256 roundId)
     {
-        uint256 presaleTimeElapsed;
-        if (hasPresaleStarted()) {
-            presaleTimeElapsed = block.timestamp - startPresaleTime;
+        if (!hasPresaleStarted()) {
+            return (false, false, 0);
         }
+
+        uint256 presaleTimeElapsed = block.timestamp - startPresaleTime;
 
         uint256 presaleRoundLength = presaleRounds.length;
         for (uint256 i = 0; i < presaleRoundLength; ++i) {
             uint256 presaleRoundDuration = presaleRounds[i].duration;
             if (presaleTimeElapsed < presaleRoundDuration) {
-                return (true, i);
+                return (true, true, i);
             }
 
             presaleTimeElapsed -= presaleRoundDuration;
         }
 
-        return (false, 0);
+        return (true, false, 0);
     }
 }

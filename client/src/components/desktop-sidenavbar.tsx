@@ -7,13 +7,13 @@ import { cn } from "@/lib/utils";
 
 const DesktopNavbar = ({ pathname }: { pathname: string }) => {
   return (
-    <div className="hidden items-center justify-center gap-4 border-gray-500 font-dm_mono lg:flex lg:w-[500px] lg:flex-row">
+    <div className="hidden items-center justify-center gap-4 border-gray-500 font-dm_mono lg:flex lg:flex-row">
       {TOP_NAVIGATION_LINKS.map((link) => (
         <Link
           key={link.name}
           href={link.link}
           className={cn(
-            "tracking-normal transition-colors hover:text-gray-300",
+            "!text-md font-bold tracking-normal text-gray-100 transition-colors hover:text-gray-300",
             pathname === link.link
               ? "font-semibold underline underline-offset-4"
               : "",

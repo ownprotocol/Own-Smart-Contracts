@@ -26,15 +26,18 @@ export const useStakingPage = () => {
       (value) => Number(formatEther(value)),
     ),
     timestamp: useTestingSafeTimestamp(),
+    hasStakingStarted: useReadContractQueryHook({
+      contract: stakeContract,
+      method: "hasStakingStarted",
+    }),
+    stakingStartWeek: useReadContractQueryHook(
+      {
+        contract: stakeContract,
+        method: "stakingStartWeek",
+      },
+      (value) => Number(value),
+    ),
   });
 
-  const hasStakingStartedQuery = useReadContractQueryHook({
-    contract: stakeContract,
-    method: "hasStakingStarted",
-  });
-
-  return {
-    mainContentQuery,
-    hasStakingStartedQuery,
-  };
+  return mainContentQuery;
 };

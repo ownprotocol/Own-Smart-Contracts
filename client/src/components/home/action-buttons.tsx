@@ -1,26 +1,28 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 "use client";
+
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "../ui/drawer";
 import { BuyWithCryptoDrawer } from "./buy-with-crypto/buy-with-crypto-modal";
 import { type CurrentPresaleRoundDetails } from "@/types/presale";
-import { BuyWithCardDrawer } from "./buy-with-card/buy-with-card-modal";
+import { CustomDrawer } from "../drawer";
+import { toast } from "react-toastify";
+import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
+import { useActiveAccount } from "thirdweb/react";
+import { useContracts } from "@/hooks";
+import { allowance } from "thirdweb/extensions/erc20";
+import axios from "axios";
+import { signSmartContractData } from "@wert-io/widget-sc-signer";
+import { useActiveChainWithDefault } from "@/hooks/useChainWithDefault";
+import WertWidget from "@wert-io/widget-initializer";
+import { buildWertOptions } from "@/config/wert-config";
+import { parseEther } from "viem";
 
 interface ActionButtonsProps {
   ownBalance: number;
   usdtBalance: number;
   ownPrice: number;
   refetch: () => Promise<void>;
-  authUserIsValid: boolean;
   presaleAllocation: CurrentPresaleRoundDetails["roundDetails"]["allocation"];
   preSaleSold: CurrentPresaleRoundDetails["roundDetails"]["sales"];
 }
@@ -30,84 +32,130 @@ function ActionButtons({
   usdtBalance,
   ownPrice,
   refetch,
-  authUserIsValid,
   presaleAllocation,
   preSaleSold,
 }: ActionButtonsProps) {
+  const account = useActiveAccount();
+  const chain = useActiveChainWithDefault();
+
+  const { presaleContract, usdtContract } = useContracts();
+
   const [buyWithCryptoOpen, setBuyWithCryptoOpen] = useState(false);
   const [buyWithCardOpen, setBuyWithCardOpen] = useState(false);
 
   const maxAllocation = presaleAllocation - preSaleSold;
 
-  const cryptoButtonStyles =
-    "font-funnel bg-black px-8 py-6 text-[14px] leading-[14px] tracking-[0%] text-white hover:bg-gray-900 md:text-[16px] md:leading-[16px]";
+  const buyWithCryptoSubmit = async (amount: number) => {
+    if (!account?.address) {
+      toast.error("Please connect your wallet");
+      return;
+    }
+
+    const parsedAmount = parseEther(amount.toString());
+
+    const allowanceTx = await allowance({
+      contract: usdtContract,
+      owner: account.address,
+      spender: presaleContract.address,
+    });
+
+    if (allowanceTx < amount) {
+      await sendAndConfirmTransaction({
+        account,
+        transaction: prepareContractCall({
+          contract: usdtContract,
+          method: "approve",
+          params: [presaleContract.address, parsedAmount],
+        }),
+      });
+
+      toast.success("Approval successful");
+    }
+
+    await sendAndConfirmTransaction({
+      account,
+      transaction: prepareContractCall({
+        contract: presaleContract,
+        method: "purchasePresaleTokens",
+        params: [parsedAmount, account.address],
+      }),
+    });
+
+    await refetch();
+
+    toast.success("Transaction successful");
+    setTimeout(() => {
+      setBuyWithCryptoOpen(false);
+    }, 1000);
+  };
+
+  const buyWithCardSubmit = async (amount: number) => {
+    if (!account?.address) {
+      toast.error("Please connect your wallet");
+      return;
+    }
+
+    setBuyWithCardOpen(false);
+
+    const signedData = await axios.post<
+      ReturnType<typeof signSmartContractData>
+    >("/api/contracts/get-signed-presale-args", {
+      amount,
+      address: account.address,
+      networkId: chain.id,
+    });
+
+    const wertWidget = new WertWidget({
+      ...signedData.data,
+      ...buildWertOptions(),
+    });
+    wertWidget.open();
+  };
 
   return (
     <div className="mt-4 flex flex-col gap-3 p-4 md:flex-row md:justify-center md:gap-4">
       {/* Card payment button */}
 
-      <Drawer open={buyWithCardOpen} onOpenChange={setBuyWithCardOpen}>
-        <DrawerTrigger asChild>
-          <Button variant="mainButton" disabled={!authUserIsValid}>
-            Buy with Card
+      <CustomDrawer
+        button={
+          <Button variant="mainButton" size="lg">
+            Buy with Credit Card
           </Button>
-        </DrawerTrigger>
-        <DrawerContent className="h-[90vh] max-h-[90vh] px-[5%] md:px-[10%] xl:h-[90vh] xl:max-h-[90vh]">
-          <DrawerHeader className="relative">
-            <DrawerClose className="absolute right-0 top-0">
-              <span className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
-                Close
-              </span>
-            </DrawerClose>
-            <DrawerTitle className="text-black">
-              <div className="flex w-full flex-col justify-center gap-1 md:flex-row md:gap-4">
-                <span className="font-funnel text-[32px] leading-[40px] tracking-[-0.05em] md:text-[64px] md:leading-[72px]">
-                  Buy with Card
-                </span>
-              </div>
-            </DrawerTitle>
-          </DrawerHeader>
-          <BuyWithCardDrawer
-            setIsOpen={setBuyWithCardOpen}
-            usdtBalance={usdtBalance}
-            ownBalance={ownBalance}
-            ownPrice={ownPrice}
-            refetch={refetch}
-            maxAllocation={maxAllocation}
-          />
-        </DrawerContent>
-      </Drawer>
-      <Drawer open={buyWithCryptoOpen} onOpenChange={setBuyWithCryptoOpen}>
-        <DrawerTrigger asChild>
-          <Button disabled={!authUserIsValid} className={cryptoButtonStyles}>
+        }
+        title="Buy with Credit Card"
+        isOpen={buyWithCardOpen}
+        onOpenChange={setBuyWithCardOpen}
+      >
+        <BuyWithCryptoDrawer
+          setIsOpen={setBuyWithCryptoOpen}
+          usdtBalance={usdtBalance}
+          ownBalance={ownBalance}
+          ownPrice={ownPrice}
+          maxAllocation={maxAllocation}
+          submit={buyWithCardSubmit}
+          type="card"
+        />
+      </CustomDrawer>
+      <CustomDrawer
+        button={
+          <Button variant="secondary" size="lg">
             Buy with Crypto
           </Button>
-        </DrawerTrigger>
-        <DrawerContent className="h-[90vh] max-h-[90vh] px-[5%] md:px-[10%] xl:h-[90vh] xl:max-h-[90vh]">
-          <DrawerHeader className="relative">
-            <DrawerClose className="absolute right-0 top-0">
-              <span className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
-                Close
-              </span>
-            </DrawerClose>
-            <DrawerTitle className="text-black">
-              <div className="flex w-full flex-col justify-center gap-1 md:flex-row md:gap-4">
-                <span className="font-funnel text-[32px] leading-[40px] tracking-[-0.05em] md:text-[64px] md:leading-[72px]">
-                  Buy with Cryptos
-                </span>
-              </div>
-            </DrawerTitle>
-          </DrawerHeader>
-          <BuyWithCryptoDrawer
-            setIsOpen={setBuyWithCryptoOpen}
-            usdtBalance={usdtBalance}
-            ownBalance={ownBalance}
-            ownPrice={ownPrice}
-            refetch={refetch}
-            maxAllocation={maxAllocation}
-          />
-        </DrawerContent>
-      </Drawer>
+        }
+        title="Buy with Crypto"
+        isOpen={buyWithCryptoOpen}
+        onOpenChange={setBuyWithCryptoOpen}
+      >
+        <BuyWithCryptoDrawer
+          setIsOpen={setBuyWithCryptoOpen}
+          usdtBalance={usdtBalance}
+          ownBalance={ownBalance}
+          ownPrice={ownPrice}
+          maxAllocation={maxAllocation}
+          submit={buyWithCryptoSubmit}
+          type="crypto"
+        />
+      </CustomDrawer>
     </div>
   );
 }

@@ -13,7 +13,9 @@ export const StakePageContent = ({ queryHook }: StakePageContentProps) => {
   if (queryHook.isLoading) {
     return <Loading />;
   }
+
   const stakingPositions = queryHook.data;
+
   return (
     <>
       <StakingRewards

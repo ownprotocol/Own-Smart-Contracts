@@ -7,7 +7,7 @@ export default function NotFound() {
   const router = useRouter();
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center px-[5%] md:px-[10%]">
+    <main className="flex flex-col items-center justify-center px-[5%] md:px-[10%]">
       <div className="space-y-6 text-center">
         <h1 className="text-4xl font-bold text-[#9333EA] md:text-6xl">404</h1>
         <h2 className="text-2xl font-medium text-white md:text-3xl">

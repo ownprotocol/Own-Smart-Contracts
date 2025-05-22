@@ -40,7 +40,7 @@ describe("Presale - purchasePresaleTokens", async () => {
       presale.write.purchasePresaleTokens([
         BigInt(1000),
         signers[0].account.address,
-      ]),
+      ])
     ).to.be.revertedWithCustomError(presale, "PresaleHasNotStarted");
   });
 
@@ -58,7 +58,7 @@ describe("Presale - purchasePresaleTokens", async () => {
         presale.write.purchasePresaleTokens([
           BigInt(1),
           signers[0].account.address,
-        ]),
+        ])
       ).to.be.revertedWithCustomError(presale, "AllPresaleRoundsHaveEnded");
     });
 
@@ -67,11 +67,11 @@ describe("Presale - purchasePresaleTokens", async () => {
         presale.write.purchasePresaleTokens([
           BigInt(1001),
           signers[0].account.address,
-        ]),
+        ])
       )
         .to.be.revertedWithCustomError(
           presale,
-          "InsufficientBalanceInPresaleRoundForSale",
+          "InsufficientBalanceInPresaleRoundForSale"
         )
         .withArgs(BigInt(1000), BigInt(1001));
     });
@@ -91,17 +91,17 @@ describe("Presale - purchasePresaleTokens", async () => {
       await expect(tx).to.changeTokenBalance(
         mockUSDT,
         presale.address,
-        purchaseAmount,
+        purchaseAmount
       );
 
-      const [, presaleRound] =
+      const [, , presaleRound] =
         await presale.read.getCurrentPresaleRoundDetails();
 
       expect(presaleRound.sales).to.equal(purchaseAmount);
       expect(await presale.read.totalSales()).to.equal(purchaseAmount);
 
       const usersPresalePurchases = await presale.read.getUsersPresalePurchases(
-        [signers[0].account.address],
+        [signers[0].account.address]
       );
 
       expect(usersPresalePurchases.length).to.equal(1);

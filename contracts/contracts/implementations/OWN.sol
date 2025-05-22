@@ -28,6 +28,10 @@ contract Own is
         address _recipient,
         address _defaultAdmin
     ) public initializer {
+        if (_recipient == address(0) || _defaultAdmin == address(0)) {
+            revert CannotSetAddressToZero();
+        }
+
         __ERC20_init("testToken", "testToken");
         __ERC20Burnable_init();
         __ERC20Permit_init("testToken");

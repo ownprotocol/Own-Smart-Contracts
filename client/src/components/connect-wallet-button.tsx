@@ -2,13 +2,11 @@
 
 import { ConnectButton } from "thirdweb/react";
 import { client, wallets } from "@/lib/client";
-import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { generatePayload, isLoggedIn, login, logout } from "@/actions/login";
-import { GetUserQueryKey } from "@/query/get-user";
+import { localhost } from "thirdweb/chains";
 
 interface ConnectWalletButtonProps {
-  redirectTo?: "/presale" | "/positions" ;
+  redirectTo?: "/presale" | "/positions";
   title?: string;
   bgColor?: string;
   textColor?: string;
@@ -24,7 +22,6 @@ function ConnectWalletButton({
   isHoverable,
   className,
 }: ConnectWalletButtonProps) {
-  const queryClient = useQueryClient();
   const router = useRouter();
 
   return (
@@ -50,43 +47,12 @@ function ConnectWalletButton({
         size: "wide",
         title: "Login/Sign up",
       }}
-      auth={{
-        isLoggedIn: async () => {
-          try {
-            const result = await isLoggedIn();
-            return result.isValid;
-          } catch (error) {
-            console.error("Error calling isLoggedIn:", error);
-            return false;
-          }
-        },
-        doLogin: async (params) => {
-          await login(params);
-          // Invalidate the user query after login
-          await queryClient.invalidateQueries({
-            queryKey: [GetUserQueryKey],
-          });
-
-          if (redirectTo) {
-            if (redirectTo === "/presale") {
-              router.push(`/presale`);
-            } else if (redirectTo === "/positions") {
-              router.push(`/positions`);
-            } else {
-              router.push("/");
-            }
-          }
-        },
-        getLoginPayload: async ({ address }) => generatePayload({ address }),
-        doLogout: async () => {
-          await logout();
-          // Invalidate the user query after logout
-          await queryClient.invalidateQueries({
-            queryKey: [GetUserQueryKey],
-          });
-          router.push("/");
-        },
+      onConnect={() => {
+        if (redirectTo) {
+          router.push(redirectTo ?? "/");
+        }
       }}
+      chains={[localhost]}
     />
   );
 }
