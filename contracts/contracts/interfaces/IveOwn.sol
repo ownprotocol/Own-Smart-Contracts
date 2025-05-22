@@ -1,10 +1,12 @@
-// SPDX-License-Identifier: UNLICENSED
+/// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.26;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IStake} from "../interfaces/IStake.sol";
 
 interface IveOwn is IERC20 {
     // *** Errors ***
+
     /**
      * @notice Error thrown when token transfer is disabled
      */
@@ -16,15 +18,21 @@ interface IveOwn is IERC20 {
     error TransferFromDisabled();
 
     /**
-     * @notice Retrieves the bytes32 identifier for the minter role
-     * @return The minter role bytes32 value
+     * @notice Error thrown when attempting to set a contract address to zero
      */
-    function MINTER_ROLE() external view returns (bytes32);
+    error CannotSetAddressToZero();
+
+    // *** Events ***
 
     /**
-     * @notice Mints new tokens to a specified address
-     * @param to The address receiving the minted tokens
-     * @param amount The number of tokens to mint
+     * @notice Emitted when the stake contract is set
+     * @param stakeContract The address of the stake contract
      */
-    function mint(address to, uint256 amount) external;
+    event StakeContractSet(address stakeContract);
+
+    /**
+     * @notice Callable by the admin to set the stake contract
+     * @param _stakeContract The address of the stake contract
+     */
+    function setStakeContract(IStake _stakeContract) external;
 }

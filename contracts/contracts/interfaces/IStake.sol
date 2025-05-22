@@ -311,6 +311,15 @@ interface IStake {
     function getPreviousWeekReturns() external view returns (uint256);
 
     /**
+     * @notice Gets the users active veOwn balance, which is the amount of veOwn issued by stakes that are active
+     * @param _user Address of the user
+     * @return balance The active veOwn balance of the user
+     */
+    function getUsersActiveVeOwnBalance(
+        address _user
+    ) external view returns (uint256 balance);
+
+    /**
      * @notice Checks if staking has started
      * @return Boolean indicating if staking has begun
      */
