@@ -11,28 +11,31 @@ import { usePresalePurchasesPage } from "@/hooks/use-presale-purchases-page";
 import { useStakingPage } from "@/hooks/use-staking-page";
 import { TimerCountdown } from "../timer-countdown";
 import { Dots } from "./dots";
+import { queryHookUnifier } from "@/helpers/query-hook-unifier";
 
 export const PresalePageContents = () => {
-  const presalePageHook = useHomePresalePage();
-  const presaleConcludedPageHook = usePresalePurchasesPage();
-  const mainContentQuery = useStakingPage();
+  const queryHooks = queryHookUnifier({
+    presalePageHook: useHomePresalePage(),
+    presaleConcludedPageHook: usePresalePurchasesPage(),
+    mainContentQuery: useStakingPage(),
+  });
 
-  if (
-    presalePageHook.isLoading ||
-    presaleConcludedPageHook.isLoading ||
-    mainContentQuery.isLoading
-  ) {
+  if (queryHooks.isLoading) {
     return <Loading />;
   }
 
   const {
-    presaleRound,
-    timestamp,
-    usdtBalance,
-    usersOwnBalance,
-    startPresaleTime,
-    usersUSDTBalance,
-  } = presalePageHook.data;
+    presalePageHook: {
+      presaleRound,
+      timestamp,
+      usdtBalance,
+      usersOwnBalance,
+      startPresaleTime,
+      usersUSDTBalance,
+    },
+    presaleConcludedPageHook: { presalePurchases, hasRewardsToClaim },
+    mainContentQuery: { ownBalance },
+  } = queryHooks.data;
 
   const hasPresaleRoundStarted =
     presaleRound.roundsInProgress && presaleRound.hasPresaleStarted;
@@ -67,7 +70,7 @@ export const PresalePageContents = () => {
             usdtBalance={usersUSDTBalance}
             ownBalance={usersOwnBalance}
             ownPrice={presaleRound.roundDetails.price}
-            refetch={presalePageHook.refetch}
+            refetch={queryHooks.refetch}
             presaleAllocation={presaleRound.roundDetails.allocation}
             preSaleSold={presaleRound.roundDetails.sales}
           />
@@ -75,10 +78,10 @@ export const PresalePageContents = () => {
       )}
       {!presaleRound.roundsInProgress && presaleRound.hasPresaleStarted && (
         <PresaleConcluded
-          presalePurchases={presaleConcludedPageHook.data.presalePurchases}
-          refetch={presaleConcludedPageHook.refetch}
-          hasRewardsToClaim={presaleConcludedPageHook.data.hasRewardsToClaim}
-          ownBalance={mainContentQuery.data.ownBalance}
+          presalePurchases={presalePurchases}
+          refetch={queryHooks.refetch}
+          hasRewardsToClaim={hasRewardsToClaim}
+          ownBalance={ownBalance}
         />
       )}
     </>
