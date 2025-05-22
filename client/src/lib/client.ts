@@ -4,11 +4,8 @@ import { inAppWallet } from "thirdweb/wallets";
 import { createWallet } from "thirdweb/wallets";
 
 const clientId = env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID;
-const secretKey = env.THIRDWEB_SECRET_KEY;
 
-export const client = createThirdwebClient(
-  secretKey ? { secretKey } : { clientId },
-);
+export const client = createThirdwebClient({ clientId });
 
 export const wallets = [
   inAppWallet({

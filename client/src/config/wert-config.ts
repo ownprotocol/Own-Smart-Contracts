@@ -4,20 +4,6 @@ import { MAIN_CHAIN } from "./contracts";
 import { sepolia } from "thirdweb/chains";
 import { env } from "@/env";
 
-export const getCommodityForNetworkId = (networkId: number): string => {
-  if (networkId === sepolia.id) {
-    // Wert uses this mock token on sepolia: https://sepolia.etherscan.io/address/0x2ff0ec69341f43cc462251bd49bb63681adafcb0
-    //
-    return "ETH";
-  }
-
-  if (networkId === MAIN_CHAIN.id) {
-    return "USDT";
-  }
-
-  throw new Error(`Unsupported Wert network: ${networkId}`);
-};
-
 /**
  * Return only the base options in production
  * Get Wert widget configuration options
