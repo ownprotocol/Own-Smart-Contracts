@@ -132,9 +132,9 @@ function ActionButtons({
           usdtBalance={usdtBalance}
           ownBalance={ownBalance}
           ownPrice={ownPrice}
-          refetch={refetch}
           maxAllocation={maxAllocation}
           submit={buyWithCardSubmit}
+          type="card"
         />
       </CustomDrawer>
       <CustomDrawer
@@ -148,9 +148,9 @@ function ActionButtons({
           usdtBalance={usdtBalance}
           ownBalance={ownBalance}
           ownPrice={ownPrice}
-          refetch={refetch}
           maxAllocation={maxAllocation}
           submit={buyWithCryptoSubmit}
+          type="crypto"
         />
       </CustomDrawer>
     </div>

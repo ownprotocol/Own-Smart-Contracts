@@ -31,7 +31,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   await stake.write.startStakingNextWeek();
 
-  await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
+  // await setDayOfWeekInHardhatNode(DayOfWeek.Saturday);
 
   await own.write.transfer([stake.address, parseEther("1000000")]);
 

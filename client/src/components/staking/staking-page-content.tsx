@@ -1,12 +1,7 @@
 "use client";
 
-import {
-  StakeOwnTokenBanner,
-  EarnAPYTimer,
-  ConnectWalletButton,
-} from "@/components";
+import { StakeOwnTokenBanner, EarnAPYTimer } from "@/components";
 import StakingDrawerContent from "@/components/staking/staking-drawer-content";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { useStakingPage } from "@/hooks/use-staking-page";
 import { useActiveAccount } from "thirdweb/react";
@@ -15,6 +10,7 @@ import Loading from "@/app/loading";
 import { convertStakeWeekToUnixTime } from "@/lib/staking";
 import { TimerCountdown } from "../timer-countdown";
 import { CustomDrawer } from "../drawer";
+import { Dots } from "../home/dots";
 
 const buttonStyles =
   "font-funnel hover:bg-[#D58BFF] !mx-auto !w-full !max-w-fit !bg-[#C58BFF] !px-8 !py-6 !text-[14px] !font-medium !leading-[14px] !tracking-[0%] !text-black !md:text-[16px] !md:leading-[16px]";
@@ -46,6 +42,7 @@ export const StakingPageContent = () => {
 
   return (
     <div className="relative flex flex-col items-center">
+      <Dots />
       <h1 className="header !pt-8">Stake $Own Token</h1>
       <StakeOwnTokenBanner percentage={boost} />
       <EarnAPYTimer percentage={boost} timestamp={timestamp} />

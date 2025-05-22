@@ -4,13 +4,16 @@ import { signSmartContractData } from "@wert-io/widget-sc-signer";
 import { z } from "zod";
 import { encodeFunctionData, parseEther } from "viem";
 import { presaleABI } from "@/constants/abi";
-import { getContractAddresses } from "@/config/contracts";
-import { sepolia } from "thirdweb/chains";
+import {
+  getContractAddresses,
+  type SupportedNetworkIds,
+} from "@fasset/contracts";
+import { localhost, sepolia } from "thirdweb/chains";
 
 const bodySchema = z.object({
   address: z.string(),
   amount: z.number(),
-  networkId: z.union([z.literal(1), z.literal(sepolia.id)]),
+  networkId: z.union([z.literal(localhost.id), z.literal(sepolia.id)]),
 });
 
 const privateKey = process.env.WERT_PRIVATE_KEY!;
@@ -24,7 +27,9 @@ export async function POST(req: Request) {
     args: [parseEther(amount.toString()), address],
   });
 
-  const { presaleAddress } = getContractAddresses(networkId);
+  const { presaleAddress } = getContractAddresses(
+    networkId as SupportedNetworkIds,
+  );
 
   const signedData = signSmartContractData(
     {

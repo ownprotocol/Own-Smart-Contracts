@@ -22,6 +22,7 @@ interface BuyWithCryptoModalProps {
   ownPrice: number;
   setIsOpen: (isOpen: boolean) => void;
   submit: (amount: number) => Promise<void>;
+  type: "crypto" | "card";
   maxAllocation: number;
 }
 
@@ -30,6 +31,7 @@ export const BuyWithCryptoDrawer = ({
   ownBalance,
   ownPrice,
   maxAllocation,
+  type,
   submit,
 }: BuyWithCryptoModalProps) => {
   const wallet = useActiveWallet();
@@ -58,13 +60,16 @@ export const BuyWithCryptoDrawer = ({
       return;
     }
 
-    if (amount > usdtBalance) {
-      toast.warning(
-        `You don't have enough balance to stake that amount. Max stake amount is ${usdtBalance.toFixed(2)}`,
-      );
-    }
+    let amountToSet = amount;
+    if (type === "crypto") {
+      if (amount > usdtBalance) {
+        toast.warning(
+          `You don't have enough balance to stake that amount. Max stake amount is ${usdtBalance.toFixed(2)}`,
+        );
+      }
 
-    const amountToSet = Math.min(amount, usdtBalance);
+      amountToSet = Math.min(amount, usdtBalance);
+    }
 
     setValue("tokenAmount", amountToSet.toString(), {
       shouldValidate: true,
@@ -77,18 +82,17 @@ export const BuyWithCryptoDrawer = ({
     }
 
     const data = getValues();
+    const amount = parseFloat(data.tokenAmount);
 
-    if (parseFloat(data.tokenAmount) > maxAllocation) {
-      toast.error(
-        `Not enough allocation. Maximum allocation is ${maxAllocation}`,
-      );
-      await trigger(["tokenAmount"], { shouldFocus: true });
+    if (type === "crypto") {
+      if (parseFloat(data.tokenAmount) > maxAllocation) {
+        toast.error(
+          `Not enough allocation. Maximum allocation is ${maxAllocation}`,
+        );
+        await trigger(["tokenAmount"], { shouldFocus: true });
 
-      return;
-    }
-
-    try {
-      const amount = parseFloat(data.tokenAmount);
+        return;
+      }
 
       if (amount > usdtBalance) {
         toast.warning(
@@ -96,7 +100,9 @@ export const BuyWithCryptoDrawer = ({
         );
         return;
       }
+    }
 
+    try {
       await submit(parseFloat(data.tokenAmount));
     } catch (error) {
       toast.error("Transaction failed");

@@ -19,7 +19,7 @@ const Header = () => {
   const pathname = usePathname();
 
   return (
-    <FooterHeaderWrapper className="top-0">
+    <FooterHeaderWrapper className="top-0 pt-2">
       <Button
         variant="ghost"
         className="lg:hidden"

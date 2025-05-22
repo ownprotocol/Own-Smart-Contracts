@@ -90,32 +90,36 @@ function PresaleConcluded({
             </p>
           </div>
         </div>
-        <h1 className="mt-8 align-middle font-['DM_Sans'] text-[14px] font-[400] leading-[100%] tracking-[-0.03em] text-white md:text-[16px]">
-          Your Purchase History
-        </h1>
-        <div className="mt-0 sm:flex sm:items-center md:mt-2">
-          <div className="sm:flex-auto">
-            <div className="flex flex-wrap gap-2 pt-4 text-xs md:flex-row md:flex-wrap md:gap-2 md:text-base">
-              {uniqueRounds.map((round) => (
-                <button
-                  type="button"
-                  key={round.roundId}
-                  className={cn(
-                    "cursor-pointer rounded-full px-4 py-1 text-white",
-                    activeRound === round.roundId
-                      ? "cursor-pointer bg-orange-500"
-                      : "bg-[#C1691180] text-[#F1AF6E]",
-                  )}
-                  onClick={() => {
-                    handleSetRoundOnClick(round.roundId);
-                  }}
-                >
-                  Round {round.roundId + 1}
-                </button>
-              ))}
+        {uniqueRounds.length > 0 && (
+          <>
+            <h1 className="mt-8 align-middle font-['DM_Sans'] text-[14px] font-[400] leading-[100%] tracking-[-0.03em] text-white md:text-[16px]">
+              Your Purchase History
+            </h1>
+            <div className="mt-0 sm:flex sm:items-center md:mt-2">
+              <div className="sm:flex-auto">
+                <div className="flex flex-wrap gap-2 pt-4 text-xs md:flex-row md:flex-wrap md:gap-2 md:text-base">
+                  {uniqueRounds.map((round) => (
+                    <button
+                      type="button"
+                      key={round.roundId}
+                      className={cn(
+                        "cursor-pointer rounded-full px-4 py-1 text-white",
+                        activeRound === round.roundId
+                          ? "cursor-pointer bg-orange-500"
+                          : "bg-[#C1691180] text-[#F1AF6E]",
+                      )}
+                      onClick={() => {
+                        handleSetRoundOnClick(round.roundId);
+                      }}
+                    >
+                      Round {round.roundId + 1}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </>
+        )}
 
         <PresalePurchasesTable rows={filteredPurchases} showTitle={false} />
         <div className="mt-4 flex flex-col gap-3 sm:flex-row md:justify-start md:gap-4">

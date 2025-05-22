@@ -10,6 +10,7 @@ import PresaleConcluded from "./has-presale-concluded";
 import { usePresalePurchasesPage } from "@/hooks/use-presale-purchases-page";
 import { useStakingPage } from "@/hooks/use-staking-page";
 import { TimerCountdown } from "../timer-countdown";
+import { Dots } from "./dots";
 
 export const PresalePageContents = () => {
   const presalePageHook = useHomePresalePage();
@@ -38,6 +39,7 @@ export const PresalePageContents = () => {
 
   return (
     <>
+      <Dots />
       {!presaleRound.hasPresaleStarted && (
         <>
           <h1 className="header">Presale Starts In</h1>
