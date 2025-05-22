@@ -15,7 +15,10 @@ function UserStakingPositionsPage() {
     return (
       <>
         <Loading />
-        <ConnectWalletDialog redirectTo={`/positions`} />
+        <ConnectWalletDialog
+          redirectTo={`/positions`}
+          text="Connect wallet to see your staking positions"
+        />
       </>
     );
   }

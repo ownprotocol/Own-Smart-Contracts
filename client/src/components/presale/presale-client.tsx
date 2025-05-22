@@ -16,7 +16,10 @@ function PresalePurchasesPage() {
     return (
       <>
         <Loading />
-        <ConnectWalletDialog redirectTo="/presale" />
+        <ConnectWalletDialog
+          redirectTo="/presale"
+          text="Connect wallet to see your presale purchases"
+        />
       </>
     );
   }

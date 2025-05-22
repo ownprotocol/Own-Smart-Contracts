@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 export const Dots = () => (
-  <div className="absolute h-screen w-full">
+  <div className="absolute -z-10 h-screen w-full">
     <div className="absolute left-0 -z-10 hidden md:block">
       <Image
         src="/home-page/hero/center-dots.png"
