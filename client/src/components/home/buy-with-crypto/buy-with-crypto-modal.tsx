@@ -64,7 +64,7 @@ export const BuyWithCryptoDrawer = ({
     if (type === "crypto") {
       if (amount > usdtBalance) {
         toast.warning(
-          `You don't have enough balance to stake that amount. Max stake amount is ${usdtBalance.toFixed(2)}`,
+          `You don't have enough USDT tokens for this purchase, your balance is ${usdtBalance.toFixed(2)}`,
         );
       }
 
@@ -96,7 +96,7 @@ export const BuyWithCryptoDrawer = ({
 
       if (amount > usdtBalance) {
         toast.warning(
-          `You don't have enough balance to stake that amount. Max stake amount is ${usdtBalance.toFixed(2)}`,
+          `You don't have enough USDT tokens for this purchase, your balance is ${usdtBalance.toFixed(2)}`,
         );
         return;
       }
