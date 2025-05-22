@@ -7,7 +7,6 @@ import {
   setDayOfWeekInHardhatNode,
 } from "../helpers/evm";
 import { parseEther } from "ethers";
-import { SECONDS_IN_A_WEEK } from "../constants/duration";
 
 const isTesting = process.env.IS_TESTING || false;
 

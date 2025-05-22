@@ -13,10 +13,12 @@ import {
   MobileSidebar,
 } from "@/components";
 import { FooterHeaderWrapper } from "./wrapper";
+import { useActiveAccount } from "thirdweb/react";
 
 const Header = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
+  const account = useActiveAccount();
 
   return (
     <FooterHeaderWrapper className="top-0 pt-2">
@@ -31,11 +33,12 @@ const Header = () => {
       <Link href="/" className="flex items-center justify-center">
         <Image src="/own-logo.svg" height={40} width={80} alt="logo" />
       </Link>
-      <DesktopNavbar pathname={pathname} />
+      <DesktopNavbar pathname={pathname} connected={!!account} />
       <MobileSidebar
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
         pathname={pathname}
+        connected={!!account}
       />
 
       <div className="flex items-center justify-center md:justify-end lg:w-48">

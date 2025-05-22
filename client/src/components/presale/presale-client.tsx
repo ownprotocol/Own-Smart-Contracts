@@ -2,26 +2,21 @@
 
 import { useActiveAccount } from "thirdweb/react";
 
-import { ConnectWalletDialog } from "@/components";
 import { PresalePurchasesPageContent } from "@/components/presale/presale-purchases-page-content";
 import { usePresalePurchasesPage } from "@/hooks/use-presale-purchases-page";
 import Loading from "@/app/loading";
+import { useRouter } from "next/navigation";
 
 function PresalePurchasesPage() {
   const activeAccount = useActiveAccount();
+  const router = useRouter();
 
   const presalePageHook = usePresalePurchasesPage();
 
   if (!activeAccount) {
-    return (
-      <>
-        <Loading />
-        <ConnectWalletDialog
-          redirectTo="/presale"
-          text="Connect wallet to see your presale purchases"
-        />
-      </>
-    );
+    router.push("/");
+
+    return <Loading />;
   }
 
   return (

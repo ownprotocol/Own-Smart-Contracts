@@ -9,7 +9,10 @@ import {
   TransitionChild,
 } from "@headlessui/react";
 
-import { TOP_NAVIGATION_LINKS } from "@/constants/top-navigation-links";
+import {
+  DISCONNECTED_NAVIGATION_LINKS,
+  TOP_NAVIGATION_LINKS,
+} from "@/constants/top-navigation-links";
 import { icons } from "@/constants/icons";
 import { cn } from "@/lib/utils";
 
@@ -17,11 +20,17 @@ const MobileSidebar = ({
   sidebarOpen,
   setSidebarOpen,
   pathname,
+  connected,
 }: {
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
   pathname: string;
+  connected: boolean;
 }) => {
+  const links = connected
+    ? TOP_NAVIGATION_LINKS
+    : DISCONNECTED_NAVIGATION_LINKS;
+
   return (
     <Dialog
       open={sidebarOpen}
@@ -68,7 +77,7 @@ const MobileSidebar = ({
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
                 <li>
                   <ul role="list" className="-mx-2 space-y-1">
-                    {TOP_NAVIGATION_LINKS.map((item) => (
+                    {links.map((item) => (
                       <li key={item.name}>
                         <Link
                           onClick={() => setSidebarOpen(false)}
