@@ -1,5 +1,5 @@
 {
-  "address": "0x34EecAb7b944A0E6E74a539F685ac058A76A9597",
+  "address": "0xbd12b7e2Ac292D8284d2c9F593E06E415a20464a",
   "abi": [
     {
       "type": "constructor",
@@ -533,7 +533,16 @@
       "name": "claimPresaleRoundTokens",
       "constant": false,
       "payable": false,
-      "inputs": [],
+      "inputs": [
+        {
+          "type": "uint256",
+          "name": "_from"
+        },
+        {
+          "type": "uint256",
+          "name": "_to"
+        }
+      ],
       "outputs": []
     },
     {
@@ -590,7 +599,11 @@
       "outputs": [
         {
           "type": "bool",
-          "name": "success"
+          "name": "hasPresaleStart"
+        },
+        {
+          "type": "bool",
+          "name": "hasRoundsInProgress"
         },
         {
           "type": "tuple",
@@ -891,6 +904,20 @@
     {
       "type": "function",
       "name": "startPresaleTime",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "uint256",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "totalClaims",
       "constant": true,
       "stateMutability": "view",
       "payable": false,

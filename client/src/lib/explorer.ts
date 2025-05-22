@@ -1,7 +1,8 @@
-import { SupportedNetworkIds } from "@fasset/contracts";
+import { type SupportedNetworkIds } from "@fasset/contracts";
 
 const BlockExplorerUrls: Record<SupportedNetworkIds, string> = {
   [1337]: "https://localhost:3000",
+  [11155111]: "https://sepolia.etherscan.io",
 };
 
 export const getBlockExplorerTxUrl = (

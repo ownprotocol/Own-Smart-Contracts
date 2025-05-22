@@ -1,21 +1,6 @@
 import type { Options } from "@wert-io/widget-initializer/types";
 import { v4 as uuidv4 } from "uuid";
-import { MAIN_CHAIN } from "./contracts";
-import { sepolia } from "thirdweb/chains";
-
-export const getCommodityForNetworkId = (networkId: number): string => {
-  if (networkId === sepolia.id) {
-    // Wert uses this mock token on sepolia: https://sepolia.etherscan.io/address/0x2ff0ec69341f43cc462251bd49bb63681adafcb0
-    //
-    return "ETH";
-  }
-
-  if (networkId === MAIN_CHAIN.id) {
-    return "USDT";
-  }
-
-  throw new Error(`Unsupported Wert network: ${networkId}`);
-};
+import { env } from "@/env";
 
 /**
  * Return only the base options in production
@@ -30,7 +15,7 @@ export const buildWertOptions = (): Options => {
   const origin = "https://sandbox.wert.io";
 
   return {
-    partner_id: process.env.NEXT_PUBLIC_WERT_PARTNER_ID!,
+    partner_id: env.NEXT_PUBLIC_WERT_PARTNER_ID,
     click_id: uuidv4(),
     origin,
   };

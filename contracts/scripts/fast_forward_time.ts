@@ -5,7 +5,7 @@ import { getCurrentBlockTimestamp, increaseTime } from "../helpers/evm";
 const main = async () => {
   const beforetime = await getCurrentBlockTimestamp();
 
-  await increaseTime(SECONDS_IN_A_WEEK);
+  await increaseTime(SECONDS_IN_A_WEEK * 5);
 
   const currentTime = await getCurrentBlockTimestamp();
 

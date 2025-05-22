@@ -1,3 +1,3 @@
-import { localhost } from "thirdweb/chains";
+import { sepolia } from "thirdweb/chains";
 
-export const MAIN_CHAIN = localhost;
+export const MAIN_CHAIN = sepolia;

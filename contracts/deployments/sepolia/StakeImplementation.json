@@ -1,5 +1,5 @@
 {
-  "address": "0x6eE29501bBD8a48B3eE93737e8ca69Ab9461F366",
+  "address": "0x72cdBc0e5F65861D56A20DbD454ad85bAF7AaB87",
   "abi": [
     {
       "type": "constructor",
@@ -53,7 +53,7 @@
     },
     {
       "type": "error",
-      "name": "CannotSetBoostForWeekInPast",
+      "name": "CannotSetBoostForCurrentOrPastWeek",
       "inputs": []
     },
     {
@@ -123,6 +123,11 @@
     {
       "type": "error",
       "name": "InvalidLockPeriod",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "NoEmergencyPrincipleToWithdraw",
       "inputs": []
     },
     {
@@ -227,6 +232,27 @@
           "type": "uint256",
           "name": "day",
           "indexed": false
+        },
+        {
+          "type": "uint256",
+          "name": "amount",
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "anonymous": false,
+      "name": "EmergencyWithdrawStakePrinciple",
+      "inputs": [
+        {
+          "type": "address",
+          "name": "claimer",
+          "indexed": true
+        },
+        {
+          "type": "uint256[]",
+          "name": "positionIds"
         },
         {
           "type": "uint256",
@@ -591,6 +617,19 @@
           "name": "rewardValue"
         }
       ]
+    },
+    {
+      "type": "function",
+      "name": "emergencyWithdrawStakePrinciple",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        {
+          "type": "uint256[]",
+          "name": "_positionIds"
+        }
+      ],
+      "outputs": []
     },
     {
       "type": "function",
@@ -1418,6 +1457,14 @@
           "name": ""
         }
       ]
+    },
+    {
+      "type": "function",
+      "name": "updateWeeklyRewardValuesCache",
+      "constant": false,
+      "payable": false,
+      "inputs": [],
+      "outputs": []
     },
     {
       "type": "function",
