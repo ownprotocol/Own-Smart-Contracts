@@ -3,7 +3,7 @@
 import { ConnectButton } from "thirdweb/react";
 import { client, wallets } from "@/lib/client";
 import { useRouter } from "next/navigation";
-import { localhost } from "thirdweb/chains";
+import { sepolia } from "thirdweb/chains";
 
 interface ConnectWalletButtonProps {
   redirectTo?: "/presale" | "/positions";
@@ -52,7 +52,7 @@ function ConnectWalletButton({
           router.push(redirectTo ?? "/");
         }
       }}
-      chains={[localhost]}
+      chains={[sepolia]}
     />
   );
 }

@@ -1,9 +1,10 @@
+import { env } from "@/env";
 import { createThirdwebClient } from "thirdweb";
 import { inAppWallet } from "thirdweb/wallets";
 import { createWallet } from "thirdweb/wallets";
 
-const clientId = process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID!;
-const secretKey = process.env.THIRDWEB_SECRET_KEY!;
+const clientId = env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID;
+const secretKey = env.THIRDWEB_SECRET_KEY;
 
 export const client = createThirdwebClient(
   secretKey ? { secretKey } : { clientId },
@@ -21,4 +22,3 @@ export const wallets = [
   createWallet("io.rabby"),
   createWallet("io.zerion.wallet"),
 ];
-

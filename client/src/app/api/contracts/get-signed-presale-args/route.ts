@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { signSmartContractData } from "@wert-io/widget-sc-signer";
 import { z } from "zod";
 import { encodeFunctionData, parseEther } from "viem";
@@ -8,15 +6,16 @@ import {
   getContractAddresses,
   type SupportedNetworkIds,
 } from "@fasset/contracts";
-import { localhost, sepolia } from "thirdweb/chains";
+import { sepolia } from "thirdweb/chains";
+import { env } from "@/env";
 
 const bodySchema = z.object({
   address: z.string(),
   amount: z.number(),
-  networkId: z.union([z.literal(localhost.id), z.literal(sepolia.id)]),
+  networkId: z.literal(sepolia.id),
 });
 
-const privateKey = process.env.WERT_PRIVATE_KEY!;
+const privateKey = env.WERT_PRIVATE_KEY!;
 
 export async function POST(req: Request) {
   const { address, amount, networkId } = bodySchema.parse(await req.json());
@@ -34,8 +33,8 @@ export async function POST(req: Request) {
   const signedData = signSmartContractData(
     {
       address,
-      commodity: networkId === 1 ? "USDT" : "TT",
-      network: networkId === 1 ? "ethereum" : "sepolia",
+      commodity: "TT",
+      network: "sepolia",
       commodity_amount: amount,
       sc_address: presaleAddress,
       sc_input_data: data,
