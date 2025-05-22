@@ -18,6 +18,7 @@ function ConnectWalletDialog({ redirectTo }: ConnectWalletDialogProps) {
   const handleDialogClose = () => {
     router.push("/");
   };
+
   return (
     <Dialog defaultOpen onOpenChange={(open) => !open && handleDialogClose()}>
       <DialogContent className="border-gray-800 bg-[#141019] backdrop-blur-2xl sm:max-w-[425px]">

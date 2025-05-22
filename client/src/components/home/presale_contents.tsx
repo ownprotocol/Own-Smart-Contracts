@@ -44,7 +44,7 @@ export const PresalePageContents = () => {
         <>
           <h1 className="header">Presale Starts In</h1>
 
-          <TimerCountdown duration={timestamp - startPresaleTime} />
+          <TimerCountdown duration={startPresaleTime - timestamp} />
         </>
       )}
       {hasPresaleRoundStarted && (
