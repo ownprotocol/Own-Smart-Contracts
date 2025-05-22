@@ -11,7 +11,6 @@ import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
 import { useActiveAccount } from "thirdweb/react";
 import { useContracts } from "@/hooks";
 import { allowance } from "thirdweb/extensions/erc20";
-import { useRouter } from "next/navigation";
 import axios from "axios";
 import { signSmartContractData } from "@wert-io/widget-sc-signer";
 import { useActiveChainWithDefault } from "@/hooks/useChainWithDefault";
@@ -40,7 +39,6 @@ function ActionButtons({
   const chain = useActiveChainWithDefault();
 
   const { presaleContract, usdtContract } = useContracts();
-  const router = useRouter();
 
   const [buyWithCryptoOpen, setBuyWithCryptoOpen] = useState(false);
   const [buyWithCardOpen, setBuyWithCardOpen] = useState(false);
@@ -114,15 +112,16 @@ function ActionButtons({
     wertWidget.open();
   };
 
-  const cryptoButtonStyles =
-    "font-funnel bg-black px-8 py-6 text-[14px] leading-[14px] tracking-[0%] text-white hover:bg-gray-900 md:text-[16px] md:leading-[16px]";
-
   return (
     <div className="mt-4 flex flex-col gap-3 p-4 md:flex-row md:justify-center md:gap-4">
       {/* Card payment button */}
 
       <CustomDrawer
-        button={<Button variant="mainButton">Buy with Card</Button>}
+        button={
+          <Button variant="mainButton" size="lg">
+            Buy with Credit Card
+          </Button>
+        }
         title="Buy with Credit Card"
         isOpen={buyWithCardOpen}
         onOpenChange={setBuyWithCardOpen}
@@ -138,7 +137,11 @@ function ActionButtons({
         />
       </CustomDrawer>
       <CustomDrawer
-        button={<Button className={cryptoButtonStyles}>Buy with Crypto</Button>}
+        button={
+          <Button variant="secondary" size="lg">
+            Buy with Crypto
+          </Button>
+        }
         title="Buy with Crypto"
         isOpen={buyWithCryptoOpen}
         onOpenChange={setBuyWithCryptoOpen}

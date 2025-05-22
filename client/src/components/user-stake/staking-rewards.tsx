@@ -119,19 +119,15 @@ function ClaimableRewardBox({
             {value}
           </span>
         </div>
-        <div>
-          <Button
-            variant="secondary"
-            onClick={onClaim}
-            className={`rounded-md border border-[#7E22CE] bg-[#141019] px-2 py-0 text-xs text-[#7E22CE] transition-colors hover:border-[#9333EA] hover:bg-opacity-80 hover:text-[#9333EA] md:px-4 md:py-2 md:text-sm ${
-              disabled ? "cursor-not-allowed opacity-50" : ""
-            }`}
-            disabled={disabled}
-            useSpinner
-          >
-            Claim
-          </Button>
-        </div>
+        <Button
+          variant="mainButton"
+          size="lg"
+          onClick={onClaim}
+          disabled={disabled}
+          useSpinner
+        >
+          Claim
+        </Button>
       </div>
     </div>
   );

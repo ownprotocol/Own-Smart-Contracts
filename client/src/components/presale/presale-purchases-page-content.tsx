@@ -65,6 +65,7 @@ export const PresalePurchasesPageContent = ({
       <Button
         variant={"mainButton"}
         disabled={!presalePageHook.data.hasRewardsToClaim}
+        size="lg"
         onClick={claimRewards}
         useSpinner
       >

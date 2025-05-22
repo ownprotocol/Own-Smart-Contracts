@@ -12,9 +12,6 @@ import { TimerCountdown } from "../timer-countdown";
 import { CustomDrawer } from "../drawer";
 import { Dots } from "../home/dots";
 
-const buttonStyles =
-  "font-funnel hover:bg-[#D58BFF] !mx-auto !w-full !max-w-fit !bg-[#C58BFF] !px-8 !py-6 !text-[14px] !font-medium !leading-[14px] !tracking-[0%] !text-black !md:text-[16px] !md:leading-[16px]";
-
 export const StakingPageContent = () => {
   const mainContentQuery = useStakingPage();
   const account = useActiveAccount();
@@ -50,7 +47,7 @@ export const StakingPageContent = () => {
         isOpen={stakingDrawerOpen}
         onOpenChange={setStakingDrawerOpen}
         button={
-          <Button className={buttonStyles} disabled={!account}>
+          <Button variant="mainButton" size="lg" disabled={!account}>
             Stake $Own
           </Button>
         }

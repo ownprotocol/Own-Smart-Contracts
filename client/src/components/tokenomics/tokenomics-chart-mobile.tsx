@@ -1,16 +1,11 @@
 "use client";
 
 import { PieChart, Pie, Cell } from "recharts";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { tokenomicsData } from "@/constants";
 
 const TokenomicsChartMobile = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   const handleSegmentClick = (_: MouseEvent, index: number) => {
     setActiveIndex(index === activeIndex ? null : index);
@@ -76,38 +71,32 @@ const TokenomicsChartMobile = () => {
             "Allocation"
           )}
         </div>
-        {isClient ? (
-          <PieChart width={350} height={350}>
-            <Pie
-              data={tokenomicsData}
-              cx={175}
-              cy={175}
-              innerRadius={120}
-              outerRadius={150}
-              paddingAngle={0}
-              dataKey="value"
-              onClick={handleSegmentClick}
-            >
-              {tokenomicsData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={entry.color}
-                  stroke="none"
-                  opacity={
-                    activeIndex === null ? 1 : activeIndex === index ? 1 : 0.2
-                  }
-                  style={{ outline: "none" }}
-                  tabIndex={-1}
-                  className="focus:outline-none"
-                />
-              ))}
-            </Pie>
-          </PieChart>
-        ) : (
-          <div className="flex h-[400px] w-[400px] items-center justify-center">
-            <span className="text-gray-400">Loading chart...</span>
-          </div>
-        )}
+        <PieChart width={350} height={350}>
+          <Pie
+            data={tokenomicsData}
+            cx={175}
+            cy={175}
+            innerRadius={120}
+            outerRadius={150}
+            paddingAngle={0}
+            dataKey="value"
+            onClick={handleSegmentClick}
+          >
+            {tokenomicsData.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={entry.color}
+                stroke="none"
+                opacity={
+                  activeIndex === null ? 1 : activeIndex === index ? 1 : 0.2
+                }
+                style={{ outline: "none" }}
+                tabIndex={-1}
+                className="focus:outline-none"
+              />
+            ))}
+          </Pie>
+        </PieChart>
       </div>
       <div className="mt-8">{renderCustomizedLegend()}</div>
     </div>

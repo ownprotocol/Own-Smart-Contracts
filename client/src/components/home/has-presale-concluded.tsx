@@ -12,6 +12,11 @@ import { useClaimRewards } from "@/hooks/use-presale-claim-rewards";
 import { useActiveAccount } from "thirdweb/react";
 import { useContracts } from "@/hooks";
 import { orderBy, uniqBy } from "lodash";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
+import { getBlockExplorerTxUrl } from "@/lib/explorer";
+import { useActiveChainWithDefault } from "@/hooks/useChainWithDefault";
+import { SupportedNetworkIds } from "@fasset/contracts";
 
 interface PresaleConcludedProps {
   presalePurchases: PresalePurchase[];
@@ -27,9 +32,10 @@ function PresaleConcluded({
   ownBalance,
 }: PresaleConcludedProps) {
   const account = useActiveAccount();
+  const chain = useActiveChainWithDefault();
   const [activeRound, setActiveRound] = useState<number | null>(null);
   const { claimRewards, isLoading: isClaimLoading } = useClaimRewards(refetch);
-  const { presaleContract } = useContracts();
+  const { ownTokenContract } = useContracts();
   const uniqueRounds = orderBy(
     uniqBy(presalePurchases, (value) => value.roundId),
     "roundId",
@@ -81,14 +87,17 @@ function PresaleConcluded({
               </p>
             </div>
           </div>
-          <div>
-            <p className="pt-2 font-dm_mono text-[12px] font-[400] uppercase leading-[12px] tracking-[0.08em] text-[#B4B4B4] md:text-[14px] md:leading-[14px]">
-              CONTRACT ADDRESS FOR $OWN
-            </p>
-            <p className="font-dm_mono text-[12px] font-[400] text-white md:text-[24px]">
-              {presaleContract.address}
-            </p>
-          </div>
+          <Link
+            href={getBlockExplorerTxUrl(
+              ownTokenContract.address,
+              chain.id as SupportedNetworkIds,
+            )}
+            className="flex items-center gap-2 hover:underline"
+            target="_blank"
+          >
+            View Own Contract
+            <ArrowUpRight className="h-4 w-4" />
+          </Link>
         </div>
         {uniqueRounds.length > 0 && (
           <>
@@ -124,7 +133,8 @@ function PresaleConcluded({
         <PresalePurchasesTable rows={filteredPurchases} showTitle={false} />
         <div className="mt-4 flex flex-col gap-3 sm:flex-row md:justify-start md:gap-4">
           <Button
-            className="font-funnel bg-[#C58BFF] px-8 py-6 text-[14px] font-medium leading-[14px] tracking-[0%] text-black hover:bg-[#E49048] md:text-[16px] md:leading-[16px]"
+            variant={"mainButton"}
+            size="lg"
             onClick={claimRewards}
             disabled={isClaimLoading || !account || !hasRewardsToClaim}
             useSpinner
@@ -132,7 +142,8 @@ function PresaleConcluded({
             Claim Now
           </Button>
           <Button
-            className="font-funnel bg-white px-8 py-6 text-[14px] leading-[14px] tracking-[0%] text-black hover:bg-gray-900 md:text-[16px] md:leading-[16px]"
+            variant={"secondary"}
+            size="lg"
             onClick={() => {
               window.open(
                 "https://play.google.com/store/apps/details?id=com.mexcpro.client&pcampaignid=web_share&pli=1",
