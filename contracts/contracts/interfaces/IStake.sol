@@ -320,6 +320,15 @@ interface IStake {
     ) external view returns (uint256 balance);
 
     /**
+     * @notice Gets the total active veOwn supply, which is the total amount of veOwn issued by stakes that are active
+     * @return totalVeOwnSupply The total active veOwn supply
+     */
+    function getTotalActiveVeOwnSupply()
+        external
+        view
+        returns (uint256 totalVeOwnSupply);
+
+    /**
      * @notice Checks if staking has started
      * @return Boolean indicating if staking has begun
      */

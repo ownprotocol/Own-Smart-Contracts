@@ -382,7 +382,10 @@ contract Stake is
         for (uint256 i = 0; i < usersPositions[_user].length; ++i) {
             uint256 positionId = usersPositions[_user][i];
 
-            if (currentDay > positions[positionId].finalDay) {
+            if (
+                currentDay < positions[positionId].startDay ||
+                currentDay > positions[positionId].finalDay
+            ) {
                 continue;
             }
 
@@ -661,6 +664,31 @@ contract Stake is
         }
 
         return (updatedCacheValues, fromWeek);
+    }
+
+    function getTotalActiveVeOwnSupply()
+        external
+        view
+        override
+        returns (uint256 totalVeOwnSupply)
+    {
+        if (!hasStakingStarted()) {
+            return 0;
+        }
+
+        uint256 lastCachedWeek = lastRewardValuesWeeklyCachedWeek;
+
+        totalVeOwnSupply = rewardValuesWeeklyCache[lastCachedWeek]
+            .validVeOwnAtEndOfWeek;
+
+        uint256 firstDayToCalculateFrom = (lastCachedWeek + 1) * 7;
+
+        uint256 currentDay = getCurrentDay();
+
+        for (uint256 i = firstDayToCalculateFrom; i <= currentDay; ++i) {
+            totalVeOwnSupply += validVeOwnAdditionsInDay[i];
+            totalVeOwnSupply -= validVeOwnSubtractionsInDay[i];
+        }
     }
 
     function _rewardPerTokenForDayRange(

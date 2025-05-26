@@ -53,6 +53,15 @@ contract VeOwn is
         return stakeContract.getUsersActiveVeOwnBalance(account);
     }
 
+    function totalSupply()
+        public
+        view
+        override(IERC20, ERC20Upgradeable)
+        returns (uint256)
+    {
+        return stakeContract.getTotalActiveVeOwnSupply();
+    }
+
     function transfer(
         address,
         uint256
