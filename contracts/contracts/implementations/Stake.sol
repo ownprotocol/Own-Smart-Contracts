@@ -393,6 +393,31 @@ contract Stake is
         }
     }
 
+    function getTotalActiveVeOwnSupply()
+        external
+        view
+        override
+        returns (uint256 totalVeOwnSupply)
+    {
+        if (!hasStakingStarted()) {
+            return 0;
+        }
+
+        uint256 lastCachedWeek = lastRewardValuesWeeklyCachedWeek;
+
+        totalVeOwnSupply = rewardValuesWeeklyCache[lastCachedWeek]
+            .validVeOwnAtEndOfWeek;
+
+        uint256 firstDayToCalculateFrom = (lastCachedWeek + 1) * 7;
+
+        uint256 currentDay = getCurrentDay();
+
+        for (uint256 i = firstDayToCalculateFrom; i <= currentDay; ++i) {
+            totalVeOwnSupply += validVeOwnAdditionsInDay[i];
+            totalVeOwnSupply -= validVeOwnSubtractionsInDay[i];
+        }
+    }
+
     // Because in this contract weeks start from Saturday 00:00:00 UTC and UTC starts from Thursday we deduct 2 so that a Saturday is considered the start of a week
     function getCurrentDay() public view override returns (uint256) {
         return block.timestamp / 1 days - 2;
@@ -664,31 +689,6 @@ contract Stake is
         }
 
         return (updatedCacheValues, fromWeek);
-    }
-
-    function getTotalActiveVeOwnSupply()
-        external
-        view
-        override
-        returns (uint256 totalVeOwnSupply)
-    {
-        if (!hasStakingStarted()) {
-            return 0;
-        }
-
-        uint256 lastCachedWeek = lastRewardValuesWeeklyCachedWeek;
-
-        totalVeOwnSupply = rewardValuesWeeklyCache[lastCachedWeek]
-            .validVeOwnAtEndOfWeek;
-
-        uint256 firstDayToCalculateFrom = (lastCachedWeek + 1) * 7;
-
-        uint256 currentDay = getCurrentDay();
-
-        for (uint256 i = firstDayToCalculateFrom; i <= currentDay; ++i) {
-            totalVeOwnSupply += validVeOwnAdditionsInDay[i];
-            totalVeOwnSupply -= validVeOwnSubtractionsInDay[i];
-        }
     }
 
     function _rewardPerTokenForDayRange(
