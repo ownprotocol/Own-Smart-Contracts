@@ -8,8 +8,8 @@ const Footer = () => {
     <div className="flex flex-col gap-8 px-8 pb-8">
       <MainNavigation />
 
-      <div className="flex w-full">
-        <div className="font-dmMono flex-1 items-center text-[10px] leading-[10px] tracking-[0.08em] md:text-xs md:leading-3 md:tracking-[0.08em]">
+      <div className="flex w-full gap-4">
+        <div className="font-dmMono flex flex-1 items-center text-[10px] leading-[10px] tracking-[0.08em] md:text-xs md:leading-3 md:tracking-[0.08em]">
           COPYRIGHT BY FASSET.COM {new Date().getFullYear()}
         </div>
 

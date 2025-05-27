@@ -13,7 +13,7 @@ import {
 
 function MainNavigation() {
   return (
-    <div className="flex min-h-[100px] w-full justify-between">
+    <div className="flex min-h-[100px] w-full justify-between gap-4">
       <div className="relative flex-1">
         <Image
           src="/own-logo.svg"
