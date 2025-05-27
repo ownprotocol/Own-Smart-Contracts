@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 import { Button } from "../ui/button";
@@ -12,16 +12,33 @@ import {
   DesktopNavbar,
   MobileSidebar,
 } from "@/components";
-import { FooterHeaderWrapper } from "./wrapper";
 import { useActiveAccount } from "thirdweb/react";
+import { cn } from "@/lib/utils";
+
+const SCROLL_THRESHOLD = 50;
 
 const Header = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
   const account = useActiveAccount();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > SCROLL_THRESHOLD);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <FooterHeaderWrapper className="top-0 pt-2">
+    <div
+      className={cn(
+        "fixed top-0 z-50 flex w-full max-w-7xl justify-between px-8 pt-2 text-sm text-gray-400",
+        { "bg-background": isScrolled },
+      )}
+    >
       <Button
         variant="ghost"
         className="lg:hidden"
@@ -44,7 +61,7 @@ const Header = () => {
       <div className="flex items-center justify-center md:justify-end lg:w-48">
         <ConnectWalletButton isHoverable={true} />
       </div>
-    </FooterHeaderWrapper>
+    </div>
   );
 };
 

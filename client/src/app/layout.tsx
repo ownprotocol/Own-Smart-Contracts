@@ -48,7 +48,6 @@ export default async function RootLayout({
               <ToastContainer />
               <div className="flex min-h-screen w-full flex-col justify-between gap-8 px-8 pb-24 pt-24">
                 {children}
-                <MainNavigation />
               </div>
               <Footer />
             </ThirdwebProvider>
