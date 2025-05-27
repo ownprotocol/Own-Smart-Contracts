@@ -61,6 +61,15 @@ function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
         onClaim={claimRewards}
         disabled={disabled}
       />
+      <Button
+        variant="mainButton"
+        size="lg"
+        onClick={claimRewards}
+        disabled={disabled}
+        useSpinner
+      >
+        Claim
+      </Button>
     </div>
   );
 }
@@ -119,15 +128,6 @@ function ClaimableRewardBox({
             {value}
           </span>
         </div>
-        <Button
-          variant="mainButton"
-          size="lg"
-          onClick={onClaim}
-          disabled={disabled}
-          useSpinner
-        >
-          Claim
-        </Button>
       </div>
     </div>
   );

@@ -43,6 +43,7 @@ function ConnectWalletButton({
       autoConnect
       client={client}
       wallets={wallets}
+      showAllWallets={false}
       connectModal={{
         size: "wide",
         title: "Login/Sign up",
