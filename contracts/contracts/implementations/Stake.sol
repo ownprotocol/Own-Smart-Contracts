@@ -161,7 +161,6 @@ contract Stake is
         ++totalPositions;
 
         ownToken.safeTransferFrom(msg.sender, address(this), _amount);
-        veOwn.mint(msg.sender, veOwnAmount);
 
         emit Staked(msg.sender, startDay, finalDay, positionId, _amount, _days);
     }
@@ -373,6 +372,50 @@ contract Stake is
         );
 
         return cache.weeklyRewardPerTokenCached;
+    }
+
+    function getUsersActiveVeOwnBalance(
+        address _user
+    ) external view override returns (uint256 balance) {
+        uint256 currentDay = getCurrentDay();
+
+        for (uint256 i = 0; i < usersPositions[_user].length; ++i) {
+            uint256 positionId = usersPositions[_user][i];
+
+            if (
+                currentDay < positions[positionId].startDay ||
+                currentDay > positions[positionId].finalDay
+            ) {
+                continue;
+            }
+
+            balance += positions[positionId].veOwnAmount;
+        }
+    }
+
+    function getTotalActiveVeOwnSupply()
+        external
+        view
+        override
+        returns (uint256 totalVeOwnSupply)
+    {
+        if (!hasStakingStarted()) {
+            return 0;
+        }
+
+        uint256 lastCachedWeek = lastRewardValuesWeeklyCachedWeek;
+
+        totalVeOwnSupply = rewardValuesWeeklyCache[lastCachedWeek]
+            .validVeOwnAtEndOfWeek;
+
+        uint256 firstDayToCalculateFrom = (lastCachedWeek + 1) * 7;
+
+        uint256 currentDay = getCurrentDay();
+
+        for (uint256 i = firstDayToCalculateFrom; i <= currentDay; ++i) {
+            totalVeOwnSupply += validVeOwnAdditionsInDay[i];
+            totalVeOwnSupply -= validVeOwnSubtractionsInDay[i];
+        }
     }
 
     // Because in this contract weeks start from Saturday 00:00:00 UTC and UTC starts from Thursday we deduct 2 so that a Saturday is considered the start of a week
