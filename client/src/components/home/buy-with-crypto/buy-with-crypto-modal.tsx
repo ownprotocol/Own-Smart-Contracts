@@ -195,7 +195,7 @@ export const BuyWithCryptoDrawer = ({
             TETHER BALANCE: {usdtBalance.toLocaleString()} USDT
           </p>
         </div>
-        <div className="!mt-auto flex">
+        <div className="flex">
           <Button
             variant={"mainButton"}
             useSpinner

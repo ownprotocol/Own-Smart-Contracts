@@ -52,9 +52,11 @@ function Staking({
               errors={errors}
             />
           </div>
+          {/*
           <div className="w-full pr-12 text-end font-dm_sans text-[10px] font-medium leading-[20px] text-orange-500 md:pr-40 md:text-[16px] md:leading-[24px]">
             MAX REWARD
           </div>
+          */}
           <div className="flex flex-col gap-2 md:flex-row md:gap-4">
             <div className="flex w-full flex-col gap-2">
               <div className="w-full rounded-lg px-0 md:px-4">
