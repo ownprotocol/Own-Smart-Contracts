@@ -57,11 +57,16 @@ function StakingLockupPeriod({
           isSelected={lockupDuration === 4}
           onClick={() => handleLockUpDuration("4")}
         />
-        <DurationButton
-          duration="1 Year"
-          isSelected={lockupDuration === 52}
-          onClick={() => handleLockUpDuration("52")}
-        />
+        <div className="flex flex-col gap-1">
+          <DurationButton
+            duration="1 Year"
+            isSelected={lockupDuration === 52}
+            onClick={() => handleLockUpDuration("52")}
+          />
+          <div className="w-full pr-12 text-end font-dm_sans text-[10px] font-medium leading-[20px] text-orange-500 md:pr-40 md:text-[16px] md:leading-[24px]">
+            MAX REWARD
+          </div>
+        </div>
       </div>
     </div>
   );

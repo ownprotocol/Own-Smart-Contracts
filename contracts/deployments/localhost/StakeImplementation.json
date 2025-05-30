@@ -849,6 +849,39 @@
     },
     {
       "type": "function",
+      "name": "getTotalActiveVeOwnSupply",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "uint256",
+          "name": "totalVeOwnSupply"
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getUsersActiveVeOwnBalance",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "address",
+          "name": "_user"
+        }
+      ],
+      "outputs": [
+        {
+          "type": "uint256",
+          "name": "balance"
+        }
+      ]
+    },
+    {
+      "type": "function",
       "name": "getUsersPositionDetails",
       "constant": true,
       "stateMutability": "view",
