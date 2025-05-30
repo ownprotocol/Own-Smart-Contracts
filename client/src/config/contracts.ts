@@ -1,3 +1,3 @@
-import { sepolia } from "thirdweb/chains";
+import { arbitrum } from "thirdweb/chains";
 
-export const MAIN_CHAIN = sepolia;
+export const MAIN_CHAIN = arbitrum;

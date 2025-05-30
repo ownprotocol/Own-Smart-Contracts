@@ -6,7 +6,7 @@ import {
   getContractAddresses,
   type SupportedNetworkIds,
 } from "@fasset/contracts";
-import { arbitrum, sepolia } from "thirdweb/chains";
+import { arbitrum } from "thirdweb/chains";
 import { env } from "@/env";
 
 const bodySchema = z.object({
