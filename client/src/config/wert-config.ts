@@ -12,11 +12,11 @@ export const buildWertOptions = (): Options => {
   //   process.env.NODE_ENV === "development"
   //     ? "https://sandbox.wert.io"
   //     : undefined;
-  const origin = "https://sandbox.wert.io";
+  // const origin = "https://wert.io";
 
   return {
     partner_id: env.NEXT_PUBLIC_WERT_PARTNER_ID,
     click_id: uuidv4(),
-    origin,
+    // origin,
   };
 };

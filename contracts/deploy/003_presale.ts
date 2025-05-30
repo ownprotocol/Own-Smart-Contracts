@@ -28,6 +28,8 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   } else {
     if (network.name === "mainnet") {
       usdtAddress = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
+    } else if (network.name === "arbitrum") {
+      usdtAddress = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
     } else {
       throw new Error("USDT address not set for network");
     }
@@ -55,7 +57,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   // Get the implementation address
   const implementationAddress = await upgrades.erc1967.getImplementationAddress(
-    await PresaleDeployment.getAddress()
+    await PresaleDeployment.getAddress(),
   );
 
   // You can also save the implementation separately if needed

@@ -31,6 +31,8 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     if (network.name === "mainnet") {
       // Sablier addresses: https://docs.sablier.com/guides/lockup/deployments
       sablierAddress = "0x7C01AA3783577E15fD7e272443D44B92d5b21056";
+    } else if (network.name === "arbitrum") {
+      sablierAddress = "0x467D5Bf8Cfa1a5f99328fBdCb9C751c78934b725";
     } else {
       throw new Error("SablierLockup not deployed in network");
     }

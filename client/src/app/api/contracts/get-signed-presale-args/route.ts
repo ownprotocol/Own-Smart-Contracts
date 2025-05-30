@@ -6,13 +6,13 @@ import {
   getContractAddresses,
   type SupportedNetworkIds,
 } from "@fasset/contracts";
-import { sepolia } from "thirdweb/chains";
+import { arbitrum, sepolia } from "thirdweb/chains";
 import { env } from "@/env";
 
 const bodySchema = z.object({
   address: z.string(),
   amount: z.number(),
-  networkId: z.literal(sepolia.id),
+  networkId: z.literal(arbitrum.id),
 });
 
 const privateKey = env.WERT_PRIVATE_KEY;
@@ -33,8 +33,8 @@ export async function POST(req: Request) {
   const signedData = signSmartContractData(
     {
       address,
-      commodity: "TT",
-      network: "sepolia",
+      commodity: "USDC",
+      network: "arbitrum",
       commodity_amount: amount,
       sc_address: presaleAddress,
       sc_input_data: data,

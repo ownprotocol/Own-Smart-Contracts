@@ -10,6 +10,7 @@ dotenv.config({ path: __dirname + "/.env" });
 const infuraApiKey = process.env.INFURA_API_KEY;
 const mnemonic = process.env.MNEMONIC;
 const etherscanApiKey = process.env.ETHERSCAN_API_KEY;
+const arbitrumApiKey = process.env.ARBITRUM_ETHERSCAN_API_URL;
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -30,12 +31,22 @@ const config: HardhatUserConfig = {
         mnemonic,
       },
     },
+    arbitrum: {
+      url: "https://arb1.arbitrum.io/rpc",
+      chainId: 42161,
+      accounts: {
+        mnemonic,
+      },
+    },
     hardhat: {
       chainId: 1337,
     },
   },
   etherscan: {
-    apiKey: etherscanApiKey,
+    apiKey: {
+      arbitrumOne: arbitrumApiKey || "",
+      sepolia: etherscanApiKey || "",
+    },
   },
 };
 

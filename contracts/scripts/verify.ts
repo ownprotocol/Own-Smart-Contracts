@@ -1,6 +1,6 @@
 import { getLocalAddress } from "../helpers/evm";
 
-const networkName = "sepolia";
+const networkName = "arbitrum";
 
 const formatCommand = (address: string) => {
   return `npx hardhat verify --network ${networkName} ${address}`;
@@ -13,26 +13,26 @@ const main = async () => {
 
   const veOwnAddress = await getLocalAddress(
     "VeOwnImplementation",
-    networkName
+    networkName,
   );
   console.log(formatCommand(veOwnAddress));
 
   const presaleAddress = await getLocalAddress(
     "PresaleImplementation",
-    networkName
+    networkName,
   );
   console.log(formatCommand(presaleAddress));
 
   const stakeAddress = await getLocalAddress(
     "StakeImplementation",
-    networkName
+    networkName,
   );
   console.log(formatCommand(stakeAddress));
 
-  if (networkName === "sepolia") {
-    const usdtAddress = await getLocalAddress("mockUSDT", networkName);
-    console.log(formatCommand(usdtAddress));
-  }
+  // if (networkName === "sepolia") {
+  //   const usdtAddress = await getLocalAddress("mockUSDT", networkName);
+  //   console.log(formatCommand(usdtAddress));
+  // }
 
   console.log("*** Etherscan links ***");
   const ownProxy = await getLocalAddress("Own", networkName);
@@ -40,16 +40,21 @@ const main = async () => {
   const presaleProxy = await getLocalAddress("Presale", networkName);
   const stakeProxy = await getLocalAddress("Stake", networkName);
 
-  console.log(`Own: https://${networkName}.etherscan.io/address/${ownProxy}`);
-  console.log(
-    `VeOwn: https://${networkName}.etherscan.io/address/${veOwnProxy}`
-  );
-  console.log(
-    `Presale: https://${networkName}.etherscan.io/address/${presaleProxy}`
-  );
-  console.log(
-    `Stake: https://${networkName}.etherscan.io/address/${stakeProxy}`
-  );
+  console.log(`Own: https://arbiscan.io/address/${ownProxy}`);
+  console.log(`VeOwn: https://arbiscan.io/address/${veOwnProxy}`);
+  console.log(`Presale: https://arbiscan.io/address/${presaleProxy}`);
+  console.log(`Stake: https://arbiscan.io/address/${stakeProxy}`);
+
+  // console.log(`own: https://${networkname}.etherscan.io/address/${ownproxy}`);
+  // console.log(
+  //   `VeOwn: https://${networkName}.etherscan.io/address/${veOwnProxy}`,
+  // );
+  // console.log(
+  //   `Presale: https://${networkName}.etherscan.io/address/${presaleProxy}`,
+  // );
+  // console.log(
+  //   `Stake: https://${networkName}.etherscan.io/address/${stakeProxy}`,
+  // );
 };
 
 main().catch((error) => {

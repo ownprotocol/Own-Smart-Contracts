@@ -12,6 +12,11 @@ import mockUSDTSepoliaDeployment from "./deployments/sepolia/mockUSDT.json";
 import presaleSepoliaDeployment from "./deployments/sepolia/presale.json";
 import stakeSepoliaDeployment from "./deployments/sepolia/stake.json";
 
+import OwnArbitrumDeployment from "./deployments/arbitrum/Own.json";
+import VeOwnArbitrumDeployment from "./deployments/arbitrum/VeOwn.json";
+import presaleArbitrumDeployment from "./deployments/arbitrum/presale.json";
+import stakeArbitrumDeployment from "./deployments/arbitrum/stake.json";
+
 export interface ContractAddresses {
   usdtAddress: string;
   presaleAddress: string;
@@ -20,7 +25,7 @@ export interface ContractAddresses {
   veOwnTokenAddress: string;
 }
 
-export const SUPPORTED_NETWORK_IDS = [1337, 11155111] as const;
+export const SUPPORTED_NETWORK_IDS = [1337, 11155111, 42161] as const;
 
 export type SupportedNetworkIds = (typeof SUPPORTED_NETWORK_IDS)[number];
 
@@ -44,6 +49,16 @@ export function getContractAddresses(
       stakeAddress: stakeSepoliaDeployment.address,
       ownTokenAddress: OwnSepoliaDeployment.address,
       veOwnTokenAddress: VeOwnSepoliaDeployment.address,
+    };
+  }
+
+  if (networkId === 42161) {
+    return {
+      usdtAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      presaleAddress: presaleArbitrumDeployment.address,
+      stakeAddress: stakeArbitrumDeployment.address,
+      ownTokenAddress: OwnArbitrumDeployment.address,
+      veOwnTokenAddress: VeOwnArbitrumDeployment.address,
     };
   }
 
