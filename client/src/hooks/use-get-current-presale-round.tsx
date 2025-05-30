@@ -1,5 +1,5 @@
 import { useContracts } from "@/hooks";
-import { formatEther } from "viem";
+import { formatUnits, formatEther } from "viem";
 import { CurrentPresaleRoundDetails } from "@/types/presale";
 import { QueryHook } from "@/types/query";
 import { useReadContractQueryHook } from "@/helpers/useReadContractWithParsing";
@@ -18,7 +18,7 @@ export const useGetCurrentPresaleRound =
         roundsInProgress: data[1],
         roundDetails: {
           duration: Number(data[2].duration),
-          price: Number(formatEther(data[2].price)),
+          price: Number(formatUnits(data[2].price, 6)),
           allocation: Number(formatEther(data[2].allocation)),
           sales: Number(formatEther(data[2].sales)),
           claimTokensTimestamp: Number(data[2].claimTokensTimestamp),

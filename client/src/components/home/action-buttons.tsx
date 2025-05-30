@@ -16,7 +16,7 @@ import { signSmartContractData } from "@wert-io/widget-sc-signer";
 import { useActiveChainWithDefault } from "@/hooks/useChainWithDefault";
 import WertWidget from "@wert-io/widget-initializer";
 import { buildWertOptions } from "@/config/wert-config";
-import { parseEther } from "viem";
+import { parseUnits } from "viem";
 
 interface ActionButtonsProps {
   ownBalance: number;
@@ -51,7 +51,7 @@ function ActionButtons({
       return;
     }
 
-    const parsedAmount = parseEther(amount.toString());
+    const parsedAmount = parseUnits(amount.toString(), 6);
 
     const allowanceTx = await allowance({
       contract: usdtContract,

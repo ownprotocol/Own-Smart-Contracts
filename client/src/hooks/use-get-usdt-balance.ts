@@ -1,7 +1,7 @@
-import { toTokens } from "thirdweb/utils";
 import { useContracts } from "@/hooks";
 import { QueryHook } from "@/types/query";
 import { useReadContractQueryHook } from "@/helpers/useReadContractWithParsing";
+import { formatUnits } from "viem";
 
 export const useGetBalanceUSDT = (address: string): QueryHook<number> => {
   const { usdtContract } = useContracts();
@@ -12,6 +12,6 @@ export const useGetBalanceUSDT = (address: string): QueryHook<number> => {
       method: "balanceOf",
       params: [address],
     },
-    (value) => Number(toTokens(value, 18)),
+    (value) => Number(formatUnits(value, 6)),
   );
 };

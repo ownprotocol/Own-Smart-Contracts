@@ -1,7 +1,6 @@
 "use client";
 
 import { ProgressBar } from "@/components";
-import Image from "next/image";
 import { type CurrentPresaleRoundDetails } from "@/types/presale";
 
 interface RaiseStatsProps {
