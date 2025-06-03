@@ -6,7 +6,7 @@ import {
   getCurrentBlockTimestamp,
   setDayOfWeekInHardhatNode,
 } from "../helpers/evm";
-import { parseEther } from "ethers";
+import { parseEther, parseUnits } from "ethers";
 import { SECONDS_IN_A_WEEK } from "../constants/duration";
 
 const isTesting = process.env.IS_TESTING || false;
@@ -43,8 +43,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   const rounds = Array.from({ length: 30 }, (_, i) => i).map(() => ({
     duration: 86400n,
-    // TODO: Price should be parseUnits("1.5", 6) for USDC
-    price: parseEther("1.5"),
+    price: parseUnits("1", 6),
     allocation: parseEther("1000"),
     sales: 0n,
     claimTokensTimestamp: 0n,

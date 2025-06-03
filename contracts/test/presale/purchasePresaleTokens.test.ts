@@ -6,7 +6,7 @@ import {
   Signers,
 } from "../../types";
 import { getContractInstances } from "../../helpers/testing-api";
-import { getAddress, parseEther } from "viem";
+import { getAddress, parseEther, parseUnits } from "viem";
 import { getCurrentBlockTimestamp, increaseTime } from "../../helpers/evm";
 
 describe("Presale - purchasePresaleTokens", async () => {
@@ -18,16 +18,19 @@ describe("Presale - purchasePresaleTokens", async () => {
   beforeEach(async () => {
     ({ presale, own, mockUSDT, signers } = await getContractInstances());
 
-    await own.write.transfer([presale.address, BigInt(1000000)]);
-    await mockUSDT.write.mint([signers[0].account.address, parseEther("1000")]);
-    await mockUSDT.write.approve([presale.address, parseEther("1000")]);
+    await own.write.transfer([presale.address, parseEther("100000")]);
+    await mockUSDT.write.mint([
+      signers[0].account.address,
+      parseUnits("1000", 6),
+    ]);
+    await mockUSDT.write.approve([presale.address, parseUnits("1000", 6)]);
 
     await presale.write.addPresaleRounds([
       [
         {
           duration: BigInt(50),
-          price: parseEther("1"),
-          allocation: BigInt(1000),
+          price: parseUnits("1", 6),
+          allocation: parseEther("1"),
           sales: BigInt(0),
           claimTokensTimestamp: BigInt(0),
         },
@@ -40,7 +43,7 @@ describe("Presale - purchasePresaleTokens", async () => {
       presale.write.purchasePresaleTokens([
         BigInt(1000),
         signers[0].account.address,
-      ])
+      ]),
     ).to.be.revertedWithCustomError(presale, "PresaleHasNotStarted");
   });
 
@@ -58,26 +61,27 @@ describe("Presale - purchasePresaleTokens", async () => {
         presale.write.purchasePresaleTokens([
           BigInt(1),
           signers[0].account.address,
-        ])
+        ]),
       ).to.be.revertedWithCustomError(presale, "AllPresaleRoundsHaveEnded");
     });
 
     it("Should revert if the amount of tokens requested is larger than the allocation", async () => {
       await expect(
         presale.write.purchasePresaleTokens([
-          BigInt(1001),
+          parseUnits("2", 6), // 2 USDT, which is more than the allocation of 1 USDT
           signers[0].account.address,
-        ])
+        ]),
       )
         .to.be.revertedWithCustomError(
           presale,
-          "InsufficientBalanceInPresaleRoundForSale"
+          "InsufficientBalanceInPresaleRoundForSale",
         )
-        .withArgs(BigInt(1000), BigInt(1001));
+        .withArgs(parseEther("1"), parseEther("2"));
     });
 
     it("Should purchase the tokens correctly", async () => {
       const purchaseAmount = BigInt(1000);
+      const ownPurchased = parseUnits("1", 15);
       const checksumAddress = getAddress(signers[0].account.address);
 
       const tx = presale.write.purchasePresaleTokens([
@@ -86,22 +90,22 @@ describe("Presale - purchasePresaleTokens", async () => {
       ]);
       await expect(tx)
         .to.emit(presale, "PresaleTokensPurchased")
-        .withArgs(checksumAddress, 0, purchaseAmount, parseEther("1"));
+        .withArgs(checksumAddress, 0, ownPurchased, parseUnits("1", 6));
 
       await expect(tx).to.changeTokenBalance(
         mockUSDT,
         presale.address,
-        purchaseAmount
+        purchaseAmount,
       );
 
       const [, , presaleRound] =
         await presale.read.getCurrentPresaleRoundDetails();
 
-      expect(presaleRound.sales).to.equal(purchaseAmount);
-      expect(await presale.read.totalSales()).to.equal(purchaseAmount);
+      expect(presaleRound.sales).to.equal(ownPurchased);
+      expect(await presale.read.totalSales()).to.equal(ownPurchased);
 
       const usersPresalePurchases = await presale.read.getUsersPresalePurchases(
-        [signers[0].account.address]
+        [signers[0].account.address],
       );
 
       expect(usersPresalePurchases.length).to.equal(1);
@@ -110,7 +114,7 @@ describe("Presale - purchasePresaleTokens", async () => {
 
       expect({ roundId, ownAmount, usdtAmount, receiver }).to.deep.equal({
         roundId: BigInt(0),
-        ownAmount: purchaseAmount,
+        ownAmount: ownPurchased,
         usdtAmount: purchaseAmount,
         receiver: checksumAddress,
       });

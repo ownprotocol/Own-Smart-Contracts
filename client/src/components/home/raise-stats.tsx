@@ -16,7 +16,7 @@ function RaiseStats({ usdtBalance, presaleData }: RaiseStatsProps) {
   };
 
   return (
-    <div className="relative flex w-full max-w-4xl flex-col gap-4 md:mt-1 md:min-h-[200px]">
+    <div className="relative flex w-full flex-col gap-4 md:mt-1 md:min-h-[200px]">
       <div className="flex w-full flex-row">
         <div className="flex w-1/2 flex-col">
           <h5 className="font-dmMono mb-2 text-[14px] font-normal leading-[14px] text-[#808080]">
@@ -36,9 +36,7 @@ function RaiseStats({ usdtBalance, presaleData }: RaiseStatsProps) {
           </h6>
         </div>
       </div>
-      <div className="">
-        <ProgressBar sales={sales} allocation={allocation} />
-      </div>
+      <ProgressBar sales={sales} allocation={allocation} />
     </div>
   );
 }
