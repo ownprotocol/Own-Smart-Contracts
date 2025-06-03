@@ -1,14 +1,16 @@
 import Image from "next/image";
-import { DrawerHeader, DrawerClose } from "../ui/drawer";
+import { calculateUnlockDate } from "@/helpers";
 
 interface StakingLoadingStateProps {
   tokensToStake: number;
   lockupDuration: number;
+  timestamp: number;
 }
 
 const StakingLoadingState = ({
   tokensToStake,
   lockupDuration,
+  timestamp,
 }: StakingLoadingStateProps) => {
   return (
     <div className="mx-auto flex flex-col items-center justify-center gap-4 text-center">
@@ -41,14 +43,7 @@ const StakingLoadingState = ({
           </span>
         </div>
         <p className="pt-4 align-middle font-dm_mono text-[12px] uppercase leading-[100%] tracking-[8%] text-gray-500 md:text-[14px]">
-          LOCKED TILL{" "}
-          {new Date(Date.now() + lockupDuration * 24 * 60 * 60 * 1000)
-            .toLocaleDateString("en-US", {
-              month: "2-digit",
-              day: "2-digit",
-              year: "numeric",
-            })
-            .replace(/\//g, "/")}
+          LOCKED TILL {calculateUnlockDate(timestamp, lockupDuration)}
         </p>
       </div>
     </div>

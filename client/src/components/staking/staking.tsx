@@ -15,6 +15,7 @@ import StakingSummary from "./staking-summary";
 
 interface StakingProps {
   ownBalance: number;
+  timestamp: number;
   values: StakingFormData;
   register: UseFormRegister<StakingFormData>;
   setValue: UseFormSetValue<StakingFormData>;
@@ -25,6 +26,7 @@ interface StakingProps {
 
 function Staking({
   ownBalance,
+  timestamp,
   errors,
   values: { tokenAmount, lockupDurationWeeks },
   register,
@@ -59,6 +61,7 @@ function Staking({
                 <StakingSummary
                   tokensToStake={tokenAmount}
                   lockupDuration={lockupDurationWeeks}
+                  timestamp={timestamp}
                 />
               </div>
               <div className="w-full"></div>

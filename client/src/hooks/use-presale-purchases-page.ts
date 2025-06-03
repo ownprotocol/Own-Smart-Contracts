@@ -6,7 +6,7 @@ import {
   type PresalePurchase,
   type PresaleRoundDetails,
 } from "@/types/presale";
-import { formatEther } from "viem";
+import { formatEther, formatUnits } from "viem";
 import keyBy from "lodash/keyBy";
 import { type QueryHook } from "@/types/query";
 import { orderBy } from "lodash";
@@ -36,7 +36,7 @@ export const usePresalePurchasesPage = (): QueryHook<{
           roundId: idx,
           allocation: Number(formatEther(round.allocation)),
           duration: Number(round.duration),
-          price: Number(formatEther(round.price)),
+          price: Number(formatUnits(round.price, 6)),
           sales: Number(formatEther(round.sales)),
           claimTokensTimestamp: Number(round.claimTokensTimestamp),
         })),

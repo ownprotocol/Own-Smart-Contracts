@@ -16,7 +16,7 @@ import { signSmartContractData } from "@wert-io/widget-sc-signer";
 import { useActiveChainWithDefault } from "@/hooks/useChainWithDefault";
 import WertWidget from "@wert-io/widget-initializer";
 import { buildWertOptions } from "@/config/wert-config";
-import { parseUnits } from "viem";
+import { maxUint256, parseUnits } from "viem";
 
 interface ActionButtonsProps {
   ownBalance: number;
@@ -60,12 +60,24 @@ function ActionButtons({
     });
 
     if (allowanceTx < amount) {
+      if (allowanceTx !== 0n) {
+        await sendAndConfirmTransaction({
+          account,
+          transaction: prepareContractCall({
+            contract: usdtContract,
+            method: "approve",
+            params: [presaleContract.address, 0n],
+          }),
+        });
+      }
+
       await sendAndConfirmTransaction({
         account,
         transaction: prepareContractCall({
           contract: usdtContract,
           method: "approve",
-          params: [presaleContract.address, parsedAmount],
+          // Max out the approvals here to avoid the USDC approval issues
+          params: [presaleContract.address, maxUint256],
         }),
       });
 

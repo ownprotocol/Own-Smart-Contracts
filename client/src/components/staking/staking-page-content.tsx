@@ -55,6 +55,7 @@ export const StakingPageContent = () => {
         <StakingDrawerContent
           ownBalance={ownBalance}
           setIsOpen={setStakingDrawerOpen}
+          timestamp={timestamp}
         />
       </CustomDrawer>
     </div>

@@ -4,11 +4,13 @@ import SummaryRow from "./summary-row";
 interface StakingSummaryProps {
   tokensToStake: number;
   lockupDuration: number;
+  timestamp: number;
 }
 
 function StakingSummary({
   tokensToStake,
   lockupDuration,
+  timestamp,
 }: StakingSummaryProps) {
   const factor = 1 * lockupDuration;
   return (
@@ -25,7 +27,7 @@ function StakingSummary({
         />
         <SummaryRow
           label="Unlock Date"
-          unlockDate={calculateUnlockDate(lockupDuration)}
+          unlockDate={calculateUnlockDate(timestamp, lockupDuration)}
         />
       </div>
     </>

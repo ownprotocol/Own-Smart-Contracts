@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 
 interface StakingDrawerContentProps {
   ownBalance: number;
+  timestamp: number;
   setIsOpen: (isOpen: boolean) => void;
 }
 
@@ -24,6 +25,7 @@ type StakingState = "setup" | "awaiting" | "confirmed";
 
 const StakingDrawerContent = ({
   ownBalance,
+  timestamp,
   setIsOpen,
 }: StakingDrawerContentProps) => {
   const router = useRouter();
@@ -112,6 +114,7 @@ const StakingDrawerContent = ({
           <StakingDrawerHeader ownBalance={ownBalance} />
           <Staking
             ownBalance={ownBalance}
+            timestamp={timestamp}
             setValue={setValue}
             errors={errors}
             register={register}
@@ -125,6 +128,7 @@ const StakingDrawerContent = ({
         <StakingLoadingState
           tokensToStake={tokenAmount}
           lockupDuration={lockupDurationWeeks}
+          timestamp={timestamp}
         />
       )}
 
