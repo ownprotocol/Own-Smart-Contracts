@@ -1,6 +1,6 @@
 import { signSmartContractData } from "@wert-io/widget-sc-signer";
 import { z } from "zod";
-import { encodeFunctionData, parseEther } from "viem";
+import { encodeFunctionData, parseUnits } from "viem";
 import { presaleABI } from "@/constants/abi";
 import {
   getContractAddresses,
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
   const data = encodeFunctionData({
     abi: presaleABI,
     functionName: "purchasePresaleTokens",
-    args: [parseEther(amount.toString()), address],
+    args: [parseUnits(amount.toString(), 6), address],
   });
 
   const { presaleAddress } = getContractAddresses(

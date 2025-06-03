@@ -124,7 +124,7 @@ function ClaimableRewardBox({
             height={24}
             className="rounded-full"
           />
-          <span className="px-4 text-right font-dm_sans text-[22px] font-[500] leading-[22px] tracking-[2%] text-white md:px-12 md:text-[32px] md:leading-[32px]">
+          <span className="font-dm_sans text-[22px] font-[500] leading-[22px] tracking-[2%] text-white md:text-[32px] md:leading-[32px]">
             {value}
           </span>
         </div>
