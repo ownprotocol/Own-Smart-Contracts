@@ -19,6 +19,9 @@ export const useHomePresalePage = () => {
         contract: ownTokenContract,
         method: "balanceOf",
         params: [account?.address ?? ""],
+        queryOptions: {
+          refetchInterval: 10000,
+        },
       },
       (value) => Number(formatEther(value)),
     ),

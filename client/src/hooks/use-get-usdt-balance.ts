@@ -11,6 +11,9 @@ export const useGetBalanceUSDT = (address: string): QueryHook<number> => {
       contract: usdtContract,
       method: "balanceOf",
       params: [address],
+      queryOptions: {
+        refetchInterval: 10000,
+      },
     },
     (value) => Number(formatUnits(value, 6)),
   );
