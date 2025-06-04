@@ -33,7 +33,7 @@ const Header = () => {
   return (
     <div
       className={cn(
-        "fixed top-0 z-50 flex w-full max-w-7xl justify-between px-8 pt-2 text-sm text-gray-400",
+        "fixed top-0 z-50 flex w-full max-w-3xl justify-between pt-2 text-sm text-gray-400",
         { "bg-background": isScrolled },
       )}
     >
@@ -55,7 +55,7 @@ const Header = () => {
         pathname={pathname}
       />
 
-      <div className="flex items-center justify-center md:justify-end lg:w-48">
+      <div className="flex items-center justify-center md:justify-end">
         <ConnectWalletButton isHoverable={true} />
       </div>
     </div>

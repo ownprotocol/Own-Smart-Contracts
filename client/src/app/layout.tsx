@@ -40,13 +40,14 @@ export default async function RootLayout({
       className={`${fun.variable} ${dmSans.variable} ${dmMono.variable}`}
     >
       <body className="flex flex-col bg-[linear-gradient(to_bottom,#141019_48%,#E49048_48%,#E49048_48%,#141019_48%)] text-white">
-        <div className="container relative mx-auto flex max-w-7xl flex-col border-x border-gray-500/30">
+        <div className="absolute left-[50%] hidden h-screen w-screen max-w-5xl translate-x-[-50%] border-x border-gray-500/30 lg:block" />
+        <div className="container relative mx-auto flex max-w-3xl flex-col border-gray-500/30">
           <QueryProvider>
             <ThirdwebProvider>
               <Header />
               <HomeSeparator />
               <ToastContainer />
-              <div className="flex min-h-screen w-full flex-col justify-between gap-8 px-8 pb-24 pt-24">
+              <div className="flex min-h-screen w-full flex-col justify-between gap-8 px-8 pb-24 pt-24 lg:px-0">
                 {children}
               </div>
               <Footer />

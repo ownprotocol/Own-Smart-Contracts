@@ -25,7 +25,7 @@ const TokenomicsChart = () => {
     const secondHalf = tokenomicsData.slice(5);
 
     return (
-      <div className="flex w-full flex-col pl-12">
+      <div className="flex w-full flex-col">
         <div
           className="grid grid-cols-2 gap-x-16 gap-y-2"
           onMouseLeave={handleLegendLeave}
