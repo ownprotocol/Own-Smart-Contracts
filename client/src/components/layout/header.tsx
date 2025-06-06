@@ -33,30 +33,34 @@ const Header = () => {
   return (
     <div
       className={cn(
-        "fixed top-0 z-50 flex w-full max-w-3xl justify-between pt-2 text-sm text-gray-400",
-        { "bg-background": isScrolled },
+        "fixed left-0 top-0 z-50 flex w-full justify-center pt-2 text-sm text-gray-400",
+        {
+          "bg-background": isScrolled,
+        },
       )}
     >
-      <Button
-        variant="ghost"
-        className="lg:hidden"
-        onClick={() => setSidebarOpen(true)}
-      >
-        <span className="sr-only">Open sidebar</span>
-        <icons.RxHamburgerMenu className="size-6" aria-hidden="true" />
-      </Button>
-      <Link href="/" className="flex items-center justify-center">
-        <Image src="/own-logo.svg" height={40} width={80} alt="logo" />
-      </Link>
-      <DesktopNavbar pathname={pathname} />
-      <MobileSidebar
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-        pathname={pathname}
-      />
+      <div className="flex w-full max-w-3xl justify-between">
+        <Button
+          variant="ghost"
+          className="lg:hidden"
+          onClick={() => setSidebarOpen(true)}
+        >
+          <span className="sr-only">Open sidebar</span>
+          <icons.RxHamburgerMenu className="size-6" aria-hidden="true" />
+        </Button>
+        <Link href="/" className="flex items-center justify-center">
+          <Image src="/own-logo.svg" height={40} width={80} alt="logo" />
+        </Link>
+        <DesktopNavbar pathname={pathname} />
+        <MobileSidebar
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          pathname={pathname}
+        />
 
-      <div className="flex items-center justify-center md:justify-end">
-        <ConnectWalletButton isHoverable={true} />
+        <div className="flex items-center justify-center md:justify-end">
+          <ConnectWalletButton isHoverable={true} />
+        </div>
       </div>
     </div>
   );
