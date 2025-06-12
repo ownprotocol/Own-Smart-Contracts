@@ -39,9 +39,7 @@ function StakingTokens({
 
     const validateAndSetTokenAmount = (amount: number) => {
       if (amount > maxTokenAmount) {
-        toast.warning(
-          `You don't have enough balance to stake that amount.`,
-        );
+        toast.warning(`You don't have enough balance to stake that amount.`);
         setValue("tokenAmount", maxTokenAmount, {
           shouldValidate: true,
         });
@@ -79,13 +77,14 @@ function StakingTokens({
         onChange={handleInputToken}
         errorString={errors.tokenAmount?.message}
         inputProps={{ ...register("tokenAmount") }}
+        inputClassName="!text-black"
         image={
           <Image
             src="/own-light.png"
             alt="Own token"
             width={20}
             height={20}
-            className="text-primary  xl:h-[25px] xl:w-[25px]"
+            className="text-primary xl:h-[25px] xl:w-[25px]"
           />
         }
       />

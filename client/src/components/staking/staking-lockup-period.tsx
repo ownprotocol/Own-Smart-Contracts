@@ -43,6 +43,7 @@ function StakingLockupPeriod({
       <FormInput
         title={title}
         errorString={errors.lockupDurationWeeks?.message}
+        inputClassName="!text-black"
         inputProps={{ ...register("lockupDurationWeeks") }}
         onChange={(e) => handleLockUpDuration(e.target.value)}
       />

@@ -161,6 +161,7 @@ export const BuyWithCryptoDrawer = ({
             errorString={errors.tokenAmount?.message}
             inputProps={{ ...register("tokenAmount"), placeholder: "0" }}
             className="!flex-1 !text-gray-400"
+            inputClassName="!text-black"
             prefix="$"
           />
           <FormInput
@@ -173,6 +174,7 @@ export const BuyWithCryptoDrawer = ({
               value: amountToSpend,
             }}
             className="!flex-1"
+            inputClassName="!text-black"
             imageEnd={
               <Image
                 width={20}

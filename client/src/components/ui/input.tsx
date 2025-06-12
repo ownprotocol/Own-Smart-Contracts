@@ -15,6 +15,7 @@ interface FormInputProps<
   className?: string;
   prefix?: string;
   imageEnd?: React.ReactNode;
+  inputClassName?: string;
 }
 
 export const FormInput = <
@@ -31,6 +32,7 @@ export const FormInput = <
   className,
   prefix,
   imageEnd,
+  inputClassName,
 }: FormInputProps<T>) => {
   return (
     <div className={clsx("flex flex-col space-y-2", className)}>
@@ -54,7 +56,10 @@ export const FormInput = <
         )}
         <input
           type="text"
-          className="block w-1/2 min-w-0 grow py-2 pl-1 pr-3 font-dm_sans text-[16px] leading-[20px] tracking-[0.5%] text-gray-400 placeholder:text-gray-400 focus:outline-none xl:py-4 xl:text-[20px] xl:leading-[24px]"
+          className={clsx(
+            "block w-1/2 min-w-0 grow py-2 pl-1 pr-3 font-dm_sans text-[16px] leading-[20px] tracking-[0.5%] text-gray-400 placeholder:text-gray-400 focus:outline-none xl:py-4 xl:text-[20px] xl:leading-[24px]",
+            inputClassName,
+          )}
           {...inputProps}
           onChange={onChange}
         />
