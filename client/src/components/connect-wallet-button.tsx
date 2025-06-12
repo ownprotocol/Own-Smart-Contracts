@@ -28,9 +28,9 @@ function ConnectWalletButton({
     <ConnectButton
       connectButton={{
         label: title ?? "Connect Wallet",
-        className: `!min-w-[125px] !h-[50px] !px-1 !py-0.5 !rounded-lg  !border !border-gray-500 
+        className: `!min-w-32 !h-10 !px-1 !py-0.5 !rounded-lg  !border !border-gray-500 
                        !text-sm !font-normal ${isHoverable ? "hover:!bg-[#C1691180]" : ""}
-                    md:!min-w-auto md:!h-10 md:!px-2.5 md:!py-1 !text-center ${className}`,
+                    md:!min-w-auto md:!px-2.5 !text-center ${className}`,
         style: {
           all: "unset",
           display: "block",
@@ -39,6 +39,9 @@ function ConnectWalletButton({
           color: textColor ?? "white",
           margin: "0 auto",
         },
+      }}
+      detailsButton={{
+        className: "!h-10 md:!h-12",
       }}
       autoConnect
       client={client}

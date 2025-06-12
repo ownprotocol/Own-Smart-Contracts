@@ -33,7 +33,7 @@ const Header = () => {
   return (
     <div
       className={cn(
-        "fixed left-0 top-0 z-50 flex w-full justify-center pt-2 text-sm text-gray-400",
+        "fixed left-0 top-0 z-50 flex w-full justify-center py-2 text-sm text-gray-400",
         {
           "bg-background": isScrolled,
         },
