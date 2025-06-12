@@ -32,7 +32,7 @@ const TokenomicsChartMobile = () => {
               }}
             >
               <div
-                className="h-6 w-1.5"
+                className="h-6 w-1.5 min-w-1.5"
                 style={{ backgroundColor: entry.color }}
               />
               <span className="text-xs text-gray-200">{entry.name}</span>
