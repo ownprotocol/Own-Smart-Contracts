@@ -1,5 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
+import { displayedEthAmount } from "@/lib/display";
 import {
   motion,
   useMotionValue,
@@ -36,10 +37,10 @@ function ProgressBar({
 
   // Transform the motion values to formatted strings
   const displaySold = useTransform(soldCount, (value: number) =>
-    value.toFixed(2).toLocaleString(),
+    displayedEthAmount(value),
   );
   const displayCap = useTransform(capCount, (value: number) =>
-    Math.round(value).toLocaleString(),
+    displayedEthAmount(value),
   );
 
   // Animate the counters when component mounts

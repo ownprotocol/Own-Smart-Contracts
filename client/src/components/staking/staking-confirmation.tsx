@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { DrawerHeader, DrawerClose } from "../ui/drawer";
 import { Button } from "../ui/button";
+import { displayedEthAmount } from "@/lib/display";
 
 interface StakingConfirmationProps {
   tokensToStake: number;
@@ -48,7 +49,7 @@ const StakingConfirmation = ({
             />
           </div>
           <span className="font-dm_sans text-[32px] font-normal leading-[32px] tracking-[0.5%] md:text-[48px] md:leading-[48px]">
-            {tokensToStake.toLocaleString()}
+            {displayedEthAmount(tokensToStake)}
           </span>
         </div>
         <p className="pt-4 align-middle font-dm_mono text-[12px] uppercase leading-[100%] tracking-[8%] text-gray-500 md:text-[14px]">

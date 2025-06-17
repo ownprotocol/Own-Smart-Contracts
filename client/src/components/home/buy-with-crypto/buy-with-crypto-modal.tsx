@@ -6,6 +6,7 @@ import {
   useActiveWallet,
   useWalletImage,
 } from "thirdweb/react";
+import { displayedEthAmount } from "@/lib/display";
 
 import {
   type BuyWithCryptoForm,
@@ -64,7 +65,7 @@ export const BuyWithCryptoDrawer = ({
     if (type === "crypto") {
       if (amount > usdtBalance) {
         toast.warning(
-          `You don't have enough USDT tokens for this purchase, your balance is ${usdtBalance.toFixed(2)}`,
+          `You don't have enough USDT tokens for this purchase, your balance is ${usdtBalance}`,
         );
       }
 
@@ -96,7 +97,7 @@ export const BuyWithCryptoDrawer = ({
 
       if (amount > usdtBalance) {
         toast.warning(
-          `You don't have enough USDT tokens for this purchase, your balance is ${usdtBalance.toFixed(2)}`,
+          `You don't have enough USDT tokens for this purchase, your balance is ${usdtBalance}`,
         );
         return;
       }
@@ -112,7 +113,7 @@ export const BuyWithCryptoDrawer = ({
 
   const amountToSpend = (() => {
     const tokenAmount = getValues("tokenAmount");
-    return (parseFloat(tokenAmount) / ownPrice).toFixed(2);
+    return parseFloat(tokenAmount) / ownPrice;
   })();
 
   return (
@@ -134,7 +135,7 @@ export const BuyWithCryptoDrawer = ({
                 height={15}
               />
               <p className="font-dm_mono text-[12px] font-[400] leading-[14px] tracking-[8%] text-black md:text-[22px] md:leading-[16px]">
-                {ownBalance.toLocaleString()}
+                {displayedEthAmount(ownBalance)}
               </p>
             </div>
           </div>
@@ -142,7 +143,7 @@ export const BuyWithCryptoDrawer = ({
             <SectionLabel>$OWN PRICE</SectionLabel>
             <div className="flex items-center gap-2">
               <p className="font-dm_mono text-[12px] font-[400] leading-[14px] tracking-[8%] text-black md:text-[22px] md:leading-[16px]">
-                ${ownPrice.toLocaleString()}
+                ${displayedEthAmount(ownPrice)}
               </p>
               <h1
                 className={
@@ -171,7 +172,7 @@ export const BuyWithCryptoDrawer = ({
             inputProps={{
               placeholder: "0",
               disabled: true,
-              value: amountToSpend,
+              value: displayedEthAmount(amountToSpend),
             }}
             className="!flex-1"
             inputClassName="!text-black"
@@ -194,7 +195,7 @@ export const BuyWithCryptoDrawer = ({
             height={20}
           />
           <p className="font-dm_mono text-[12px] font-semibold leading-[14px] tracking-[8%] text-black md:text-[14px] md:leading-[16px]">
-            TETHER BALANCE: {usdtBalance.toLocaleString()} USDT
+            TETHER BALANCE: {displayedEthAmount(usdtBalance)} USDT
           </p>
         </div>
         <div className="flex">
@@ -204,7 +205,7 @@ export const BuyWithCryptoDrawer = ({
             disabled={!amountToSpend}
             onClick={onSubmit}
           >
-            Buy {amountToSpend} $Own Tokens
+            Buy {displayedEthAmount(amountToSpend)} $Own Tokens
           </Button>
         </div>
       </form>

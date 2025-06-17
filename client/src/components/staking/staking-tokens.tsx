@@ -6,7 +6,6 @@ import {
   type UseFormSetValue,
 } from "react-hook-form";
 import { useState } from "react";
-import { toast } from "react-toastify";
 import Image from "next/image";
 
 import StakingButton from "./staking-button";
@@ -34,40 +33,22 @@ function StakingTokens({
     e?: React.ChangeEvent<HTMLInputElement>,
     percentage?: number,
   ) => {
-    const maxTokenAmount = ownBalance;
-    let tokenAmountNumber = 0;
-
-    const validateAndSetTokenAmount = (amount: number) => {
-      if (amount > maxTokenAmount) {
-        toast.warning(`You don't have enough balance to stake that amount.`);
-        setValue("tokenAmount", maxTokenAmount, {
-          shouldValidate: true,
-        });
-      } else {
-        setValue("tokenAmount", amount, {
-          shouldValidate: true,
-        });
-      }
-    };
-
     if (percentage) {
       setActivePercentage(percentage);
-      tokenAmountNumber = ownBalance * (percentage / 100);
-      validateAndSetTokenAmount(tokenAmountNumber);
+      const tokenAmountNumber = ownBalance * (percentage / 100);
+      setValue("tokenAmount", tokenAmountNumber, {
+        shouldValidate: true,
+      });
     }
 
     if (e) {
       setActivePercentage(null);
       const inputValue = e.target.value;
-
-      if (/^\d+(\.\d+)?$/.test(inputValue)) {
-        tokenAmountNumber = Number(inputValue);
-        validateAndSetTokenAmount(tokenAmountNumber);
-      } else {
-        setValue("tokenAmount", 0, {
-          shouldValidate: true,
-        });
-      }
+      
+      // Let the schema handle validation, just pass the string value
+      setValue("tokenAmount", inputValue as any, {
+        shouldValidate: true,
+      });
     }
   };
   return (

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { calculateUnlockDate } from "@/helpers";
+import { displayedEthAmount } from "@/lib/display";
 
 interface StakingLoadingStateProps {
   tokensToStake: number;
@@ -39,7 +40,7 @@ const StakingLoadingState = ({
             />
           </div>
           <span className="font-dm_sans text-[32px] font-normal leading-[32px] tracking-[0.5%] md:text-[48px] md:leading-[48px]">
-            {tokensToStake.toLocaleString()}
+            {displayedEthAmount(tokensToStake)}
           </span>
         </div>
         <p className="pt-4 align-middle font-dm_mono text-[12px] uppercase leading-[100%] tracking-[8%] text-gray-500 md:text-[14px]">

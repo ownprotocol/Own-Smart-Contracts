@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
+import { displayedEthAmount } from "@/lib/display";
 
 import { SquareDots } from "@/components";
 import { Button } from "../ui/button";
@@ -83,7 +84,7 @@ function PresaleConcluded({
                 className="h-[10px] w-[10px] md:h-[20px] md:w-[20px]"
               />
               <p className="font-dm_mono text-[12px] font-[400] text-white md:text-[24px]">
-                {ownBalance.toLocaleString()}
+                {displayedEthAmount(ownBalance)}
               </p>
             </div>
           </div>

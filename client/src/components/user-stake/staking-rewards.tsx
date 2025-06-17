@@ -8,6 +8,7 @@ import { useContracts } from "@/hooks/use-contracts";
 import { toast } from "react-toastify";
 import { Button } from "../ui/button";
 import Image from "next/image";
+import { displayedEthAmount } from "@/lib/display";
 
 interface StakingRewardsProps {
   stakePositions: StakingPurchaseDetails[];
@@ -53,11 +54,11 @@ function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
       {/* <RewardBox label="$OWN Received" value="10,000" /> */}
       <RewardBox
         label="Rewards Earned"
-        value={totalRewardsClaimed.toFixed(2)}
+        value={displayedEthAmount(totalRewardsClaimed)}
       />
       <ClaimableRewardBox
         label="Claimable Rewards"
-        value={totalClaimableRewards.toFixed(2)}
+        value={displayedEthAmount(totalClaimableRewards)}
         onClaim={claimRewards}
         disabled={disabled}
       />

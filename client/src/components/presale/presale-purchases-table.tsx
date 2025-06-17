@@ -1,6 +1,7 @@
 import { type PresalePurchase } from "@/types/presale";
 import { TableHeader, TableRow } from "../table/table-common-components";
 import { format } from "date-fns";
+import { displayedEthAmount } from "@/lib/display";
 
 interface PresaleTableProps {
   rows: PresalePurchase[];
@@ -67,10 +68,10 @@ function PresalePurchasesTable({ rows, showTitle = true }: PresaleTableProps) {
                               )}
                             </TableRow>
                             <TableRow>
-                              {presalePurchase.ownAmount.toFixed(2)}
+                              {displayedEthAmount(presalePurchase.ownAmount)}
                             </TableRow>
                             <TableRow>
-                              ${presalePurchase.usdtAmount.toFixed(2)}
+                              ${displayedEthAmount(presalePurchase.usdtAmount)}
                             </TableRow>
                             <TableRow>${presalePurchase.price}</TableRow>
                             <TableRow>

@@ -6,7 +6,7 @@ import { StakingConfirmation, StakingLoadingState } from "@/components";
 import { useState } from "react";
 import { useContracts } from "@/hooks";
 import { useForm } from "react-hook-form";
-import { type StakingFormData, stakingSchema } from "@/types";
+import { type StakingFormData, createStakingSchema } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useActiveAccount } from "thirdweb/react";
 import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
@@ -40,7 +40,7 @@ const StakingDrawerContent = ({
     getValues,
     formState: { errors },
   } = useForm<StakingFormData>({
-    resolver: zodResolver(stakingSchema),
+    resolver: zodResolver(createStakingSchema(ownBalance)),
     defaultValues: {
       tokenAmount: 0,
       lockupDurationWeeks: 1,

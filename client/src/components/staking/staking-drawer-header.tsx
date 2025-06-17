@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import { displayedEthAmount } from "@/lib/display";
 
 interface StakingDrawerHeaderProps {
   ownBalance: number;
@@ -22,7 +23,7 @@ function StakingDrawerHeader({ ownBalance }: StakingDrawerHeaderProps) {
           height={15}
         />
         <p className="font-dm_mono text-[12px] font-[400] leading-[14px] tracking-[8%] text-black md:text-[14px] md:leading-[16px]">
-          {ownBalance.toLocaleString()}
+          {displayedEthAmount(ownBalance)}
         </p>
       </div>
     </div>

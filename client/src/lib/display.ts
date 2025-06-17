@@ -5,11 +5,13 @@ import { formatEther } from "viem";
 // Representing the amount in ETH with the appropriate number of decimal places and in a human readable format
 // If the amount is less than the smallest displayable amount (but not 0), it returns something like "< 0.000001"
 export const displayedEthAmount = (
-  amount: number | bigint,
+  amount: number | bigint | string,
   decimals = MAX_DECIMALS,
 ): string => {
   if (typeof amount === "bigint") {
     amount = Number(formatEther(amount));
+  } else {
+    amount = Number(amount);
   }
 
   const minDisplayableAmount = Math.pow(10, -decimals);
