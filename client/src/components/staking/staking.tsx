@@ -74,7 +74,7 @@ function Staking({
               />
             </div>
           </div>
-          <DrawerFooter className="flex justify-start">
+          <DrawerFooter className="flex justify-start !px-0">
             <Button
               disabled={tokenAmount === 0 || lockupDurationWeeks === 0}
               variant="mainButton"

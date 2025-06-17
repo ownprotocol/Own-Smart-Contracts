@@ -18,7 +18,7 @@ const RewardCard = ({
       <h2 className="px-0 font-dm_sans text-[16px] font-medium leading-[24px] text-black md:px-0 md:text-[18px] md:leading-[28px]">
         My veOwn
       </h2>
-      <div className="flex flex-col gap-4 rounded-lg bg-purple-100 px-4 py-4 xl:mt-2 xl:py-8">
+      <div className="flex flex-col gap-2 rounded-lg bg-purple-100 px-4 py-2 md:gap-4 md:py-4 xl:mt-2 xl:py-8">
         <div className="flex items-center gap-4">
           <div className="rounded-full bg-white/80 px-2 py-2">
             <Image

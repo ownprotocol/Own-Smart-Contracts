@@ -69,9 +69,11 @@ export const FormInput = <
           </div>
         )}
       </div>
-      <p className="h-2 font-dm_mono text-[8px] font-[400] leading-[14px] tracking-[8%] text-red-500 md:text-[14px] md:leading-[16px]">
-        {errorString}
-      </p>
+      {errorString && (
+        <p className="h-2 font-dm_mono text-[8px] font-[400] leading-[14px] tracking-[8%] text-red-500 md:text-[14px] md:leading-[16px]">
+          {errorString}
+        </p>
+      )}
     </div>
   );
 };

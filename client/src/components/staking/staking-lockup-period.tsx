@@ -6,8 +6,8 @@ import {
 } from "node_modules/react-hook-form/dist/types/form";
 import { type FieldErrors } from "react-hook-form";
 import { toast } from "react-toastify";
-import DurationButton from "./duration-button";
 import { FormInput } from "../ui/input";
+import StakingButton from "./staking-button";
 
 interface StakingLockupPeriodProps {
   title: string;
@@ -48,19 +48,19 @@ function StakingLockupPeriod({
         onChange={(e) => handleLockUpDuration(e.target.value)}
       />
       <div className="flex flex-wrap justify-start gap-6">
-        <DurationButton
-          duration="1 Week"
+        <StakingButton
+          label="1 Week"
           isSelected={lockupDuration === 1}
           onClick={() => handleLockUpDuration("1")}
         />
-        <DurationButton
-          duration="1 Month"
+        <StakingButton
+          label="1 Month"
           isSelected={lockupDuration === 4}
           onClick={() => handleLockUpDuration("4")}
         />
         <div className="flex flex-col gap-1">
-          <DurationButton
-            duration="1 Year"
+          <StakingButton
+            label="1 Year"
             isSelected={lockupDuration === 52}
             onClick={() => handleLockUpDuration("52")}
           />

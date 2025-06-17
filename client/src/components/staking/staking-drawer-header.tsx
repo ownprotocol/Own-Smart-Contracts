@@ -8,7 +8,7 @@ interface StakingDrawerHeaderProps {
 function StakingDrawerHeader({ ownBalance }: StakingDrawerHeaderProps) {
   return (
     <div className="flex w-full flex-col items-center justify-center gap-1 md:flex-row md:gap-4">
-      <div className="header flex-1 !pb-2 !text-left text-black">
+      <div className="header flex-1 !text-left text-black md:!pb-2">
         Stake tokens
       </div>
       <div className="flex w-full flex-1 items-end justify-center gap-2 md:justify-start">

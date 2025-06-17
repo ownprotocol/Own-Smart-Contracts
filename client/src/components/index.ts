@@ -25,7 +25,6 @@ export { default as StakePositionsTable } from "./user-stake/positions/stake-pos
 export { default as StakingDrawerContent } from "./staking/staking-drawer-content";
 export { default as ConnectWalletButton } from "./connect-wallet-button";
 export { default as StakingButton } from "./staking/staking-button";
-export { default as DurationButton } from "./staking/duration-button";
 export { default as NetworkSwitchDialog } from "./network-switch-dialog";
 export { default as RewardBox } from "./reward-box";
 export { default as FAQPage } from "./home/faq";

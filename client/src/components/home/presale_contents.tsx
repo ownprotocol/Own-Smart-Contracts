@@ -12,8 +12,12 @@ import { useStakingPage } from "@/hooks/use-staking-page";
 import { TimerCountdown } from "../timer-countdown";
 import { Dots } from "./dots";
 import { queryHookUnifier } from "@/helpers/query-hook-unifier";
+import { useActiveAccount } from "thirdweb/react";
+import ConnectWalletButton from "../connect-wallet-button";
 
 export const PresalePageContents = () => {
+  const account = useActiveAccount();
+
   const queryHooks = queryHookUnifier({
     presalePageHook: useHomePresalePage(),
     presaleConcludedPageHook: usePresalePurchasesPage(),
@@ -66,14 +70,17 @@ export const PresalePageContents = () => {
             }
             label="PRICE INCREASE IN"
           />
-          <ActionButtons
-            usdtBalance={usersUSDTBalance}
-            ownBalance={usersOwnBalance}
-            ownPrice={presaleRound.roundDetails.price}
-            refetch={queryHooks.refetch}
-            presaleAllocation={presaleRound.roundDetails.allocation}
-            preSaleSold={presaleRound.roundDetails.sales}
-          />
+          {!account && <ConnectWalletButton isHoverable className="!mt-4" />}
+          {account && (
+            <ActionButtons
+              usdtBalance={usersUSDTBalance}
+              ownBalance={usersOwnBalance}
+              ownPrice={presaleRound.roundDetails.price}
+              refetch={queryHooks.refetch}
+              presaleAllocation={presaleRound.roundDetails.allocation}
+              preSaleSold={presaleRound.roundDetails.sales}
+            />
+          )}
         </>
       )}
       {!presaleRound.roundsInProgress && presaleRound.hasPresaleStarted && (
