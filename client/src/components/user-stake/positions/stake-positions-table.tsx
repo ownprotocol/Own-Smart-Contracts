@@ -5,6 +5,7 @@ import {
   TableRow,
 } from "@/components/table/table-common-components";
 import { convertDaysToDate } from "@/helpers/date";
+import { displayedEthAmount } from "@/lib/display";
 import { type StakingPurchaseDetails } from "@/types";
 import { format } from "date-fns";
 
@@ -81,18 +82,15 @@ function StakePositionsTable({ stakePositions }: StakePositionsTableProps) {
                               )}
                             </TableRow>
                             <TableRow>
-                              {stakePosition.ownAmount.toLocaleString("en-US")}{" "}
-                              Own
+                              {displayedEthAmount(stakePosition.ownAmount)} Own
                             </TableRow>
                             <TableRow>
-                              {stakePosition.rewardsClaimed.toLocaleString(
-                                "en-US",
-                              )}{" "}
+                              {displayedEthAmount(stakePosition.rewardsClaimed)}{" "}
                               Own
                             </TableRow>
                             <TableRow className="text-[#F5841F]">
-                              {stakePosition.claimableRewards.toLocaleString(
-                                "en-US",
+                              {displayedEthAmount(
+                                stakePosition.claimableRewards,
                               )}{" "}
                               Own
                             </TableRow>
