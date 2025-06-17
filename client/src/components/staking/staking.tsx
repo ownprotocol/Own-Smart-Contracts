@@ -16,6 +16,7 @@ import StakingSummary from "./staking-summary";
 interface StakingProps {
   ownBalance: number;
   timestamp: number;
+  isValid: boolean;
   values: StakingFormData;
   register: UseFormRegister<StakingFormData>;
   setValue: UseFormSetValue<StakingFormData>;
@@ -28,6 +29,7 @@ function Staking({
   ownBalance,
   timestamp,
   errors,
+  isValid,
   values: { tokenAmount, lockupDurationWeeks },
   register,
   setValue,
@@ -76,7 +78,9 @@ function Staking({
           </div>
           <DrawerFooter className="flex justify-start !px-0">
             <Button
-              disabled={tokenAmount === 0 || lockupDurationWeeks === 0}
+              disabled={
+                tokenAmount === 0 || lockupDurationWeeks === 0 || !isValid
+              }
               variant="mainButton"
               className="max-w-32"
               size="lg"

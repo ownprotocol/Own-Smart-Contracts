@@ -42,37 +42,20 @@ export const BuyWithCryptoDrawer = ({
     register,
     setValue,
     formState: { errors },
-    trigger,
     getValues,
   } = useForm<BuyWithCryptoForm>({
     resolver: zodResolver(buyWithCryptoSchema(maxAllocation)),
+    mode: "onChange",
     defaultValues: {
-      tokenAmount: "0",
+      tokenAmount: 0,
     },
   });
 
   const handleInputToken = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const amount = parseFloat(e.target.value);
+    const inputValue = e.target.value;
 
-    if (isNaN(amount)) {
-      setValue("tokenAmount", "0", {
-        shouldValidate: true,
-      });
-      return;
-    }
-
-    let amountToSet = amount;
-    if (type === "crypto") {
-      if (amount > usdtBalance) {
-        toast.warning(
-          `You don't have enough USDT tokens for this purchase, your balance is ${usdtBalance}`,
-        );
-      }
-
-      amountToSet = Math.min(amount, usdtBalance);
-    }
-
-    setValue("tokenAmount", amountToSet.toString(), {
+    // Let the schema handle validation, just pass the string value
+    setValue("tokenAmount", inputValue as any, {
       shouldValidate: true,
     });
   };
@@ -83,18 +66,9 @@ export const BuyWithCryptoDrawer = ({
     }
 
     const data = getValues();
-    const amount = parseFloat(data.tokenAmount);
+    const amount = data.tokenAmount; // Now it's already a number
 
     if (type === "crypto") {
-      if (parseFloat(data.tokenAmount) > maxAllocation) {
-        toast.error(
-          `Not enough allocation. Maximum allocation is ${maxAllocation}`,
-        );
-        await trigger(["tokenAmount"], { shouldFocus: true });
-
-        return;
-      }
-
       if (amount > usdtBalance) {
         toast.warning(
           `You don't have enough USDT tokens for this purchase, your balance is ${usdtBalance}`,
@@ -104,7 +78,7 @@ export const BuyWithCryptoDrawer = ({
     }
 
     try {
-      await submit(parseFloat(data.tokenAmount));
+      await submit(amount);
     } catch (error) {
       toast.error("Transaction failed");
       console.error("Transaction error:", error);
@@ -113,7 +87,7 @@ export const BuyWithCryptoDrawer = ({
 
   const amountToSpend = (() => {
     const tokenAmount = getValues("tokenAmount");
-    return parseFloat(tokenAmount) / ownPrice;
+    return tokenAmount / ownPrice;
   })();
 
   return (

@@ -38,9 +38,10 @@ const StakingDrawerContent = ({
     register,
     setValue,
     getValues,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<StakingFormData>({
     resolver: zodResolver(createStakingSchema(ownBalance)),
+    mode: "onChange",
     defaultValues: {
       tokenAmount: 0,
       lockupDurationWeeks: 1,
@@ -114,6 +115,7 @@ const StakingDrawerContent = ({
           <StakingDrawerHeader ownBalance={ownBalance} />
           <Staking
             ownBalance={ownBalance}
+            isValid={isValid}
             timestamp={timestamp}
             setValue={setValue}
             errors={errors}
