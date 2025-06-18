@@ -5,9 +5,9 @@ import { z } from "zod";
  * Accepts both strings and numbers, transforms strings to numbers, and validates range
  */
 export const createTokenAmountSchema = (
-  maxAmount: number, 
-  minAmount: number = 0, 
-  fieldName: string = "Token amount"
+  maxAmount: number,
+  minAmount = 0,
+  fieldName = "Token amount",
 ) => {
   return z
     .union([z.string(), z.number()])
@@ -20,6 +20,12 @@ export const createTokenAmountSchema = (
       }
       return val;
     })
-    .refine((val) => val > minAmount, `${fieldName} must be more than ${minAmount}.`)
-    .refine((val) => val <= maxAmount, `Cannot exceed ${maxAmount.toFixed(2)} tokens`);
+    .refine(
+      (val) => val > minAmount,
+      `${fieldName} must be more than ${minAmount}.`,
+    )
+    .refine(
+      (val) => val <= maxAmount,
+      `Cannot exceed ${maxAmount.toFixed(2)} tokens`,
+    );
 };
