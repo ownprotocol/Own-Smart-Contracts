@@ -51,7 +51,6 @@ function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
   };
   return (
     <div className="mt-4 grid grid-cols-2 gap-6 rounded-xl md:mt-8 md:grid-cols-3 md:gap-12">
-      {/* <RewardBox label="$OWN Received" value="10,000" /> */}
       <RewardBox
         label="Rewards Earned"
         value={displayedEthAmount(totalRewardsClaimed)}

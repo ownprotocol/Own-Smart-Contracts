@@ -44,8 +44,9 @@ function StakingTokens({
     if (e) {
       setActivePercentage(null);
       const inputValue = e.target.value;
-      
+
       // Let the schema handle validation, just pass the string value
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
       setValue("tokenAmount", inputValue as any, {
         shouldValidate: true,
       });
