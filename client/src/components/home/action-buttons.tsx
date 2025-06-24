@@ -12,7 +12,7 @@ import { useActiveAccount } from "thirdweb/react";
 import { useContracts } from "@/hooks";
 import { allowance } from "thirdweb/extensions/erc20";
 import axios from "axios";
-import { signSmartContractData } from "@wert-io/widget-sc-signer";
+import { type signSmartContractData } from "@wert-io/widget-sc-signer";
 import { useActiveChainWithDefault } from "@/hooks/useChainWithDefault";
 import WertWidget from "@wert-io/widget-initializer";
 import { buildWertOptions } from "@/config/wert-config";
@@ -37,11 +37,14 @@ function ActionButtons({
 }: ActionButtonsProps) {
   const account = useActiveAccount();
   const chain = useActiveChainWithDefault();
-
+  console.log("account", account);
   const { presaleContract, usdtContract } = useContracts();
 
   const [buyWithCryptoOpen, setBuyWithCryptoOpen] = useState(false);
   const [buyWithCardOpen, setBuyWithCardOpen] = useState(false);
+
+  const [isBuyingWithCryptoPending, setIsBuyingWithCryptoPending] =
+    useState(false);
 
   const maxAllocation = presaleAllocation - preSaleSold;
 
@@ -50,6 +53,8 @@ function ActionButtons({
       toast.error("Please connect your wallet");
       return;
     }
+
+    setIsBuyingWithCryptoPending(true);
 
     const parsedAmount = parseUnits(amount.toString(), 6);
 
@@ -99,6 +104,8 @@ function ActionButtons({
     setTimeout(() => {
       setBuyWithCryptoOpen(false);
     }, 1000);
+
+    setIsBuyingWithCryptoPending(false);
   };
 
   const buyWithCardSubmit = async (amount: number) => {
@@ -144,6 +151,7 @@ function ActionButtons({
           ownBalance={ownBalance}
           ownPrice={ownPrice}
           maxAllocation={maxAllocation}
+          isPending={isBuyingWithCryptoPending}
           submit={buyWithCardSubmit}
           type="card"
         />
@@ -164,6 +172,7 @@ function ActionButtons({
           ownBalance={ownBalance}
           ownPrice={ownPrice}
           maxAllocation={maxAllocation}
+          isPending={isBuyingWithCryptoPending}
           submit={buyWithCryptoSubmit}
           type="crypto"
         />
