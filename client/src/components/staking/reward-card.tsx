@@ -31,7 +31,7 @@ const RewardCard = ({
           </div>
           <div className="flex flex-col">
             <span className="font-dm_sans text-[32px] font-normal leading-[32px] tracking-[0.005] text-black md:text-[48px] md:leading-[48px]">
-              {Number(totalOwnRewards).toLocaleString()}
+              {isNaN(totalOwnRewards) ? "--" : Number(totalOwnRewards).toLocaleString()}
             </span>
           </div>
         </div>

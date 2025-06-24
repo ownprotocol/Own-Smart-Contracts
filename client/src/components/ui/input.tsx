@@ -70,7 +70,7 @@ export const FormInput = <
         )}
       </div>
       {errorString && (
-        <p className="h-2 font-dm_mono text-[8px] font-[400] leading-[14px] tracking-[8%] text-red-500 md:text-[14px] md:leading-[16px]">
+        <p className="h-2 font-dm_mono text-[8px] font-[400] leading-[14px] tracking-[8%] text-red-500 md:text-[12px] md:leading-[14px]">
           {errorString}
         </p>
       )}
