@@ -42,3 +42,39 @@ export const createTokenAmountSchema = (
       `Cannot exceed ${maxAmount.toFixed(2)} tokens`,
     );
 };
+
+/**
+ * Lockup duration validation schema that allows clearing input while typing
+ */
+export const createLockupDurationSchema = () => {
+  return z
+    .union([z.string(), z.number()])
+    .refine((val) => {
+      if (typeof val === "string") {
+        // Allow empty string while typing
+        if (val === "") return true;
+
+        // Check if the string is a valid number format (integers only for weeks)
+        const validWeeksPattern = /^\d+$/;
+        return validWeeksPattern.test(val);
+      }
+      return true;
+    }, "You must input valid number of weeks.")
+    .transform((val) => {
+      if (typeof val === "string") {
+        // Allow empty string while typing
+        if (val === "") return 0;
+        const num = parseInt(val, 10);
+        return isNaN(num) ? 0 : num;
+      }
+      return val;
+    })
+    .refine(
+      (val) => val >= 1,
+      `Lockup duration must be at least 1 week.`,
+    )
+    .refine(
+      (val) => val <= 52,
+      `Lockup duration cannot be more than 52 weeks (1 year).`,
+    );
+};

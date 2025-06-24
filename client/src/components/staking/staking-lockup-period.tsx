@@ -24,18 +24,16 @@ function StakingLockupPeriod({
   setValue,
   errors,
 }: StakingLockupPeriodProps) {
-  const handleLockUpDuration = (weeks: string) => {
-    if (weeks && /^\d+(\.\d+)?$/.test(weeks)) {
-      if (Number(weeks) > 208) {
-        toast.warning("Lockup duration cannot be more than 4 years.");
-        setValue("lockupDurationWeeks", 208, { shouldValidate: true });
-        return;
-      }
+  const handleLockUpDuration = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
 
-      setValue("lockupDurationWeeks", Number(weeks), { shouldValidate: true });
-    } else {
-      setValue("lockupDurationWeeks", 1, { shouldValidate: true });
-    }
+    setValue("lockupDurationWeeks", Number(inputValue), {
+      shouldValidate: true,
+    });
+  };
+
+  const handlePresetWeeks = (weeks: number) => {
+    setValue("lockupDurationWeeks", weeks, { shouldValidate: true });
   };
 
   return (
@@ -45,24 +43,24 @@ function StakingLockupPeriod({
         errorString={errors.lockupDurationWeeks?.message}
         inputClassName="!text-black"
         inputProps={{ ...register("lockupDurationWeeks") }}
-        onChange={(e) => handleLockUpDuration(e.target.value)}
+        onChange={handleLockUpDuration}
       />
       <div className="flex flex-wrap justify-start gap-6">
         <StakingButton
           label="1 Week"
           isSelected={lockupDuration === 1}
-          onClick={() => handleLockUpDuration("1")}
+          onClick={() => handlePresetWeeks(1)}
         />
         <StakingButton
           label="1 Month"
           isSelected={lockupDuration === 4}
-          onClick={() => handleLockUpDuration("4")}
+          onClick={() => handlePresetWeeks(4)}
         />
         <div className="flex flex-col gap-1">
           <StakingButton
             label="1 Year"
             isSelected={lockupDuration === 52}
-            onClick={() => handleLockUpDuration("52")}
+            onClick={() => handlePresetWeeks(52)}
           />
           <div className="w-full pr-12 text-end font-dm_sans text-[10px] font-medium leading-[20px] text-orange-500 md:pr-40 md:text-[16px] md:leading-[24px]">
             MAX REWARD
