@@ -46,6 +46,8 @@ function ActionButtons({
   const [isBuyingWithCryptoPending, setIsBuyingWithCryptoPending] =
     useState(false);
 
+  const [isBuyingWithCardPending, setIsBuyingWithCardPending] = useState(false);
+
   const maxAllocation = presaleAllocation - preSaleSold;
 
   const buyWithCryptoSubmit = async (amount: number) => {
@@ -114,6 +116,8 @@ function ActionButtons({
       return;
     }
 
+    setIsBuyingWithCardPending(true);
+
     setBuyWithCardOpen(false);
 
     const signedData = await axios.post<
@@ -129,6 +133,8 @@ function ActionButtons({
       ...buildWertOptions(),
     });
     wertWidget.open();
+
+    setIsBuyingWithCardPending(false);
   };
 
   return (
@@ -146,12 +152,12 @@ function ActionButtons({
         onOpenChange={setBuyWithCardOpen}
       >
         <BuyWithCryptoDrawer
-          setIsOpen={setBuyWithCryptoOpen}
+          setIsOpen={setBuyWithCardOpen}
           usdtBalance={usdtBalance}
           ownBalance={ownBalance}
           ownPrice={ownPrice}
           maxAllocation={maxAllocation}
-          isPending={isBuyingWithCryptoPending}
+          isPending={isBuyingWithCardPending}
           submit={buyWithCardSubmit}
           type="card"
         />
