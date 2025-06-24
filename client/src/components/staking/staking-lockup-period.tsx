@@ -5,7 +5,6 @@ import {
   type UseFormRegister,
 } from "node_modules/react-hook-form/dist/types/form";
 import { type FieldErrors } from "react-hook-form";
-import { toast } from "react-toastify";
 import { FormInput } from "../ui/input";
 import StakingButton from "./staking-button";
 
