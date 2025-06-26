@@ -25,7 +25,6 @@ interface BuyWithCryptoModalProps {
   submit: (amount: number) => Promise<void>;
   type: "crypto" | "card";
   maxAllocation: number;
-  isPending: boolean;
 }
 
 export const BuyWithCryptoDrawer = ({
@@ -35,9 +34,7 @@ export const BuyWithCryptoDrawer = ({
   maxAllocation,
   type,
   submit,
-  isPending,
 }: BuyWithCryptoModalProps) => {
-  console.log("isPending", isPending);
   const wallet = useActiveWallet();
   const { data: walletImage } = useWalletImage(wallet?.id);
   const account = useActiveAccount();
@@ -180,7 +177,7 @@ export const BuyWithCryptoDrawer = ({
           <Button
             variant={"mainButton"}
             useSpinner
-            disabled={!amountToSpend || isPending}
+            disabled={!amountToSpend}
             onClick={onSubmit}
           >
             Buy {displayedEthAmount(amountToSpend)} $Own Tokens

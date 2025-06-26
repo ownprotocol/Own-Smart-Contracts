@@ -38,6 +38,7 @@ function StakingLockupPeriod({
   return (
     <div className="flex w-full flex-col gap-2">
       <FormInput
+        type="number"
         title={title}
         errorString={errors.lockupDurationWeeks?.message}
         inputClassName="!text-black"

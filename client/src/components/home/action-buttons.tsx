@@ -37,16 +37,12 @@ function ActionButtons({
 }: ActionButtonsProps) {
   const account = useActiveAccount();
   const chain = useActiveChainWithDefault();
-  console.log("account", account);
+
   const { presaleContract, usdtContract } = useContracts();
 
   const [buyWithCryptoOpen, setBuyWithCryptoOpen] = useState(false);
   const [buyWithCardOpen, setBuyWithCardOpen] = useState(false);
 
-  const [isBuyingWithCryptoPending, setIsBuyingWithCryptoPending] =
-    useState(false);
-
-  const [isBuyingWithCardPending, setIsBuyingWithCardPending] = useState(false);
 
   const maxAllocation = presaleAllocation - preSaleSold;
 
@@ -55,8 +51,6 @@ function ActionButtons({
       toast.error("Please connect your wallet");
       return;
     }
-
-    setIsBuyingWithCryptoPending(true);
 
     const parsedAmount = parseUnits(amount.toString(), 6);
 
@@ -107,7 +101,6 @@ function ActionButtons({
       setBuyWithCryptoOpen(false);
     }, 1000);
 
-    setIsBuyingWithCryptoPending(false);
   };
 
   const buyWithCardSubmit = async (amount: number) => {
@@ -115,8 +108,6 @@ function ActionButtons({
       toast.error("Please connect your wallet");
       return;
     }
-
-    setIsBuyingWithCardPending(true);
 
     setBuyWithCardOpen(false);
 
@@ -134,7 +125,6 @@ function ActionButtons({
     });
     wertWidget.open();
 
-    setIsBuyingWithCardPending(false);
   };
 
   return (
@@ -157,7 +147,6 @@ function ActionButtons({
           ownBalance={ownBalance}
           ownPrice={ownPrice}
           maxAllocation={maxAllocation}
-          isPending={isBuyingWithCardPending}
           submit={buyWithCardSubmit}
           type="card"
         />
@@ -178,7 +167,6 @@ function ActionButtons({
           ownBalance={ownBalance}
           ownPrice={ownPrice}
           maxAllocation={maxAllocation}
-          isPending={isBuyingWithCryptoPending}
           submit={buyWithCryptoSubmit}
           type="crypto"
         />
