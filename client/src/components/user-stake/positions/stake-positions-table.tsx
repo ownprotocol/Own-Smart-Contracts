@@ -51,7 +51,7 @@ function StakePositionsTable({ stakePositions }: StakePositionsTableProps) {
                       <tr>
                         <TableHeader>START DATE</TableHeader>
                         <TableHeader>
-                          <div className="relative my-4">
+                        <div className="relative my-4">
                             FINAL DATE
                             <span className="absolute left-0 top-full whitespace-nowrap text-[8px] text-gray-400">
                               * claim principal
