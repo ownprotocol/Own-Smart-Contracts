@@ -51,7 +51,6 @@ function StakePositionsTable({ stakePositions }: StakePositionsTableProps) {
                       <tr>
                         <TableHeader>START DATE</TableHeader>
                         <TableHeader>FINAL DATE</TableHeader>
-                        <TableHeader>APR</TableHeader>
                         <TableHeader>OWN LOCKED</TableHeader>
                         <TableHeader>REWARDS</TableHeader>
                         <TableHeader>CLAIMABLE</TableHeader>
