@@ -144,8 +144,6 @@ const TokenomicsChart = () => {
                   style={{
                     outline: "none",
                     transition: "all 0.3s ease",
-                    transform:
-                      activeIndex === index ? "scale(1.02)" : "scale(1)",
                     filter:
                       activeIndex === index
                         ? "drop-shadow(0 4px 6px rgba(0, 0, 0, 0.25))"

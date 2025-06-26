@@ -37,7 +37,7 @@ export const usePresalePurchasesPage = (): QueryHook<{
           allocation: Number(formatEther(round.allocation)),
           duration: Number(round.duration),
           price: Number(formatUnits(round.price, 6)),
-          sales: Number(formatEther(round.sales)),
+          sales: Number(formatUnits(round.sales, 6)),
           claimTokensTimestamp: Number(round.claimTokensTimestamp),
         })),
     ),
@@ -86,7 +86,7 @@ export const usePresalePurchasesPage = (): QueryHook<{
       return {
         roundId: Number(value.roundId),
         ownAmount: Number(formatEther(value.ownAmount)),
-        usdtAmount: Number(formatEther(value.usdtAmount)),
+        usdtAmount: Number(formatUnits(value.usdtAmount, 6)),
         receiver: value.receiver,
         timestamp: new Date(Number(value.timestamp) * 1000),
         claimStatus: claimStatus,

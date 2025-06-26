@@ -20,7 +20,7 @@ export const useGetCurrentPresaleRound =
           duration: Number(data[2].duration),
           price: Number(formatUnits(data[2].price, 6)),
           allocation: Number(formatEther(data[2].allocation)),
-          sales: Number(formatEther(data[2].sales)),
+          sales: Number(formatUnits(data[2].sales, 6)),
           claimTokensTimestamp: Number(data[2].claimTokensTimestamp),
           roundId: Number(data[3]),
         },
