@@ -50,7 +50,15 @@ function StakePositionsTable({ stakePositions }: StakePositionsTableProps) {
                     <thead>
                       <tr>
                         <TableHeader>START DATE</TableHeader>
-                        <TableHeader>FINAL DATE</TableHeader>
+                        <TableHeader>
+                          <div className="relative my-4">
+                            FINAL DATE
+                            <span className="absolute left-0 top-full whitespace-nowrap text-[8px] text-gray-400">
+                              * claim principal
+                            </span>
+                          </div>
+                        </TableHeader>
+                        <TableHeader>APR</TableHeader>
                         <TableHeader>OWN LOCKED</TableHeader>
                         <TableHeader>REWARDS</TableHeader>
                         <TableHeader>CLAIMABLE</TableHeader>
