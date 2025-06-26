@@ -142,7 +142,7 @@ function ActionButtons({
         onOpenChange={setBuyWithCardOpen}
       >
         <BuyWithCryptoDrawer
-          setIsOpen={setBuyWithCardOpen}
+          setIsOpen={setBuyWithCryptoOpen}
           usdtBalance={usdtBalance}
           ownBalance={ownBalance}
           ownPrice={ownPrice}
