@@ -804,7 +804,10 @@ contract Stake is
         {
             uint256 startWeekToIterateFrom = positionLastWeekRewardsClaimed;
             // If they didn't enter at the start of the week, we need to start from the next week because the above logic will issue rewards for the first week
-            if (!enteredAtStartOfWeek) {
+            if (
+                !enteredAtStartOfWeek &&
+                startWeek == positionLastWeekRewardsClaimed
+            ) {
                 ++startWeekToIterateFrom;
             }
 
