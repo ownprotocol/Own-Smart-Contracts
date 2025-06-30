@@ -12,7 +12,7 @@ import { useActiveAccount } from "thirdweb/react";
 import { useContracts } from "@/hooks";
 import { allowance } from "thirdweb/extensions/erc20";
 import axios from "axios";
-import { signSmartContractData } from "@wert-io/widget-sc-signer";
+import { type signSmartContractData } from "@wert-io/widget-sc-signer";
 import { useActiveChainWithDefault } from "@/hooks/useChainWithDefault";
 import WertWidget from "@wert-io/widget-initializer";
 import { buildWertOptions } from "@/config/wert-config";
@@ -42,6 +42,7 @@ function ActionButtons({
 
   const [buyWithCryptoOpen, setBuyWithCryptoOpen] = useState(false);
   const [buyWithCardOpen, setBuyWithCardOpen] = useState(false);
+
 
   const maxAllocation = presaleAllocation - preSaleSold;
 
@@ -99,6 +100,7 @@ function ActionButtons({
     setTimeout(() => {
       setBuyWithCryptoOpen(false);
     }, 1000);
+
   };
 
   const buyWithCardSubmit = async (amount: number) => {
@@ -122,6 +124,7 @@ function ActionButtons({
       ...buildWertOptions(),
     });
     wertWidget.open();
+
   };
 
   return (

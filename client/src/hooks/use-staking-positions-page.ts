@@ -5,8 +5,7 @@ import { useActiveAccount } from "thirdweb/react";
 import { type StakingPurchaseDetails } from "@/types";
 import { formatEther } from "viem";
 import { useTestingSafeTimestamp } from "./use-testing-safe-timestamp";
-import { QueryHook } from "@/types/query";
-import { useMemo } from "react";
+import { type QueryHook } from "@/types/query";
 import { getDay } from "@/helpers/date";
 
 const getStatus = (

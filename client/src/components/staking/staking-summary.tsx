@@ -19,7 +19,10 @@ function StakingSummary({
         Summary
       </h2>
       <div className="flex flex-col">
-        <SummaryRow label="Token to be locked" tokenValue={tokensToStake} />
+        <SummaryRow
+          label="Token to be locked"
+          tokenValue={isNaN(tokensToStake) ? "--" : tokensToStake}
+        />
         <SummaryRow label="Factor" factorValue={`${factor}x`} />
         <SummaryRow
           label="Lock-up Duration"

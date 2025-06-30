@@ -72,7 +72,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       }
     };
 
-    const isDisabled = props.disabled ?? isLoading;
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- this is required for this button to be disabled
+    const isDisabled = props.disabled || isLoading;
 
     return (
       <Comp

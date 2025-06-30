@@ -1,11 +1,9 @@
 import { z } from "zod";
-import { createTokenAmountSchema } from "@/lib/schemas";
+import { createStakeValidationSchema, FieldType } from "@/lib/schemas";
 
 export const createStakingSchema = (maxBalance: number) => z.object({
-  tokenAmount: createTokenAmountSchema(maxBalance, 0, "Token amount"),
-  lockupDurationWeeks: z
-    .number()
-    .min(1, { message: "Lockup duration must be at least 1 week." }),
+  tokenAmount: createStakeValidationSchema(FieldType.TOKEN_AMOUNT, maxBalance, 0, "Token amount"),
+  lockupDurationWeeks: createStakeValidationSchema(FieldType.LOCKUP_DURATION, 52, 1, "Lockup duration"),
 });
 
 export type StakingFormData = z.infer<ReturnType<typeof createStakingSchema>>;
