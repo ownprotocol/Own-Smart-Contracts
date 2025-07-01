@@ -2027,6 +2027,38 @@ export const stakeABI = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "getTotalActiveVeOwnSupply",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "totalVeOwnSupply",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_user",
+        type: "address",
+      },
+    ],
+    name: "getUsersActiveVeOwnBalance",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "balance",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
