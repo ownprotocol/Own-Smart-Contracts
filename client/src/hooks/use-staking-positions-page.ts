@@ -17,9 +17,15 @@ const getStatus = (
     return "in-progress";
   }
 
+  const finalDayOfFinalWeek = Math.floor(finalDay / 7) + 6;
+
+  if (currentDay > finalDayOfFinalWeek) {
+    return "finished";
+  }
+
   const finalWeek = Math.floor(finalDay / 7);
 
-  if (lastWeekRewardsClaimed === finalWeek) {
+  if (currentDay > finalDayOfFinalWeek && lastWeekRewardsClaimed === finalWeek) {
     return "complete";
   }
 
@@ -57,6 +63,7 @@ export const useStakingPositionsPage = (): QueryHook<
       (row, idx): StakingPurchaseDetails => ({
         ownAmount: Number(formatEther(row.ownAmount)),
         finalDay: Number(row.finalDay),
+        finalDayOfFinalWeek: Math.floor(Number(row.finalDay) / 7) + 6,
         startDay: Number(row.startDay),
         lastWeekRewardsClaimed: Number(row.lastWeekRewardsClaimed),
         rewardsClaimed: Number(formatEther(row.rewardsClaimed)),

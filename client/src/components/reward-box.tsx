@@ -3,11 +3,12 @@
 interface RewardBoxProps {
   label: string;
   value: string | number;
+  className?: string;
 }
 
-function RewardBox({ label, value }: RewardBoxProps) {
+function RewardBox({ label, value, className }: RewardBoxProps) {
   return (
-    <div className="flex flex-col items-center space-y-1 md:items-start md:space-y-0">
+    <div className={`flex flex-col items-center space-y-1 md:items-start md:space-y-0 bg-black rounded-2xl p-4 ${className}`}>
       <h2 className="w-full text-left font-dm_mono text-[12px] uppercase leading-[12px] tracking-[8%] text-gray-400 md:text-[14px] md:leading-[14px]">
       {label}
       </h2>

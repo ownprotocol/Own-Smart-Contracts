@@ -12,6 +12,7 @@ export type StakingPurchaseDetails = {
   positionId: number;
   startDay: number;
   finalDay: number;
+  finalDayOfFinalWeek: number;
   ownAmount: number;
   veOwnAmount: number;
   lastWeekRewardsClaimed: number;
