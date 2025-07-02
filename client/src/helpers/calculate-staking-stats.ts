@@ -1,5 +1,10 @@
 import { type StakingPurchaseDetails } from "@/types";
 
+/**
+ * 
+ * @param positions 
+ * @returns totalOwnStaked, totalRewardsClaimed, totalClaimableRewards, claimablePositionIds, claimablePrincipalAmount
+ */
 export function calculateStakingStats(positions: StakingPurchaseDetails[]) {
   return positions.reduce(
     (stats, position) => {

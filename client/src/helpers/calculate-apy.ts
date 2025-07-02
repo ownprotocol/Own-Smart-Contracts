@@ -1,12 +1,20 @@
 import { type StakingPurchaseDetails } from "@/types";
 
+const DAYS_IN_YEAR = 365;
+/**
+ * 
+ * @param position 
+ * @param totalActiveVeOwnSupply 
+ * @param dailyRewardAmount 
+ * @param currentBoostMultiplier 
+ * @returns apy
+ */
 export const calculateApy = (
   position: StakingPurchaseDetails,
   totalActiveVeOwnSupply: number,
   dailyRewardAmount: number,
   currentBoostMultiplier: number,
 ) => {
-  const DAYS_IN_YEAR = 365;
   if (position.finalDay > position.currentDay) {
     const totalRewardsEarned =
       position.rewardsClaimed + position.claimableRewards;
