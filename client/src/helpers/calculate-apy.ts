@@ -7,7 +7,7 @@ const DAYS_IN_YEAR = 365;
  * @param totalActiveVeOwnSupply Total active veOWN supply in the system
  * @param dailyRewardAmount Daily reward amount distributed
  * @param currentBoostMultiplier Current boost multiplier applied to rewards
- * @returns The calculated APY as a decimal (e.g., 0.15 for 15% APY)
+ * @returns The calculated APY
  */
 export const calculateApy = (
   position: StakingPurchaseDetails,
