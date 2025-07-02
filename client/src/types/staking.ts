@@ -19,4 +19,8 @@ export type StakingPurchaseDetails = {
   rewardsClaimed: number;
   claimableRewards: number;
   status: "in-progress" | "finished" | "complete";
+  currentDay: number;
+  totalActiveVeOwnSupply: number;
+  dailyRewardAmount: number;
+  currentBoostMultiplier: number;
 };

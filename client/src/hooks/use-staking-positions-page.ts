@@ -25,7 +25,10 @@ const getStatus = (
 
   const finalWeek = Math.floor(finalDay / 7);
 
-  if (currentDay > finalDayOfFinalWeek && lastWeekRewardsClaimed === finalWeek) {
+  if (
+    currentDay > finalDayOfFinalWeek &&
+    lastWeekRewardsClaimed === finalWeek
+  ) {
     return "complete";
   }
 
@@ -43,6 +46,22 @@ export const useStakingPositionsPage = (): QueryHook<
       contract: stakeContract,
       method: "getUsersPositionDetails",
       params: [account?.address ?? ""],
+    }),
+
+    dailyRewardAmount: useReadContractQueryHook({
+      contract: stakeContract,
+      method: "dailyRewardAmount",
+      params: [],
+    }),
+    currentBoostMultiplier: useReadContractQueryHook({
+      contract: stakeContract,
+      method: "getCurrentBoostMultiplier",
+      params: [],
+    }),
+    totalActiveVeOwnSupply: useReadContractQueryHook({
+      contract: stakeContract,
+      method: "getTotalActiveVeOwnSupply",
+      params: [],
     }),
     timestamp: useTestingSafeTimestamp(),
   });
@@ -78,6 +97,14 @@ export const useStakingPositionsPage = (): QueryHook<
           Number(row.finalDay),
           Number(row.lastWeekRewardsClaimed),
         ),
+        currentDay,
+        totalActiveVeOwnSupply: Number(
+          formatEther(queryHooks.data.totalActiveVeOwnSupply),
+        ),
+        dailyRewardAmount: Number(
+          formatEther(queryHooks.data.dailyRewardAmount),
+        ),
+        currentBoostMultiplier: Number(queryHooks.data.currentBoostMultiplier),
       }),
     ),
     refetch: queryHooks.refetch,

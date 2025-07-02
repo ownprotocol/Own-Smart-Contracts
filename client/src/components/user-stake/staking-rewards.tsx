@@ -8,6 +8,7 @@ import { useContracts } from "@/hooks/use-contracts";
 import { toast } from "react-toastify";
 import { Button } from "../ui/button";
 import { displayedEthAmount } from "@/lib/display";
+import { calculateStakingStats } from "@/helpers/calculate-staking-stats";
 
 interface StakingRewardsProps {
   stakePositions: StakingPurchaseDetails[];
@@ -87,36 +88,5 @@ function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
     </div>
   );
 }
-
-function calculateStakingStats(positions: StakingPurchaseDetails[]) {
-  return positions.reduce(
-    (stats, position) => {
-      if (position.claimableRewards > 0) {
-        stats.claimablePositionIds.push(position.positionId);
-      }
-      const claimablePrincipalAmount = 
-      position.status === "finished" ? position.ownAmount : 0;
-
-      return {
-        totalOwnStaked: stats.totalOwnStaked + position.ownAmount, 
-        totalRewardsClaimed:
-          stats.totalRewardsClaimed + position.rewardsClaimed,
-        totalClaimableRewards:
-          stats.totalClaimableRewards + position.claimableRewards,
-        claimablePositionIds: stats.claimablePositionIds,
-        claimablePrincipalAmount:
-          stats.claimablePrincipalAmount + claimablePrincipalAmount,
-      };
-    },
-    {
-      totalOwnStaked: 0,
-      totalRewardsClaimed: 0,
-      totalClaimableRewards: 0,
-      claimablePositionIds: [] as number[],
-      claimablePrincipalAmount: 0,
-    },
-  );
-}
-
 
 export default StakingRewards;
