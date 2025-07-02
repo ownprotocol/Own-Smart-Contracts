@@ -2,12 +2,12 @@ import { type StakingPurchaseDetails } from "@/types";
 
 const DAYS_IN_YEAR = 365;
 /**
- * 
- * @param position 
- * @param totalActiveVeOwnSupply 
- * @param dailyRewardAmount 
- * @param currentBoostMultiplier 
- * @returns apy
+ * Calculates the Annual Percentage Yield (APY) for a staking position
+ * @param position The staking position details including amounts and timing
+ * @param totalActiveVeOwnSupply Total active veOWN supply in the system
+ * @param dailyRewardAmount Daily reward amount distributed
+ * @param currentBoostMultiplier Current boost multiplier applied to rewards
+ * @returns The calculated APY as a decimal (e.g., 0.15 for 15% APY)
  */
 export const calculateApy = (
   position: StakingPurchaseDetails,

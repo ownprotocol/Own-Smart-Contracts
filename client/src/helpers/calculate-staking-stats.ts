@@ -1,9 +1,14 @@
 import { type StakingPurchaseDetails } from "@/types";
 
 /**
- * 
- * @param positions 
- * @returns totalOwnStaked, totalRewardsClaimed, totalClaimableRewards, claimablePositionIds, claimablePrincipalAmount
+ * Calculates aggregate statistics across all staking positions
+ * @param positions Array of staking position details to analyze
+ * @returns Object containing:
+ *   - totalOwnStaked: Total tokens staked across all positions
+ *   - totalRewardsClaimed: Total rewards already claimed
+ *   - totalClaimableRewards: Total rewards available to claim
+ *   - claimablePositionIds: Array of position IDs with claimable rewards
+ *   - claimablePrincipalAmount: Total principal amount that can be withdrawn from finished positions
  */
 export function calculateStakingStats(positions: StakingPurchaseDetails[]) {
   return positions.reduce(
