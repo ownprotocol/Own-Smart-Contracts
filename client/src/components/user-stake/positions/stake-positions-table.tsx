@@ -7,15 +7,19 @@ import {
 import { calculateApy } from "@/helpers/calculate-apy";
 import { convertDaysToDate } from "@/helpers/date";
 import { displayedEthAmount } from "@/lib/display";
-import { type StakingPurchaseDetails } from "@/types";
+import { type StakingContractData, type StakingPurchaseDetails } from "@/types";
 import { format } from "date-fns";
 import { Lock, LockOpen } from "lucide-react";
 
 interface StakePositionsTableProps {
   stakePositions: StakingPurchaseDetails[];
+  stakingContractData: StakingContractData;
 }
 
-function StakePositionsTable({ stakePositions }: StakePositionsTableProps) {
+function StakePositionsTable({
+  stakePositions,
+  stakingContractData,
+}: StakePositionsTableProps) {
   return (
     <div className="mt-4">
       <div className="mx-auto max-w-7xl">
@@ -74,9 +78,10 @@ function StakePositionsTable({ stakePositions }: StakePositionsTableProps) {
                             <TableRow className="text-[#F5841F]">
                               {calculateApy(
                                 stakePosition,
-                                stakePosition.totalActiveVeOwnSupply,
-                                stakePosition.dailyRewardAmount,
-                                stakePosition.currentBoostMultiplier,
+                                stakingContractData.totalActiveVeOwnSupply,
+                                stakingContractData.dailyRewardAmount,
+                                stakingContractData.currentBoostMultiplier,
+                                stakingContractData.currentDay,
                               )}
                               %
                             </TableRow>

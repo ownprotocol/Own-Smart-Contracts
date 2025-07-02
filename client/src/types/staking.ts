@@ -19,6 +19,9 @@ export type StakingPurchaseDetails = {
   rewardsClaimed: number;
   claimableRewards: number;
   status: "in-progress" | "finished" | "complete";
+};
+
+export type StakingContractData = {
   currentDay: number;
   totalActiveVeOwnSupply: number;
   dailyRewardAmount: number;

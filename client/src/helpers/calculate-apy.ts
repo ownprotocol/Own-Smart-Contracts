@@ -14,8 +14,9 @@ export const calculateApy = (
   totalActiveVeOwnSupply: number,
   dailyRewardAmount: number,
   currentBoostMultiplier: number,
+  currentDay: number,
 ) => {
-  if (position.finalDay > position.currentDay) {
+  if (position.finalDay > currentDay) {
     const totalRewardsEarned =
       position.rewardsClaimed + position.claimableRewards;
     const adjustedStakingDuraton =
