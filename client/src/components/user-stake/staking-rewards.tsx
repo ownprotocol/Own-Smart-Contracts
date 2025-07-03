@@ -7,8 +7,8 @@ import { useActiveAccount } from "thirdweb/react";
 import { useContracts } from "@/hooks/use-contracts";
 import { toast } from "react-toastify";
 import { Button } from "../ui/button";
-import Image from "next/image";
 import { displayedEthAmount } from "@/lib/display";
+import { calculateStakingStats } from "@/helpers/calculate-staking-stats";
 
 interface StakingRewardsProps {
   stakePositions: StakingPurchaseDetails[];
@@ -19,8 +19,11 @@ function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
   const account = useActiveAccount();
   const { stakeContract } = useContracts();
 
-  const { totalRewardsClaimed, totalClaimableRewards, claimablePositionIds } =
+  const { totalRewardsClaimed, totalClaimableRewards, claimablePositionIds, claimablePrincipalAmount , totalOwnStaked} =
     calculateStakingStats(stakePositions);
+
+  const totalStakingRewardsEarned = totalRewardsClaimed + totalClaimableRewards;
+
   const disabled =
     totalClaimableRewards === 0 ||
     totalClaimableRewards === totalRewardsClaimed;
@@ -50,85 +53,38 @@ function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
     }
   };
   return (
-    <div className="mt-4 grid grid-cols-2 gap-6 rounded-xl md:mt-8 md:grid-cols-3 md:gap-12">
-      <RewardBox
-        label="Rewards Earned"
-        value={displayedEthAmount(totalRewardsClaimed)}
-      />
-      <ClaimableRewardBox
-        label="Claimable Rewards"
-        value={displayedEthAmount(totalClaimableRewards)}
-        onClaim={claimRewards}
-        disabled={disabled}
-      />
+    <div className="flex flex-col gap-2">
+      <div className="mt-4 grid grid-cols-2 gap-1 rounded-xl md:mt-6 md:gap-2">
+        <RewardBox
+          label="TOTAL OWN STAKED"
+          value={displayedEthAmount(totalOwnStaked)}
+        />
+        <RewardBox
+          label="TOTAL STAKING REWARDS EARNED"
+          value={displayedEthAmount(totalStakingRewardsEarned)}
+          className=""
+        />
+        <RewardBox
+          label="CLAIMABLE PRINCIPAL"
+          value={displayedEthAmount(claimablePrincipalAmount)}
+          className="bg-[#2A2234]"
+        />
+          <RewardBox
+            label="CLAIMABLE REWARDS"
+            value={displayedEthAmount(totalClaimableRewards)}
+            className="bg-[#2A2234]"
+          />
+      </div>
       <Button
         variant="mainButton"
         size="lg"
         onClick={claimRewards}
         disabled={disabled}
         useSpinner
+        className="w-full rounded-2xl bg-[#C58BFF]"
       >
         Claim
       </Button>
-    </div>
-  );
-}
-
-function calculateStakingStats(positions: StakingPurchaseDetails[]) {
-  return positions.reduce(
-    (stats, position) => {
-      if (position.claimableRewards > 0) {
-        stats.claimablePositionIds.push(position.positionId);
-      }
-
-      return {
-        totalRewardsClaimed:
-          stats.totalRewardsClaimed + position.rewardsClaimed,
-        totalClaimableRewards:
-          stats.totalClaimableRewards + position.claimableRewards,
-        claimablePositionIds: stats.claimablePositionIds,
-      };
-    },
-    {
-      totalRewardsClaimed: 0,
-      totalClaimableRewards: 0,
-      claimablePositionIds: [] as number[],
-    },
-  );
-}
-
-interface ClaimableRewardBoxProps {
-  label: string;
-  value: string | number;
-  onClaim: () => Promise<void>;
-  disabled?: boolean;
-}
-
-function ClaimableRewardBox({
-  label,
-  value,
-  onClaim,
-  disabled,
-}: ClaimableRewardBoxProps) {
-  return (
-    <div className="flex flex-col items-center space-y-1 md:items-start md:space-y-0">
-      <span className="w-full text-left font-dm_mono text-[12px] uppercase leading-[12px] tracking-[8%] text-gray-400 md:text-[14px] md:leading-[14px]">
-        {label}
-      </span>
-      <div className="flex w-full items-center gap-2 pt-2 md:pt-4">
-        <div className="flex items-center gap-2">
-          <Image
-            src="/own-logo.svg"
-            alt="OWN"
-            width={24}
-            height={24}
-            className="rounded-full"
-          />
-          <span className="font-dm_sans text-[22px] font-[500] leading-[22px] tracking-[2%] text-white md:text-[32px] md:leading-[32px]">
-            {value}
-          </span>
-        </div>
-      </div>
     </div>
   );
 }

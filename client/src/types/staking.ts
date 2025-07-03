@@ -12,10 +12,18 @@ export type StakingPurchaseDetails = {
   positionId: number;
   startDay: number;
   finalDay: number;
+  finalDayOfFinalWeek: number;
   ownAmount: number;
   veOwnAmount: number;
   lastWeekRewardsClaimed: number;
   rewardsClaimed: number;
   claimableRewards: number;
   status: "in-progress" | "finished" | "complete";
+};
+
+export type StakingContractData = {
+  currentDay: number;
+  totalActiveVeOwnSupply: number;
+  dailyRewardAmount: number;
+  currentBoostMultiplier: number;
 };

@@ -4,28 +4,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/table/table-common-components";
+import { calculateApy } from "@/helpers/calculate-apy";
 import { convertDaysToDate } from "@/helpers/date";
 import { displayedEthAmount } from "@/lib/display";
-import { type StakingPurchaseDetails } from "@/types";
+import { type StakingContractData, type StakingPurchaseDetails } from "@/types";
 import { format } from "date-fns";
+import { Check, Lock, LockOpen } from "lucide-react";
 
 interface StakePositionsTableProps {
   stakePositions: StakingPurchaseDetails[];
+  stakingContractData: StakingContractData;
 }
 
-const formatStatusToReadable = (status: StakingPurchaseDetails["status"]) => {
-  if (status === "in-progress") {
-    return "In Progress";
-  }
-
-  if (status === "complete") {
-    return "Complete";
-  }
-
-  return "Finished";
-};
-
-function StakePositionsTable({ stakePositions }: StakePositionsTableProps) {
+function StakePositionsTable({
+  stakePositions,
+  stakingContractData,
+}: StakePositionsTableProps) {
   return (
     <div className="mt-4">
       <div className="mx-auto max-w-7xl">
@@ -49,12 +43,11 @@ function StakePositionsTable({ stakePositions }: StakePositionsTableProps) {
                   <table className="min-w-full divide-y divide-gray-700">
                     <thead>
                       <tr>
-                        <TableHeader>START DATE</TableHeader>
-                        <TableHeader>FINAL DATE</TableHeader>
-                        <TableHeader>OWN LOCKED</TableHeader>
-                        <TableHeader>REWARDS</TableHeader>
-                        <TableHeader>CLAIMABLE</TableHeader>
-                        <TableHeader>STATUS</TableHeader>
+                        <TableHeader>LOCK DATE</TableHeader>
+                        <TableHeader>STAKED</TableHeader>
+                        <TableHeader>CLAIMABLE REWARDS</TableHeader>
+                        <TableHeader>APY</TableHeader>
+                        <TableHeader>UNLOCK DATE</TableHeader>
                       </tr>
                     </thead>
                     {stakePositions.length === 0 ? (
@@ -76,12 +69,6 @@ function StakePositionsTable({ stakePositions }: StakePositionsTableProps) {
                               )}
                             </TableRow>
                             <TableRow>
-                              {format(
-                                convertDaysToDate(stakePosition.finalDay),
-                                "dd/MM/yyyy",
-                              )}
-                            </TableRow>
-                            <TableRow>
                               {displayedEthAmount(stakePosition.ownAmount)} Own
                             </TableRow>
                             <TableRow>
@@ -89,13 +76,29 @@ function StakePositionsTable({ stakePositions }: StakePositionsTableProps) {
                               Own
                             </TableRow>
                             <TableRow className="text-[#F5841F]">
-                              {displayedEthAmount(
-                                stakePosition.claimableRewards,
-                              )}{" "}
-                              Own
+                              {calculateApy(
+                                stakePosition,
+                                stakingContractData.totalActiveVeOwnSupply,
+                                stakingContractData.dailyRewardAmount,
+                                stakingContractData.currentBoostMultiplier,
+                                stakingContractData.currentDay,
+                              )}
+                              %
                             </TableRow>
                             <TableRow>
-                              {formatStatusToReadable(stakePosition.status)}
+                              {format(
+                                convertDaysToDate(stakePosition.finalDay),
+                                "dd/MM/yyyy",
+                              )}
+                            </TableRow>
+                            <TableRow>
+                              {stakePosition.status === "finished" ? (
+                                <LockOpen className="h-5 w-5 rounded-full bg-slate-500 p-1 text-black" />
+                              ) : stakePosition.status === "complete" ? (
+                                <Check className="h-5 w-5 rounded-full bg-green-500 p-1 text-black" />
+                              ) : (
+                                <Lock className="h-5 w-5 rounded-full bg-white p-1 text-black" />
+                              )}
                             </TableRow>
                           </tr>
                         ))}
@@ -111,5 +114,4 @@ function StakePositionsTable({ stakePositions }: StakePositionsTableProps) {
     </div>
   );
 }
-
 export default StakePositionsTable;
