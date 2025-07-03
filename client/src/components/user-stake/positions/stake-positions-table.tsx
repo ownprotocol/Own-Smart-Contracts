@@ -9,7 +9,7 @@ import { convertDaysToDate } from "@/helpers/date";
 import { displayedEthAmount } from "@/lib/display";
 import { type StakingContractData, type StakingPurchaseDetails } from "@/types";
 import { format } from "date-fns";
-import { Lock, LockOpen } from "lucide-react";
+import { Check, Lock, LockOpen } from "lucide-react";
 
 interface StakePositionsTableProps {
   stakePositions: StakingPurchaseDetails[];
@@ -92,9 +92,10 @@ function StakePositionsTable({
                               )}
                             </TableRow>
                             <TableRow>
-                              {stakePosition.status === "complete" ||
-                              stakePosition.status === "finished" ? (
+                              {stakePosition.status === "finished" ? (
                                 <LockOpen className="h-5 w-5 rounded-full bg-slate-500 p-1 text-black" />
+                              ) : stakePosition.status === "complete" ? (
+                                <Check className="h-5 w-5 rounded-full bg-green-500 p-1 text-black" />
                               ) : (
                                 <Lock className="h-5 w-5 rounded-full bg-white p-1 text-black" />
                               )}
