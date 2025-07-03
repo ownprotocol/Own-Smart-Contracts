@@ -71,7 +71,7 @@ function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
           className="bg-black"
         />
       </div>
-        <div className="flex justify-between gap-1 bg-[#2A2230]">
+        <div className="flex justify-between gap-1 bg-[#2A2230] rounded-xl">
           <RewardBox
             label="CLAIMABLE PRINCIPAL"
             value={displayedEthAmount(claimablePrincipalAmount)}
