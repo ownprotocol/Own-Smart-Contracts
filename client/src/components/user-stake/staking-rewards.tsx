@@ -58,21 +58,22 @@ function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
         <RewardBox
           label="TOTAL OWN STAKED"
           value={displayedEthAmount(totalOwnStaked)}
+               className="bg-black"
         />
         <RewardBox
           label="TOTAL STAKING REWARDS EARNED"
           value={displayedEthAmount(totalStakingRewardsEarned)}
-          className=""
+          className="bg-black"
         />
         <RewardBox
           label="CLAIMABLE PRINCIPAL"
           value={displayedEthAmount(claimablePrincipalAmount)}
-          className="bg-[#2A2234]"
+          className="bg-[#2A2230]"
         />
           <RewardBox
             label="CLAIMABLE REWARDS"
             value={displayedEthAmount(totalClaimableRewards)}
-            className="bg-[#2A2234]"
+            className="bg-[#2A2230]"
           />
       </div>
       <Button
@@ -83,7 +84,7 @@ function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
         useSpinner
         className="w-full rounded-2xl bg-[#C58BFF]"
       >
-        Claim
+        Claim {displayedEthAmount(claimablePrincipalAmount + totalClaimableRewards)}
       </Button>
     </div>
   );
