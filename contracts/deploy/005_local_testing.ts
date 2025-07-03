@@ -7,7 +7,11 @@ import {
   setDayOfWeekInHardhatNode,
 } from "../helpers/evm";
 import { parseEther, parseUnits } from "ethers";
-import { SECONDS_IN_A_WEEK } from "../constants/duration";
+import {
+  SECONDS_IN_A_DAY,
+  SECONDS_IN_A_HOUR,
+  SECONDS_IN_A_WEEK,
+} from "../constants/duration";
 
 const isTesting = process.env.IS_TESTING || false;
 
@@ -17,6 +21,7 @@ const ADDRESSES_TO_ISSUE_SEPOLIA_TEST_TOKENS = [
   "0x12EAD0881793314D63B6BACE59Ee5F827971e27A",
   "0x891ad32f5Fc606E09564603869F522c685cAf8A8",
   "0x1030F065Dd277E15E255c91FC8A2d50462a3FDA9",
+  "0xCF4B30a9F74998f23Ccdc66196f59f0AC1Bf84E6",
 ];
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
@@ -39,26 +44,33 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   await own.write.transfer([presale.address, parseEther("1000000")]);
 
-  console.log("DEPLOYER:", deployer.address);
+  // const rounds = Array.from({ length: 30 }, (_, i) => i).map(() => ({
+  //   duration: 86400n,
+  //   price: parseUnits("1", 6),
+  //   allocation: parseEther("1000"),
+  //   sales: 0n,
+  //   claimTokensTimestamp: 0n,
+  // }));
 
-  const rounds = Array.from({ length: 30 }, (_, i) => i).map(() => ({
-    duration: 86400n,
+  const duration = 19 * SECONDS_IN_A_HOUR;
+
+  const presaleRound = {
+    duration,
     price: parseUnits("1", 6),
-    allocation: parseEther("1000"),
+    allocation: parseEther("1000000"),
     sales: 0n,
     claimTokensTimestamp: 0n,
-  }));
-  await presale.write.addPresaleRounds([rounds]);
+  };
+
+  await presale.write.addPresaleRounds([[presaleRound]]);
 
   const currentTime = await getCurrentBlockTimestamp();
 
   await presale.write.setPresaleStartTime([
-    BigInt(currentTime + SECONDS_IN_A_WEEK),
+    BigInt(currentTime + SECONDS_IN_A_HOUR * 6),
   ]);
 
-  await presale.write.setPresaleStartTime([BigInt(currentTime + 600)]);
-
-  await mockUSDT.write.mint([deployer.address as any, parseEther("1000000")]);
+  // await mockUSDT.write.mint([deployer.address as any, parseEther("1000000")]);
 
   if (hre.network.name === "sepolia") {
     for (const address of ADDRESSES_TO_ISSUE_SEPOLIA_TEST_TOKENS) {
@@ -69,7 +81,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     // For Arbitrum, we can use the same addresses as Sepolia for testing purposes
     for (const address of ADDRESSES_TO_ISSUE_SEPOLIA_TEST_TOKENS) {
       await own.write.transfer([address as any, parseEther("1000000")]);
-      // await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 5000));
     }
   }
 };
