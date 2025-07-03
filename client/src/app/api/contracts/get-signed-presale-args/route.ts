@@ -18,7 +18,8 @@ const bodySchema = z.object({
 const privateKey = env.WERT_PRIVATE_KEY;
 
 export async function POST(req: Request) {
-  const { address, amount, networkId } = bodySchema.parse(await req.json());
+  const rawBody = await req.json();
+  const { address, amount, networkId } = bodySchema.parse(rawBody);
 
   const data = encodeFunctionData({
     abi: presaleABI,

@@ -43,7 +43,6 @@ function ActionButtons({
   const [buyWithCryptoOpen, setBuyWithCryptoOpen] = useState(false);
   const [buyWithCardOpen, setBuyWithCardOpen] = useState(false);
 
-
   const maxAllocation = presaleAllocation - preSaleSold;
 
   const buyWithCryptoSubmit = async (amount: number) => {
@@ -100,7 +99,6 @@ function ActionButtons({
     setTimeout(() => {
       setBuyWithCryptoOpen(false);
     }, 1000);
-
   };
 
   const buyWithCardSubmit = async (amount: number) => {
@@ -108,13 +106,14 @@ function ActionButtons({
       toast.error("Please connect your wallet");
       return;
     }
+    const parsedAmount = parseFloat(amount.toString());
 
     setBuyWithCardOpen(false);
 
     const signedData = await axios.post<
       ReturnType<typeof signSmartContractData>
     >("/api/contracts/get-signed-presale-args", {
-      amount,
+      amount: parsedAmount,
       address: account.address,
       networkId: chain.id,
     });
@@ -124,7 +123,6 @@ function ActionButtons({
       ...buildWertOptions(),
     });
     wertWidget.open();
-
   };
 
   return (
