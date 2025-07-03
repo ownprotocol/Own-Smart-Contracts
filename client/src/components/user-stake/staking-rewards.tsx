@@ -19,8 +19,13 @@ function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
   const account = useActiveAccount();
   const { stakeContract } = useContracts();
 
-  const { totalRewardsClaimed, totalClaimableRewards, claimablePositionIds, claimablePrincipalAmount , totalOwnStaked} =
-    calculateStakingStats(stakePositions);
+  const {
+    totalRewardsClaimed,
+    totalClaimableRewards,
+    claimablePositionIds,
+    claimablePrincipalAmount,
+    totalOwnStaked,
+  } = calculateStakingStats(stakePositions);
 
   const totalStakingRewardsEarned = totalRewardsClaimed + totalClaimableRewards;
 
@@ -58,23 +63,26 @@ function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
         <RewardBox
           label="TOTAL OWN STAKED"
           value={displayedEthAmount(totalOwnStaked)}
+          className="bg-black"
         />
         <RewardBox
           label="TOTAL STAKING REWARDS EARNED"
           value={displayedEthAmount(totalStakingRewardsEarned)}
-          className=""
+          className="bg-black"
         />
-        <RewardBox
-          label="CLAIMABLE PRINCIPAL"
-          value={displayedEthAmount(claimablePrincipalAmount)}
-          className="bg-[#2A2234]"
-        />
+      </div>
+        <div className="flex justify-between gap-1 bg-[#2A2230]">
+          <RewardBox
+            label="CLAIMABLE PRINCIPAL"
+            value={displayedEthAmount(claimablePrincipalAmount)}
+            className="bg-[#2A2230] flex-1"
+          />
           <RewardBox
             label="CLAIMABLE REWARDS"
             value={displayedEthAmount(totalClaimableRewards)}
-            className="bg-[#2A2234]"
+            className="bg-[#2A2230] flex-1"
           />
-      </div>
+        </div>
       <Button
         variant="mainButton"
         size="lg"
@@ -83,7 +91,9 @@ function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
         useSpinner
         className="w-full rounded-2xl bg-[#C58BFF]"
       >
-        Claim
+        Claim{" "}
+        {claimablePrincipalAmount + totalClaimableRewards > 0 &&
+          displayedEthAmount(claimablePrincipalAmount + totalClaimableRewards)}
       </Button>
     </div>
   );
