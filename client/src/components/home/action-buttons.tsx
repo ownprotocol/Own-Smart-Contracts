@@ -43,7 +43,8 @@ function ActionButtons({
   const [buyWithCryptoOpen, setBuyWithCryptoOpen] = useState(false);
   const [buyWithCardOpen, setBuyWithCardOpen] = useState(false);
 
-  const maxAllocation = presaleAllocation - preSaleSold;
+  // When the presale round had sold out and over, the preSaleSold is greater than presaleAllocation. This was resulting in negative value
+  const maxAllocation = Math.max(0, presaleAllocation - preSaleSold);
 
   const buyWithCryptoSubmit = async (amount: number) => {
     if (!account?.address) {

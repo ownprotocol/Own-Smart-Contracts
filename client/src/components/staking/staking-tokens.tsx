@@ -36,7 +36,9 @@ function StakingTokens({
     if (percentage) {
       setActivePercentage(percentage);
       const tokenAmountNumber = ownBalance * (percentage / 100);
-      setValue("tokenAmount", tokenAmountNumber, {
+
+      // Ensure the token amount is zero which is the minimum value
+      setValue("tokenAmount", Math.max(0, tokenAmountNumber), {
         shouldValidate: true,
       });
     }
