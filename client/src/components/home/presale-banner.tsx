@@ -31,9 +31,9 @@ function PresaleBanner({
   );
 }
 const LiveBadge = () => (
-  <div className="flex items-center gap-2 rounded-full bg-green-600 px-3 py-2">
-    <div className="h-4 w-4 rounded-full bg-green-400"></div>
-    <span className="text-sm font-medium uppercase tracking-wider text-green-200/80">
+  <div className="flex items-center gap-2 rounded-full bg-[#26C11180] px-2 pr-3 py-1">
+    <div className="h-4 w-4 rounded-full bg-[#79F16E]"></div>
+    <span className="text-sm font-medium uppercase tracking-wider text-[#79F16E]">
       LIVE
     </span>
   </div>
