@@ -33,7 +33,7 @@ function PresaleConcluded({
 }: PresaleConcludedProps) {
   const account = useActiveAccount();
   const chain = useActiveChainWithDefault();
-  const [activeRound, setActiveRound] = useState<number | null>(null);
+  const [activeRound] = useState<number | null>(null);
   const { claimRewards, isLoading: isClaimLoading } = useClaimRewards(refetch);
   const { ownTokenContract } = useContracts();
   const uniqueRounds = orderBy(
@@ -96,11 +96,6 @@ function PresaleConcluded({
             <h1 className="mt-8 align-middle font-['DM_Sans'] text-[14px] font-[400] leading-[100%] tracking-[-0.03em] text-white md:text-[16px]">
               Your Purchase History
             </h1>
-            <div className="mt-0 sm:flex sm:items-center md:mt-2">
-              <div className="sm:flex-auto">
-                <div className="flex flex-wrap gap-2 pt-4 text-xs md:flex-row md:flex-wrap md:gap-2 md:text-base"></div>
-              </div>
-            </div>
           </>
         )}
 
