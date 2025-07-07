@@ -6,7 +6,6 @@ import { displayedEthAmount } from "@/lib/display";
 
 import { SquareDots } from "@/components";
 import { Button } from "../ui/button";
-import { cn } from "@/lib/utils";
 import PresalePurchasesTable from "../presale/presale-purchases-table";
 import { type PresalePurchase } from "@/types/presale";
 import { useClaimRewards } from "@/hooks/use-presale-claim-rewards";
@@ -17,7 +16,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { getBlockExplorerTxUrl } from "@/lib/explorer";
 import { useActiveChainWithDefault } from "@/hooks/useChainWithDefault";
-import { SupportedNetworkIds } from "@fasset/contracts";
+import { type SupportedNetworkIds } from "@fasset/contracts";
 
 interface PresaleConcludedProps {
   presalePurchases: PresalePurchase[];
@@ -107,8 +106,7 @@ function PresaleConcluded({
             </h1>
             <div className="mt-0 sm:flex sm:items-center md:mt-2">
               <div className="sm:flex-auto">
-                <div className="flex flex-wrap gap-2 pt-4 text-xs md:flex-row md:flex-wrap md:gap-2 md:text-base">
-                </div>
+                <div className="flex flex-wrap gap-2 pt-4 text-xs md:flex-row md:flex-wrap md:gap-2 md:text-base"></div>
               </div>
             </div>
           </>
