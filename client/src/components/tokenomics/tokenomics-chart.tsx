@@ -27,7 +27,7 @@ const TokenomicsChart = () => {
     return (
       <div className="flex w-full flex-col">
         <div
-          className="grid grid-cols-2 gap-x-16 gap-y-2"
+          className="grid grid-cols-2 gap-x-36 gap-y-2"
           onMouseLeave={handleLegendLeave}
         >
           <div className="min-w-[200px] space-y-3">
