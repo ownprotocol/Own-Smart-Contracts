@@ -33,7 +33,6 @@ function PresaleConcluded({
 }: PresaleConcludedProps) {
   const account = useActiveAccount();
   const chain = useActiveChainWithDefault();
-  const [activeRound] = useState<number | null>(null);
   const { claimRewards, isLoading: isClaimLoading } = useClaimRewards(refetch);
   const { ownTokenContract } = useContracts();
   const uniqueRounds = orderBy(
@@ -41,15 +40,7 @@ function PresaleConcluded({
     "roundId",
     "asc",
   );
-  const filteredPurchases = useMemo(() => {
-    if (activeRound === null) {
-      return presalePurchases;
-    }
 
-    return presalePurchases.filter(
-      (purchase) => purchase.roundId === activeRound,
-    );
-  }, [presalePurchases, activeRound]);
 
   return (
     <div className="relative w-full">
@@ -99,7 +90,7 @@ function PresaleConcluded({
           </>
         )}
 
-        <PresalePurchasesTable rows={filteredPurchases} showTitle={false} />
+        <PresalePurchasesTable rows={presalePurchases} showTitle={false} />
         <div className="mt-4 flex flex-col gap-3 sm:flex-row md:justify-start md:gap-4">
           <Button
             variant={"mainButton"}
