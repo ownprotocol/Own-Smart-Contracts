@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
 import { displayedEthAmount } from "@/lib/display";
 
 import { SquareDots } from "@/components";
