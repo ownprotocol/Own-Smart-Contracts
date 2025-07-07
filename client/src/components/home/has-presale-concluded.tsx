@@ -108,23 +108,6 @@ function PresaleConcluded({
             <div className="mt-0 sm:flex sm:items-center md:mt-2">
               <div className="sm:flex-auto">
                 <div className="flex flex-wrap gap-2 pt-4 text-xs md:flex-row md:flex-wrap md:gap-2 md:text-base">
-                  {uniqueRounds.map((round) => (
-                    <button
-                      type="button"
-                      key={round.roundId}
-                      className={cn(
-                        "cursor-pointer rounded-full px-4 py-1 text-white",
-                        activeRound === round.roundId
-                          ? "cursor-pointer bg-orange-500"
-                          : "bg-[#C1691180] text-[#F1AF6E]",
-                      )}
-                      onClick={() => {
-                        handleSetRoundOnClick(round.roundId);
-                      }}
-                    >
-                      Round {round.roundId + 1}
-                    </button>
-                  ))}
                 </div>
               </div>
             </div>
