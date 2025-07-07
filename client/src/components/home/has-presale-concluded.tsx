@@ -51,14 +51,6 @@ function PresaleConcluded({
     );
   }, [presalePurchases, activeRound]);
 
-  const handleSetRoundOnClick = (roundId: number) => {
-    if (roundId === activeRound) {
-      setActiveRound(null);
-    } else {
-      setActiveRound(roundId);
-    }
-  };
-
   return (
     <div className="relative w-full">
       <SquareDots />
