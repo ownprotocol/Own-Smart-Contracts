@@ -14,22 +14,12 @@ export const calculateApy = (
   totalActiveVeOwnSupply: number,
   dailyRewardAmount: number,
   currentBoostMultiplier: number,
-  currentDay: number,
 ) => {
-  if (position.finalDay > currentDay) {
-    const totalRewardsEarned =
-      position.rewardsClaimed + position.claimableRewards;
-    const adjustedStakingDuraton =
-      DAYS_IN_YEAR / (position.finalDay - position.startDay);
-    const adjustedRewardsEarned = totalRewardsEarned * adjustedStakingDuraton;
-    const apy = adjustedRewardsEarned / position.ownAmount;
-    return apy;
-  } else {
-    const totalYearlyRewards =
-      dailyRewardAmount * currentBoostMultiplier * DAYS_IN_YEAR;
-    const rewardsEarnedForPositionForYear =
-      (position.veOwnAmount / totalActiveVeOwnSupply) * totalYearlyRewards;
-    const apy = rewardsEarnedForPositionForYear / position.ownAmount;
-    return apy;
-  }
+  const totalYearlyRewards =
+    dailyRewardAmount * currentBoostMultiplier * DAYS_IN_YEAR;
+  const rewardsEarnedForPositionForYear =
+    (position.veOwnAmount / totalActiveVeOwnSupply) * totalYearlyRewards;
+
+  const apy = rewardsEarnedForPositionForYear / position.ownAmount;
+  return apy;
 };
