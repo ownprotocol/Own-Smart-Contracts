@@ -3,7 +3,7 @@ import { useReadContractQueryHook } from "@/helpers/useReadContractWithParsing";
 import { useContracts } from "./use-contracts";
 import { useActiveAccount } from "thirdweb/react";
 import { type StakingContractData, type StakingPurchaseDetails } from "@/types";
-import { formatEther } from "viem";
+import { formatEther, parseEther } from "viem";
 import { useTestingSafeTimestamp } from "./use-testing-safe-timestamp";
 import { type QueryHook } from "@/types/query";
 import { getDay } from "@/helpers/date";
@@ -109,7 +109,9 @@ export const useStakingPositionsPage = (): QueryHook<{
         dailyRewardAmount: Number(
           formatEther(queryHooks.data.dailyRewardAmount),
         ),
-        currentBoostMultiplier: Number(queryHooks.data.currentBoostMultiplier),
+        currentBoostMultiplier: parseFloat(
+          formatEther(queryHooks.data.currentBoostMultiplier),
+        ),
       },
     },
     refetch: queryHooks.refetch,

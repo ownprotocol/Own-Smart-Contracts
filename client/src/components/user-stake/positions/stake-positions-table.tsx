@@ -76,12 +76,14 @@ function StakePositionsTable({
                               Own
                             </TableRow>
                             <TableRow className="text-[#F5841F]">
-                              {calculateApy(
-                                stakePosition,
-                                stakingContractData.totalActiveVeOwnSupply,
-                                stakingContractData.dailyRewardAmount,
-                                stakingContractData.currentBoostMultiplier,
-                                stakingContractData.currentDay,
+                              {displayedEthAmount(
+                                calculateApy(
+                                  stakePosition,
+                                  stakingContractData.totalActiveVeOwnSupply,
+                                  stakingContractData.dailyRewardAmount,
+                                  stakingContractData.currentBoostMultiplier,
+                                ),
+                                4,
                               )}
                               %
                             </TableRow>
