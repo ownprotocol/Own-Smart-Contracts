@@ -1,12 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
 import { displayedEthAmount } from "@/lib/display";
 
 import { SquareDots } from "@/components";
 import { Button } from "../ui/button";
-import { cn } from "@/lib/utils";
 import PresalePurchasesTable from "../presale/presale-purchases-table";
 import { type PresalePurchase } from "@/types/presale";
 import { useClaimRewards } from "@/hooks/use-presale-claim-rewards";
@@ -17,7 +15,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { getBlockExplorerTxUrl } from "@/lib/explorer";
 import { useActiveChainWithDefault } from "@/hooks/useChainWithDefault";
-import { SupportedNetworkIds } from "@fasset/contracts";
+import { type SupportedNetworkIds } from "@fasset/contracts";
 
 interface PresaleConcludedProps {
   presalePurchases: PresalePurchase[];
@@ -34,7 +32,6 @@ function PresaleConcluded({
 }: PresaleConcludedProps) {
   const account = useActiveAccount();
   const chain = useActiveChainWithDefault();
-  const [activeRound, setActiveRound] = useState<number | null>(null);
   const { claimRewards, isLoading: isClaimLoading } = useClaimRewards(refetch);
   const { ownTokenContract } = useContracts();
   const uniqueRounds = orderBy(
@@ -42,23 +39,7 @@ function PresaleConcluded({
     "roundId",
     "asc",
   );
-  const filteredPurchases = useMemo(() => {
-    if (activeRound === null) {
-      return presalePurchases;
-    }
 
-    return presalePurchases.filter(
-      (purchase) => purchase.roundId === activeRound,
-    );
-  }, [presalePurchases, activeRound]);
-
-  const handleSetRoundOnClick = (roundId: number) => {
-    if (roundId === activeRound) {
-      setActiveRound(null);
-    } else {
-      setActiveRound(roundId);
-    }
-  };
 
   return (
     <div className="relative w-full">
@@ -105,33 +86,10 @@ function PresaleConcluded({
             <h1 className="mt-8 align-middle font-['DM_Sans'] text-[14px] font-[400] leading-[100%] tracking-[-0.03em] text-white md:text-[16px]">
               Your Purchase History
             </h1>
-            <div className="mt-0 sm:flex sm:items-center md:mt-2">
-              <div className="sm:flex-auto">
-                <div className="flex flex-wrap gap-2 pt-4 text-xs md:flex-row md:flex-wrap md:gap-2 md:text-base">
-                  {uniqueRounds.map((round) => (
-                    <button
-                      type="button"
-                      key={round.roundId}
-                      className={cn(
-                        "cursor-pointer rounded-full px-4 py-1 text-white",
-                        activeRound === round.roundId
-                          ? "cursor-pointer bg-orange-500"
-                          : "bg-[#C1691180] text-[#F1AF6E]",
-                      )}
-                      onClick={() => {
-                        handleSetRoundOnClick(round.roundId);
-                      }}
-                    >
-                      Round {round.roundId + 1}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
           </>
         )}
 
-        <PresalePurchasesTable rows={filteredPurchases} showTitle={false} />
+        <PresalePurchasesTable rows={presalePurchases} showTitle={false} />
         <div className="mt-4 flex flex-col gap-3 sm:flex-row md:justify-start md:gap-4">
           <Button
             variant={"mainButton"}

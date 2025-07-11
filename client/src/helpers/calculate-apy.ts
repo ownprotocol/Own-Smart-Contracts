@@ -21,5 +21,5 @@ export const calculateApy = (
     (position.veOwnAmount / totalActiveVeOwnSupply) * totalYearlyRewards;
 
   const apy = rewardsEarnedForPositionForYear / position.ownAmount;
-  return apy;
+  return apy * 100;
 };
