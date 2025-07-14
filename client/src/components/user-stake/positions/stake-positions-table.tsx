@@ -20,6 +20,7 @@ function StakePositionsTable({
   stakePositions,
   stakingContractData,
 }: StakePositionsTableProps) {
+  console.log(stakePositions);
   return (
     <div className="mt-4">
       <div className="mx-auto max-w-7xl">
@@ -72,7 +73,7 @@ function StakePositionsTable({
                               {displayedEthAmount(stakePosition.ownAmount)} Own
                             </TableRow>
                             <TableRow>
-                              {displayedEthAmount(stakePosition.rewardsClaimed)}{" "}
+                              {displayedEthAmount(stakePosition.rewardsClaimed, 4)}{" "}
                               Own
                             </TableRow>
                             <TableRow className="text-[#F5841F]">

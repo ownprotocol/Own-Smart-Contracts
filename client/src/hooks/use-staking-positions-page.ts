@@ -74,6 +74,8 @@ export const useStakingPositionsPage = (): QueryHook<{
   }
 
   const [stakingPositions, claimableRewards] = queryHooks.data.stakingPositions;
+  console.log(stakingPositions);
+  console.log(claimableRewards);
 
   const currentDay = getDay(queryHooks.data.timestamp);
 
