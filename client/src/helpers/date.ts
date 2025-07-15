@@ -6,8 +6,9 @@ export const getDay = (timestamp: number) => {
 };
 
 export const convertDaysToDate = (days: number) => {
-  const date = new Date(0);
-  date.setSeconds(days * SECONDS_IN_A_DAY);
-
+  // Instead of creating a UTC date and letting format convert it,
+  // create the date directly in local time
+  const date = new Date();
+  date.setTime(days * SECONDS_IN_A_DAY * 1000); // Set to local time
   return date;
 };

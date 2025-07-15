@@ -29,6 +29,12 @@ function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
 
   const totalStakingRewardsEarned = totalRewardsClaimed + totalClaimableRewards;
 
+  console.log({ totalClaimableRewards });
+  console.log({ totalRewardsClaimed });
+  console.log({ totalStakingRewardsEarned });
+  console.log({ claimablePrincipalAmount });
+  console.log({ totalOwnStaked });
+
   const disabled =
     totalClaimableRewards === 0 ||
     totalClaimableRewards === totalRewardsClaimed;
@@ -71,18 +77,18 @@ function StakingRewards({ stakePositions, refetch }: StakingRewardsProps) {
           className="bg-black"
         />
       </div>
-        <div className="flex justify-between gap-1 bg-[#2A2230] rounded-xl">
-          <RewardBox
-            label="CLAIMABLE PRINCIPAL"
-            value={displayedEthAmount(claimablePrincipalAmount)}
-            className="bg-[#2A2230] flex-1"
-          />
-          <RewardBox
-            label="CLAIMABLE REWARDS"
-            value={displayedEthAmount(totalClaimableRewards)}
-            className="bg-[#2A2230] flex-1"
-          />
-        </div>
+      <div className="flex justify-between gap-1 rounded-xl bg-[#2A2230]">
+        <RewardBox
+          label="CLAIMABLE PRINCIPAL"
+          value={displayedEthAmount(claimablePrincipalAmount)}
+          className="flex-1 bg-[#2A2230]"
+        />
+        <RewardBox
+          label="CLAIMABLE REWARDS"
+          value={displayedEthAmount(totalClaimableRewards)}
+          className="flex-1 bg-[#2A2230]"
+        />
+      </div>
       <Button
         variant="mainButton"
         size="lg"
