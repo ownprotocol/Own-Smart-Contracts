@@ -10,6 +10,7 @@ import { displayedEthAmount } from "@/lib/display";
 import { type StakingContractData, type StakingPurchaseDetails } from "@/types";
 import { format } from "date-fns";
 import { Check, Lock, LockOpen } from "lucide-react";
+import { formatInTimeZone } from "date-fns-tz";
 
 interface StakePositionsTableProps {
   stakePositions: StakingPurchaseDetails[];
@@ -64,8 +65,9 @@ function StakePositionsTable({
                         {stakePositions.map((stakePosition, index) => (
                           <tr key={index}>
                             <TableRow>
-                              {format(
+                              {formatInTimeZone(
                                 convertDaysToDate(stakePosition.startDay),
+                                "UTC",
                                 "dd/MM/yyyy",
                               )}
                             </TableRow>
@@ -73,7 +75,10 @@ function StakePositionsTable({
                               {displayedEthAmount(stakePosition.ownAmount)} Own
                             </TableRow>
                             <TableRow>
-                              {displayedEthAmount(stakePosition.rewardsClaimed, 4)}{" "}
+                              {displayedEthAmount(
+                                stakePosition.claimableRewards,
+                                4,
+                              )}{" "}
                               Own
                             </TableRow>
                             <TableRow className="text-[#F5841F]">
