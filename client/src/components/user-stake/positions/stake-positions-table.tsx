@@ -10,7 +10,6 @@ import { displayedEthAmount } from "@/lib/display";
 import { type StakingContractData, type StakingPurchaseDetails } from "@/types";
 import { format } from "date-fns";
 import { Check, Lock, LockOpen } from "lucide-react";
-import { formatInTimeZone } from "date-fns-tz";
 
 interface StakePositionsTableProps {
   stakePositions: StakingPurchaseDetails[];
@@ -65,9 +64,8 @@ function StakePositionsTable({
                         {stakePositions.map((stakePosition, index) => (
                           <tr key={index}>
                             <TableRow>
-                              {formatInTimeZone(
+                              {format(
                                 convertDaysToDate(stakePosition.startDay),
-                                "UTC",
                                 "dd/MM/yyyy",
                               )}
                             </TableRow>
