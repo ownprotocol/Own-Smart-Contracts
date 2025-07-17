@@ -6,7 +6,9 @@ export const getDay = (timestamp: number) => {
 };
 
 export const convertDaysToDate = (days: number) => {
-  const date = new Date(0);
+  const date = new Date();
+  const offsetMinutes = date.getTimezoneOffset();
+  console.log(offsetMinutes); // e.g., -480 for UTC-8, 300 for UTC+5
   date.setSeconds(days * SECONDS_IN_A_DAY);
   return date;
 };
