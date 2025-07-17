@@ -7,6 +7,6 @@ export const getDay = (timestamp: number) => {
 
 export const convertDaysToDate = (days: number) => {
   const date = new Date(0);
-  date.setSeconds(days * SECONDS_IN_A_DAY);
+  date.setUTCSeconds((days + 2) * SECONDS_IN_A_DAY);
   return date;
 };
