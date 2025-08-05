@@ -17,19 +17,18 @@ const getStatus = (
     return "in-progress";
   }
 
-  const finalDayOfFinalWeek = Math.floor(finalDay / 7) + 6;
-
-  if (currentDay > finalDayOfFinalWeek) {
-    return "finished";
-  }
-
   const finalWeek = Math.floor(finalDay / 7);
+  const finalDayOfFinalWeek = Math.floor(finalDay / 7) + 6;
 
   if (
     currentDay > finalDayOfFinalWeek &&
-    lastWeekRewardsClaimed === finalWeek
+    lastWeekRewardsClaimed === finalWeek + 1
   ) {
     return "complete";
+  }
+
+  if (currentDay > finalDayOfFinalWeek) {
+    return "finished";
   }
 
   return "finished";
