@@ -2,6 +2,7 @@ import { ethers, network, upgrades } from "hardhat";
 import { DeployFunction } from "hardhat-deploy/dist/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { isTestNetwork } from "../helpers/deployments";
+import { USDT_MAINNET_ADDRESS } from "../constants/addresses";
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments } = hre;
@@ -27,7 +28,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     });
   } else {
     if (network.name === "mainnet") {
-      usdtAddress = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
+      usdtAddress = USDT_MAINNET_ADDRESS;
     } else if (network.name === "arbitrum") {
       usdtAddress = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
     } else {

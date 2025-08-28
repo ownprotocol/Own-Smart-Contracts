@@ -44,14 +44,6 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   await own.write.transfer([presale.address, parseEther("1000000")]);
 
-  // const rounds = Array.from({ length: 30 }, (_, i) => i).map(() => ({
-  //   duration: 86400n,
-  //   price: parseUnits("1", 6),
-  //   allocation: parseEther("1000"),
-  //   sales: 0n,
-  //   claimTokensTimestamp: 0n,
-  // }));
-
   const duration = 19 * SECONDS_IN_A_HOUR;
 
   const presaleRound = {
@@ -69,8 +61,6 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   await presale.write.setPresaleStartTime([
     BigInt(currentTime + SECONDS_IN_A_HOUR * 6),
   ]);
-
-  // await mockUSDT.write.mint([deployer.address as any, parseEther("1000000")]);
 
   if (hre.network.name === "sepolia") {
     for (const address of ADDRESSES_TO_ISSUE_SEPOLIA_TEST_TOKENS) {
